@@ -1,0 +1,27 @@
+{
+  "id": "52393091",
+  "title": "Misxi 2 Pack Hard PC Case Built in Tempered Glass Compatible with 49mm Apple Watch Ultra 2 (2024) / Ultra, Thin Protective Case with Screen Protector for iWatch, Shockproof Cover with Button, Black",
+  "images": [
+    "/images/watch1.png",
+    "/images/watch2.png",
+    "/images/watch3.png"
+  ],
+  "price": "BDT 2179",
+  "oldPrice": "BDT 2399",
+  "discount": "10% Off",
+  "rating": 4,
+  "reviews": "No Ratings",
+  "stock": true,
+  "recommend": 87,
+  "sizes": ["38mm for Series 2/3", "40mm", "41mm", "42mm for Series 2/3"],
+  "colors": [
+    { "name": "Black", "hex": "#000000" },
+    { "name": "White", "hex": "#ffffff" }
+  ],
+  "features": [
+    "Compatible with Apple Watch Ultra 49mm",
+    "9H hardness of tempered glass for scratch protection",
+    "Comes with a button cover",
+    "Precise design for easy access to all watch features"
+  ]
+}
