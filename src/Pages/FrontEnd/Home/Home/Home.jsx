@@ -1,26 +1,39 @@
-import Brands from "../Brands/Brands";
-import HomeSlider from "../HomeSlider/HomeSlider";
-import LatestDeals from "../LatestDeals/LatestDeals";
-import LatestProduct from "../LatestProduct/LatestProduct";
-import PremiumProduct from "../PremimumProduct/PremimumProduct";
-import ProductCarousel from "../ProductCarousel/ProductCarousel";
-import TopRatedProduct from "../TopRatedProduct/TopRatedProduct";
-import TopSelling from "../TopSelling/TopSelling";
-import CuponPart from "./CuponPart/CuponPart";
+import Bannerparts from "../Bannerparts/Bannerparts";
+import DownloadApp from "../DownloadApp/DownloadApp";
+import Features from "../Features/Features";
+import LearningManagement from "../LearningManagemnet/LearningManagement";
+import MealLanding from "../MealLanding/MealLanding";
+import ProcessSection from "../ProcessSection/ProcessSection";
+import EcommerceLanding from "./EcommerceLanding/EcommerceLanding";
+import RideSharing from "./RideSharing/RideSharing";
+import Testimonial from "./Testimonial/Testimonial";
 
 
 const Home = () => {
   return (
     <div>
-     <HomeSlider/>
-     <TopSelling/>
-     <LatestProduct/>
-     <ProductCarousel/>
-     <PremiumProduct/>
-     <TopRatedProduct/>
-     <LatestDeals/>
-     <CuponPart/>
-     <Brands/>
+      <Bannerparts/>
+      <Features/>
+      
+      <ProcessSection/>
+        <MealLanding/>
+        <LearningManagement/>
+         <EcommerceLanding/>
+      <RideSharing/>
+      <DownloadApp/>
+      <Testimonial/>
+      
+     
+    
+     {/* <HomeSlider/> */}
+     {/* <TopSelling/> */}
+     {/* <LatestProduct/> */}
+     {/* <ProductCarousel/> */}
+     {/* <PremiumProduct/> */}
+     {/* <TopRatedProduct/> */}
+     {/* <LatestDeals/> */}
+     {/* <CuponPart/> */}
+     {/* <Brands/> */}
     </div>
   );
 };

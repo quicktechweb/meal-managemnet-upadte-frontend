@@ -1,18 +1,15 @@
 import { createBrowserRouter } from "react-router-dom";
 import Main from "../Layout/Main";
-import LoginPage from "../Auth/Login/Login";
-import Registration from "../Auth/Registration/Registration";
 import Home from "../Pages/FrontEnd/Home/Home/Home";
 import Layouts from "../Layouts";
 import ErrorPage from "../Shared/ErrorPage/ErrorPage/ErrorPage";
-import ProductDetailsPage from "../Pages/FrontEnd/ProductPage/ProductDetailsPage/ProductDetailsPage";
-import AllTopSelling from "../Pages/FrontEnd/Home/TopSelling/AllTopSelling/AllTopSelling";
-import AllPremiumProduct from "../Pages/FrontEnd/Home/PremimumProduct/AllPremiumProduct/AllPremiumProduct";
-import AllLatestDeals from "../Pages/FrontEnd/Home/LatestDeals/AllLatestDeals/AllLatestDeals";
-import AllLatestProduct from "../Pages/FrontEnd/Home/LatestProduct/AllLatestProduct/AllLatestProduct";
-import OrderReview from "../Pages/FrontEnd/OrderReview/OrderReview";
-import Payment from "../Pages/FrontEnd/Payment/Payment";
-import WinnerStatics from "../Pages/FrontEnd/Home/WinnerStatics/WinnerStatics";
+import Dashboard from "../Pages/FrontEnd/Dashboard/Dashboard";
+import DashboardHome from "../Pages/FrontEnd/Dashboard/DashboardHome/DashboardHome";
+import MealManagementPart from "../Pages/FrontEnd/Dashboard/UserDashboard/MealManagementPart/MealManagementPart";
+import UserOrder from "../Pages/FrontEnd/Dashboard/UserDashboard/UserOrder/UserOrder";
+import Login from "../Shared/Auth/Login/Login";
+import Registration from "../Shared/Auth/Registration/Registration";
+import EcommerceSite from "../Pages/FrontEnd/EcommerceSite/EcommerceSite";
 
 
 const router = createBrowserRouter([
@@ -38,45 +35,21 @@ const router = createBrowserRouter([
     element: <Home />,
   },
   {
-    path: "/productdetails",
-    element: <ProductDetailsPage />,
-  },
-  {
-    path: "/alltopselling",
-    element: <AllTopSelling />,
-  },
-  {
-    path: "/allpremiumproduct",
-    element: <AllPremiumProduct />,
-  },
-  {
-    path: "/alllatestdeals",
-    element: <AllLatestDeals />,
-  },
-  {
-    path: "/alllatestproducts",
-    element: <AllLatestProduct />,
-  },
-  {
-    path: "/orderreview",
-    element: <OrderReview />,
-  },
-  {
-    path: "/payment",
-    element: <Payment />,
-  },
-  {
-    path: "/winnerstatics",
-    element: <WinnerStatics />,
-  },
-  {
     path: "/login",
-    element: <LoginPage />,
+    element: <Login />,
   },
   {
-    path: "/registration",
+    path: "/register",
     element: <Registration />,
   },
+  {
+    path: "/ecommercesite",
+    element: <EcommerceSite />,
+  },
+  
+ 
+
+  
  
   
   
@@ -92,6 +65,51 @@ const router = createBrowserRouter([
 
         ],
       },
+
+       {
+        path: "/dashboard",
+        element: (
+          //  <PrivateRoute>
+            <Dashboard />
+          //  </PrivateRoute>
+        ),
+        children: [
+          {
+            path: "/dashboard",
+            element: 
+            // <AdminProtectedRoute>
+              <DashboardHome />
+            // </AdminProtectedRoute>
+         
+          },
+          {
+            path: "/dashboard/mealmanagement",
+            element: <MealManagementPart />,
+          },
+          {
+            path: "/dashboard/userOrder",
+            element: <UserOrder />,
+          },
+         
+         
+         
+       
+     
+         
+        
+    
+         
+          
+         
+        
+          
+
+          // supplierpage 
+          
+         
+    
+    ],
+  },
 
 ]);
 

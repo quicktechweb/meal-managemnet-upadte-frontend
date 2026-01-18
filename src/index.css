@@ -137,3 +137,33 @@
 .scrollbar-thin {
   scrollbar-width: thin;
 }
+
+
+
+.gradient-overlay:before {
+  position: absolute;
+  content: '';
+  background-image: linear-gradient(
+    to left,
+    rgba(50, 100, 245, 0.90),
+    rgba(74, 84, 232, 0.88),
+    rgba(91, 66, 219, 0.85),
+    rgba(104, 44, 203, 0.88),
+    rgba(114, 2, 187, 0.90)
+  );
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+}
+
+
+.shape-bottom img.bottom-shape {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -2px;
+  z-index: 1;
+  width: 100%;
+  margin: 0 auto;
+}
