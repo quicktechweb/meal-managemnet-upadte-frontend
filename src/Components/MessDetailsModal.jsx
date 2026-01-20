@@ -90,9 +90,9 @@ const MealCard = ({ title, icon, data, gradient, selected, onToggle }) => (
       {data.items.map((item, i) => (
         <li
           key={i}
-          className="flex items-center gap-2 text-xs  lg:text-sm bg-gray-50 px-3 py-2 rounded-lg whitespace-nowrap"
+          className="flex items-center gap-2 text-[10px] md:text-xs whitespace-nowrap xl:text-sm bg-gray-50  xl:px-3 py-2 rounded-lg"
         >
-          <FaCheckCircle className="text-green-500" />
+          <FaCheckCircle className="text-green-500 shrink-0" />
           {item}
         </li>
       ))}

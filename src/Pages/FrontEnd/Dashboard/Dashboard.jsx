@@ -35,7 +35,7 @@ const Dashboard = () => {
       <main
         className={`
           transition-all duration-300
-       lg:ml-[250px]
+       lg:ml-[260px] grow
         `}
       >
         {/* Header */}
@@ -76,7 +76,7 @@ const Dashboard = () => {
         </div>
 
         {/* Page Content */}
-        <div className="p-4">
+        <div className="p-4 w-full">
           <Outlet />
         </div>
       </main>
