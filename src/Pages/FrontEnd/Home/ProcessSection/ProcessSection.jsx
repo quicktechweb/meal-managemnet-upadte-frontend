@@ -83,13 +83,13 @@ const ProcessSection = () => {
   const [active, setActive] = useState(steps[0]);
 
   return (
-    <section className="-mt-5 bg-white max-w-6xl mx-auto">
+    <section className="mt-5 bg-white max-w-6xl mx-auto">
       {/* HEADING */}
-      <div className="text-center mb-20">
-        <h2 className="text-3xl md:text-4xl font-bold mb-4">
+      <div className="text-center mb-5 md:mb-10 lg:mb-20">
+        <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-4 px-4">
           Quick & Easy Process With Best Features
         </h2>
-        <p className="text-gray-500 max-w-2xl mx-auto">
+        <p className="text-gray-500 text-sm md:text-base max-w-full md:max-w-2xl mx-auto">
           Rapidiously morph transparent internal or sources Whereas resource
           sucking e-business. Conveniently innovate compelling internal.
         </p>
@@ -97,7 +97,7 @@ const ProcessSection = () => {
 
       <div className="max-w-7xl mx-auto px-6">
         {/* STEPS */}
-        <div className="flex flex-wrap justify-center gap-16 mb-20">
+        <div className="flex flex-wrap justify-center gap-4 md:gap-8 lg:gap-16 mb-5 md:mb-10 lg:mb-20">
           {steps.map((step) => {
             const isActive = active.id === step.id;
 
@@ -105,10 +105,10 @@ const ProcessSection = () => {
               <button
                 key={step.id}
                 onClick={() => setActive(step)}
-                className="flex flex-col items-center gap-3 focus:outline-none group"
+                className="flex flex-col cursor-pointer items-center gap-1.5 lg:gap-3 focus:outline-none group"
               >
                 <div
-                  className={`w-12 h-12 rounded-full flex items-center justify-center text-xl transition
+                  className={`w-8 h-8  sm:w-10 sm:h-10 lg:w-12 lg:h-12 rounded-full flex items-center justify-center text-sm sm:text-lg lg:text-xl transition
                     ${
                       isActive
                         ? "bg-purple-100 text-purple-600"
@@ -119,7 +119,7 @@ const ProcessSection = () => {
                 </div>
 
                 <span
-                  className={`text-sm font-medium ${
+                  className={`text-xs sm:text-sm font-medium ${
                     isActive ? "text-purple-600" : "text-gray-500"
                   }`}
                 >
@@ -137,28 +137,28 @@ const ProcessSection = () => {
         </div>
 
         {/* CONTENT */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-20 items-center">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-20 items-center">
           {/* LEFT */}
           <div>
-            <span className="text-6xl font-bold text-purple-600">
+            <span className="text-3xl lg:text-6xl font-bold text-purple-600">
               {active.number}
             </span>
 
-            <h3 className="mt-6 text-5xl font-semibold text-gray-900">
+            <h3 className="mt-3 lg:mt-6 text-2xl lg:text-5xl font-semibold text-gray-900">
               {active.heading}
             </h3>
 
-            <p className="mt-6 text-gray-500 max-w-md">
+            <p className="mt-3 lg:mt-6 text-sm lg:text-base text-gray-500 max-w-md">
               {active.desc1}
             </p>
 
-            <p className="mt-4 text-gray-500 max-w-md">
+            <p className="mt-2 lg:mt-4  text-sm lg:text-base text-gray-500 max-w-md">
               {active.desc2}
             </p>
 
             <a
               href="#"
-              className="inline-flex items-center gap-2 mt-6 text-purple-600 font-medium hover:gap-3 transition-all"
+              className="inline-flex items-center gap-2 mt-3 lg:mt-6 text-purple-600 font-medium hover:gap-3 transition-all text-xs lg:text-base"
             >
               Learn more about this <FiArrowRight />
             </a>

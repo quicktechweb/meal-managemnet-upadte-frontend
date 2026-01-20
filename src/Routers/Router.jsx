@@ -10,107 +10,93 @@ import UserOrder from "../Pages/FrontEnd/Dashboard/UserDashboard/UserOrder/UserO
 import Login from "../Shared/Auth/Login/Login";
 import Registration from "../Shared/Auth/Registration/Registration";
 import EcommerceSite from "../Pages/FrontEnd/EcommerceSite/EcommerceSite";
-
+import EcommerceLayout from "../EcommerceLayout";
+import CheckoutPage from "../Pages/FrontEnd/checkout/CheckoutPage";
+import Faq from "../Pages/FrontEnd/faq/Faq";
+import ContactPage from "../Pages/FrontEnd/contact-us/ContactPage";
 
 const router = createBrowserRouter([
-
-
- {
+  {
     path: "/",
     element: <Layouts />,
     errorElement: (
       <>
-       <ErrorPage/>
+        <ErrorPage />
       </>
     ),
     children: [
-      
-      
       {
-    path: "/main",
-    element: <Main />,
-  },
-  {
-    path: "/",
-    element: <Home />,
-  },
-  {
-    path: "/login",
-    element: <Login />,
-  },
-  {
-    path: "/register",
-    element: <Registration />,
-  },
-  {
-    path: "/ecommercesite",
-    element: <EcommerceSite />,
-  },
-  
- 
-
-  
- 
-  
-  
-  
-  
-  
- 
-   
-    
-     
-     
-     
-
-        ],
+        path: "/main",
+        element: <Main />,
+      },
+      {
+        path: "/",
+        element: <Home />,
+      },
+      {
+        path: "/login",
+        element: <Login />,
+      },
+      {
+        path: "/register",
+        element: <Registration />,
+      },
+      {
+        path: "/checkout",
+        element: <CheckoutPage />,
       },
 
-       {
-        path: "/dashboard",
-        element: (
-          //  <PrivateRoute>
-            <Dashboard />
-          //  </PrivateRoute>
-        ),
-        children: [
-          {
-            path: "/dashboard",
-            element: 
-            // <AdminProtectedRoute>
-              <DashboardHome />
-            // </AdminProtectedRoute>
-         
-          },
-          {
-            path: "/dashboard/mealmanagement",
-            element: <MealManagementPart />,
-          },
-          {
-            path: "/dashboard/userOrder",
-            element: <UserOrder />,
-          },
-         
-         
-         
-       
-     
-         
-        
-    
-         
-          
-         
-        
-          
+      {
+        path: "/faq",
+        element: <Faq />,
+      },
 
-          // supplierpage 
-          
-         
-    
+      {
+        path: "/contact-us",
+        element: <ContactPage />,
+      },
     ],
   },
 
+  {
+    path: "/dashboard",
+    element: (
+      //  <PrivateRoute>
+      <Dashboard />
+      //  </PrivateRoute>
+    ),
+    children: [
+      {
+        path: "/dashboard",
+        element: (
+          // <AdminProtectedRoute>
+          <DashboardHome />
+        ),
+        // </AdminProtectedRoute>
+      },
+      {
+        path: "/dashboard/mealmanagement",
+        element: <MealManagementPart />,
+      },
+      {
+        path: "/dashboard/userOrder",
+        element: <UserOrder />,
+      },
+
+      // supplierpage
+    ],
+  },
+
+  {
+    path: "/ecommercesite",
+    element: <EcommerceLayout />,
+    children: [
+      {
+        path: "/ecommercesite",
+        element: <EcommerceSite />,
+      },
+    ],
+  },
 ]);
 
 export default router;

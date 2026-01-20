@@ -37,7 +37,7 @@ const ProductDetailsModal = ({
           ✕
         </button>
 
-        <div className="grid md:grid-cols-2 gap-6 p-6">
+        <div className="grid md:grid-cols-2 gap-3 lg:gap-6 p-3 lg:p-6">
           {/* IMAGE */}
           <div className="rounded-2xl flex items-center justify-center">
             <img
@@ -50,18 +50,20 @@ const ProductDetailsModal = ({
           {/* DETAILS */}
           <div className="flex flex-col gap-2.5 justify-center">
             <div>
-              <h2 className="text-3xl font-semibold">{selectedProduct.name}</h2>
+              <h2 className="text-[22px] md:text-2xl lg:text-3xl font-semibold">
+                {selectedProduct.name}
+              </h2>
 
-              <div className="flex items-center gap-3 mt-4">
-                <span className="text-3xl text-[#e94560] font-bold">
+              <div className="flex items-center gap-3 mt-2 lg:mt-4">
+                <span className="text-xl md:text-2xl lg:text-3xl text-[#e94560] font-bold">
                   Tk {selectedProduct.price}
                 </span>
-                <span className="line-through text-gray-400 text-xl">
+                <span className="line-through text-gray-400 text-sm lg:text-xl">
                   Tk {selectedProduct.oldPrice}
                 </span>
               </div>
 
-              <p className="mt-4 text-gray-600">
+              <p className="mt-2 lg:mt-4 text-sm lg:text-base text-gray-600">
                 Premium quality grocery item. Fresh, hygienic and perfect for
                 daily needs.
               </p>
@@ -118,18 +120,18 @@ const ProductDetailsModal = ({
           </div>
         </div>
 
-        <div className="flex flex-col gap-2.5 mt-2.5 px-12">
+        <div className="flex flex-col justify-center gap-2.5 mt-2.5 px-4">
           <div className="title flex items-center justify-between">
-            <h5 className="text-3xl font-semibold ">Hot Deals</h5>
+            <h5 className="text-xl lg:text-3xl font-semibold ">Hot Deals</h5>
 
-            <Link className="text-[13px] text-white px-5 py-1 rounded-2xl bg-[#c78436] hover:underline hover:bg-[#dd8f37] duration-300">
+            <Link className="text-sm lg:text-[17px] text-white px-5 py-1.5 lg:py-3 rounded-2xl bg-[#c78436] hover:underline hover:bg-[#dd8f37] duration-300">
               View All
             </Link>
           </div>
 
           {/* hot deals product */}
 
-          <div className="flex flex-wrap items-center gap-3.5 mt-2.5 pb-2">
+          <div className="flex flex-wrap items-center justify-center gap-2 2xl:gap-3.5 mt-2.5">
             {/* product card */}
             {products?.map((product) => {
               const qty = getQty(product.id);
@@ -137,10 +139,10 @@ const ProductDetailsModal = ({
               return (
                 <div
                   key={product.id}
-                  onClick={() => setSelectedProduct(product)}
-                  className="max-w-[180px] w-[180px] h-[280px]"
+                  onClick={() => handleProductDetails(product)}
+                  className="max-w-[150px] sm:max-w-[163px] md:max-w-[170px] xl:max-w-[170px] 2xl:max-w-[180px] w-full h-[280px]"
                 >
-                  <div className="relative  aspect-square flex items-center justify-center rounded-sm group cursor-pointer">
+                  <div className="relative aspect-square flex items-center justify-center rounded-sm group cursor-pointer">
                     <img
                       src={product.image}
                       alt={product.name}
@@ -179,18 +181,18 @@ const ProductDetailsModal = ({
                     )}
                   </div>
 
-                  <div className="mt-4 flex items-center gap-2">
-                    <span className="text-[#e94560] text-xl font-medium">
+                  <div className="mt-2 lg:mt-4 flex items-center gap-2">
+                    <span className="text-[#e94560] text-base lg:text-xl font-medium">
                       Tk {product.price}
                     </span>
                     {product.oldPrice && (
-                      <span className="text-gray-400 line-through text-lg">
+                      <span className="text-gray-400 line-through text-base lg:text-xl">
                         Tk {product.oldPrice}
                       </span>
                     )}
                   </div>
 
-                  <h3 className="mt-3 text-[#6b7280] text-lg leading-tight hover:text-black transition-colors line-clamp-2">
+                  <h3 className="mt-1.5 lg:mt-3 text-[#6b7280] text-sm lg:text-lg leading-tight hover:text-black transition-colors line-clamp-2">
                     {product.name}
                   </h3>
                 </div>

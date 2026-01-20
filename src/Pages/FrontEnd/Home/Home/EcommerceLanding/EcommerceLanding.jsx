@@ -36,33 +36,33 @@ const categories = [
 const EcommerceLanding = () => {
   return (
     <section className="py-16 bg-white">
-        <div>
-              <h2 className="text-3xl text-center md:text-4xl font-bold mb-4">
-          Ecommerce Management 
+      <div>
+        <h2 className=" text-center text-2xl lg:text-5xl font-bold mb-2 lg:mb-4">
+          Ecommerce Management
         </h2>
 
         {/* Subtitle */}
-        <p className="text-gray-500 max-w-2xl mx-auto mb-4 text-center">
+        <p className="text-gray-500 text-sm lg:text-lg max-w-2xl mx-auto mb-4 text-center">
           Rapidiously morph transparent internal or sources Whereas resource
           sucking e-business. Conveniently innovate compelling internal.
         </p>
 
-         <div className="mt-2 mb-5">
-       <Link to="/ecommercesite">
-          <button className="bg-red-500 hover:bg-red-600 transition text-white px-8 py-3 rounded-md text-sm md:text-base flex items-center gap-2 mx-auto">
-            Visit E-commerce site
-            <span className="text-lg">→</span>
-          </button></Link>
+        <div className="mt-2 mb-5">
+          <Link to="/ecommercesite">
+            <button className="bg-red-500 hover:bg-red-600 transition text-white px-8 py-1.5 lg:py-3 rounded-md text-sm md:text-base flex items-center gap-2 mx-auto cursor-pointer">
+              Visit E-commerce site
+              <span className="text-sm md:text-base">→</span>
+            </button>
+          </Link>
         </div>
-        </div>
-      <div className="max-w-6xl mx-auto px-6 grid grid-cols-1 lg:grid-cols-3 gap-8">
- 
+      </div>
+      <div className="max-w-6xl mx-auto px-4 lg:px-6 grid grid-cols-1 lg:grid-cols-3 gap-4 lg:gap-8">
         {/* LEFT PROMO */}
         <div className="relative overflow-hidden group lg:col-span-1">
           <img
             src="https://images.deliveryhero.io/image/fd-bd/Products/9032939.jpg?width=400"
             alt="Men Accessories"
-            className="w-full h-full object-cover min-h-[520px] group-hover:scale-105 transition duration-500"
+            className="w-full h-full object-cover min-h-[400px] lg:min-h-[520px] group-hover:scale-105 transition duration-500"
           />
 
           {/* Overlay */}
@@ -73,18 +73,17 @@ const EcommerceLanding = () => {
 
           {/* Text */}
           <div className="absolute bottom-10 left-10 text-white z-10">
-            <p className="uppercase tracking-widest text-sm">
+            <p className="uppercase tracking-widest text-xs lg:text-sm">
               Food Parts
             </p>
-            <h2 className="text-3xl font-bold mt-2">
+            <h2 className="text-xl lg:text-3xl font-bold  lg:mt-2">
               Sale <span className="font-light">30% Off</span>
             </h2>
           </div>
         </div>
 
         {/* RIGHT GRID */}
-        <div className="lg:col-span-2 grid grid-cols-2 md:grid-cols-3 gap-6">
-
+        <div className="lg:col-span-2 grid grid-cols-2 md:grid-cols-3 gap-3 lg:gap-6">
           {categories.map((item, index) => (
             <div
               key={index}
@@ -95,26 +94,25 @@ const EcommerceLanding = () => {
                 <img
                   src={item.img}
                   alt={item.title}
-                  className="w-full h-56 object-cover group-hover:scale-105 transition duration-500"
+                  className="w-full h-36 md:h-44 lg:h-56 object-cover group-hover:scale-105 transition duration-500"
                 />
               </div>
 
               {/* Text */}
-              <div className="py-4">
-                <h3 className="text-sm font-semibold uppercase tracking-wide">
+              <div className="py-2 lg:py-4">
+                <h3 className="text-xs lg:text-sm font-semibold uppercase tracking-wide">
                   {item.title}
                 </h3>
-                <p className="text-xs text-gray-500 mt-1">
+                <p className="text-[10px] lg:text-xs text-gray-500 lg:mt-1">
                   {item.count}
                 </p>
               </div>
             </div>
           ))}
-
         </div>
       </div>
     </section>
   );
-}
+};
 
 export default EcommerceLanding;

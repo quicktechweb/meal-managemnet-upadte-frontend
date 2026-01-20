@@ -39,16 +39,15 @@ const testimonials = [
 
 const Testimonial = () => {
   return (
-    <section className="bg-white -mt-24 mb-16">
-      <div className="max-w-6xl mx-auto px-6 text-center">
-
+    <section className="bg-white mt-7 md:-mt-24 mb-8t md:mb-16">
+      <div className="max-w-6xl mx-auto px-4 lg:px-6 text-center">
         {/* Heading */}
-        <h2 className="text-3xl md:text-4xl font-bold mb-4">
+        <h2 className="text-2xl lg:text-4xl font-bold mb-2 lg:mb-4">
           Testimonials What Clients Say
         </h2>
 
         {/* Subtitle */}
-        <p className="text-gray-500 max-w-2xl mx-auto mb-16">
+        <p className="text-gray-500 max-w-2xl text-sm lg:text-base mx-auto mb-4 md:mb-8 lg:mb-16">
           Rapidiously morph transparent internal or sources Whereas resource
           sucking e-business. Conveniently innovate compelling internal.
         </p>
@@ -71,10 +70,9 @@ const Testimonial = () => {
           {testimonials.map((item, index) => (
             <SwiperSlide key={index}>
               <div className="relative">
-
                 {/* Card */}
                 <div className="bg-gray-50 p-6 rounded-lg shadow-sm text-left">
-                  <p className="text-gray-600 text-sm mb-6 leading-relaxed">
+                  <p className="text-gray-600 text-sm mb-3 lg:mb-6 leading-tight lg:leading-relaxed">
                     {item.text}
                   </p>
 
@@ -94,7 +92,7 @@ const Testimonial = () => {
                 <div className="absolute left-10 -bottom-3 w-6 h-6 bg-gray-50 rotate-45"></div>
 
                 {/* User */}
-                <div className="flex items-center gap-4 mt-8 text-left">
+                <div className="flex items-center gap-4 mt-4 lg:mt-8 text-left">
                   <img
                     src={item.image}
                     alt={item.name}
@@ -105,12 +103,10 @@ const Testimonial = () => {
                     <p className="text-sm text-gray-500">{item.company}</p>
                   </div>
                 </div>
-
               </div>
             </SwiperSlide>
           ))}
         </Swiper>
-
       </div>
     </section>
   );

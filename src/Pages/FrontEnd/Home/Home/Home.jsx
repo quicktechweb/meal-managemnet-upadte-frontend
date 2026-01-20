@@ -12,28 +12,26 @@ import Testimonial from "./Testimonial/Testimonial";
 const Home = () => {
   return (
     <div>
-      <Bannerparts/>
-      <Features/>
-      
-      <ProcessSection/>
-        <MealLanding/>
-        <LearningManagement/>
-         <EcommerceLanding/>
-      <RideSharing/>
-      <DownloadApp/>
+      <Bannerparts />
+      <Features />
+
+      <ProcessSection />
+      <MealLanding />
+      <LearningManagement />
+      <EcommerceLanding />
+      <RideSharing />
+      <DownloadApp />
       <Testimonial/>
-      
-     
-    
-     {/* <HomeSlider/> */}
-     {/* <TopSelling/> */}
-     {/* <LatestProduct/> */}
-     {/* <ProductCarousel/> */}
-     {/* <PremiumProduct/> */}
-     {/* <TopRatedProduct/> */}
-     {/* <LatestDeals/> */}
-     {/* <CuponPart/> */}
-     {/* <Brands/> */}
+
+      {/* <HomeSlider/> */}
+      {/* <TopSelling/> */}
+      {/* <LatestProduct/> */}
+      {/* <ProductCarousel/> */}
+      {/* <PremiumProduct/> */}
+      {/* <TopRatedProduct/> */}
+      {/* <LatestDeals/> */}
+      {/* <CuponPart/> */}
+      {/* <Brands/> */}
     </div>
   );
 };

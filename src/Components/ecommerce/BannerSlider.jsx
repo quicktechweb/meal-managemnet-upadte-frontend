@@ -1,4 +1,3 @@
-
 import { Swiper, SwiperSlide } from "swiper/react";
 
 import "swiper/css";
@@ -15,7 +14,19 @@ const BannerSlider = () => {
   ];
   return (
     <Swiper
-      slidesPerView={3}
+      breakpoints={{
+        0: {
+          slidesPerView: 1,
+        },
+
+        640: {
+          slidesPerView: 2,
+        },
+
+        1024: {
+          slidesPerView: 3,
+        },
+      }}
       spaceBetween={10}
       navigation
       autoplay={{
@@ -31,7 +42,7 @@ const BannerSlider = () => {
           <img
             src={src}
             alt={`Slide ${index}`}
-            className="max-w-[700px] w-full rounded-lg"
+            className="max-w-[500px] md:max-w-[700px] w-full rounded-lg"
           />
         </SwiperSlide>
       ))}

@@ -10,8 +10,7 @@ const Layouts = () => {
       <ScrollRestoration />
 
       {location.pathname !== "/ecommerce-site" &&
-        location.pathname !== "/checkout" &&
-        location.pathname !== "/faq" && <Navbar />}
+        location.pathname !== "/checkout" && <Navbar />}
       <Outlet />
       {location.pathname !== "/ecommerce-site" &&
         location.pathname !== "/checkout" && <Footer />}

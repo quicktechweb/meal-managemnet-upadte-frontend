@@ -2,11 +2,9 @@ import { FaApple, FaGooglePlay } from "react-icons/fa";
 
 const DownloadApp = () => {
   return (
-    <section className="relative w-full overflow-visible mt-20">
-      
+    <section className="relative w-full overflow-visible mt-10 lg:mt-20">
       {/* Background wrapper (SHORT HEIGHT) */}
-      <div className="relative h-[360px] md:h-[420px] w-full overflow-hidden">
-        
+      <div className="relative h-[200px] md:h-[420px] w-full overflow-hidden">
         {/* Background image */}
         <div
           className="absolute inset-0 bg-cover bg-center"
@@ -17,39 +15,39 @@ const DownloadApp = () => {
         />
 
         {/* Gradient overlay */}
-        <div className="absolute inset-0 bg-gradient-to-l 
+        <div
+          className="absolute inset-0 bg-gradient-to-l 
           from-[#3264f5e6] 
           via-[#4a54e0e0] 
           via-[#5b42dbe0] 
           via-[#682ccbe0] 
-          to-[#7202bbe6]" />
+          to-[#7202bbe6]"
+        />
 
         {/* Content */}
-        <div className="relative z-10 max-w-7xl mx-auto px-6 h-full grid grid-cols-1 md:grid-cols-2 items-center">
-          
+        <div className="relative z-10 max-w-7xl mx-auto lg:px-6 px-3  h-full grid grid-cols-1 md:grid-cols-2 items-center">
           {/* Left content */}
-          <div className="text-white pt-10 md:pt-0">
-            <h2 className="text-3xl md:text-5xl font-bold mb-4">
+          <div className="text-white md:pt-0">
+            <h2 className="text-2xl lg:text-5xl font-bold  lg:mb-4">
               Download Our App
             </h2>
 
-            <p className="text-sm md:text-base text-white/90 max-w-md mb-8">
+            <p className="text-sm md:text-base text-white/90 max-w-md mb-4 lg:mb-8">
               Conveniently transform frictionless mindshare after orthogonal
               manufactured products.
             </p>
 
             <div className="flex flex-wrap gap-4">
-  <button className="bg-white text-purple-700 px-6 py-3 rounded-full font-medium flex items-center gap-3 hover:scale-105 transition">
-    <FaApple className="text-xl" />
-    App Store
-  </button>
+              <button className="bg-white text-purple-700 px-6 py-1.5 lg:py-3 rounded-full font-medium cursor-pointer flex items-center gap-3 hover:scale-105 transition text-xs lg:text-base ">
+                <FaApple className="text-xs lg:text-base" />
+                App Store
+              </button>
 
-  <button className="border border-white px-6 py-3 rounded-full font-medium flex items-center gap-3 hover:bg-white hover:text-purple-700 transition">
-    <FaGooglePlay className="text-lg" />
-    Play Store
-  </button>
-</div>
-
+              <button className="border border-white px-6 py-1.5 lg:py-3 rounded-full font-medium flex items-center gap-3 cursor-pointer text-xs lg:text-base hover:bg-white hover:text-purple-700 transition">
+                <FaGooglePlay className="text-xs lg:text-base" />
+                Play Store
+              </button>
+            </div>
           </div>
 
           {/* Right image container */}
@@ -67,12 +65,11 @@ const DownloadApp = () => {
               "
             />
           </div>
-
         </div>
       </div>
 
       {/* Space for overlapped image */}
-      <div className="h-[140px] md:h-[160px]" />
+      <div className="h-[140px] hidden md:block md:h-[160px]" />
     </section>
   );
 };

@@ -22,117 +22,6 @@ import { useDispatch, useSelector } from "react-redux";
 import { addtoCart, decreaseCart } from "../../../feature/cartSlice";
 import BannerSlider from "../../../Components/ecommerce/BannerSlider";
 
-const categories = [
-  {
-    label: "Electronics",
-    icon: <FaMobileAlt />,
-    submenu: [
-      { label: "Mobile Phones", count: 120 },
-      { label: "Laptops", count: 80 },
-      { label: "Accessories", count: 150 },
-    ],
-  },
-  {
-    label: "Fashion",
-    icon: <FaTshirt />,
-    submenu: [
-      { label: "Men", count: 90 },
-      { label: "Women", count: 110 },
-      { label: "Kids", count: 70 },
-    ],
-  },
-  {
-    label: "Computers",
-    icon: <FaLaptop />,
-    submenu: [
-      { label: "Desktop", count: 40 },
-      { label: "Components", count: 65 },
-    ],
-  },
-  {
-    label: "Meat",
-    icon: <FaLaptop />,
-    submenu: [
-      { label: "Desktop", count: 40 },
-      { label: "Components", count: 65 },
-    ],
-  },
-  {
-    label: "Deli Meat",
-    icon: <FaLaptop />,
-    submenu: [
-      { label: "Desktop", count: 40 },
-      { label: "Components", count: 65 },
-    ],
-  },
-  {
-    label: "Ice Cream",
-    icon: <FaLaptop />,
-    submenu: [
-      { label: "Desktop", count: 40 },
-      { label: "Components", count: 65 },
-    ],
-  },
-  {
-    label: "Snacks",
-    icon: <FaLaptop />,
-    submenu: [
-      { label: "Desktop", count: 40 },
-      { label: "Components", count: 65 },
-    ],
-  },
-
-  {
-    label: "Coffee",
-    icon: <FaLaptop />,
-    submenu: [
-      { label: "Desktop", count: 40 },
-      { label: "Components", count: 65 },
-    ],
-  },
-  {
-    label: "Meat",
-    icon: <FaLaptop />,
-    submenu: [
-      { label: "Desktop", count: 40 },
-      { label: "Components", count: 65 },
-    ],
-  },
-  {
-    label: "Deli Meat",
-    icon: <FaLaptop />,
-    submenu: [
-      { label: "Desktop", count: 40 },
-      { label: "Components", count: 65 },
-    ],
-  },
-  {
-    label: "Ice Cream",
-    icon: <FaLaptop />,
-    submenu: [
-      { label: "Desktop", count: 40 },
-      { label: "Components", count: 65 },
-    ],
-  },
-  {
-    label: "Snacks",
-    icon: <FaLaptop />,
-    submenu: [
-      { label: "Desktop", count: 40 },
-      { label: "Components", count: 65 },
-    ],
-  },
-
-  {
-    label: "Coffee",
-    icon: <FaLaptop />,
-    submenu: [
-      { label: "Desktop", count: 40 },
-      { label: "Components", count: 65 },
-    ],
-  },
-];
-
 const categories2 = [
   {
     label: "Vegetables",
@@ -395,15 +284,6 @@ const EcommerceSite = () => {
     });
   };
 
-  const [isOpen, setIsOpen] = useState(false);
-
-  const handleCartClose = () => {
-    const newState = !isOpen;
-    setIsOpen(newState);
-
-    document.body.style.overflow = newState ? "hidden" : "visible";
-  };
-
   const handleProductDetails = (product) => {
     setSelectedProduct(product);
 
@@ -411,125 +291,113 @@ const EcommerceSite = () => {
   };
 
   return (
-    <div className="min-h-screen flex flex-col ">
-      <Navbar setIsOpen={setIsOpen} isOpen={isOpen} />
+    <div>
+      {/* search bar */}
+      <SearchBar />
 
-      <div className="flex h-full">
-        {/* category side bar */}
-        <CategorySidebar categories={categories} />
+      {/* banner sidebar  */}
 
-        <div className="product-sidebar ml-[300px] mt-[80px] md:max-w-[1050px] 2xl:max-w-[1600px] w-full p-4">
-          {/* search bar */}
-          <SearchBar />
+      <BannerSlider />
 
-          {/* banner sidebar  */}
+      {/* category */}
 
-          <BannerSlider />
+      <Categories categories2={categories2} />
 
-          {/* category */}
+      {/* hot deals */}
 
-          <Categories categories2={categories2} />
+      <div className="flex flex-col gap-2.5 mt-2.5">
+        <div className="title flex items-center justify-between">
+          <h5 className="text-xl lg:text-3xl font-semibold ">Hot Deals</h5>
 
-          {/* hot deals */}
+          <Link className="text-sm lg:text-[17px] text-white px-5 py-1.5 lg:py-3 rounded-2xl bg-[#c78436] hover:underline hover:bg-[#dd8f37] duration-300">
+            View All
+          </Link>
+        </div>
 
-          <div className="flex flex-col gap-2.5 mt-2.5">
-            <div className="title flex items-center justify-between">
-              <h5 className="text-3xl font-semibold ">Hot Deals</h5>
+        {/* hot deals product */}
 
-              <Link className="text-[17px] text-white px-5 py-3 rounded-2xl bg-[#c78436] hover:underline hover:bg-[#dd8f37] duration-300">
-                View All
-              </Link>
-            </div>
+        <div className="flex flex-wrap items-center lg:gap-2 2xl:gap-3.5 mt-2.5">
+          {/* product card */}
+          {products?.map((product) => {
+            const qty = getQty(product.id);
 
-            {/* hot deals product */}
-
-            <div className="flex flex-wrap items-center gap-3.5 mt-2.5">
-              {/* product card */}
-              {products?.map((product) => {
-                const qty = getQty(product.id);
-
-                return (
-                  <div
-                    key={product.id}
-                    onClick={() => handleProductDetails(product)}
-                    className="max-w-[180px] w-[180px] h-[280px]"
-                  >
-                    <div className="relative aspect-square flex items-center justify-center rounded-sm group cursor-pointer">
-                      <img
-                        src={product.image}
-                        alt={product.name}
-                        className="h-3/4 object-contain"
-                      />
-                      {/* Quantity  */}
-                      {qty > 0 ? (
-                        <div
-                          onClick={(e) => e.stopPropagation()}
-                          className="absolute bottom-3 left-1/2 -translate-x-1/2 bg-white shadow rounded-md h-[44px] w-[150px] flex items-center justify-between px-4"
-                        >
-                          <span
-                            onClick={() =>
-                              dispatch(decreaseCart({ id: product.id }))
-                            }
-                          >
-                            {qty > 1 ? <FiMinus /> : <FiTrash2 />}
-                          </span>
-
-                          <span className="font-medium">{qty}</span>
-
-                          <span onClick={() => dispatch(addtoCart(product))}>
-                            <FiPlus />
-                          </span>
-                        </div>
-                      ) : (
-                        <button
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            dispatch(addtoCart(product));
-                          }}
-                          className="absolute bottom-3 right-3 bg-white w-10 h-10 rounded-full shadow cursor-pointer flex items-center justify-center"
-                        >
-                          <FiPlus />
-                        </button>
-                      )}
-                    </div>
-
-                    <div className="mt-4 flex items-center gap-2">
-                      <span className="text-[#e94560] text-xl font-medium">
-                        Tk {product.price}
+            return (
+              <div
+                key={product.id}
+                onClick={() => handleProductDetails(product)}
+                className="max-w-[163px] md:max-w-[170px] xl:max-w-[170px] 2xl:max-w-[180px] w-full h-[280px]"
+              >
+                <div className="relative aspect-square flex items-center justify-center rounded-sm group cursor-pointer">
+                  <img
+                    src={product.image}
+                    alt={product.name}
+                    className="h-3/4 object-contain"
+                  />
+                  {/* Quantity  */}
+                  {qty > 0 ? (
+                    <div
+                      onClick={(e) => e.stopPropagation()}
+                      className="absolute bottom-3 left-1/2 -translate-x-1/2 bg-white shadow rounded-md h-[44px] w-[150px] flex items-center justify-between px-4"
+                    >
+                      <span
+                        onClick={() =>
+                          dispatch(decreaseCart({ id: product.id }))
+                        }
+                      >
+                        {qty > 1 ? <FiMinus /> : <FiTrash2 />}
                       </span>
-                      {product.oldPrice && (
-                        <span className="text-gray-400 line-through text-lg">
-                          Tk {product.oldPrice}
-                        </span>
-                      )}
+
+                      <span className="font-medium">{qty}</span>
+
+                      <span onClick={() => dispatch(addtoCart(product))}>
+                        <FiPlus />
+                      </span>
                     </div>
+                  ) : (
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        dispatch(addtoCart(product));
+                      }}
+                      className="absolute bottom-3 right-3 bg-white w-10 h-10 rounded-full shadow cursor-pointer flex items-center justify-center"
+                    >
+                      <FiPlus />
+                    </button>
+                  )}
+                </div>
 
-                    <h3 className="mt-3 text-[#6b7280] text-lg leading-tight hover:text-black transition-colors line-clamp-2">
-                      {product.name}
-                    </h3>
-                  </div>
-                );
-              })}
-            </div>
-          </div>
+                <div className="mt-2 lg:mt-4 flex items-center gap-2">
+                  <span className="text-[#e94560] text-base lg:text-xl font-medium">
+                    Tk {product.price}
+                  </span>
+                  {product.oldPrice && (
+                    <span className="text-gray-400 line-through text-base lg:text-xl">
+                      Tk {product.oldPrice}
+                    </span>
+                  )}
+                </div>
 
-          {/* add to cart  modal */}
-          <CartSidebar isOpen={isOpen} onClose={handleCartClose} />
-
-          {/* selected product modal */}
-          {selectedProduct && (
-            <ProductDetailsModal
-              selectedProduct={selectedProduct}
-              setSelectedProduct={setSelectedProduct}
-              qty={getQty(selectedProduct.id)}
-              setQty={setQty}
-              getQty={getQty}
-              cart={cart}
-              products={products}
-            />
-          )}
+                <h3 className="mt-1.5 lg:mt-3 text-[#6b7280] text-sm lg:text-lg leading-tight hover:text-black transition-colors line-clamp-2">
+                  {product.name}
+                </h3>
+              </div>
+            );
+          })}
         </div>
       </div>
+
+      {/* selected product modal */}
+      {selectedProduct && (
+        <ProductDetailsModal
+          selectedProduct={selectedProduct}
+          setSelectedProduct={setSelectedProduct}
+          qty={getQty(selectedProduct.id)}
+          setQty={setQty}
+          getQty={getQty}
+          cart={cart}
+          products={products}
+        />
+      )}
     </div>
   );
 };
