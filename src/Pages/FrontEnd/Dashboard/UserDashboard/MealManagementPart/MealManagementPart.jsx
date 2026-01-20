@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import {
   FaSun,
   FaUtensils,
@@ -8,7 +8,13 @@ import {
   FaTimes,
 } from "react-icons/fa";
 import PropTypes from "prop-types";
-
+import {
+  createColumnHelper,
+  flexRender,
+  getCoreRowModel,
+  useReactTable,
+} from "@tanstack/react-table";
+import { ChevronDown, ChevronUp } from "lucide-react";
 const schedule = [
   {
     day: "Sat",
@@ -138,6 +144,16 @@ MealCard.propTypes = {
 /* ===============================
    MAIN COMPONENT
 ================================ */
+
+const columnHelper = createColumnHelper();
+
+const columns = [
+  columnHelper.accessor("day", { header: "Day" }),
+  columnHelper.accessor("morning", { header: "Morning" }),
+  columnHelper.accessor("afternoon", { header: "Afternoon" }),
+  columnHelper.accessor("night", { header: "Night" }),
+];
+
 export default function MealManagementPart() {
   const [activeIndex, setActiveIndex] = useState(0);
   const [selectedMeals, setSelectedMeals] = useState({});
@@ -168,78 +184,88 @@ export default function MealManagementPart() {
     0,
   );
 
+  const [isExpanded, setIsExpanded] = useState(true);
+
+  const table = useReactTable({
+    data: schedule,
+    columns,
+    getCoreRowModel: getCoreRowModel(),
+  });
+
   return (
-    <section className="min-h-screen bg-gradient-to-br from-orange-50 via-white to-orange-100 p-6 flex flex-col gap-3.5">
+    <section className="min-h-screen bg-gradient-to-br from-orange-50 via-white to-orange-100 p-3 lg:p-6 flex flex-col gap-3.5">
       {/* menu table */}
       <div>
         <h4 className="text-lg font-semibold mb-3">Menu Lists</h4>
 
         {/* DESKTOP TABLE */}
-        <div className="hidden md:block w-full overflow-x-auto">
-          <table className="min-w-full border border-gray-300 rounded-md">
-            <thead className="bg-orange-500">
-              <tr>
-                {["Day", "Morning", "Afternoon", "Night"].map((head) => (
-                  <th
-                    key={head}
-                    className="px-4 py-3 text-left text-sm font-semibold text-white border border-gray-300"
-                  >
-                    {head}
-                  </th>
-                ))}
-              </tr>
-            </thead>
+        <div className="w-full ">
+          <button
+            onClick={() => setIsExpanded(!isExpanded)}
+            className="w-full flex justify-between items-center bg-orange-500 p-2 lg:p-4 text-white rounded-t-md cursor-pointer font-bold transition-colors hover:bg-orange-600 text-xs lg:text-base"
+          >
+            <span>Weekly Meal Lists</span>
+            {isExpanded ? <ChevronUp size={20} /> : <ChevronDown size={20} />}
+          </button>
 
-            <tbody>
-              {schedule.map((item, index) => (
-                <tr key={index} className="hover:bg-gray-50">
-                  <td className="px-4 py-3 border border-gray-300">
-                    {item.day}
-                  </td>
-                  <td className="px-4 py-3 border border-gray-300">
-                    {item.morning}
-                  </td>
-                  <td className="px-4 py-3 border border-gray-300">
-                    {item.afternoon}
-                  </td>
-                  <td className="px-4 py-3 border border-gray-300">
-                    {item.night}
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+          {/* Expandable Container */}
+          <div
+            className={`transition-all duration-300 ease-in-out overflow-hidden  ${isExpanded ? "max-h-[1000px] border border-gray-300" : "max-h-0"}`}
+          >
+            <div className="overflow-x-auto">
+              <table className="min-w-full text-sm sm:text-base">
+                <thead className="bg-orange-500 hidden md:table-header-group">
+                  {table.getHeaderGroups().map((headerGroup) => (
+                    <tr key={headerGroup.id}>
+                      {headerGroup.headers.map((header) => (
+                        <th
+                          key={header.id}
+                          className="px-4 py-3 text-left font-semibold text-white border-b border-gray-300"
+                        >
+                          {flexRender(
+                            header.column.columnDef.header,
+                            header.getContext(),
+                          )}
+                        </th>
+                      ))}
+                    </tr>
+                  ))}
+                </thead>
 
-        {/* MOBILE CARD VIEW */}
-        <div className="md:hidden space-y-4">
-          {schedule.map((item, index) => (
-            <div
-              key={index}
-              className="border rounded-lg shadow-sm p-4 bg-white"
-            >
-              <h5 className="text-base font-semibold text-orange-500 mb-2">
-                {item.day}
-              </h5>
-
-              <div className="space-y-2 text-sm">
-                <p>
-                  <span className="font-medium">🌅 Morning:</span>{" "}
-                  {item.morning}
-                </p>
-                <p>
-                  <span className="font-medium">☀️ Afternoon:</span>{" "}
-                  {item.afternoon}
-                </p>
-                <p>
-                  <span className="font-medium">🌙 Night:</span> {item.night}
-                </p>
-              </div>
+                <tbody className="divide-y divide-gray-200">
+                  {table.getRowModel().rows.map((row) => (
+                    <tr
+                      key={row.id}
+                      className="hover:bg-gray-50 flex flex-col md:table-row mb-4 md:mb-0 border md:border-none rounded-lg md:rounded-none"
+                    >
+                      {row.getVisibleCells().map((cell) => (
+                        <td
+                          key={cell.id}
+                          className="px-4 py-2 md:py-3 border-gray-300 md:border-b flex justify-between md:table-cell"
+                        >
+                          {/* Mobile Label */}
+                          <span className="font-bold text-orange-600 md:hidden mr-4">
+                            {cell.column.columnDef.header?.toString()}:
+                          </span>
+                          {/* Data */}
+                          <span className="text-right md:text-left">
+                            {flexRender(
+                              cell.column.columnDef.cell,
+                              cell.getContext(),
+                            )}
+                          </span>
+                        </td>
+                      ))}
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
             </div>
-          ))}
+          </div>
         </div>
       </div>
 
+      <hr className="py-2 text-gray-300 h-2 lg:h-4" />
       <div className="max-w-7xl mx-auto grid grid-cols-1 xl:grid-cols-4 gap-y-4 xl:gap-6">
         {/* SIDEBAR */}
         <aside className="bg-white/80 w-full xl:w-auto backdrop-blur-xl rounded-3xl shadow-xl p-2">
