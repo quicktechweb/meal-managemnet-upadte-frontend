@@ -506,7 +506,7 @@ OrderCard.propTypes = {
             PropTypes.shape({
               title: PropTypes.string.isRequired,
               price: PropTypes.number.isRequired,
-            })
+            }),
           ).isRequired,
         }).isRequired,
 
@@ -515,7 +515,7 @@ OrderCard.propTypes = {
             PropTypes.shape({
               title: PropTypes.string.isRequired,
               price: PropTypes.number.isRequired,
-            })
+            }),
           ).isRequired,
         }).isRequired,
 
@@ -524,14 +524,13 @@ OrderCard.propTypes = {
             PropTypes.shape({
               title: PropTypes.string.isRequired,
               price: PropTypes.number.isRequired,
-            })
+            }),
           ).isRequired,
         }).isRequired,
-      })
+      }),
     ).isRequired,
   }).isRequired,
 };
-
 
 const UserOrder = () => {
   const calculateTotal = (items) => {
@@ -544,8 +543,8 @@ const UserOrder = () => {
   };
 
   return (
-    <div className="mt-10 px-4 md:px-8">
-      <SectionTitle className="!text-black mb-8" title="User Orders" />
+    <div className="">
+      <SectionTitle className="!text-black " title="User Orders" />
 
       <div className="lg:hidden space-y-4">
         {orderData.map((order, idx) => (
@@ -553,7 +552,7 @@ const UserOrder = () => {
         ))}
       </div>
 
-      <div className="hidden lg:block overflow-x-auto rounded-2xl border border-gray-200 shadow-lg mt-6 mb-5">
+      <div className="hidden lg:block overflow-x-auto rounded-2xl border border-gray-200 shadow-lg mt-3 mb-5">
         <table className="w-full text-left border-collapse bg-white">
           <thead>
             <tr className="bg-gradient-to-r from-[#c78436] to-[#c78436] text-white border-b border-gray-200">
@@ -564,6 +563,7 @@ const UserOrder = () => {
                 "Total Price",
                 "branch Name",
                 "Status",
+                "6th Hour",
                 "Action",
               ].map((header) => (
                 <th
@@ -648,9 +648,6 @@ const UserOrder = () => {
                       <Banknote size={16} className="text-emerald-600" />
                     </div>
                     <div>
-                      <div className="text-xs text-gray-400 font-medium">
-                        Grand Total
-                      </div>
                       <div className="text-lg font-black text-emerald-700 leading-none">
                         ৳{calculateTotal(order.items)}
                       </div>
@@ -666,7 +663,7 @@ const UserOrder = () => {
                 </td>
 
                 {/* Status */}
-                <td className="px-6 py-4">
+                <td className="px-3 py-4">
                   <span className="relative inline-flex items-center px-3 py-1 rounded-full text-[11px] font-bold uppercase tracking-tighter bg-amber-50 text-amber-700 border border-amber-200">
                     <span className="flex h-2 w-2 mr-2">
                       <span className="animate-ping absolute inline-flex h-2 w-2 rounded-full bg-amber-400 opacity-75"></span>
@@ -674,6 +671,12 @@ const UserOrder = () => {
                     </span>
                     {order.status}
                   </span>
+                </td>
+
+                <td className="px-3 py-4">
+                  <p className="text-xs whitespace-nowrap px-2 flex items-center text-white rounded-md h-[20px] bg-violet-700 cursor-pointer">
+                    Meal On/Off
+                  </p>
                 </td>
 
                 {/* Actions */}

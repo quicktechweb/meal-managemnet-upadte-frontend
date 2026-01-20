@@ -1,21 +1,10 @@
 import React, { useState } from "react";
-import {
-  FaMobileAlt,
-  FaLaptop,
-  FaTshirt,
-  FaChevronRight,
-} from "react-icons/fa";
-import { FiMinus, FiPlus } from "react-icons/fi";
 
-import { FiSearch } from "react-icons/fi";
-import { IoCartOutline } from "react-icons/io5";
+import { FiMinus, FiPlus } from "react-icons/fi";
 
 import { Link } from "react-router-dom";
 import { FiTrash2 } from "react-icons/fi";
-import { CartSidebar } from "../../../Components/CartSidebar";
 import ProductDetailsModal from "../../../Components/ProductDetailsModal";
-import Navbar from "../../../Components/Navbar";
-import { CategorySidebar } from "../../../Components/CategorySidebar";
 import SearchBar from "../../../Components/SearchBar";
 import Categories from "../../../Components/Categories";
 import { useDispatch, useSelector } from "react-redux";

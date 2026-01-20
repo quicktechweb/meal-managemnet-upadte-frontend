@@ -1,18 +1,15 @@
 import { useState } from "react";
-import { 
+import {
   FaHome,
-   FaClipboardList,
-   FaDesktop,  
- 
+  FaClipboardList,
+  FaDesktop,
   FaSellcast,
   FaSignOutAlt,
- 
   FaShoppingBag,
-  
 } from "react-icons/fa";
 
 import { NavLink } from "react-router-dom";
-import PropTypes from 'prop-types';
+import PropTypes from "prop-types";
 // import useAuth from "../../Hooks/useAuth";
 import { ChevronRight } from "lucide-react";
 
@@ -21,7 +18,6 @@ const DashboardSideBar = ({ setIsOpenSidebar }) => {
   //  const role = user?.newpartroles; // SUPERadmin, moderator, support, or user
   //  const newroles = user?.newpartuser; // SUPERadmin, moderator, support, or user
   // console.log("User role:", role);
-  
 
   // State for toggling sections dynamically
   const [openSections, setOpenSections] = useState({});
@@ -34,8 +30,7 @@ const DashboardSideBar = ({ setIsOpenSidebar }) => {
   };
 
   // Sidebar configuration
-  const sidebarItems = 
-  [
+  const sidebarItems = [
     {
       key: "Admin",
       title: "Admin",
@@ -43,19 +38,13 @@ const DashboardSideBar = ({ setIsOpenSidebar }) => {
       roles: ["SUPERadmin"],
       links: [
         // { title: "Make Admin", path: "/dashboard/makeadmin" },
-        { title: "Super Admin",icon: FaDesktop,  path: "/admin/dashboard/superadmin" },
+        {
+          title: "Super Admin",
+          icon: FaDesktop,
+          path: "/admin/dashboard/superadmin",
+        },
       ],
     },
-
-     
-    
-  
-    
-
-  
-   
-
-  
 
     //   {
     //   key: "CompanySettings",
@@ -72,14 +61,19 @@ const DashboardSideBar = ({ setIsOpenSidebar }) => {
     //   ],
     // },
 
-   
     {
       key: "Meal Management",
       title: "Meal Management",
       roles: ["user"],
       icon: FaClipboardList,
       permissionKey: "Meal Management",
-      links: [{ title: "Meal Management",icon: FaShoppingBag, path: "/dashboard/mealmanagement" }],
+      links: [
+        {
+          title: "Meal Management",
+          icon: FaShoppingBag,
+          path: "/dashboard/mealmanagement",
+        },
+      ],
     },
     {
       key: "My Order",
@@ -87,71 +81,72 @@ const DashboardSideBar = ({ setIsOpenSidebar }) => {
       roles: ["user"],
       icon: FaClipboardList,
       permissionKey: "MyOrder",
-      links: [{ title: "MyOrder",icon: FaShoppingBag, path: "/dashboard/userOrder" }],
+      links: [
+        { title: "MyOrder", icon: FaShoppingBag, path: "/dashboard/userOrder" },
+      ],
     },
-   
-   
 
-   
-   
+    {
+      key: "Profile Manage",
+      title: "Profile Manage",
+      roles: ["user"],
+      icon: FaClipboardList,
+      links: [
+        {
+          title: "My Profile",
+          icon: FaShoppingBag,
+          path: "/dashboard/profile",
+        },
+      ],
+    },
   ];
 
   // Helper to check if the user can see a sidebar item
-   // Helper to check if the user can see a sidebar item
-//  const canSee = (item) => {
-//   if (!role) return false; // no role, no access
-//  if (role === "SUPERadmin") {
-//     if (item.roles && item.roles.includes("user")) return false; // hide user-only menus
-//     return true;
-//   } // SUPERadmin sees everything
+  // Helper to check if the user can see a sidebar item
+  //  const canSee = (item) => {
+  //   if (!role) return false; // no role, no access
+  //  if (role === "SUPERadmin") {
+  //     if (item.roles && item.roles.includes("user")) return false; // hide user-only menus
+  //     return true;
+  //   } // SUPERadmin sees everything
 
-//   // For Moderator/Support, check permissions
-//   if (role === "Moderator" || role === "Support") {
-//     return item.permissionKey ? user?.permissions?.[item.permissionKey]?.enabled : false;
-//   }
+  //   // For Moderator/Support, check permissions
+  //   if (role === "Moderator" || role === "Support") {
+  //     return item.permissionKey ? user?.permissions?.[item.permissionKey]?.enabled : false;
+  //   }
 
-//   // For normal user, check roles array
-//   if (newroles === "user") {
-//     return item.roles ? item.roles.includes("user") : false;
-//   }
+  //   // For normal user, check roles array
+  //   if (newroles === "user") {
+  //     return item.roles ? item.roles.includes("user") : false;
+  //   }
 
-//   return false;
-// };
-
-
-
-
+  //   return false;
+  // };
 
   return (
     <>
       <div className="w-full overflow-hidden">
-        <section className="flex flex-col gap-2">
+        <section className="flex flex-col gap-2 text-black ">
           {/* Dashboard Home */}
           <NavLink onClick={() => setIsOpenSidebar(false)} to={"/dashboard"}>
             <div className="shadow -ms-16 flex items-center justify-center gap-2 font-bold p-3 mt-4 duration-300 active:scale-75 md:pr-0">
               <FaHome className="text-xl text-[#007cde]" />
-              <h2 className="font-semibold hidden md:block ">
-                Dashboard - Home
-              </h2>
+              <h2 className="font-semibold  ">Dashboard - Home</h2>
             </div>
           </NavLink>
 
           <div
-                    className={`grid overflow-hidden transition-all duration-300 ease-in-out` }
-                  >
-                    <div className="overflow-hidden">
-                      
-                        <NavLink
-                         to="/"
-                        >
-                          <div className="dashboardNavLink -[3px] flex items-center gap-2  p-2 ml-3 mt-2 hover:scale-110 duration-300 active:scale-75 pr-0">
-                            <FaSellcast className="text-sm text-[#007cde]" />
-                            <h2 className="font-semibold hidden md:block">Home</h2>
-                          </div>
-                        </NavLink>
-                    
-                    </div>
-                  </div>
+            className={`grid overflow-hidden transition-all duration-300 ease-in-out`}
+          >
+            <div className="overflow-hidden">
+              <NavLink onClick={() => setIsOpenSidebar(false)} to="/">
+                <div className="dashboardNavLink -[3px] flex items-center gap-2  p-2 ml-3 mt-2 hover:scale-110 duration-300 active:scale-75 pr-0">
+                  <FaSellcast className="text-sm text-[#007cde]" />
+                  <h2 className="font-semibold ">Home</h2>
+                </div>
+              </NavLink>
+            </div>
+          </div>
 
           {/* Dynamic Sidebar Items */}
           {sidebarItems.map((item) => {
@@ -162,38 +157,46 @@ const DashboardSideBar = ({ setIsOpenSidebar }) => {
                 className="grid overflow-hidden transition-all duration-300 ease-in-out"
               >
                 <div className="overflow-hidden">
-               <div
-  onClick={() => toggleSection(item.key)}
-  className={`cursor-pointer border-l-[3px] ${
-    openSections[item.key] ? "border-[#007cde]" : "border-transparent"
-  }`}
->
-  <div className="ml-2 flex items-center justify-between bg-white hover:bg-gray-50 p-2 rounded-md transition-all duration-200 active:scale-95">
-    {/* Left section: icon + title */}
-    <div className="flex items-center gap-2">
-      <item.icon
-        className={`text-[18px] ${
-          openSections[item.key] ? "text-gray-500" : "text-[#007cde]"
-        } transition-colors`}
-      />
-      <h4
-        className={`font-medium hidden md:block text-sm ${
-          openSections[item.key] ? "text-[#007cde]" : "text-gray-900"
-        }`}
-      >
-        {item.title}
-      </h4>
-    </div>
+                  <div
+                    onClick={() => toggleSection(item.key)}
+                    className={`cursor-pointer border-l-[3px] ${
+                      openSections[item.key]
+                        ? "border-[#007cde]"
+                        : "border-transparent"
+                    }`}
+                  >
+                    <div className="ml-2 flex items-center justify-between bg-white hover:bg-gray-50 p-2 rounded-md transition-all duration-200 active:scale-95">
+                      {/* Left section: icon + title */}
+                      <div className="flex items-center gap-2">
+                        <item.icon
+                          className={`text-[18px] ${
+                            openSections[item.key]
+                              ? "text-gray-500"
+                              : "text-[#007cde]"
+                          } transition-colors`}
+                        />
+                        <h4
+                          className={`font-medium text-sm ${
+                            openSections[item.key]
+                              ? "text-[#007cde]"
+                              : "text-gray-900"
+                          }`}
+                        >
+                          {item.title}
+                        </h4>
+                      </div>
 
-    {/* Right section: static arrow icon */}
-    <ChevronRight
-      size={16}
-      className={`text-[#007cde] transition-transform duration-300 ${
-        openSections[item.key] ? "rotate-90 text-[#007cde]" : ""
-      }`}
-    />
-  </div>
-</div>
+                      {/* Right section: static arrow icon */}
+                      <ChevronRight
+                        size={16}
+                        className={`text-[#007cde] transition-transform duration-300 ${
+                          openSections[item.key]
+                            ? "rotate-90 text-[#007cde]"
+                            : ""
+                        }`}
+                      />
+                    </div>
+                  </div>
 
                   <div
                     className={`grid overflow-hidden transition-all duration-300 ease-in-out ${
@@ -209,10 +212,12 @@ const DashboardSideBar = ({ setIsOpenSidebar }) => {
                           onClick={() => setIsOpenSidebar(false)}
                           to={link.path}
                         >
-                          <div className="dashboardNavLink border-l-[3px] flex items-center gap-2 bg-white p-1 ml-3 mt-2 hover:scale-110 duration-300 active:scale-75 pr-0">
+                          <div className="dashboardNavLink border-l-[3px] flex items-center gap-2 bg-white p-1 ml-8 mt-2 hover:scale-110 duration-300 active:scale-75 pr-0">
                             {/* <FaSellcast className="text-xl text-[#01c0c9]" /> */}
-                            {link.icon && <link.icon className="text-sm text-[#01c0c9]" />}
-            <h2 className="font-semibold hidden md:block">{link.title}</h2>
+                            {link.icon && (
+                              <link.icon className="text-sm text-[#01c0c9]" />
+                            )}
+                            <h2 className="font-semibold ">{link.title}</h2>
                           </div>
                         </NavLink>
                       ))}
@@ -224,19 +229,19 @@ const DashboardSideBar = ({ setIsOpenSidebar }) => {
           })}
 
           {/* Logout */}
-         <button
-  onClick={async () => {
-    try {
-      // await userLogOut();
-      window.location.href = "/"; // instantly redirect to home
-    } catch (error) {
-      console.error("Logout failed:", error);
-    }
-  }}
-  className="flex ms-5 font-bold items-center gap-2 text-[20px] hover:scale-105 transition-transform duration-200"
->
-  <FaSignOutAlt className="mt-1" /> LogOut
-</button>
+          <button
+            onClick={async () => {
+              try {
+                // await userLogOut();
+                window.location.href = "/"; // instantly redirect to home
+              } catch (error) {
+                console.error("Logout failed:", error);
+              }
+            }}
+            className="flex ms-5 font-bold items-center gap-2 text-[20px] hover:scale-105 transition-transform duration-200"
+          >
+            <FaSignOutAlt className="mt-1" /> LogOut
+          </button>
         </section>
       </div>
 
@@ -250,3 +255,27 @@ DashboardSideBar.propTypes = {
 };
 
 export default DashboardSideBar;
+
+{
+  /* <div className="md:hidden space-y-4">
+  {schedule.map((item, index) => (
+    <div key={index} className="border rounded-lg shadow-sm p-4 bg-white">
+      <h5 className="text-base font-semibold text-orange-500 mb-2">
+        {item.day}
+      </h5>
+
+      <div className="space-y-2 text-sm">
+        <p>
+          <span className="font-medium">🌅 Morning:</span> {item.morning}
+        </p>
+        <p>
+          <span className="font-medium">☀️ Afternoon:</span> {item.afternoon}
+        </p>
+        <p>
+          <span className="font-medium">🌙 Night:</span> {item.night}
+        </p>
+      </div>
+    </div>
+  ))}
+</div>; */
+}

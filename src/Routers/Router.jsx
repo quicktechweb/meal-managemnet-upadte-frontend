@@ -14,6 +14,9 @@ import EcommerceLayout from "../EcommerceLayout";
 import CheckoutPage from "../Pages/FrontEnd/checkout/CheckoutPage";
 import Faq from "../Pages/FrontEnd/faq/Faq";
 import ContactPage from "../Pages/FrontEnd/contact-us/ContactPage";
+import UserForm from "../Components/auth/UserForm";
+import MessForm from "../Components/auth/MessForm";
+import MyProfile from "../Pages/FrontEnd/Dashboard/UserDashboard/myprofile/MyProfile";
 
 const router = createBrowserRouter([
   {
@@ -40,6 +43,16 @@ const router = createBrowserRouter([
       {
         path: "/register",
         element: <Registration />,
+        children: [
+          {
+            path: "user",
+            element: <UserForm />,
+          },
+          {
+            path: "mess",
+            element: <MessForm />,
+          },
+        ],
       },
       {
         path: "/checkout",
@@ -81,6 +94,10 @@ const router = createBrowserRouter([
       {
         path: "/dashboard/userOrder",
         element: <UserOrder />,
+      },
+      {
+        path: "/dashboard/profile",
+        element: <MyProfile />,
       },
 
       // supplierpage
