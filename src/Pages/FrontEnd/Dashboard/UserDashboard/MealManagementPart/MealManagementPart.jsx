@@ -88,12 +88,12 @@ const MealCard = ({ title, icon, data, gradient, selected, onToggle }) => (
       hover:shadow-2xl transform hover:-translate-y-1`}
   >
     <div
-      className={`flex items-center gap-3 px-4 py-3 rounded-xl text-white ${gradient}`}
+      className={`flex items-center gap-1.5 lg:gap-3 px-2 lg:px-4 py-3 rounded-xl text-white ${gradient}`}
     >
-      <div className="text-xl">{icon}</div>
-      <h3 className="font-semibold text-lg">{title}</h3>
-      <span className="ml-auto bg-white/20 px-2 py-1 rounded-full font-bold text-sm">
-        ৳ {data.price}
+      <div className="text-sm lg:text-xl">{icon}</div>
+      <h3 className="font-semibold text-sm lg:text-lg">{title}</h3>
+      <span className="ml-auto bg-white/20 px-1  lg:px-2 py-1 rounded-full font-bold text-xs lg:text-sm">
+        ৳{data.price}
       </span>
     </div>
 
@@ -169,12 +169,80 @@ export default function MealManagementPart() {
   );
 
   return (
-    <section className="min-h-screen bg-gradient-to-br from-orange-50 via-white to-orange-100 p-6">
+    <section className="min-h-screen bg-gradient-to-br from-orange-50 via-white to-orange-100 p-6 flex flex-col gap-3.5">
       {/* menu table */}
+      <div>
+        <h4 className="text-lg font-semibold mb-3">Menu Lists</h4>
 
-      <div className="max-w-7xl mx-auto grid lg:grid-cols-4 gap-6">
+        {/* DESKTOP TABLE */}
+        <div className="hidden md:block w-full overflow-x-auto">
+          <table className="min-w-full border border-gray-300 rounded-md">
+            <thead className="bg-orange-500">
+              <tr>
+                {["Day", "Morning", "Afternoon", "Night"].map((head) => (
+                  <th
+                    key={head}
+                    className="px-4 py-3 text-left text-sm font-semibold text-white border border-gray-300"
+                  >
+                    {head}
+                  </th>
+                ))}
+              </tr>
+            </thead>
+
+            <tbody>
+              {schedule.map((item, index) => (
+                <tr key={index} className="hover:bg-gray-50">
+                  <td className="px-4 py-3 border border-gray-300">
+                    {item.day}
+                  </td>
+                  <td className="px-4 py-3 border border-gray-300">
+                    {item.morning}
+                  </td>
+                  <td className="px-4 py-3 border border-gray-300">
+                    {item.afternoon}
+                  </td>
+                  <td className="px-4 py-3 border border-gray-300">
+                    {item.night}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+
+        {/* MOBILE CARD VIEW */}
+        <div className="md:hidden space-y-4">
+          {schedule.map((item, index) => (
+            <div
+              key={index}
+              className="border rounded-lg shadow-sm p-4 bg-white"
+            >
+              <h5 className="text-base font-semibold text-orange-500 mb-2">
+                {item.day}
+              </h5>
+
+              <div className="space-y-2 text-sm">
+                <p>
+                  <span className="font-medium">🌅 Morning:</span>{" "}
+                  {item.morning}
+                </p>
+                <p>
+                  <span className="font-medium">☀️ Afternoon:</span>{" "}
+                  {item.afternoon}
+                </p>
+                <p>
+                  <span className="font-medium">🌙 Night:</span> {item.night}
+                </p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <div className="max-w-7xl mx-auto grid grid-cols-1 xl:grid-cols-4 gap-y-4 xl:gap-6">
         {/* SIDEBAR */}
-        <aside className="bg-white/80 backdrop-blur-xl rounded-3xl shadow-xl p-2">
+        <aside className="bg-white/80 w-full xl:w-auto backdrop-blur-xl rounded-3xl shadow-xl p-2">
           <h2 className="flex px-2 pt-2 items-center gap-3 font-bold mb-4 text-gray-800">
             <FaCalendarAlt className="text-orange-500" /> Meal Calendar
           </h2>
@@ -207,7 +275,7 @@ export default function MealManagementPart() {
           <div className="bg-white/90 backdrop-blur-xl rounded-3xl shadow-lg p-6 flex justify-between items-start sm:items-center flex-wrap">
             {/* Left side: heading + subtitle */}
             <div className="flex flex-col">
-              <h1 className="text-3xl font-extrabold text-gray-800">
+              <h1 className="text-xl xl:text-3xl font-extrabold text-gray-800">
                 Choose Your Meals
               </h1>
               <p className="text-sm text-gray-500 mt-1">

@@ -49,7 +49,7 @@ const Dashboard = () => {
           } duration-300 transition-all ease-in-out`}
         >
           <div className="">
-            <div className=" flex justify-between shadow md:pl-16 py-4 md:py-1">
+            <div className=" flex justify-between shadow-xl md:pl-16 py-4 md:py-1">
               <div className="flex justify-center items-center text-center print:hidden">
                 {!isOpenSidebar ? (
                   <FaBars
