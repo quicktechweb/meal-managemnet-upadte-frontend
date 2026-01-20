@@ -1,23 +1,28 @@
-import React from "react";
-import { User, Phone, Mail, Edit3, Users, ExternalLink } from "lucide-react";
-import { Link } from "react-router-dom";
+import React, { useState } from "react";
+import { Phone, Mail, Edit3, Users, ExternalLink } from "lucide-react";
+import MessDetailsModal from "../../../../../Components/MessDetailsModal";
 
+const messMembers = [
+  {
+    id: 1,
+    name: "Naymur Rahman",
+    phone: "01517834324",
+    img: "https://api.dicebear.com/7.x/avataaars/svg?seed=Naymur",
+  },
+  {
+    id: 2,
+    name: "Sakil Ahmed",
+    phone: "01712345678",
+    img: "https://api.dicebear.com/7.x/avataaars/svg?seed=Sakil",
+  },
+];
 const MyProfile = () => {
-  // Sample data for the list - you can map through your actual data here
-  const messMembers = [
-    {
-      id: 1,
-      name: "Naymur Rahman",
-      phone: "01517834324",
-      img: "https://api.dicebear.com/7.x/avataaars/svg?seed=Naymur",
-    },
-    {
-      id: 2,
-      name: "Sakil Ahmed",
-      phone: "01712345678",
-      img: "https://api.dicebear.com/7.x/avataaars/svg?seed=Sakil",
-    },
-  ];
+  const [messDetails, setMessDetails] = useState(null);
+
+  const handleMessDetails = (mess) => {
+    setMessDetails(mess);
+    document.body.style.overflow = "hidden";
+  };
 
   return (
     <div className="pr-4 pt-4 pb-4 antialiased text-gray-800">
@@ -127,15 +132,25 @@ const MyProfile = () => {
                   <p className="text-sm font-medium">{member.phone}</p>
                 </div>
 
-                <Link className="mt-4 w-full flex items-center justify-center gap-2 py-2 px-4 rounded-lg bg-gray-50 text-gray-600 text-xs font-semibold hover:bg-indigo-600 hover:text-white transition-all duration-200">
+                <button
+                  onClick={() => handleMessDetails(member)}
+                  className="cursor-pointer mt-4 w-full flex items-center justify-center gap-2 py-2 px-4 rounded-lg bg-gray-50 text-gray-600 text-xs font-semibold hover:bg-indigo-600 hover:text-white transition-all duration-200"
+                >
                   View Details
                   <ExternalLink size={12} />
-                </Link>
+                </button>
               </div>
             </div>
           ))}
         </div>
       </div>
+
+      {messDetails && (
+        <MessDetailsModal
+          setMessDetails={setMessDetails}
+          member={messDetails}
+        />
+      )}
     </div>
   );
 };
