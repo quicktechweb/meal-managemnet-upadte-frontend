@@ -14,6 +14,8 @@ import EcommerceLayout from "../EcommerceLayout";
 import CheckoutPage from "../Pages/FrontEnd/checkout/CheckoutPage";
 import Faq from "../Pages/FrontEnd/faq/Faq";
 import ContactPage from "../Pages/FrontEnd/contact-us/ContactPage";
+import UserForm from "../Components/auth/UserForm";
+import MessForm from "../Components/auth/MessForm";
 
 const router = createBrowserRouter([
   {
@@ -40,6 +42,16 @@ const router = createBrowserRouter([
       {
         path: "/register",
         element: <Registration />,
+        children: [
+          {
+            path: "user",
+            element: <UserForm />,
+          },
+          {
+            path: "mess",
+            element: <MessForm />,
+          },
+        ],
       },
       {
         path: "/checkout",
