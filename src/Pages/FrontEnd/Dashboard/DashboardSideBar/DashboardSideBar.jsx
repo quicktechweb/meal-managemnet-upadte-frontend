@@ -126,14 +126,12 @@ const DashboardSideBar = ({ setIsOpenSidebar }) => {
   return (
     <>
       <div className="w-full overflow-hidden">
-        <section className="flex flex-col gap-2">
+        <section className="flex flex-col gap-2 text-black ">
           {/* Dashboard Home */}
           <NavLink onClick={() => setIsOpenSidebar(false)} to={"/dashboard"}>
             <div className="shadow -ms-16 flex items-center justify-center gap-2 font-bold p-3 mt-4 duration-300 active:scale-75 md:pr-0">
               <FaHome className="text-xl text-[#007cde]" />
-              <h2 className="font-semibold hidden md:block ">
-                Dashboard - Home
-              </h2>
+              <h2 className="font-semibold  ">Dashboard - Home</h2>
             </div>
           </NavLink>
 
@@ -141,10 +139,10 @@ const DashboardSideBar = ({ setIsOpenSidebar }) => {
             className={`grid overflow-hidden transition-all duration-300 ease-in-out`}
           >
             <div className="overflow-hidden">
-              <NavLink to="/">
+              <NavLink onClick={() => setIsOpenSidebar(false)} to="/">
                 <div className="dashboardNavLink -[3px] flex items-center gap-2  p-2 ml-3 mt-2 hover:scale-110 duration-300 active:scale-75 pr-0">
                   <FaSellcast className="text-sm text-[#007cde]" />
-                  <h2 className="font-semibold hidden md:block">Home</h2>
+                  <h2 className="font-semibold ">Home</h2>
                 </div>
               </NavLink>
             </div>
@@ -178,7 +176,7 @@ const DashboardSideBar = ({ setIsOpenSidebar }) => {
                           } transition-colors`}
                         />
                         <h4
-                          className={`font-medium hidden md:block text-sm ${
+                          className={`font-medium text-sm ${
                             openSections[item.key]
                               ? "text-[#007cde]"
                               : "text-gray-900"
@@ -219,9 +217,7 @@ const DashboardSideBar = ({ setIsOpenSidebar }) => {
                             {link.icon && (
                               <link.icon className="text-sm text-[#01c0c9]" />
                             )}
-                            <h2 className="font-semibold hidden md:block">
-                              {link.title}
-                            </h2>
+                            <h2 className="font-semibold ">{link.title}</h2>
                           </div>
                         </NavLink>
                       ))}
