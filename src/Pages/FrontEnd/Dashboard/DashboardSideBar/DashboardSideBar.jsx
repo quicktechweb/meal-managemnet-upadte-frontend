@@ -13,6 +13,8 @@ import PropTypes from "prop-types";
 // import useAuth from "../../Hooks/useAuth";
 import { ChevronRight } from "lucide-react";
 
+import { IoRestaurant } from "react-icons/io5";
+
 const DashboardSideBar = ({ setIsOpenSidebar }) => {
   //  const {  user, userLogOut } = useAuth();
   //  const role = user?.newpartroles; // SUPERadmin, moderator, support, or user
@@ -99,6 +101,53 @@ const DashboardSideBar = ({ setIsOpenSidebar }) => {
         },
       ],
     },
+
+    {
+      key: "Canteens",
+      title: "Canteens",
+      roles: ["user"],
+      icon: FaClipboardList,
+      links: [
+        {
+          title: "All Canteens",
+          icon: IoRestaurant,
+          path: "/dashboard/canteens",
+        },
+      ],
+    },
+
+    {
+      key: "foods",
+      title: "Foods",
+      roles: ["user"],
+      icon: FaClipboardList,
+      links: [
+        {
+          title: "Foods",
+          icon: IoRestaurant,
+          path: "/dashboard/foods",
+        },
+      ],
+    },
+
+    // {
+    //   key: "favourite",
+    //   title: "Favourite",
+    //   roles: ["user"],
+    //   icon: FaClipboardList,
+    //   links: [
+    //     {
+    //       title: "Favourite Items",
+    //       icon: IoRestaurant,
+    //       path: "/dashboard/favourite-item",
+    //     },
+    //     {
+    //       title: "Favourite Canteens",
+    //       icon: IoRestaurant,
+    //       path: "/dashboard/favourite-canteen",
+    //     },
+    //   ],
+    // },
   ];
 
   // Helper to check if the user can see a sidebar item
@@ -255,27 +304,3 @@ DashboardSideBar.propTypes = {
 };
 
 export default DashboardSideBar;
-
-{
-  /* <div className="md:hidden space-y-4">
-  {schedule.map((item, index) => (
-    <div key={index} className="border rounded-lg shadow-sm p-4 bg-white">
-      <h5 className="text-base font-semibold text-orange-500 mb-2">
-        {item.day}
-      </h5>
-
-      <div className="space-y-2 text-sm">
-        <p>
-          <span className="font-medium">🌅 Morning:</span> {item.morning}
-        </p>
-        <p>
-          <span className="font-medium">☀️ Afternoon:</span> {item.afternoon}
-        </p>
-        <p>
-          <span className="font-medium">🌙 Night:</span> {item.night}
-        </p>
-      </div>
-    </div>
-  ))}
-</div>; */
-}

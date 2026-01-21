@@ -131,7 +131,7 @@ const ProductDetailsModal = ({
 
           {/* hot deals product */}
 
-          <div className="flex flex-wrap items-center justify-center gap-2 2xl:gap-3.5 mt-2.5">
+          <div className="flex flex-wrap items-center  gap-2 2xl:gap-3.5 ">
             {/* product card */}
             {products?.map((product) => {
               const qty = getQty(product.id);
