@@ -15,6 +15,7 @@ import {
   useReactTable,
 } from "@tanstack/react-table";
 import { ChevronDown, ChevronUp } from "lucide-react";
+import ScrollToTop from "../../../ScrollToTop/ScrollToTop";
 const schedule = [
   {
     day: "Sat",
@@ -194,8 +195,9 @@ export default function MealManagementPart() {
 
   return (
     <section className="min-h-screen bg-gradient-to-br from-orange-50 via-white to-orange-100 p-3 lg:p-6 flex flex-col gap-3.5">
+      <ScrollToTop />
       {/* menu table */}
-      <div>
+      <div className="shadow-xl">
         <h4 className="text-lg font-semibold mb-3">Menu Lists</h4>
 
         {/* DESKTOP TABLE */}
@@ -265,7 +267,6 @@ export default function MealManagementPart() {
         </div>
       </div>
 
-      <hr className="py-2 text-gray-300 h-2 lg:h-4" />
       <div className="max-w-7xl mx-auto grid grid-cols-1 xl:grid-cols-4 gap-y-4 xl:gap-6">
         {/* SIDEBAR */}
         <aside className="bg-white/80 w-full xl:w-auto backdrop-blur-xl rounded-3xl shadow-xl p-2">
