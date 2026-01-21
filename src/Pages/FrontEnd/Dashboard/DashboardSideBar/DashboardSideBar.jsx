@@ -129,6 +129,25 @@ const DashboardSideBar = ({ setIsOpenSidebar }) => {
         },
       ],
     },
+
+    // {
+    //   key: "favourite",
+    //   title: "Favourite",
+    //   roles: ["user"],
+    //   icon: FaClipboardList,
+    //   links: [
+    //     {
+    //       title: "Favourite Items",
+    //       icon: IoRestaurant,
+    //       path: "/dashboard/favourite-item",
+    //     },
+    //     {
+    //       title: "Favourite Canteens",
+    //       icon: IoRestaurant,
+    //       path: "/dashboard/favourite-canteen",
+    //     },
+    //   ],
+    // },
   ];
 
   // Helper to check if the user can see a sidebar item
