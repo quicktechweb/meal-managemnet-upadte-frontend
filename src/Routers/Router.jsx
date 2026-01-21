@@ -17,6 +17,8 @@ import ContactPage from "../Pages/FrontEnd/contact-us/ContactPage";
 import UserForm from "../Components/auth/UserForm";
 import MessForm from "../Components/auth/MessForm";
 import MyProfile from "../Pages/FrontEnd/Dashboard/UserDashboard/myprofile/MyProfile";
+import Restaurant from "../Pages/FrontEnd/Dashboard/Restaurant/Restaurent";
+import RestaurantDetails from "../Pages/FrontEnd/Dashboard/Restaurant/RestaurantDetails";
 
 const router = createBrowserRouter([
   {
@@ -98,6 +100,15 @@ const router = createBrowserRouter([
       {
         path: "/dashboard/profile",
         element: <MyProfile />,
+      },
+      {
+        path: "/dashboard/canteens",
+        element: <Restaurant />,
+      },
+
+      {
+        path: "/dashboard/canteens/:id",
+        element: <RestaurantDetails />,
       },
 
       // supplierpage
