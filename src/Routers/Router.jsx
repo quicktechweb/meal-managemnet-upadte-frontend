@@ -19,6 +19,7 @@ import MessForm from "../Components/auth/MessForm";
 import MyProfile from "../Pages/FrontEnd/Dashboard/UserDashboard/myprofile/MyProfile";
 import Restaurant from "../Pages/FrontEnd/Dashboard/Restaurant/Restaurent";
 import RestaurantDetails from "../Pages/FrontEnd/Dashboard/Restaurant/RestaurantDetails";
+import Foods from "../Pages/FrontEnd/Dashboard/Foods/Foods";
 
 const router = createBrowserRouter([
   {
@@ -105,12 +106,15 @@ const router = createBrowserRouter([
         path: "/dashboard/canteens",
         element: <Restaurant />,
       },
-
       {
         path: "/dashboard/canteens/:id",
         element: <RestaurantDetails />,
       },
 
+      {
+        path: "/dashboard/foods",
+        element: <Foods />,
+      },
       // supplierpage
     ],
   },

@@ -17,8 +17,6 @@ const RestaurantDetails = () => {
   const cartItems = useSelector((state) => state.cart.cartItems);
   const singleRestaurantInfo = restaurants?.find((res) => res?.id === +id);
 
-  console.log(cartItems);
-
   const getQty = (id) => {
     const item = cartItems.find((i) => i.id === id);
     return item ? item.cartQuantity : 0;
@@ -32,8 +30,6 @@ const RestaurantDetails = () => {
       return copy;
     });
   };
-
-  console.log(singleRestaurantInfo);
 
   const handleItemDetails = (item) => {
     setSelectedItem(item);

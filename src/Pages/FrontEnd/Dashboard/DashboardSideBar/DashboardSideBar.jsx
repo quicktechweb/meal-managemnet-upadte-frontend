@@ -115,6 +115,20 @@ const DashboardSideBar = ({ setIsOpenSidebar }) => {
         },
       ],
     },
+
+    {
+      key: "foods",
+      title: "Foods",
+      roles: ["user"],
+      icon: FaClipboardList,
+      links: [
+        {
+          title: "Foods",
+          icon: IoRestaurant,
+          path: "/dashboard/foods",
+        },
+      ],
+    },
   ];
 
   // Helper to check if the user can see a sidebar item
