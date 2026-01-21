@@ -72,7 +72,7 @@ const MealSystemLanding = () => {
           <div className="mt-6 lg:mt-12 flex flex-wrap gap-2 lg:gap-4">
             <Link to="/dashboard/mealmanagement">
               <button className="px-8 py-2 lg:py-3 bg-orange-600 text-white font-semibold rounded-xl shadow-lg hover:bg-orange-700 hover:scale-105 transform transition cursor-pointer text-sm lg:text-base">
-                Meal Management
+                Food
               </button>
             </Link>
             <Link to={"/dashboard/userOrder"}>

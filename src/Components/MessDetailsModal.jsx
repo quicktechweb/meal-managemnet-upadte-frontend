@@ -111,9 +111,13 @@ const MealCard = ({ title, icon, data, gradient, selected, onToggle }) => (
   </div>
 );
 
-const MessDetailsModal = ({ member, setMessDetails }) => {
+const MessDetailsModal = ({
+  member,
+  setMessDetails,
+  selectedMeals,
+  setSelectedMeals,
+}) => {
   const [activeIndex, setActiveIndex] = useState(0);
-  const [selectedMeals, setSelectedMeals] = useState({});
   const [showModal, setShowModal] = useState(false);
 
   const activePlan = mealPlans[activeIndex];
@@ -122,24 +126,94 @@ const MessDetailsModal = ({ member, setMessDetails }) => {
   // Toggle meal for a specific date
   const toggleMeal = (meal) => {
     setSelectedMeals((prev) => {
-      const mealsForDate = prev[activeDate] || [];
-      return {
+      const memberIndex = prev.findIndex((m) => m.id === member.id);
+
+      const mealPrice = activePlan[meal].price;
+
+      // MEMBER
+      if (memberIndex !== -1) {
+        const memberData = prev[memberIndex];
+
+        const dateIndex = memberData.mealInfo.findIndex(
+          (d) => d.date === activeDate,
+        );
+
+        let updatedMealInfo;
+
+        // DATE
+        if (dateIndex !== -1) {
+          const dateData = memberData.mealInfo[dateIndex];
+          const alreadySelected = dateData.meals.includes(meal);
+
+          const updatedMeals = alreadySelected
+            ? dateData.meals.filter((m) => m !== meal)
+            : [...dateData.meals, meal];
+
+          // remove date if no meals left
+          if (updatedMeals.length === 0) {
+            updatedMealInfo = memberData.mealInfo.filter(
+              (_, i) => i !== dateIndex,
+            );
+          } else {
+            updatedMealInfo = memberData.mealInfo.map((d, i) =>
+              i === dateIndex
+                ? {
+                    ...d,
+                    meals: updatedMeals,
+                    total: updatedMeals.reduce(
+                      (s, m) => s + activePlan[m].price,
+                      0,
+                    ),
+                  }
+                : d,
+            );
+          }
+        }
+        // DATE NOT EXISTS
+        else {
+          updatedMealInfo = [
+            ...memberData.mealInfo,
+            {
+              date: activeDate,
+              meals: [meal],
+              total: mealPrice,
+            },
+          ];
+        }
+
+        const updatedMember = {
+          ...memberData,
+          mealInfo: updatedMealInfo,
+        };
+
+        return prev.map((m, i) => (i === memberIndex ? updatedMember : m));
+      }
+
+      return [
         ...prev,
-        [activeDate]: mealsForDate.includes(meal)
-          ? mealsForDate.filter((m) => m !== meal)
-          : [...mealsForDate, meal],
-      };
+        {
+          id: member.id,
+          name: member.name,
+          phone: member.phone,
+          img: member.img,
+          mealInfo: [
+            {
+              date: activeDate,
+              meals: [meal],
+              total: mealPrice,
+            },
+          ],
+        },
+      ];
     });
   };
 
+  const memberData = selectedMeals.find((m) => m.id === member.id);
+  const dateData = memberData?.mealInfo.find((d) => d.date === activeDate);
+
   // Total amount across all selected dates and meals
-  const totalAmount = Object.entries(selectedMeals).reduce(
-    (sum, [date, meals]) => {
-      const plan = mealPlans.find((p) => p.date === date);
-      return sum + meals.reduce((s, m) => s + plan[m].price, 0);
-    },
-    0,
-  );
+  const totalAmount =
+    memberData?.mealInfo.reduce((sum, d) => sum + d.total, 0) || 0;
 
   return (
     <div
@@ -173,8 +247,9 @@ const MessDetailsModal = ({ member, setMessDetails }) => {
 
           <div className="h-[70vh] overflow-y-auto p-5">
             {mealPlans.map((plan, index) => {
-              const isSelected =
-                selectedMeals[plan.date] && selectedMeals[plan.date].length > 0;
+              const isSelected = memberData?.mealInfo.some(
+                (d) => d.date === plan.date && d.meals.length > 0,
+              );
               return (
                 <button
                   key={index}
@@ -227,7 +302,7 @@ const MessDetailsModal = ({ member, setMessDetails }) => {
               icon={<FaSun />}
               data={activePlan.breakfast}
               gradient="bg-gradient-to-r from-yellow-400 to-orange-500"
-              selected={selectedMeals[activeDate]?.includes("breakfast")}
+              selected={dateData?.meals.includes("breakfast")}
               onToggle={() => toggleMeal("breakfast")}
             />
             <MealCard
@@ -235,7 +310,7 @@ const MessDetailsModal = ({ member, setMessDetails }) => {
               icon={<FaUtensils />}
               data={activePlan.lunch}
               gradient="bg-gradient-to-r from-green-500 to-emerald-600"
-              selected={selectedMeals[activeDate]?.includes("lunch")}
+              selected={dateData?.meals.includes("lunch")}
               onToggle={() => toggleMeal("lunch")}
             />
             <MealCard
@@ -243,91 +318,14 @@ const MessDetailsModal = ({ member, setMessDetails }) => {
               icon={<FaMoon />}
               data={activePlan.dinner}
               gradient="bg-gradient-to-r from-indigo-500 to-purple-600"
-              selected={selectedMeals[activeDate]?.includes("dinner")}
+              selected={dateData?.meals.includes("dinner")}
               onToggle={() => toggleMeal("dinner")}
             />
           </div>
 
           {/* Proceed Button */}
-          {Object.keys(selectedMeals).length > 0 && (
-            <button
-              onClick={() => setShowModal(true)}
-              className="w-1/2 lg:w-1/3 mx-auto block bg-gradient-to-r from-orange-400 to-pink-500 text-white py-3 rounded-2xl font-semibold shadow-lg hover:from-pink-500 hover:to-orange-400 transition-all"
-            >
-              Proceed to Order
-            </button>
-          )}
         </main>
       </div>
-
-      {/* Confirm Order Modal */}
-      {showModal && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 overflow-auto p-4">
-          <div
-            onClick={(e) => e.stopPropagation()}
-            className="bg-white rounded-3xl w-full max-w-lg p-6 relative max-h-[90vh] overflow-y-auto"
-          >
-            <button
-              onClick={() => setShowModal(false)}
-              className="absolute top-4 right-4 text-gray-500"
-            >
-              <FaTimes />
-            </button>
-
-            <h2 className="text-2xl font-bold mb-4 text-gray-800">
-              Confirm Order
-            </h2>
-
-            <div className="space-y-3 mb-4">
-              <input
-                className="w-full border rounded-xl px-4 py-2"
-                value={member?.name}
-                placeholder="Name"
-              />
-
-              <input
-                className="w-full border rounded-xl px-4 py-2"
-                value={member?.phone}
-                placeholder="Phone"
-              />
-            </div>
-
-            <div className="space-y-4 mb-4">
-              {Object.entries(selectedMeals).map(([date, meals]) => {
-                const plan = mealPlans.find((p) => p.date === date);
-                return (
-                  <div key={date} className="p-3 bg-gray-50 rounded-xl">
-                    <h3 className="font-bold mb-2 text-gray-700">{date}</h3>
-                    {meals.map((meal) => (
-                      <div key={meal} className="mb-2">
-                        <p className="font-semibold capitalize text-gray-800">
-                          {meal} – ৳ {plan[meal].price}
-                        </p>
-                        <ul className="ml-4 text-sm">
-                          {plan[meal].items.map((item, i) => (
-                            <li key={i} className="flex items-center gap-2">
-                              <FaCheckCircle className="text-green-500" />{" "}
-                              {item}
-                            </li>
-                          ))}
-                        </ul>
-                      </div>
-                    ))}
-                  </div>
-                );
-              })}
-            </div>
-
-            <div className="font-bold text-lg mb-4 text-green-600">
-              Total: ৳ {totalAmount}
-            </div>
-
-            <button className="w-full bg-gradient-to-r from-green-500 to-emerald-600 text-white py-3 rounded-xl font-semibold shadow-lg hover:from-emerald-600 hover:to-green-500 transition-all">
-              Confirm Order
-            </button>
-          </div>
-        </div>
-      )}
     </div>
   );
 };

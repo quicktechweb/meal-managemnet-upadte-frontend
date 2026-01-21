@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { FaBars, FaTimes } from "react-icons/fa";
-import { Outlet } from "react-router-dom";
+import { Outlet, ScrollRestoration } from "react-router-dom";
 // import useTitle from "../hooks/useTitle";
 import DashboardSideBar from "./DashboardSideBar/DashboardSideBar";
 // import useFirebase from "../Hooks/useFirebase";

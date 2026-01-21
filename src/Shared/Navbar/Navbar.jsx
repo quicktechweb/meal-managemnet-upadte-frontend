@@ -18,7 +18,7 @@ export default function Navbar() {
     { name: "Home", link: "/" },
     { name: "Pages", link: "/pages" },
     { name: "Features", link: "/features" },
-    { name: "Meal", link: "/meal" },
+    // { name: "Meal", link: "/meal" },
     { name: "Ride", link: "/ride" },
     { name: "Reviews", link: "/reviews" },
     { name: "Pricing", link: "/pricing" },
