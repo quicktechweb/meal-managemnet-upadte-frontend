@@ -7,6 +7,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { addtoCart, decreaseCart } from "../../../../feature/cartSlice";
 import ProductDetailsModal from "../../../../Components/ProductDetailsModal";
 import ReviewModal from "../review/ReviewModal";
+import { FaRegHeart } from "react-icons/fa";
 
 const RestaurantDetails = () => {
   const { id } = useParams();
@@ -69,6 +70,13 @@ const RestaurantDetails = () => {
             </div>
           </div>
         </div>
+
+        <div className="py-2 px-2.5 bg-white text-black font-medium  shadow rounded-md flex items-center gap-2 group cursor-pointer duration-300">
+          <span className="group-hover:text-orange-500">
+            <FaRegHeart />
+          </span>{" "}
+          <p className="group-hover:text-orange-500">Add to Favourites</p>
+        </div>
       </header>
 
       {/* Menu */}
@@ -91,7 +99,12 @@ const RestaurantDetails = () => {
                     alt={item.name}
                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                   />
-
+                  <div
+                    onClick={(e) => e.stopPropagation()}
+                    className="absolute top-3 right-2 text-[18px] text-black rounded-2xl w-[30px] h-[30px] bg-white flex items-center justify-center"
+                  >
+                    <FaRegHeart />
+                  </div>
                   {qty > 0 ? (
                     <div
                       onClick={(e) => e.stopPropagation()}

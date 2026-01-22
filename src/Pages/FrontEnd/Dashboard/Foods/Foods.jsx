@@ -4,6 +4,9 @@ import { useDispatch, useSelector } from "react-redux";
 import { addtoCart, decreaseCart } from "../../../../feature/cartSlice";
 import ProductDetailsModal from "../../../../Components/ProductDetailsModal";
 const categories = ["All", "Bangla", "Chinese", "Thai"];
+
+import { FaRegHeart } from "react-icons/fa";
+
 const foodData = [
   {
     id: 1,
@@ -130,7 +133,7 @@ const Foods = () => {
         </div>
 
         {/* Food Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-2">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 2xl:grid-cols-6 gap-2">
           {filteredItems.map((item) => (
             <FoodCard
               selectedItem={selectedItem}
@@ -181,6 +184,14 @@ const FoodCard = ({
             </span>
           </div>
         )}
+
+        <div
+          onClick={(e) => e.stopPropagation()}
+          className="absolute top-3 right-2 text-xl text-black rounded-2xl w-[30px] h-[30px] bg-white flex items-center justify-center"
+        >
+          <FaRegHeart />
+        </div>
+
         {/* Overlay  */}
         <div className="absolute inset-x-0 bottom-0 p-3 translate-y-2 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-300">
           {qty > 0 ? (

@@ -222,7 +222,7 @@ export default function MealManagementPart() {
                       {headerGroup.headers.map((header) => (
                         <th
                           key={header.id}
-                          className="px-4 py-3 text-left font-semibold text-white border-b border-gray-300"
+                          className="px-4 py-3 text-left font-semibold text-white border-b border-black"
                         >
                           {flexRender(
                             header.column.columnDef.header,
@@ -243,7 +243,7 @@ export default function MealManagementPart() {
                       {row.getVisibleCells().map((cell) => (
                         <td
                           key={cell.id}
-                          className="px-4 py-2 md:py-3 border-gray-300 md:border-b flex justify-between md:table-cell"
+                          className="px-4 py-2 md:py-3 border-black  md:border-b flex justify-between md:table-cell"
                         >
                           {/* Mobile Label */}
                           <span className="font-bold text-orange-600 md:hidden mr-4">
