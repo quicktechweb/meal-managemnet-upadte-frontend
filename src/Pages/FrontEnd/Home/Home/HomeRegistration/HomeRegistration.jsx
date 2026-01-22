@@ -2,6 +2,7 @@ import React from "react";
 import { useForm } from "react-hook-form";
 import { motion } from "framer-motion";
 import { ChefHat, ArrowRight } from "lucide-react";
+import { Link } from "react-router-dom";
 
 const HomeLogin = () => {
   const { register, handleSubmit } = useForm();
@@ -10,7 +11,7 @@ const HomeLogin = () => {
 
   return (
     <div className="min-h-screen bg-[#fffcf5] mt-5 md:mt-10 lg:mt-20 bg-[radial-gradient(circle_at_top_right,_var(--tw-gradient-stops))] from-orange-100/40 via-[#fffcf5] to-red-50/40 flex items-center justify-center p-4 lg:p-12 overflow-hidden">
-      <div className="2xl:max-w-[1100px] w-full grid grid-cols-1 lg:grid-cols-2 gap-4 lg:gap-8 2xl:gap-16 items-center">
+      <div className="lg:max-w-[1100px] w-full grid grid-cols-1 lg:grid-cols-2 gap-4 lg:gap-8 2xl:gap-16 items-center">
         <motion.div
           initial={{ opacity: 0, x: -30 }}
           animate={{ opacity: 1, x: 0 }}
@@ -31,10 +32,15 @@ const HomeLogin = () => {
             service.
           </p>
 
-          <button className="group bg-orange-500 text-white px-6 py-2 rounded-2xl font-bold transition-all hover:bg-orange-600 flex items-center gap-3 shadow-xl shadow-orange-200 cursor-pointer">
-            Join Now
-            <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
-          </button>
+          <div className="flex">
+            <Link
+              to={"/register/user"}
+              className="group bg-orange-500 text-white px-6 py-2 rounded-2xl font-bold transition-all hover:bg-orange-600 flex items-center gap-3 shadow-xl shadow-orange-200 cursor-pointer"
+            >
+              Registration
+              <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+            </Link>
+          </div>
         </motion.div>
 
         <motion.div

@@ -13,6 +13,25 @@ const UserForm = () => {
 
   return (
     <form className="mt-4 space-y-3 md:space-y-6">
+      <div className="flex flex-col gap-2.5">
+        <label
+          className=" bg-white px-1 text-gray-500 transition-all text-sm md:text-lg
+     "
+        >
+          Hostel Name
+        </label>
+
+        <select
+          className="py-3 focus:outline-0 border border-gray-200 rounded-md"
+          name=""
+          id=""
+        >
+          <option value="1">Hostel 1</option>
+          <option value="1">Hostel 2</option>
+          <option value="1">Hostel 2</option>
+        </select>
+      </div>
+
       <div className="relative">
         <input
           type="text"
@@ -67,25 +86,6 @@ const UserForm = () => {
     pointer-events-none"
         >
           Phone Number
-        </label>
-      </div>
-
-      <div className="relative">
-        <input
-          type="text"
-          placeholder=" "
-          className="peer w-full border border-gray-200 rounded-md px-3 h-[50px] text-lg
-    focus:outline-none focus:border-black transition-all"
-        />
-
-        <label
-          className="absolute left-3 bg-white px-1 text-gray-500 transition-all
-    top-1/2 -translate-y-1/2 text-sm md:text-lg
-    peer-focus:top-1 peer-focus:text-xs peer-focus:text-black
-    peer-not-placeholder-shown:top-1 peer-not-placeholder-shown:text-xs
-    pointer-events-none"
-        >
-          Branch Name
         </label>
       </div>
 

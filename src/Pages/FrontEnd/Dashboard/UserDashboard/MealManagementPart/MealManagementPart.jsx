@@ -1,4 +1,6 @@
 import { useMemo, useState } from "react";
+
+import { useRef } from "react";
 import {
   FaSun,
   FaUtensils,
@@ -16,6 +18,7 @@ import {
 } from "@tanstack/react-table";
 import { ChevronDown, ChevronUp } from "lucide-react";
 import ScrollToTop from "../../../ScrollToTop/ScrollToTop";
+import VideoCard from "../../../../../Components/VideoCard";
 const schedule = [
   {
     day: "Sat",
@@ -193,10 +196,38 @@ export default function MealManagementPart() {
     getCoreRowModel: getCoreRowModel(),
   });
 
+  const videoRef = useRef(null);
+  const [isPlaying, setIsPlaying] = useState(true);
+
+  const togglePlay = () => {
+    if (videoRef.current) {
+      if (isPlaying) {
+        videoRef.current.pause();
+      } else {
+        videoRef.current.play();
+      }
+      setIsPlaying(!isPlaying);
+    }
+  };
+
   return (
     <section className="min-h-screen bg-gradient-to-br from-orange-50 via-white to-orange-100 p-3 lg:p-6 flex flex-col gap-3.5">
       <ScrollToTop />
       {/* menu table */}
+
+      <div className="max-w-[300px] md:max-w-[600px] xl:max-w-[1010px] h-[50px] rounded-md bg-white overflow-hidden flex items-center px-4 mx-auto shadow">
+        <div className="whitespace-nowrap animate-marquee text-black ">
+          🚨 Notice: Hostel will remain closed on Friday due to maintenance
+          website • New offers available now • Please check updates regularly
+        </div>
+      </div>
+
+      <div className="live-kitchen-container ">
+        <h4 className="text-lg font-semibold mb-3">Live Kitchen</h4>
+
+        <VideoCard />
+      </div>
+
       <div className="shadow-xl">
         <h4 className="text-lg font-semibold mb-3">Menu Lists</h4>
 
@@ -358,7 +389,7 @@ export default function MealManagementPart() {
               onClick={() => setShowModal(true)}
               className="w-1/2 lg:w-1/3 mx-auto block bg-gradient-to-r from-orange-400 to-pink-500 text-white py-3 rounded-2xl font-semibold shadow-lg hover:from-pink-500 hover:to-orange-400 transition-all"
             >
-              Proceed to Order
+              Update
             </button>
           )}
         </main>
