@@ -215,7 +215,7 @@ const ProcessSection = () => {
             <div className="mt-5 grid grid-cols-3 gap-3 ">
               {stats.map((stat, index) => (
                 <div key={index} className="card  rounded-xl  ">
-                  <div className="card__content flex flex-col 2xl:flex-row items-start gap-3 p-2 bg-white rounded-xl shadow hover:shadow-xl transition">
+                  <div className="card__content flex flex-col 2xl:flex-row items-start gap-3 p-2 bg-gradient-to-r from-orange-50 to-yellow-50 rounded-xl shadow hover:shadow-xl transition">
                     <Link
                       className="flex flex-col items-center sm:items-start w-full gap-1.5"
                       to={stat?.pathname}
