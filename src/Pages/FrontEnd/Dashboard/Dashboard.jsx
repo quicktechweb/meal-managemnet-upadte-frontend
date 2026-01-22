@@ -23,6 +23,7 @@ const Dashboard = () => {
   };
   return (
     <div className="relative min-h-screen bg-gray-100 flex">
+      <ScrollRestoration />
       {/* ===== Overlay (mobile only) ===== */}
       {isOpenSidebar && (
         <div
