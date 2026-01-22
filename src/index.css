@@ -164,28 +164,17 @@
 }
 
 .card {
-  border-radius: 20px;
-  padding: 2.5px;
-  background: linear-gradient(270deg, #af40ff, #5b42f3, #00fff0);
-  background-size: 600% 600%;
-  animation: gradientMove 5s ease infinite;
+  animation: scaleBorder 3.5s ease-in-out infinite alternate;
 }
 
-.card__content {
-  border-radius: 17px;
-  width: 100%;
-  height: 100%;
-  background: white;
-}
-
-@keyframes gradientMove {
+@keyframes scaleBorder {
   0% {
-    background-position: 0% 50%;
+    transform: scale(1);
   }
   50% {
-    background-position: 100% 50%;
+    transform: scale(1.05);
   }
   100% {
-    background-position: 0% 50%;
+    transform: scale(1);
   }
 }

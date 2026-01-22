@@ -20,6 +20,8 @@ import MyProfile from "../Pages/FrontEnd/Dashboard/UserDashboard/myprofile/MyPro
 import Restaurant from "../Pages/FrontEnd/Dashboard/Restaurant/Restaurent";
 import RestaurantDetails from "../Pages/FrontEnd/Dashboard/Restaurant/RestaurantDetails";
 import Foods from "../Pages/FrontEnd/Dashboard/Foods/Foods";
+import FavouriteItem from "../Pages/FrontEnd/Dashboard/Favourite/FavouriteItem";
+import FavouriteCanteen from "../Pages/FrontEnd/Dashboard/Favourite/FavouriteCanteen";
 
 const router = createBrowserRouter([
   {
@@ -115,6 +117,17 @@ const router = createBrowserRouter([
         path: "/dashboard/foods",
         element: <Foods />,
       },
+
+      {
+        path: "/dashboard/favourite-item",
+        element: <FavouriteItem />,
+      },
+
+      {
+        path: "/dashboard/favourite-canteen",
+        element: <FavouriteCanteen />,
+      },
+
       // supplierpage
     ],
   },

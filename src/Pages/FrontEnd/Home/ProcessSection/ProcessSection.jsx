@@ -212,29 +212,26 @@ const ProcessSection = () => {
               {active.desc2}
             </p>
 
-            <div className="mt-5 grid grid-cols-1 sm:grid-cols-3 gap-3 ">
+            <div className="mt-5 grid grid-cols-3 gap-3 ">
               {stats.map((stat, index) => (
-                <motion.div
-                  key={index}
-                  className="card p-[2px] rounded-xl bg-gradient-to-r from-red-600 to-orange-500 "
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: index * 0.2 }}
-                >
-                  <div className="card__content flex flex-col 2xl:flex-row items-start gap-3 p-4 bg-white rounded-xl shadow hover:shadow-xl transition">
-                    <Link className="flex flex-col gap-1.5" to={stat?.pathname}>
-                      <stat.icon className="text-purple-600 text-xl shrink-0 lg:text-2xl mt-1" />
+                <div key={index} className="card  rounded-xl  ">
+                  <div className="card__content flex flex-col 2xl:flex-row items-start gap-3 p-2 bg-white rounded-xl shadow hover:shadow-xl transition">
+                    <Link
+                      className="flex flex-col items-center sm:items-start w-full gap-1.5"
+                      to={stat?.pathname}
+                    >
+                      <stat.icon className="text-purple-600 text-[18px] sm:text-xl shrink-0 lg:text-2xl mt-1" />
                       <div>
-                        <p className="font-semibold text-sm lg:text-base text-gray-800">
+                        <p className="font-semibold text-[10px] whitespace-nowrap lg:text-base text-gray-800">
                           {stat.title}
                         </p>
-                        <p className="text-xs text-gray-500">
+                        <p className="text-xs hidden sm:block text-gray-500">
                           {stat.description}
                         </p>
                       </div>
                     </Link>
                   </div>
-                </motion.div>
+                </div>
               ))}
             </div>
 

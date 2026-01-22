@@ -3,7 +3,8 @@ import { FiMinus, FiPlus, FiTrash2 } from "react-icons/fi";
 import { Link } from "react-router-dom";
 import { addtoCart, decreaseCart } from "../feature/cartSlice";
 import { useDispatch } from "react-redux";
-
+import { Clock, Flame, Star } from "lucide-react";
+const tags = ["Spicy", "Best Seller", "Noodles"];
 const ProductDetailsModal = ({
   setSelectedProduct,
   selectedProduct,
@@ -20,11 +21,11 @@ const ProductDetailsModal = ({
         setSelectedProduct(null);
         document.body.style.overflow = "visible";
       }}
-      className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center"
+      className="fixed inset-0 z-50  backdrop-blur-sm flex items-center justify-center"
     >
       <div
         onClick={(e) => e.stopPropagation()}
-        className="bg-white w-[95%] max-w-7xl max-h-[90vh] overflow-y-auto rounded-3xl shadow-2xl animate-scaleIn relative"
+        className="bg-white w-[95%] max-w-7xl max-h-[90vh] overflow-y-auto rounded-3xl shadow-2xl animate-scaleIn relative px-10"
       >
         {/* CLOSE */}
         <button
@@ -43,29 +44,49 @@ const ProductDetailsModal = ({
             <img
               src={selectedProduct.image}
               alt={selectedProduct.name}
-              className="h-[280px] object-contain"
+              className="h-[400px] w-full object-cover"
             />
           </div>
 
           {/* DETAILS */}
           <div className="flex flex-col gap-2.5 justify-center">
-            <div>
-              <h2 className="text-[22px] md:text-2xl lg:text-3xl font-semibold">
-                {selectedProduct.name}
-              </h2>
-
-              <div className="flex items-center gap-3 mt-2 lg:mt-4">
-                <span className="text-xl md:text-2xl lg:text-3xl text-[#e94560] font-bold">
-                  Tk {selectedProduct.price}
-                </span>
-                <span className="line-through text-gray-400 text-sm lg:text-xl">
-                  Tk {selectedProduct.oldPrice}
-                </span>
+            <div className="flex flex-col">
+              <div className="flex flex-wrap gap-2 mb-3">
+                {tags.map((tag) => (
+                  <span
+                    key={tag}
+                    className="px-3 py-1 bg-orange-100 text-orange-700 text-xs font-bold rounded-full"
+                  >
+                    {tag}
+                  </span>
+                ))}
               </div>
 
-              <p className="mt-2 lg:mt-4 text-sm lg:text-base text-gray-600">
-                Premium quality grocery item. Fresh, hygienic and perfect for
-                daily needs.
+              <h2 className="text-4xl font-extrabold text-gray-900 mb-2">
+                {selectedProduct?.name}
+              </h2>
+
+              <div className="flex items-center gap-6 mb-6">
+                <div className="flex items-center gap-1">
+                  <Star size={18} className="text-yellow-400 fill-current" />
+                  <span className="font-bold">4</span>
+                  <span className="text-gray-400 text-sm">(30)</span>
+                </div>
+                {/* <div className="flex items-center gap-1 text-gray-500">
+                  <Clock size={18} />
+                  <span className="text-sm">20 min</span>
+                </div>
+                <div className="flex items-center gap-1 text-gray-500">
+                  <Flame size={18} className="text-orange-500" />
+                  <span className="text-sm">20 cal</span>
+                </div> */}
+              </div>
+
+              <p className="text-gray-600 leading-relaxed mb-8">
+                Lorem ipsum dolor sit amet, consectetur adipisicing elit.
+                Distinctio ab optio adipisci tempora fugit? Voluptatibus,
+                architecto et. Eligendi accusantium ipsa aut architecto, aliquid
+                assumenda itaque asperiores fuga, natus, officia blanditiis.
               </p>
             </div>
 
