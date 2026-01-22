@@ -19,6 +19,9 @@ import {
 import { ChevronDown, ChevronUp } from "lucide-react";
 import ScrollToTop from "../../../ScrollToTop/ScrollToTop";
 import VideoCard from "../../../../../Components/VideoCard";
+
+import Marquee from "react-fast-marquee";
+
 const schedule = [
   {
     day: "Sat",
@@ -215,13 +218,18 @@ export default function MealManagementPart() {
       <ScrollToTop />
       {/* menu table */}
 
-      <div className="max-w-[300px] md:max-w-[600px] xl:max-w-[1010px] h-[50px] rounded-md bg-white overflow-hidden flex items-center px-4 mx-auto shadow">
-        <div className="whitespace-nowrap animate-marquee text-black ">
-          🚨 Notice: Hostel will remain closed on Friday due to maintenance
-          website • New offers available now • Please check updates regularly
-        </div>
+      <div className=" h-[50px] rounded-md bg-white overflow-hidden flex items-center px-4 mx-auto shadow">
+        <Marquee
+          gradient={false} 
+          speed={50}
+          pauseOnHover={true}
+        >
+          <span className="text-black">
+            🚨 Notice: Hostel will remain closed on Friday due to maintenance.
+            Website • New offers available now • Please check updates regularly
+          </span>
+        </Marquee>
       </div>
-
       <div className="live-kitchen-container ">
         <h4 className="text-lg font-semibold mb-3">Live Kitchen</h4>
 
