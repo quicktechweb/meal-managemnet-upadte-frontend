@@ -8,6 +8,7 @@ export const restaurants = [
     location: "Downtown",
     cuisine: "Italian",
     rating: 4.9,
+    isFavourite: false,
     image:
       "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&w=600&q=80",
     tag: "Must Visit",
@@ -22,7 +23,7 @@ export const restaurants = [
         save: 20,
       },
       {
-        id: 1,
+        id: 2,
         name: "Chicken Khichuri",
         image:
           "https://images.deliveryhero.io/image/fd-bd/Products/Common%20DLP/7185878.jpg",
@@ -31,7 +32,7 @@ export const restaurants = [
         save: 20,
       },
       {
-        id: 1,
+        id: 3,
         name: "Chicken Khichuri",
         image:
           "https://images.deliveryhero.io/image/fd-bd/Products/Common%20DLP/7185878.jpg",
@@ -40,7 +41,7 @@ export const restaurants = [
         save: 20,
       },
       {
-        id: 1,
+        id: 4,
         name: "Chicken Khichuri",
         image:
           "https://images.deliveryhero.io/image/fd-bd/Products/Common%20DLP/7185878.jpg",
@@ -49,7 +50,7 @@ export const restaurants = [
         save: 20,
       },
       {
-        id: 1,
+        id: 6,
         name: "Chicken Khichuri",
         image:
           "https://images.deliveryhero.io/image/fd-bd/Products/Common%20DLP/7185878.jpg",
@@ -58,7 +59,7 @@ export const restaurants = [
         save: 20,
       },
       {
-        id: 1,
+        id: 7,
         name: "Chicken Khichuri",
         image:
           "https://images.deliveryhero.io/image/fd-bd/Products/Common%20DLP/7185878.jpg",
@@ -73,7 +74,7 @@ export const restaurants = [
     name: "Sakura Spirits",
     location: "Waterfront",
     cuisine: "Japanese",
-
+    isFavourite: true,
     rating: 4.7,
     image:
       "https://images.unsplash.com/photo-1579027989536-b7b1f875659b?auto=format&fit=crop&w=600&q=80",
@@ -95,7 +96,7 @@ export const restaurants = [
     name: "The Urban Grill",
     location: "Midtown",
     cuisine: "Steakhouse",
-
+    isFavourite: true,
     rating: 4.5,
     image:
       "https://images.unsplash.com/photo-1514362545857-3bc16c4c7d1b?auto=format&fit=crop&w=600&q=80",
@@ -117,7 +118,7 @@ export const restaurants = [
     name: "Neon Bao",
     location: "Old Town",
     cuisine: "Asian Fusion",
-
+    isFavourite: false,
     rating: 4.8,
     image:
       "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&w=600&q=80",
@@ -139,7 +140,7 @@ export const restaurants = [
     name: "Neon Bao",
     location: "Old Town",
     cuisine: "Asian Fusion",
-
+    isFavourite: false,
     rating: 4.8,
     image:
       "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&w=600&q=80",
