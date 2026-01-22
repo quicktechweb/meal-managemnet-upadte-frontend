@@ -7,13 +7,20 @@ import {
   FiArrowRight,
 } from "react-icons/fi";
 
+import { motion } from "framer-motion";
+import { FaUtensils } from "react-icons/fa";
+import { GrRestaurant } from "react-icons/gr";
+import { PiBowlFoodBold } from "react-icons/pi";
+import { Link, NavLink } from "react-router-dom";
+
 /* DATA */
 const steps = [
   {
     id: 1,
-    title: "Meal Management",
+    title: "Food",
     number: "01.",
     heading: "Fully Branded Portal",
+
     desc1:
       "Manage daily meals, member consumption, and food records with complete accuracy and transparency.",
     desc2:
@@ -79,8 +86,42 @@ const steps = [
   },
 ];
 
+const stats = [
+  {
+    id: 1,
+    title: "Cloud Kitchen",
+    description: "Delivery-first kitchen serving fresh meals.",
+    pathname: "/dashboard/foods",
+    icon: FaUtensils,
+  },
+  {
+    id: 2,
+    title: "Canteens",
+    description: "Affordable daily meals for everyone.",
+    pathname: "/dashboard/canteens",
+    icon: GrRestaurant,
+  },
+  {
+    id: 3,
+    title: "Food",
+    description: "Fresh, tasty, and hygienic meals",
+    pathname: "/dashboard/mealmanagement",
+    icon: PiBowlFoodBold,
+  },
+];
+
 const ProcessSection = () => {
   const [active, setActive] = useState(steps[0]);
+
+  const scrollToId = (id) => {
+    const element = document.getElementById(id);
+
+    console.log(id, "id");
+
+    if (element) {
+      element.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+  };
 
   return (
     <section className="mt-5 bg-white max-w-6xl mx-auto">
@@ -97,14 +138,16 @@ const ProcessSection = () => {
 
       <div className="max-w-7xl mx-auto px-6">
         {/* STEPS */}
-        <div className="flex flex-wrap justify-center gap-4 md:gap-8 lg:gap-16 mb-5 md:mb-10 lg:mb-20">
+        <div className="flex flex-wrap justify-center gap-4 md:gap-8 lg:gap-16 mb-5 md:mb-10">
           {steps.map((step) => {
             const isActive = active.id === step.id;
 
             return (
               <button
                 key={step.id}
-                onClick={() => setActive(step)}
+                onClick={() => {
+                  return (scrollToId("menu"), setActive(step));
+                }}
                 className="flex flex-col cursor-pointer items-center gap-1.5 lg:gap-3 focus:outline-none group"
               >
                 <div
@@ -136,6 +179,16 @@ const ProcessSection = () => {
           })}
         </div>
 
+        {/* <div className=" flex items-center justify-center gap-2.5">
+          {active?.subMenu?.map((sub) => (
+            <NavLink
+              to={sub?.pathname}
+              className="px-6 py-3 bg-gradient-to-r from-[#874F9E] to-[#ea83fc] text-white hover:from-[#ea83fc] hover:to-[#874F9E] font-semibold rounded-full shadow-md transition duration-300"
+            >
+              {sub?.title}
+            </NavLink>
+          ))} */}
+        {/* </div> */}
         {/* CONTENT */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-20 items-center">
           {/* LEFT */}
@@ -148,13 +201,40 @@ const ProcessSection = () => {
               {active.heading}
             </h3>
 
-            <p className="mt-3 lg:mt-6 text-sm lg:text-base text-gray-500 max-w-md">
+            <p
+              id="menu"
+              className="mt-3 lg:mt-6 text-sm lg:text-base text-gray-500 max-w-md"
+            >
               {active.desc1}
             </p>
 
             <p className="mt-2 lg:mt-4  text-sm lg:text-base text-gray-500 max-w-md">
               {active.desc2}
             </p>
+
+            <div className="mt-5 grid grid-cols-1 sm:grid-cols-3 gap-3 ">
+              {stats.map((stat, index) => (
+                <motion.div
+                  key={index}
+                  className="flex flex-col 2xl:flex-row items-start gap-3 p-2 bg-white rounded-xl shadow-md transition  border-2 border-purple-500 "
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: index * 0.2 }}
+                >
+                  <Link className={"flex flex-col gap-1.5"} to={stat?.pathname}>
+                    <stat.icon className="text-purple-600 text-xl  shrink-0 lg:text-2xl mt-1" />
+                    <div>
+                      <p className="font-semibold text-sm lg:text-base  text-gray-800">
+                        {stat.title}
+                      </p>
+                      <p className="text-xs lg:text-sm text-gray-500">
+                        {stat.description}
+                      </p>
+                    </div>
+                  </Link>
+                </motion.div>
+              ))}
+            </div>
 
             <a
               href="#"
