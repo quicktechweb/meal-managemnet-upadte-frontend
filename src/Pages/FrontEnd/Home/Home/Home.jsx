@@ -5,23 +5,25 @@ import LearningManagement from "../LearningManagemnet/LearningManagement";
 import MealLanding from "../MealLanding/MealLanding";
 import ProcessSection from "../ProcessSection/ProcessSection";
 import EcommerceLanding from "./EcommerceLanding/EcommerceLanding";
+import HomeLogin from "./HomeRegistration/HomeRegistration";
 import RideSharing from "./RideSharing/RideSharing";
 import Testimonial from "./Testimonial/Testimonial";
-
 
 const Home = () => {
   return (
     <div>
       <Bannerparts />
-      <Features />
 
+      <HomeLogin />
+
+      <Features />
       <ProcessSection />
       <MealLanding />
       <LearningManagement />
       <EcommerceLanding />
       <RideSharing />
       <DownloadApp />
-      <Testimonial/>
+      <Testimonial />
 
       {/* <HomeSlider/> */}
       {/* <TopSelling/> */}

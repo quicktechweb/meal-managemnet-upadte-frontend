@@ -1,4 +1,6 @@
 import { useMemo, useState } from "react";
+
+import { useRef } from "react";
 import {
   FaSun,
   FaUtensils,
@@ -16,6 +18,10 @@ import {
 } from "@tanstack/react-table";
 import { ChevronDown, ChevronUp } from "lucide-react";
 import ScrollToTop from "../../../ScrollToTop/ScrollToTop";
+import VideoCard from "../../../../../Components/VideoCard";
+
+import Marquee from "react-fast-marquee";
+
 const schedule = [
   {
     day: "Sat",
@@ -193,10 +199,43 @@ export default function MealManagementPart() {
     getCoreRowModel: getCoreRowModel(),
   });
 
+  const videoRef = useRef(null);
+  const [isPlaying, setIsPlaying] = useState(true);
+
+  const togglePlay = () => {
+    if (videoRef.current) {
+      if (isPlaying) {
+        videoRef.current.pause();
+      } else {
+        videoRef.current.play();
+      }
+      setIsPlaying(!isPlaying);
+    }
+  };
+
   return (
     <section className="min-h-screen bg-gradient-to-br from-orange-50 via-white to-orange-100 p-3 lg:p-6 flex flex-col gap-3.5">
       <ScrollToTop />
       {/* menu table */}
+
+      <div className=" h-[50px] rounded-md bg-white overflow-hidden flex items-center px-4 mx-auto shadow">
+        <Marquee
+          gradient={false} 
+          speed={50}
+          pauseOnHover={true}
+        >
+          <span className="text-black">
+            🚨 Notice: Hostel will remain closed on Friday due to maintenance.
+            Website • New offers available now • Please check updates regularly
+          </span>
+        </Marquee>
+      </div>
+      <div className="live-kitchen-container ">
+        <h4 className="text-lg font-semibold mb-3">Live Kitchen</h4>
+
+        <VideoCard />
+      </div>
+
       <div className="shadow-xl">
         <h4 className="text-lg font-semibold mb-3">Menu Lists</h4>
 
@@ -222,7 +261,7 @@ export default function MealManagementPart() {
                       {headerGroup.headers.map((header) => (
                         <th
                           key={header.id}
-                          className="px-4 py-3 text-left font-semibold text-white border-b border-gray-300"
+                          className="px-4 py-3 text-left font-semibold text-white border-b border-black"
                         >
                           {flexRender(
                             header.column.columnDef.header,
@@ -243,7 +282,7 @@ export default function MealManagementPart() {
                       {row.getVisibleCells().map((cell) => (
                         <td
                           key={cell.id}
-                          className="px-4 py-2 md:py-3 border-gray-300 md:border-b flex justify-between md:table-cell"
+                          className="px-4 py-2 md:py-3 border-black  md:border-b flex justify-between md:table-cell"
                         >
                           {/* Mobile Label */}
                           <span className="font-bold text-orange-600 md:hidden mr-4">
@@ -358,7 +397,7 @@ export default function MealManagementPart() {
               onClick={() => setShowModal(true)}
               className="w-1/2 lg:w-1/3 mx-auto block bg-gradient-to-r from-orange-400 to-pink-500 text-white py-3 rounded-2xl font-semibold shadow-lg hover:from-pink-500 hover:to-orange-400 transition-all"
             >
-              Proceed to Order
+              Update
             </button>
           )}
         </main>

@@ -1,12 +1,9 @@
 import React, { useState } from "react";
-import { FiPlus, FiMinus, FiTrash2, FiSearch } from "react-icons/fi";
 import { useDispatch, useSelector } from "react-redux";
-import { addtoCart, decreaseCart } from "../../../../feature/cartSlice";
 import ProductDetailsModal from "../../../../Components/ProductDetailsModal";
-const categories = ["All", "Bangla", "Chinese", "Thai"];
+import { FaHeart } from "react-icons/fa";
 
-import { FaRegHeart } from "react-icons/fa";
-
+import { FiPlus } from "react-icons/fi";
 const foodData = [
   {
     id: 1,
@@ -59,7 +56,7 @@ const foodData = [
     desc: "Creamy tomato-based curry with grilled chicken.",
   },
 ];
-const Foods = () => {
+const FavouriteItem = () => {
   const [cart, setCart] = useState({});
   const [selectedItem, setSelectedItem] = useState(null);
 
@@ -78,12 +75,6 @@ const Foods = () => {
       return copy;
     });
   };
-  const [activeTab, setActiveTab] = useState("All");
-
-  const filteredItems =
-    activeTab === "All"
-      ? foodData
-      : foodData.filter((item) => item.category === activeTab);
 
   const handleItemDetails = (item) => {
     setSelectedItem(item);
@@ -92,67 +83,31 @@ const Foods = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50/50 ">
-      <div className="max-w-7xl mx-auto">
-        {/* Header Section */}
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-4">
-          <div>
-            <h1 className="text-3xl font-extrabold text-gray-900">
-              Delicious Food
-            </h1>
-            <p className="text-gray-500 text-sm">
-              Select your favorite category and enjoy
-            </p>
-          </div>
+    <div className="flex flex-col gap-3">
+      <h4 className="text-3xl font-extrabold text-gray-900">
+        My Favourite Items
+      </h4>
 
-          <div className="relative">
-            <FiSearch className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
-            <input
-              type="text"
-              placeholder="Search food..."
-              className="pl-10 pr-4 py-2.5 bg-white border border-gray-200 rounded-2xl w-full md:w-64 focus:ring-2 focus:ring-orange-500 outline-none transition-all"
-            />
-          </div>
-        </div>
-
-        {/* Categories Tab */}
-        <div className="flex gap-3 overflow-x-auto pb-2 no-scrollbar mb-2">
-          {categories.map((cat) => (
-            <button
-              key={cat}
-              onClick={() => setActiveTab(cat)}
-              className={`px-6 py-2.5 rounded-2xl font-bold text-sm transition-all whitespace-nowrap ${
-                activeTab === cat
-                  ? "bg-orange-500 text-white shadow-lg shadow-orange-200"
-                  : "bg-white text-gray-600 hover:bg-orange-50 border border-gray-100"
-              }`}
-            >
-              {cat}
-            </button>
-          ))}
-        </div>
-
-        {/* Food Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 2xl:grid-cols-6 gap-2">
-          {filteredItems.map((item) => (
-            <FoodCard
-              selectedItem={selectedItem}
-              setSelectedItem={setSelectedItem}
-              handleItemDetails={handleItemDetails}
-              cart={cart}
-              setQty={setQty}
-              getQty={getQty}
-              key={item.id}
-              item={item}
-            />
-          ))}
-        </div>
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 2xl:grid-cols-6 gap-2">
+        {foodData.map((item) => (
+          <FoodCard
+            selectedItem={selectedItem}
+            setSelectedItem={setSelectedItem}
+            handleItemDetails={handleItemDetails}
+            cart={cart}
+            setQty={setQty}
+            getQty={getQty}
+            key={item.id}
+            item={item}
+          />
+        ))}
       </div>
     </div>
   );
 };
 
- const FoodCard = ({
+export default FavouriteItem;
+const FoodCard = ({
   item,
   getQty,
   selectedItem,
@@ -187,9 +142,9 @@ const Foods = () => {
 
         <div
           onClick={(e) => e.stopPropagation()}
-          className="absolute top-3 right-2 text-xl text-black rounded-2xl w-[30px] h-[30px] bg-white flex items-center justify-center"
+          className="absolute top-3 right-2 text-xl text-red-500 rounded-2xl w-[30px] h-[30px] bg-white flex items-center justify-center"
         >
-          <FaRegHeart />
+          <FaHeart />
         </div>
 
         {/* Overlay  */}
@@ -251,5 +206,3 @@ const Foods = () => {
     </div>
   );
 };
-
-export default Foods;
