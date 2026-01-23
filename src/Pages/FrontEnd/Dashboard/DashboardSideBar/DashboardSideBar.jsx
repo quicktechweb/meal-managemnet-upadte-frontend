@@ -14,6 +14,7 @@ import PropTypes from "prop-types";
 import { ChevronRight } from "lucide-react";
 
 import { IoRestaurant } from "react-icons/io5";
+import { GrRestaurant } from "react-icons/gr";
 
 const DashboardSideBar = ({ setIsOpenSidebar }) => {
   //  const {  user, userLogOut } = useAuth();
@@ -130,24 +131,24 @@ const DashboardSideBar = ({ setIsOpenSidebar }) => {
       ],
     },
 
-    // {
-    //   key: "favourite",
-    //   title: "Favourite",
-    //   roles: ["user"],
-    //   icon: FaClipboardList,
-    //   links: [
-    //     {
-    //       title: "Favourite Items",
-    //       icon: IoRestaurant,
-    //       path: "/dashboard/favourite-item",
-    //     },
-    //     {
-    //       title: "Favourite Canteens",
-    //       icon: IoRestaurant,
-    //       path: "/dashboard/favourite-canteen",
-    //     },
-    //   ],
-    // },
+    {
+      key: "favourite",
+      title: "Favourite",
+      roles: ["user"],
+      icon: FaClipboardList,
+      links: [
+        {
+          title: "Favourite Items",
+          icon: IoRestaurant,
+          path: "/dashboard/favourite-item",
+        },
+        {
+          title: "Favourite Canteens",
+          icon: GrRestaurant,
+          path: "/dashboard/favourite-canteen",
+        },
+      ],
+    },
   ];
 
   // Helper to check if the user can see a sidebar item

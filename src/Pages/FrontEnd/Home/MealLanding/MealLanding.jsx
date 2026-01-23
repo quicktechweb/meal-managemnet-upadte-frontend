@@ -2,7 +2,7 @@ import { FaUtensils, FaUsers, FaChartPie } from "react-icons/fa";
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 
-const stats = [
+ const stats = [
   {
     icon: FaUtensils,
     title: "Daily Meal Control",
