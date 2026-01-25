@@ -51,42 +51,45 @@ const Registration = () => {
         </div>
 
         {/*  registration Form */}
-        <div className="relative w-full max-w-[500px] h-full bg-white overflow-hidden p-4 lg:p-8  flex flex-col rounded-tl-2xl rounded-bl-2xl">
-          <div className="mt-4">
-            <h2 className="text-3xl lg:text-5xl font-serif font-bold text-black ">
-              Register
-            </h2>
-          </div>
+        <div className="relative w-full max-w-[500px] h-full bg-white overflow-hidden   flex flex-col rounded-tl-2xl rounded-bl-2xl">
+          <div className="px-4 md:px-6 ">
+            <div className="mt-4">
+              <h2 className="text-3xl lg:text-5xl font-serif font-bold text-black ">
+                Register
+              </h2>
+            </div>
 
-          <div className="mt-1.5 lg:mt-3">
-            <h3 className="text-base  text-[#818181]">
-              Register to get full access and connect with us
-            </h3>
-          </div>
+            <div className="mt-1.5 lg:mt-3">
+              <h3 className="text-base  text-[#818181]">
+                Register to get full access and connect with us
+              </h3>
+            </div>
 
-          <div className="flex w-full max-w-sm bg-gray-100 rounded-lg p-1 mt-4">
-            <NavLink
-              to="/register/user"
-              className={({ isActive }) =>
-                `w-1/2 py-2 rounded-md text-sm font-medium transition-all text-center
+            <div className="flex w-full max-w-sm bg-gray-100 rounded-lg p-1 mt-4">
+              <NavLink
+                to="/register/user"
+                className={({ isActive }) =>
+                  `w-1/2 py-2 rounded-md text-sm font-medium transition-all text-center
       ${isActive ? "bg-white text-gray-900 shadow" : "text-gray-500"}`
-              }
-            >
-              As User
-            </NavLink>
+                }
+              >
+                As User
+              </NavLink>
 
-            <NavLink
-              to="/register/mess"
-              className={({ isActive }) =>
-                `w-1/2 py-2 rounded-md text-sm font-medium transition-all text-center
+              <NavLink
+                to="/register/mess"
+                className={({ isActive }) =>
+                  `w-1/2 py-2 rounded-md text-sm font-medium transition-all text-center
       ${isActive ? "bg-white text-gray-900 shadow" : "text-gray-500"}`
-              }
-            >
-              As Mess
-            </NavLink>
+                }
+              >
+                As Mess
+              </NavLink>
+            </div>
           </div>
-
-          <Outlet />
+          <div className="h-[900px] px-4 md:px-6 overflow-y-auto pb-5">
+            <Outlet />
+          </div>
         </div>
       </div>
     </div>
