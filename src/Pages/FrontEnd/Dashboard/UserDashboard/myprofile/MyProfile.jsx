@@ -14,6 +14,7 @@ import {
 import MessDetailsModal from "../../../../../Components/MessDetailsModal";
 import Swal from "sweetalert2";
 import { FaTimes } from "react-icons/fa";
+import { useForm } from "react-hook-form";
 
 import {
   createColumnHelper,
@@ -87,6 +88,7 @@ const me = {
   id: 0,
   name: "Quick Tech",
   phone: " 01517834534",
+  email: "quicktech@gmail.com",
   img: "https://api.dicebear.com/7.x/avataaars/svg?seed=Sakil",
 };
 
@@ -595,11 +597,40 @@ const EditProfileModal = ({ onClose, onEdit }) => {
 
 // order modal
 const OrderModal = ({ onClose, selectedMeals }) => {
+  console.log(selectedMeals);
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm({
+    defaultValues: {
+      name: me?.name,
+      email: me?.email,
+      phone: me?.phone,
+    },
+  });
+
+  const onSubmit = (data) => {
+    const payload = {
+      user: data,
+      order: selectedMeals,
+    };
+
+    console.log("Order Submitted:", payload);
+
+    // onClose();
+  };
+
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 overflow-auto p-4">
-      <div className="bg-white rounded-3xl w-full max-w-2xl p-6 relative max-h-[90vh] overflow-y-auto shadow-xl">
+      <form
+        onSubmit={handleSubmit(onSubmit)}
+        className="bg-white rounded-3xl w-full max-w-2xl p-6 relative max-h-[90vh] overflow-y-auto shadow-xl"
+      >
         {/* Close button */}
         <button
+          type="button"
           className="absolute top-4 right-4 text-gray-500 hover:text-gray-700"
           onClick={onClose}
         >
@@ -612,25 +643,59 @@ const OrderModal = ({ onClose, selectedMeals }) => {
 
         {/* User Info Form */}
         <div className="space-y-3 mb-6">
-          <input
-            className="w-full border rounded-xl px-4 py-2 focus:ring-2 focus:ring-green-400 outline-none"
-            value={me.name}
-            placeholder="Name"
-          />
-          <input
-            className="w-full border rounded-xl px-4 py-2 focus:ring-2 focus:ring-green-400 outline-none"
-            value={me.email}
-            placeholder="Email"
-          />
-          <input
-            className="w-full border rounded-xl px-4 py-2 focus:ring-2 focus:ring-green-400 outline-none"
-            value={me.phone}
-            placeholder="Phone"
-          />
+          <div>
+            <input
+              className="w-full border rounded-xl px-4 py-2 focus:ring-2 focus:ring-green-400 outline-none"
+              placeholder="Name"
+              {...register("name", { required: "Name is required" })}
+            />
+            {errors.name && (
+              <p className="text-red-500 text-sm mt-1">{errors.name.message}</p>
+            )}
+          </div>
+
+          <div>
+            <input
+              className="w-full border rounded-xl px-4 py-2 focus:ring-2 focus:ring-green-400 outline-none"
+              placeholder="Email"
+              {...register("email", {
+                required: "Email is required",
+                pattern: {
+                  value: /^\S+@\S+$/i,
+                  message: "Invalid email address",
+                },
+              })}
+            />
+            {errors.email && (
+              <p className="text-red-500 text-sm mt-1">
+                {errors.email.message}
+              </p>
+            )}
+          </div>
+
+          <div>
+            <input
+              className="w-full border rounded-xl px-4 py-2 focus:ring-2 focus:ring-green-400 outline-none"
+              placeholder="Phone"
+              {...register("phone", {
+                required: "Phone number is required",
+                minLength: {
+                  value: 10,
+                  message: "Phone number must be at least 10 digits",
+                },
+              })}
+            />
+            {errors.phone && (
+              <p className="text-red-500 text-sm mt-1">
+                {errors.phone.message}
+              </p>
+            )}
+          </div>
         </div>
 
         {/* Order Information */}
-        <div className="space-y-4 mb-6">
+        {/* Order Information */}
+        <div className="space-y-5 mb-6">
           <h3 className="text-lg font-semibold text-gray-700">
             Order Information
           </h3>
@@ -638,49 +703,68 @@ const OrderModal = ({ onClose, selectedMeals }) => {
           {selectedMeals?.map((member) => (
             <div
               key={member.id}
-              className="border border-gray-200 rounded-xl p-4 flex flex-col gap-2 shadow-sm hover:shadow-md transition"
+              className="border rounded-2xl p-4 space-y-4 shadow-sm"
             >
               {/* Member Header */}
               <div className="flex items-center gap-4">
                 <img
                   src={member.img}
                   alt={member.name}
-                  className="w-12 h-12 rounded-full object-cover border"
+                  className="w-12 h-12 rounded-full border"
                 />
                 <div>
                   <h4 className="font-semibold text-gray-800">{member.name}</h4>
-                  <p className="text-gray-500 text-sm">{member.phone}</p>
+                  <p className="text-sm text-gray-500">{member.phone}</p>
                 </div>
               </div>
 
-              {/* Meal Info */}
-              <div className="mt-2 space-y-2">
-                {member.mealInfo.map((info, idx) => (
-                  <div
-                    key={idx}
-                    className="bg-gray-50 rounded-lg p-3 border border-gray-100 flex justify-between items-center"
-                  >
-                    <div>
-                      <p className="text-gray-600 text-sm">{info.date}</p>
-                      <p className="text-gray-700 font-medium">
-                        Meals: {info.meals.join(", ")}
-                      </p>
-                    </div>
-                    <div className="text-green-600 font-semibold">
-                      ${info.total}
-                    </div>
+              {/* Meal Dates */}
+              {member.mealInfo.map((info, idx) => (
+                <div key={idx} className="bg-gray-50 rounded-xl p-4 space-y-3">
+                  {/* Date */}
+                  <div className="flex justify-between items-center">
+                    <p className="text-sm font-medium text-gray-600">
+                      📅 {info.date}
+                    </p>
+                    <p className="font-semibold text-green-600">
+                      ৳ {info.total}
+                    </p>
                   </div>
-                ))}
-              </div>
+
+                  {/* Meals */}
+                  <div className="grid gap-3">
+                    {info.meals.map((meal, i) => (
+                      <div
+                        key={i}
+                        className="flex justify-between items-start bg-white border rounded-lg p-3"
+                      >
+                        <div>
+                          <p className="capitalize font-medium text-gray-700">
+                            🍽 {meal.type}
+                          </p>
+                          <p className="text-sm text-gray-500">
+                            {meal.items.join(", ")}
+                          </p>
+                        </div>
+                        <p className="font-semibold text-gray-800">
+                          ৳ {meal.price}
+                        </p>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              ))}
             </div>
           ))}
         </div>
 
-        {/* Confirm Button */}
-        <button className="w-full bg-gradient-to-r from-green-500 to-emerald-600 text-white py-3 rounded-xl font-semibold shadow-lg hover:from-emerald-600 hover:to-green-500 transition-all">
+        <button
+          type="submit"
+          className="w-full bg-gradient-to-r from-green-500 to-emerald-600 text-white py-3 rounded-xl font-semibold shadow-lg hover:from-emerald-600 hover:to-green-500 transition-all"
+        >
           Confirm Order
         </button>
-      </div>
+      </form>
     </div>
   );
 };

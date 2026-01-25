@@ -78,16 +78,21 @@ const DashboardSideBar = ({ setIsOpenSidebar }) => {
         },
       ],
     },
-    {
-      key: "My Order",
-      title: "MyOrder",
-      roles: ["user"],
-      icon: FaClipboardList,
-      permissionKey: "MyOrder",
-      links: [
-        { title: "MyOrder", icon: FaShoppingBag, path: "/dashboard/userOrder" },
-      ],
-    },
+    // {
+    //   key: "My Order",
+    //   title: "MyOrder",
+    //   roles: ["user"],
+    //   icon: FaClipboardList,
+    //   permissionKey: "MyOrder",
+    //   links: [
+    //     { title: "MyOrder", icon: FaShoppingBag, path: "/dashboard/userOrder" },
+    //     {
+    //       title: "MessOrder",
+    //       icon: FaShoppingBag,
+    //       path: "/dashboard/messOrder",
+    //     },
+    //   ],
+    // },
 
     {
       key: "Profile Manage",
@@ -178,7 +183,10 @@ const DashboardSideBar = ({ setIsOpenSidebar }) => {
       <div className="w-full overflow-hidden">
         <section className="flex flex-col gap-2 text-black ">
           {/* Dashboard Home */}
-          <NavLink onClick={() => setIsOpenSidebar(false)} to={"/dashboard"}>
+          <NavLink
+            onClick={() => setIsOpenSidebar(false)}
+            to={"/dashboard/dashboard"}
+          >
             <div className="shadow -ms-16 flex items-center justify-center gap-2 font-bold p-3 mt-4 duration-300 active:scale-75 md:pr-0">
               <FaHome className="text-xl text-[#007cde]" />
               <h2 className="font-semibold  ">Dashboard - Home</h2>
@@ -261,6 +269,7 @@ const DashboardSideBar = ({ setIsOpenSidebar }) => {
                           key={link.path}
                           onClick={() => setIsOpenSidebar(false)}
                           to={link.path}
+                          className={"inline-block"}
                         >
                           <div className="dashboardNavLink border-l-[3px] flex items-center gap-2 bg-white p-1 ml-8 mt-2 hover:scale-110 duration-300 active:scale-75 pr-0">
                             {/* <FaSellcast className="text-xl text-[#01c0c9]" /> */}

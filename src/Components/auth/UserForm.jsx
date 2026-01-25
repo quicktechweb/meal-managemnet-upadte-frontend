@@ -1,161 +1,112 @@
 import React, { useState } from "react";
-import { IoMdEye } from "react-icons/io";
-import { IoMdEyeOff } from "react-icons/io";
-import { Link } from "react-router-dom";
+import { IoMdEye, IoMdEyeOff } from "react-icons/io";
 
-import { FaFacebook } from "react-icons/fa";
-import { FcGoogle } from "react-icons/fc";
-import { FaApple } from "react-icons/fa";
-import { FaTwitter } from "react-icons/fa";
+const fields = [
+  "Name",
+  "Email",
+  "Password",
+  "Username",
+  "Father's Name",
+  "Mother's Name",
+  "Guardian's Name",
+  "Date of Birth",
+  "Nationality / Country",
+  "Religion",
+  "Education",
+  "Married / Unmarried",
+  "Phone Number",
+  "City",
+  "Present Address",
+  "Permanent Address",
+  "Name Of the Institution",
+  "Hostel Branch",
+];
+
+const institutions = ["Institute A", "Institute B", "Institute C"];
+const hostelBranches = ["Hostel 1", "Hostel 2", "Hostel 3"];
 
 const UserForm = () => {
   const [passwordShow, setPasswordShow] = useState(false);
 
   return (
-    <form className="mt-4 space-y-3 md:space-y-6">
-      <div className="flex flex-col gap-2.5">
-        <label
-          className=" bg-white px-1 text-gray-500 transition-all text-sm md:text-lg
-     "
-        >
-          Hostel Name
-        </label>
+    <form className=" space-y-3 md:space-y-6">
+      {fields.map((field, index) => {
+        // Determine input type
+        let type = "text";
+        if (field === "Date of Birth") type = "date";
+        if (field === "Email Address") type = "email";
+        if (field === "Password") type = passwordShow ? "text" : "password";
 
-        <select
-          className="py-3 focus:outline-0 border border-gray-200 rounded-md"
-          name=""
-          id=""
-        >
-          <option value="1">Hostel 1</option>
-          <option value="1">Hostel 2</option>
-          <option value="1">Hostel 2</option>
-        </select>
-      </div>
+        if (field === "Name Of the Institution" || field === "Hostel Branch") {
+          const options =
+            field === "Name Of the Institution" ? institutions : hostelBranches;
 
-      <div className="relative">
-        <input
-          type="text"
-          placeholder=" "
-          className="peer w-full border border-gray-200 rounded-md px-3 h-[50px] text-lg
-    focus:outline-none focus:border-black transition-all"
-        />
+          return (
+            <div className="flex flex-col gap-2" key={index}>
+              <label
+                className=" bg-white px-1 text-gray-500 transition-all
+                 text-sm md:text-lg
+                  peer-focus:text-black
+                pointer-events-none"
+              >
+                {field}
+              </label>
+              <select
+                className="peer w-full border border-gray-200 rounded-md px-3 h-[50px] text-lg
+                focus:outline-none focus:border-black transition-all"
+                defaultValue=""
+              >
+                <option value="" disabled>
+                  Select {field}
+                </option>
+                {options.map((opt, i) => (
+                  <option key={i} value={opt}>
+                    {opt}
+                  </option>
+                ))}
+              </select>
+            </div>
+          );
+        }
 
-        <label
-          className="absolute left-3 bg-white px-1 text-gray-500 transition-all
-    top-1/2 -translate-y-1/2 text-sm md:text-lg
-    peer-focus:top-1 peer-focus:text-xs peer-focus:text-black
-    peer-not-placeholder-shown:top-1 peer-not-placeholder-shown:text-xs
-    pointer-events-none"
-        >
-          Full Name
-        </label>
-      </div>
+        return (
+          <div className="relative" key={index}>
+            <input
+              type={type}
+              placeholder=" "
+              className="peer w-full border border-gray-200 rounded-md px-3 h-[50px] text-lg
+              focus:outline-none focus:border-black transition-all"
+            />
 
-      <div className="relative">
-        <input
-          type="email"
-          placeholder=" "
-          className="peer w-full border border-gray-200 rounded-md px-3 h-[50px] text-lg
-    focus:outline-none focus:border-black transition-all"
-        />
+            <label
+              className="absolute left-3 bg-white px-1 text-gray-500 transition-all
+              top-1/2 -translate-y-1/2 text-sm md:text-lg
+              peer-focus:top-1 peer-focus:text-xs peer-focus:text-black
+              peer-not-placeholder-shown:top-1 peer-not-placeholder-shown:text-xs
+              pointer-events-none"
+            >
+              {field}
+            </label>
 
-        <label
-          className="absolute left-3 bg-white px-1 text-gray-500 transition-all
-    top-1/2 -translate-y-1/2 text-sm md:text-lg
-    peer-focus:top-1 peer-focus:text-xs peer-focus:text-black
-    peer-not-placeholder-shown:top-1 peer-not-placeholder-shown:text-xs
-    pointer-events-none"
-        >
-          Email Address
-        </label>
-      </div>
-
-      <div className="relative">
-        <input
-          type="tel"
-          placeholder=" "
-          className="peer w-full border border-gray-200 rounded-md px-3 h-[50px] text-lg
-    focus:outline-none focus:border-black transition-all"
-        />
-
-        <label
-          className="absolute left-3 bg-white px-1 text-gray-500 transition-all
-    top-1/2 -translate-y-1/2 text-sm md:text-lg
-    peer-focus:top-1 peer-focus:text-xs peer-focus:text-black
-    peer-not-placeholder-shown:top-1 peer-not-placeholder-shown:text-xs
-    pointer-events-none"
-        >
-          Phone Number
-        </label>
-      </div>
-
-      <div className="relative">
-        <input
-          type={passwordShow ? "text" : "password"}
-          placeholder=" "
-          className="peer w-full border border-gray-200 rounded-md px-3 h-[50px] text-lg
-               focus:outline-none focus:border-black transition-all"
-        />
-
-        <label
-          className="absolute left-3 bg-white px-1 text-gray-500 transition-all
-    top-1/2 -translate-y-1/2 text-sm md:text-lg
-    peer-focus:top-1 peer-focus:text-xs peer-focus:text-black
-    peer-not-placeholder-shown:top-1 peer-not-placeholder-shown:text-xs
-    pointer-events-none"
-        >
-          Password
-        </label>
-
-        <div
-          onClick={() => setPasswordShow(!passwordShow)}
-          className="absolute top-1/2 text-2xl -translate-y-1/2 text-gray-500   right-4"
-        >
-          {passwordShow ? <IoMdEyeOff /> : <IoMdEye />}
-        </div>
-      </div>
+            {/* Password toggle */}
+            {field === "Password" && (
+              <div
+                onClick={() => setPasswordShow(!passwordShow)}
+                className="absolute top-1/2 text-2xl -translate-y-1/2 text-gray-500 right-4"
+              >
+                {passwordShow ? <IoMdEyeOff /> : <IoMdEye />}
+              </div>
+            )}
+          </div>
+        );
+      })}
 
       <button
         type="submit"
-        className="w-full cursor-pointer py-1.5 md:py-3 bg-black text-white  text-sm md:text-xl rounded-lg shadow-lg transition-all transform active:scale-95"
+        className="w-full cursor-pointer py-1.5 md:py-3 bg-black text-white text-sm md:text-xl rounded-lg shadow-lg transition-all transform active:scale-95"
       >
         Sign Up
       </button>
-
-      <div>
-        <div className="mb-1 md:mb-2 text-sm md:text-[18px] flex items-center gap-2">
-          <p>Already have an account?</p>{" "}
-          <Link
-            className="text-[rgba(50,100,245,0.90)] font-semibold"
-            to={"/auth/login"}
-          >
-            Login
-          </Link>
-        </div>
-
-        <div className="flex gap-2 items-center justify-center mt-2 md:mt-4">
-          <div className="border-t-2 border-gray-300 w-[60px] sm:w-[100px] md:w-[150px] "></div>
-          <h3 className="text-[14px] text-nowrap">or continue with</h3>
-          <div className="border-t-2 border-gray-300 w-[60px] sm:w-[100px] md:w-[150px] "></div>
-        </div>
-
-        {/* social link */}
-
-        <div className="flex flex-wrap gap-3.5 items-center mt-2 md:mt-4 justify-center">
-          <Link className="p-2 md:p-[15px] border border-[#d1d1d1] rounded-2xl flex items-center justify-center text-xl md:text-4xl text-blue-500 hover:bg-gray-100/40">
-            <FaFacebook />
-          </Link>
-          <Link className="p-2 md:p-[15px] border border-[#d1d1d1] rounded-2xl flex items-center justify-center ttext-xl md:text-4xl  text-blue-500 hover:bg-gray-100/40">
-            <FcGoogle />
-          </Link>
-          <Link className="p-2 md:p-[15px] border border-[#d1d1d1] rounded-2xl flex items-center justify-center text-xl md:text-4xl hover:bg-gray-100/40">
-            <FaApple />
-          </Link>
-          <Link className="p-2 md:p-[15px] border border-[#d1d1d1] rounded-2xl flex items-center justify-center text-xl md:text-4xl  text-blue-400 hover:bg-gray-100/40">
-            <FaTwitter />
-          </Link>
-        </div>
-      </div>
     </form>
   );
 };
