@@ -86,6 +86,11 @@ const DashboardSideBar = ({ setIsOpenSidebar }) => {
       permissionKey: "MyOrder",
       links: [
         { title: "MyOrder", icon: FaShoppingBag, path: "/dashboard/userOrder" },
+        {
+          title: "MessOrder",
+          icon: FaShoppingBag,
+          path: "/dashboard/messOrder",
+        },
       ],
     },
 

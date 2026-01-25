@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { FaBars, FaTimes } from "react-icons/fa";
-import { Outlet, ScrollRestoration } from "react-router-dom";
+import { Link, Outlet, ScrollRestoration } from "react-router-dom";
 // import useTitle from "../hooks/useTitle";
 import DashboardSideBar from "./DashboardSideBar/DashboardSideBar";
 import { CartSidebar } from "../../../Components/CartSidebar";
@@ -87,9 +87,12 @@ const Dashboard = () => {
               {isOpens && (
                 <div className="absolute right-0 mt-2 w-48 bg-white border rounded-lg shadow-lg">
                   <ul>
-                    <li className="px-4 py-2 hover:bg-gray-100 cursor-pointer">
+                    <Link
+                      to={"/"}
+                      className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
+                    >
                       Profile Settings
-                    </li>
+                    </Link>
                     <li className="px-4 py-2 hover:bg-gray-100 cursor-pointer">
                       Logout
                     </li>

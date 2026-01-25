@@ -212,18 +212,14 @@ export default function MealManagementPart() {
       setIsPlaying(!isPlaying);
     }
   };
-
+const dateRef = useRef(null);
   return (
     <section className="min-h-screen bg-gradient-to-br from-orange-50 via-white to-orange-100 p-3 lg:p-6 flex flex-col gap-3.5">
       <ScrollToTop />
       {/* menu table */}
 
       <div className=" h-[50px] rounded-md bg-white overflow-hidden flex items-center px-4 mx-auto shadow">
-        <Marquee
-          gradient={false} 
-          speed={50}
-          pauseOnHover={true}
-        >
+        <Marquee gradient={false} speed={50} pauseOnHover={true}>
           <span className="text-black">
             🚨 Notice: Hostel will remain closed on Friday due to maintenance.
             Website • New offers available now • Please check updates regularly
@@ -309,8 +305,21 @@ export default function MealManagementPart() {
       <div className="max-w-7xl mx-auto grid grid-cols-1 xl:grid-cols-4 gap-y-4 xl:gap-6">
         {/* SIDEBAR */}
         <aside className="bg-white/80 w-full xl:w-auto backdrop-blur-xl rounded-3xl shadow-xl p-2">
-          <h2 className="flex px-2 pt-2 items-center gap-3 font-bold mb-4 text-gray-800">
-            <FaCalendarAlt className="text-orange-500" /> Meal Calendar
+          <h2 className="flex items-center gap-3 font-bold text-gray-800 p-5">
+            {/* Hidden Date Input */}
+            <input
+              type="date"
+              ref={dateRef}
+              className="absolute opacity-0 pointer-events-none"
+            />
+            {/* Calendar Icon */}
+            <button
+              onClick={() => dateRef.current?.showPicker()}
+              className="p-2 rounded-md hover:bg-gray-100 transition"
+            >
+              <FaCalendarAlt className="text-orange-500" />
+            </button>
+            Meal Calendar
           </h2>
 
           <div className="h-[70vh] overflow-y-auto p-2">

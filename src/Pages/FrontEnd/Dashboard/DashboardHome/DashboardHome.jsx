@@ -2,6 +2,7 @@ import { useState } from "react";
 import toast from "react-hot-toast";
 import { FaSpinner } from "react-icons/fa";
 import Modal from "react-modal";
+import MessOrder from "../UserDashboard/UserOrder/MessOrder";
 // import useAuth from "../../Hooks/useAuth";
 // import UserOverView from "../UserDashboard/UserOverView/UserOverView";
 // import AdminOverview from "../AdminDashboard/AdminOverview/AdminOverview";
@@ -48,24 +49,19 @@ const DashboardHome = () => {
   const closeModal = () => setIsOpen(false);
 
   // ROLE-BASED VIEW
-  const renderDashboardByRole = () => {
-    
-  };
+  const renderDashboardByRole = () => {};
 
   return (
     <div className="flex flex-col items-start mt-10 px-6 md:px-12 w-full max-w-6xl mx-auto">
-   <div className="p-6 flex justify-between items-center w-full -mt-10">
- 
-</div>
-
-
-
-
+      <div className="p-6 flex justify-between items-center w-full -mt-10"></div>
       {/* ROLE VIEW */}
       <div className="w-full">{renderDashboardByRole()}</div>
-
       {/* Password Modal */}
-      <Modal isOpen={modalIsOpen} onRequestClose={closeModal} style={customStyles}>
+      <Modal
+        isOpen={modalIsOpen}
+        onRequestClose={closeModal}
+        style={customStyles}
+      >
         <form onSubmit={handleChangePassword} className="p-10">
           <input
             className="bg-orange-400 px-5 py-3 focus:outline-none rounded-md font-semibold w-full text-white placeholder:text-white"
@@ -82,7 +78,11 @@ const DashboardHome = () => {
               type="submit"
               className="bg-green-500 text-white font-semibold px-4 py-2 rounded-md duration-300 active:scale-90 flex items-center justify-center"
             >
-              {loader ? <FaSpinner className="text-white animate-spin" /> : "Change Password"}
+              {loader ? (
+                <FaSpinner className="text-white animate-spin" />
+              ) : (
+                "Change Password"
+              )}
             </button>
             <p
               onClick={closeModal}
@@ -93,6 +93,7 @@ const DashboardHome = () => {
           </div>
         </form>
       </Modal>
+     
     </div>
   );
 };
