@@ -21,6 +21,7 @@ import ScrollToTop from "../../../ScrollToTop/ScrollToTop";
 import VideoCard from "../../../../../Components/VideoCard";
 
 import Marquee from "react-fast-marquee";
+import VideoSlider from "../../../../../Components/VideoSlider";
 
 const schedule = [
   {
@@ -212,7 +213,7 @@ export default function MealManagementPart() {
       setIsPlaying(!isPlaying);
     }
   };
-const dateRef = useRef(null);
+  const dateRef = useRef(null);
   return (
     <section className="min-h-screen bg-gradient-to-br from-orange-50 via-white to-orange-100 p-3 lg:p-6 flex flex-col gap-3.5">
       <ScrollToTop />
@@ -226,10 +227,9 @@ const dateRef = useRef(null);
           </span>
         </Marquee>
       </div>
-      <div className="live-kitchen-container ">
+      <div className="live-kitchen-container max-w-[300px] md:max-w-[650px] xl:max-w-[1000px] w-full mx-auto">
         <h4 className="text-lg font-semibold mb-3">Live Kitchen</h4>
-
-        <VideoCard />
+        <VideoSlider />
       </div>
 
       <div className="shadow-xl">

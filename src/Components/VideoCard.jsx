@@ -17,7 +17,7 @@ const VideoCard = () => {
   };
 
   return (
-    <div className="max-w-5xl mx-auto bg-white rounded-2xl shadow-xl overflow-hidden">
+    <div className="mx-auto  rounded-2xl shadow-xl overflow-hidden">
       {/* Video Section */}
       <div className="relative group">
         <video
