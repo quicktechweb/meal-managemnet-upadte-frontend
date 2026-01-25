@@ -85,7 +85,7 @@ const WalletPage = () => {
                 <Wallet size={16} /> Total Balance
               </p>
               <h2 className="text-3xl font-extrabold tracking-tight">
-                $
+                ৳
                 {balance.toLocaleString(undefined, {
                   minimumFractionDigits: 2,
                 })}
@@ -129,7 +129,7 @@ const WalletPage = () => {
                 </label>
                 <div className="relative">
                   <span className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 font-medium">
-                    $
+                    ৳
                   </span>
                   <input
                     type="number"
@@ -214,7 +214,7 @@ const WalletPage = () => {
                         : "text-slate-900"
                     }`}
                   >
-                    {tx.type === "Credit" ? "+" : "-"}$
+                    {tx.type === "Credit" ? "+" : "-"}৳
                     {tx.amount.toLocaleString()}
                   </p>
                   <p className="text-[10px] uppercase tracking-widest text-slate-400 font-bold">

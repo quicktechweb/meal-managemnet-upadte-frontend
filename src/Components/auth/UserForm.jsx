@@ -4,6 +4,7 @@ import { IoMdEye, IoMdEyeOff } from "react-icons/io";
 const fields = [
   "Name",
   "Email",
+  "Password",
   "Username",
   "Father's Name",
   "Mother's Name",
@@ -28,7 +29,7 @@ const UserForm = () => {
   const [passwordShow, setPasswordShow] = useState(false);
 
   return (
-    <form className="mt-4 space-y-3 md:space-y-6">
+    <form className=" space-y-3 md:space-y-6">
       {fields.map((field, index) => {
         // Determine input type
         let type = "text";

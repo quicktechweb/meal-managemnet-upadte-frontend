@@ -4,73 +4,99 @@ const Registration = () => {
   const location = useLocation();
 
   return (
-    <div className="min-h-screen bg-white p-4 md:p-10 flex items-center justify-center w-full mt-14 md:mt-0 ">
+    <div className="min-h-screen bg-[#FFFBF7] p-4 md:p-10 flex items-center justify-center w-full mt-14 md:mt-20 font-sans">
+      <div className="absolute top-20 left-20 w-72 h-72 bg-orange-200 rounded-full mix-blend-multiply filter blur-3xl opacity-40 animate-pulse"></div>
+      <div className="absolute bottom-20 right-20 w-80 h-80 bg-green-100 rounded-full mix-blend-multiply filter blur-3xl opacity-50 animate-pulse transition-delay-1000"></div>
+
       <div
-        className={`flex flex-row-reverse ${location?.pathname === "/register/user" ? "md:h-[900px] h-auto" : "h-[620px] md:h-[700px] xl:h-[800px] 2xl:h-[900px] "}  justify-center items-center shadow-2xl rounded-2xl `}
+        className={`relative flex flex-row-reverse bg-white border border-orange-100
+        ${location?.pathname === "/register/user" ? "h-[850px]" : "h-[850px]"} 
+        justify-center items-stretch shadow-[0_30px_60px_-15px_rgba(120,50,0,0.15)] rounded-[1rem] overflow-hidden max-w-6xl w-full transition-all duration-500`}
       >
-        <div className="relative w-full max-w-xl h-full bg-white   overflow-hidden md:flex flex-col items-center justify-between py-12 rounded-tr-2xl rounded-br-2xl hidden">
-          <div className="absolute -bottom-10 -right-20 w-96 h-96 rounded-full overflow-hidden border-4 border-white">
+        <div className="relative w-full lg:w-1/2 bg-white overflow-hidden hidden md:flex flex-col items-center justify-center p-12 text-black">
+          {/* Accent Glow */}
+          {/* <div className="absolute top-0 right-0 w-full h-full bg-gradient-to-br from-orange-500/20 to-transparent pointer-events-none"></div> */}
+
+          {/* Floating Image */}
+          <div className="relative z-10 w-80 h-80 rounded-full border-[10px] border-white/5 shadow-2xl overflow-hidden transform hover:scale-105 transition-transform duration-700">
             <img
               src="https://i.ibb.co.com/mrn7r0S2/pexels-julieaagaard-2097090-removebg-preview.png"
-              alt="Tomatoes"
+              alt="Fresh Tomatoes"
               className="w-full h-full object-cover"
             />
           </div>
 
-          <div className="flex items-center justify-center">
-            <div className="hidden md:flex flex-col justify-between items-center bg-white p-8 max-w-[350px] text-sm">
-              <div className="space-y-2">
-                <p className="flex items-center gap-2 text-black">
-                  ✅ Delivering Across All Major Cities in Bangladesh
-                </p>
-                <p className="flex items-center gap-2 text-black">
-                  ✅ Thousands of Meal Options
-                </p>
-                <p className="flex items-center gap-2 text-black">
-                  ✅ Trusted by Lakhs of Happy Customers
-                </p>
+          <div className="z-10 mt-10 space-y-8 max-w-sm text-center lg:text-left">
+            <div className="space-y-4">
+              <h2 className="text-4xl font-serif font-bold leading-tight">
+                Fresh meals, <br />
+                <span className="text-orange-400">delivered to your door.</span>
+              </h2>
 
-                {/* QR Section */}
-                <div className="flex mt-10   items-start ">
-                  <div>
-                    <img
-                      src="https://api.qrserver.com/v1/create-qr-code/?size=100x100&data=sellular-app"
-                      alt="QR Code"
-                      className="w-20 h-20"
-                    />
+              <div className="space-y-3 pt-4">
+                {[
+                  "Delivering Across All Major Cities",
+                  "Thousands of Healthy Options",
+                  "Trusted by Lakhs of Happy Eaters",
+                ].map((text, i) => (
+                  <div
+                    key={i}
+                    className="flex items-center gap-3 justify-center lg:justify-start"
+                  >
+                    <span className="flex-shrink-0 w-5 h-5 rounded-full bg-orange-500 flex items-center justify-center text-[10px] text-white">
+                      ✔
+                    </span>
+                    <p className="text-black text-sm font-medium">{text}</p>
                   </div>
-                  <div className="ms-5">
-                    <p className="mt-2 font-bold">DON’T HAVE SELLAR APP?</p>
-                    <p>Download it here!</p>
-                    <p>Scan the QR code</p>
-                  </div>
-                </div>
+                ))}
+              </div>
+            </div>
+
+            {/* QR Section */}
+            <div className="pt-8 mt-4 border-t border-white/10 flex items-center justify-center lg:justify-start gap-5">
+              <div className="p-2 bg-white rounded-2xl">
+                <img
+                  src="https://api.qrserver.com/v1/create-qr-code/?size=100x100&data=sellular-app"
+                  alt="QR Code"
+                  className="w-14 h-14"
+                />
+              </div>
+              <div className="text-left">
+                <p className="text-[10px] uppercase tracking-widest text-orange-400 font-black">
+                  Get the App
+                </p>
+                <p className="text-sm font-medium text-black">
+                  Scan to enjoy exclusive <br />
+                  food discounts!
+                </p>
               </div>
             </div>
           </div>
         </div>
 
-        {/*  registration Form */}
-        <div className="relative w-full max-w-[500px] h-full bg-white overflow-hidden   flex flex-col rounded-tl-2xl rounded-bl-2xl">
-          <div className="px-4 md:px-6 ">
-            <div className="mt-4">
-              <h2 className="text-3xl lg:text-5xl font-serif font-bold text-black ">
+        {/* Left Side: Registration Form */}
+        <div className="w-full lg:w-1/2 flex flex-col bg-white">
+          <div className="px-5 pt-8">
+            <div className="mb-5 ">
+              <span className="text-orange-600 font-bold text-sm tracking-widest uppercase">
+                Start for free
+              </span>
+              <h2 className="text-4xl md:text-5xl font-serif font-bold text-slate-900 mt-2">
                 Register
               </h2>
+              <p className="mt-4 text-slate-500 leading-relaxed">
+                Join the community that celebrates good food and great
+                connections.
+              </p>
             </div>
 
-            <div className="mt-1.5 lg:mt-3">
-              <h3 className="text-base  text-[#818181]">
-                Register to get full access and connect with us
-              </h3>
-            </div>
-
-            <div className="flex w-full max-w-sm bg-gray-100 rounded-lg p-1 mt-4">
+            {/* Food-Themed Toggle Switch */}
+            <div className="flex w-full bg-slate-100 rounded-2xl p-1.5 mb-5 border border-slate-200">
               <NavLink
                 to="/register/user"
                 className={({ isActive }) =>
-                  `w-1/2 py-2 rounded-md text-sm font-medium transition-all text-center
-      ${isActive ? "bg-white text-gray-900 shadow" : "text-gray-500"}`
+                  `w-1/2 py-3.5 rounded-xl text-sm font-bold transition-all duration-300 text-center
+                ${isActive ? "bg-orange-500 text-white shadow-lg shadow-orange-200" : "text-slate-500 hover:bg-slate-200/50"}`
                 }
               >
                 As User
@@ -79,15 +105,17 @@ const Registration = () => {
               <NavLink
                 to="/register/mess"
                 className={({ isActive }) =>
-                  `w-1/2 py-2 rounded-md text-sm font-medium transition-all text-center
-      ${isActive ? "bg-white text-gray-900 shadow" : "text-gray-500"}`
+                  `w-1/2 py-3.5 rounded-xl text-sm font-bold transition-all duration-300 text-center
+                ${isActive ? "bg-orange-500 text-white shadow-lg shadow-orange-200" : "text-slate-500 hover:bg-slate-200/50"}`
                 }
               >
-                As Mess
+                As Institute
               </NavLink>
             </div>
           </div>
-          <div className="h-[900px] px-4 md:px-6 overflow-y-auto pb-5">
+
+          {/* Content Area */}
+          <div className="flex-grow px-5 pb-8 overflow-y-auto">
             <Outlet />
           </div>
         </div>

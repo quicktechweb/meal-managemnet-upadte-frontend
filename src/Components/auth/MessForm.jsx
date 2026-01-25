@@ -4,40 +4,6 @@ import { IoMdEye, IoMdEyeOff } from "react-icons/io";
 const MessForm = () => {
   const [passwordShow, setPasswordShow] = useState(false);
   const [totalMembers, setTotalMembers] = useState("");
-  const [members, setMembers] = useState([]);
-  const [visibleCount, setVisibleCount] = useState(0);
-
-  const handleAddMembers = () => {
-    if (!totalMembers || totalMembers < 1) return;
-
-    setMembers(
-      Array.from({ length: Number(totalMembers) }, () => ({
-        fullName: "",
-        phone: "",
-        image: null,
-      })),
-    );
-
-    setVisibleCount(1);
-  };
-
-  const handleMemberChange = (index, field, value) => {
-    setMembers((prev) => {
-      const updated = [...prev];
-      updated[index][field] = value;
-
-      if (
-        field === "fullName" &&
-        value.trim() !== "" &&
-        index + 1 < prev.length &&
-        visibleCount === index + 1
-      ) {
-        setVisibleCount((c) => c + 1);
-      }
-
-      return updated;
-    });
-  };
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -45,14 +11,11 @@ const MessForm = () => {
   };
 
   return (
-    <form
-      onSubmit={handleSubmit}
-      className=" mx-auto mt-6 space-y-3 h-[600px] overflow-y-auto  rounded-lg"
-    >
+    <form onSubmit={handleSubmit} className=" mx-auto space-y-3  rounded-lg">
       {/* Basic Info */}
-      <FloatingInput label="Full Name" type="text" />
-      <FloatingInput label="Email Address" type="email" />
-      <FloatingInput label="Phone Number" type="tel" />
+      <FloatingInput label="Username" type="text" />
+
+      <FloatingInput label="Email" type="email" />
 
       {/* Password */}
       <div className="relative">
@@ -71,6 +34,10 @@ const MessForm = () => {
         </div>
       </div>
 
+      <FloatingInput label="Phone Number" type="tel" />
+
+      <FloatingInput label="Address" type="text" />
+
       {/* Total Members */}
       <div className="relative">
         <input
@@ -82,60 +49,46 @@ const MessForm = () => {
           className="peer w-full border border-gray-200 rounded-md px-3 h-[50px] text-lg
     focus:outline-none focus:border-black transition-all"
         />
-        <FloatingLabel text="Total Mess Member" />
+        <FloatingLabel text="Total  Member" />
+      </div>
+      <div className="flex flex-col gap-2">
+        <select
+          className="peer w-full border border-gray-200 rounded-md px-3 h-[50px] text-lg
+                focus:outline-none focus:border-black transition-all"
+          defaultValue=""
+        >
+          <option value="" disabled>
+            Select Name of the institute
+          </option>
+
+          <option>Institute 1</option>
+        </select>
       </div>
 
-      {/* Add Button */}
-      <button
-        type="button"
-        onClick={handleAddMembers}
-        className="w-full py-2 border border-black rounded-xl font-semibold hover:bg-black hover:text-white cursor-pointer "
-      >
-        + Add Mess Member Information
-      </button>
+      <div className="flex flex-col gap-2">
+        <select
+          className="peer w-full border border-gray-200 rounded-md px-3 h-[50px] text-lg
+                focus:outline-none focus:border-black transition-all"
+          defaultValue=""
+        >
+          <option value="" disabled>
+            Select Provide Meal
+          </option>
 
-      {/* Members */}
-      {members.slice(0, visibleCount).map((member, index) => (
-        <div key={index} className="p-2 rounded-lg space-y-4">
-          <h3 className="font-semibold">Member {index + 1}</h3>
+          <option>Hostel </option>
+          <option>Outsite</option>
+        </select>
+      </div>
 
-          <div className="relative">
-            <input
-              type="text"
-              value={member.fullName}
-              onChange={(e) =>
-                handleMemberChange(index, "fullName", e.target.value)
-              }
-              placeholder=" "
-              className="peer w-full border border-gray-200 rounded-md px-3 h-[50px] text-lg
-    focus:outline-none focus:border-black transition-all"
-            />
-            <FloatingLabel text="Full Name" />
-          </div>
+      <div className="flex items-center gap-2.5 ">
+        <input type="checkbox" name="electricity-bill" />
+        <label htmlFor="electricity-bill">Electricity Bill</label>
+      </div>
 
-          <div className="relative">
-            <input
-              type="tel"
-              value={member.phone}
-              onChange={(e) =>
-                handleMemberChange(index, "phone", e.target.value)
-              }
-              placeholder=" "
-              className="peer w-full border border-gray-200 rounded-md px-3 h-[50px] text-lg
-    focus:outline-none focus:border-black transition-all"
-            />
-            <FloatingLabel text="Phone Number" />
-          </div>
-
-          <input
-            type="file"
-            onChange={(e) =>
-              handleMemberChange(index, "image", e.target.files[0])
-            }
-            className="w-full border rounded-md px-3 py-3"
-          />
-        </div>
-      ))}
+      <div className="flex items-center gap-2.5 ">
+        <input type="checkbox" name="staff-bill" />
+        <label htmlFor="staff-bill">Staff Bill</label>
+      </div>
 
       {/* SIGN UP */}
       <button
