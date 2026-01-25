@@ -78,21 +78,21 @@ const DashboardSideBar = ({ setIsOpenSidebar }) => {
         },
       ],
     },
-    {
-      key: "My Order",
-      title: "MyOrder",
-      roles: ["user"],
-      icon: FaClipboardList,
-      permissionKey: "MyOrder",
-      links: [
-        { title: "MyOrder", icon: FaShoppingBag, path: "/dashboard/userOrder" },
-        {
-          title: "MessOrder",
-          icon: FaShoppingBag,
-          path: "/dashboard/messOrder",
-        },
-      ],
-    },
+    // {
+    //   key: "My Order",
+    //   title: "MyOrder",
+    //   roles: ["user"],
+    //   icon: FaClipboardList,
+    //   permissionKey: "MyOrder",
+    //   links: [
+    //     { title: "MyOrder", icon: FaShoppingBag, path: "/dashboard/userOrder" },
+    //     {
+    //       title: "MessOrder",
+    //       icon: FaShoppingBag,
+    //       path: "/dashboard/messOrder",
+    //     },
+    //   ],
+    // },
 
     {
       key: "Profile Manage",
