@@ -9,7 +9,6 @@ import {
   FaCheckCircle,
   FaTimes,
 } from "react-icons/fa";
-
 import PropTypes from "prop-types";
 import {
   createColumnHelper,
@@ -19,6 +18,7 @@ import {
 } from "@tanstack/react-table";
 import { ChevronDown, ChevronUp } from "lucide-react";
 import ScrollToTop from "../../../ScrollToTop/ScrollToTop";
+import VideoCard from "../../../../../Components/VideoCard";
 
 import Marquee from "react-fast-marquee";
 import VideoSlider from "../../../../../Components/VideoSlider";
@@ -68,59 +68,16 @@ const schedule = [
   },
 ];
 
-const schedule2 = [
-  {
-    day: "Sat",
-    morning: "Alu Vorta + Dal",
-    afternoon: "Murgi + Mangsho + Dal / Murgi + Mach + Dal ",
-    night: "Bhat, Alu (Dim-er shonge)",
-  },
-  {
-    day: "Sun",
-    morning: "Shobji Parota / Pitha",
-    afternoon: "Mach (Bhaji/Porha) + Dal",
-    night: "Murgir Jhol + Bhaja Shobji",
-  },
-  {
-    day: "Mon",
-    morning: "Nesco/Soup + Bhat/Parota",
-    afternoon: "Gosht & Murgi + Bhat/Dal (Soup/Mukhar)",
-    night: "Bhat, Dal + Alu Vorta",
-  },
-  {
-    day: "Tue",
-    morning: "Alu Vorta + Dal",
-    afternoon: "Mach (Bhaji/Porha) + Dal",
-    night: "Bhat + Dim",
-  },
-  {
-    day: "Wed",
-    morning: "Shobji + Dal / Nesco + Dal  ",
-    afternoon: "Murgi + Mach + Dal",
-    night: "Bhat, Alu (Dim-er shonge)",
-  },
-  {
-    day: "Thu",
-    morning: "Alu, Piaj Vorta + Dal",
-    afternoon: "Mach  + Dal",
-    night: "Murgir Jhol + Shobji Lettuce",
-  },
-  {
-    day: "Fri",
-    morning: "Ruti + Shobji/ Ruti + Dal",
-    afternoon: "Gorur Mangsho/Prani Jhol",
-    night: "Bhat, Dim + Shobji (Shak, Mushroom)",
-  },
-];
-
-const parseOptions = (str) => str.split("/").map((s) => s.trim());
-
 const today = new Date();
 const year = today.getFullYear();
 const month = today.getMonth();
 const daysInMonth = new Date(year, month + 1, 0).getDate();
 
 const weekDays = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+
+/* ===============================
+   SAMPLE DATA (1–15 DATE)
+================================ */
 
 const mealPlans = Array.from({ length: daysInMonth }, (_, i) => {
   const dateObj = new Date(year, month, i + 1);
@@ -136,6 +93,9 @@ const mealPlans = Array.from({ length: daysInMonth }, (_, i) => {
   };
 });
 
+/* ===============================
+   MEAL CARD
+================================ */
 const MealCard = ({ title, icon, data, gradient, selected, onToggle }) => (
   <div
     className={`bg-white/90 backdrop-blur-xl rounded-2xl p-3 shadow-lg transition
@@ -161,13 +121,6 @@ const MealCard = ({ title, icon, data, gradient, selected, onToggle }) => (
           {item}
         </li>
       ))}
-
-      <div className="flex items-center justify-center w-full">
-        <label class="switch !text-xs">
-          <input type="checkbox" />
-          <span class="slider"></span>
-        </label>
-      </div>
     </ul>
 
     <button
@@ -196,6 +149,10 @@ MealCard.propTypes = {
   }).isRequired,
 };
 
+/* ===============================
+   MAIN COMPONENT
+================================ */
+
 const columnHelper = createColumnHelper();
 
 const columns = [
@@ -206,15 +163,13 @@ const columns = [
 ];
 
 export default function MealManagementPart() {
-  const [daywiseSelect, setDaywiseSelect] = useState("show-all");
-
   const [activeIndex, setActiveIndex] = useState(0);
   const [selectedMeals, setSelectedMeals] = useState({});
   const [showModal, setShowModal] = useState(false);
 
   const activePlan = mealPlans[activeIndex];
   const activeDate = activePlan.date;
-  const [selectedOptions, setSelectedOptions] = useState({});
+
   // Toggle meal for a specific date
   const toggleMeal = (meal) => {
     setSelectedMeals((prev) => {
@@ -240,21 +195,25 @@ export default function MealManagementPart() {
   const [isExpanded, setIsExpanded] = useState(true);
 
   const table = useReactTable({
-    data: schedule2,
+    data: schedule,
     columns,
     getCoreRowModel: getCoreRowModel(),
   });
 
-  const dateRef = useRef(null);
+  const videoRef = useRef(null);
+  const [isPlaying, setIsPlaying] = useState(true);
 
-  const [tableSelections, setTableSelections] = useState({});
-
-  const handleSelectChange = (rowIndex, mealType, value) => {
-    setTableSelections((prev) => ({
-      ...prev,
-      [`${rowIndex}-${mealType}`]: value,
-    }));
+  const togglePlay = () => {
+    if (videoRef.current) {
+      if (isPlaying) {
+        videoRef.current.pause();
+      } else {
+        videoRef.current.play();
+      }
+      setIsPlaying(!isPlaying);
+    }
   };
+  const dateRef = useRef(null);
   return (
     <section className="min-h-screen bg-gradient-to-br from-orange-50 via-white to-orange-100 p-3 lg:p-6 flex flex-col gap-3.5">
       <ScrollToTop />
@@ -343,9 +302,9 @@ export default function MealManagementPart() {
         </div>
       </div>
 
-      <div className="max-w-7xl  grid grid-cols-1 xl:grid-cols-4 gap-y-4 xl:gap-3">
+      <div className="max-w-7xl mx-auto grid grid-cols-1 xl:grid-cols-4 gap-y-4 xl:gap-6">
         {/* SIDEBAR */}
-        <aside className="bg-white/80 w-full h-auto xl:w-auto backdrop-blur-xl rounded-3xl shadow-xl p-2">
+        <aside className="bg-white/80 w-full xl:w-auto backdrop-blur-xl rounded-3xl shadow-xl p-2">
           <h2 className="flex items-center gap-3 font-bold text-gray-800 p-5">
             <input
               type="date"
@@ -362,204 +321,94 @@ export default function MealManagementPart() {
             Meal Calendar
           </h2>
 
-          <div className="flex items-center gap-3 bg-orange-50 p-1 rounded-full">
-            {/* Active Button */}
-            <button
-              onClick={() => setDaywiseSelect("day-wise")}
-              className={`px-5 py-2 rounded-full cursor-pointer text-xs font-semibold
-               ${daywiseSelect === "day-wise" ? "bg-orange-500 text-white hover:bg-orange-600" : "text-orange-600  hover:bg-orange-100"}  
-               shadow-md  transition`}
-            >
-              Day Wise
-            </button>
-
-            {/* Inactive Button */}
-            <button
-              onClick={() => setDaywiseSelect("show-all")}
-              className={`px-5 py-2 rounded-full cursor-pointer  text-xs font-semibold
-               ${daywiseSelect === "show-all" ? "bg-orange-500 text-white hover:bg-orange-600" : "text-orange-600  hover:bg-orange-100"} transition`}
-            >
-              Show all
-            </button>
+          <div className="h-[70vh] overflow-y-auto p-2">
+            {mealPlans.map((plan, index) => {
+              const isSelected =
+                selectedMeals[plan.date] && selectedMeals[plan.date].length > 0;
+              return (
+                <button
+                  key={index}
+                  onClick={() => setActiveIndex(index)}
+                  className={`w-full mb-2 text-sm 2xl:text-base px-4 py-2 rounded-xl text-left font-medium cursor-pointer ${
+                    activeIndex === index
+                      ? "bg-orange-500 text-white shadow-md"
+                      : isSelected
+                        ? "bg-green-100 text-green-700 shadow-sm"
+                        : "bg-gray-100 hover:bg-orange-100"
+                  }`}
+                >
+                  {plan.date}
+                </button>
+              );
+            })}
           </div>
-          {daywiseSelect === "day-wise" && (
-            <div className="h-[70vh] overflow-y-auto p-2">
-              {mealPlans.map((plan, index) => {
-                const isSelected =
-                  selectedMeals[plan.date] &&
-                  selectedMeals[plan.date].length > 0;
-                return (
-                  <button
-                    key={index}
-                    onClick={() => setActiveIndex(index)}
-                    className={`w-full mb-2 text-sm 2xl:text-base px-4 py-2 rounded-xl text-left font-medium cursor-pointer ${
-                      activeIndex === index
-                        ? "bg-orange-500 text-white shadow-md"
-                        : isSelected
-                          ? "bg-green-100 text-green-700 shadow-sm"
-                          : "bg-gray-100 hover:bg-orange-100"
-                    }`}
-                  >
-                    {plan.date}
-                  </button>
-                );
-              })}
-            </div>
-          )}
         </aside>
 
         {/* CONTENT */}
-        {daywiseSelect === "day-wise" && (
-          <main className="lg:col-span-3 space-y-6">
-            <div className="bg-white/90 backdrop-blur-xl rounded-3xl shadow-lg p-6 flex justify-between items-start sm:items-center flex-wrap">
-              {/* Left side: heading + subtitle */}
-              <div className="flex flex-col">
-                <h1 className="text-xl xl:text-3xl font-extrabold text-gray-800">
-                  Choose Your Meals
-                </h1>
-                <p className="text-sm text-gray-500 mt-1">
-                  Select your preferred meals for the selected date(s)
-                </p>
-              </div>
+        <main className="lg:col-span-3 space-y-6">
+          <div className="bg-white/90 backdrop-blur-xl rounded-3xl shadow-lg p-6 flex justify-between items-start sm:items-center flex-wrap">
+            {/* Left side: heading + subtitle */}
+            <div className="flex flex-col">
+              <h1 className="text-xl xl:text-3xl font-extrabold text-gray-800">
+                Choose Your Meals
+              </h1>
+              <p className="text-sm text-gray-500 mt-1">
+                Select your preferred meals for the selected date(s)
+              </p>
+            </div>
 
-              {/* Right side: date + total on same line */}
-              <div className="flex flex-col items-end mt-4 sm:mt-0">
-                <div className="flex items-center gap-4">
-                  <span className="text-sm bg-orange-100 text-orange-700 px-3 py-1 rounded-full font-medium">
-                    {activeDate}
-                  </span>
-                  <span className="text-md text-gray-500">Total:</span>
-                  <span className="text-2xl font-bold text-green-600 -ms-2">
-                    ৳{totalAmount}
-                  </span>
-                </div>
+            {/* Right side: date + total on same line */}
+            <div className="flex flex-col items-end mt-4 sm:mt-0">
+              <div className="flex items-center gap-4">
+                <span className="text-sm bg-orange-100 text-orange-700 px-3 py-1 rounded-full font-medium">
+                  {activeDate}
+                </span>
+                <span className="text-md text-gray-500">Total:</span>
+                <span className="text-2xl font-bold text-green-600 -ms-2">
+                  ৳{totalAmount}
+                </span>
               </div>
             </div>
+          </div>
 
-            <div className="grid md:grid-cols-3 gap-6 ">
-              <MealCard
-                title="Breakfast"
-                className="text-sm"
-                icon={<FaSun />}
-                data={activePlan.breakfast}
-                gradient="bg-gradient-to-r from-yellow-400 to-orange-500"
-                selected={selectedMeals[activeDate]?.includes("breakfast")}
-                onToggle={() => toggleMeal("breakfast")}
-              />
-              <MealCard
-                title="Lunch"
-                icon={<FaUtensils />}
-                data={activePlan.lunch}
-                gradient="bg-gradient-to-r from-green-500 to-emerald-600"
-                selected={selectedMeals[activeDate]?.includes("lunch")}
-                onToggle={() => toggleMeal("lunch")}
-              />
-              <MealCard
-                title="Dinner"
-                className=""
-                icon={<FaMoon />}
-                data={activePlan.dinner}
-                gradient="bg-gradient-to-r from-indigo-500 to-purple-600"
-                selected={selectedMeals[activeDate]?.includes("dinner")}
-                onToggle={() => toggleMeal("dinner")}
-              />
-            </div>
+          <div className="grid md:grid-cols-3 gap-6 ">
+            <MealCard
+              title="Breakfast"
+              className="text-sm"
+              icon={<FaSun />}
+              data={activePlan.breakfast}
+              gradient="bg-gradient-to-r from-yellow-400 to-orange-500"
+              selected={selectedMeals[activeDate]?.includes("breakfast")}
+              onToggle={() => toggleMeal("breakfast")}
+            />
+            <MealCard
+              title="Lunch"
+              icon={<FaUtensils />}
+              data={activePlan.lunch}
+              gradient="bg-gradient-to-r from-green-500 to-emerald-600"
+              selected={selectedMeals[activeDate]?.includes("lunch")}
+              onToggle={() => toggleMeal("lunch")}
+            />
+            <MealCard
+              title="Dinner"
+              className=""
+              icon={<FaMoon />}
+              data={activePlan.dinner}
+              gradient="bg-gradient-to-r from-indigo-500 to-purple-600"
+              selected={selectedMeals[activeDate]?.includes("dinner")}
+              onToggle={() => toggleMeal("dinner")}
+            />
+          </div>
 
-            {Object.keys(selectedMeals).length > 0 && (
-              <button
-                onClick={() => setShowModal(true)}
-                className="w-1/2 lg:w-1/3 mx-auto block bg-gradient-to-r from-orange-400 to-pink-500 text-white py-3 rounded-2xl font-semibold shadow-lg hover:from-pink-500 hover:to-orange-400 transition-all"
-              >
-                Update
-              </button>
-            )}
-          </main>
-        )}
-
-        {daywiseSelect !== "day-wise" && (
-          <main className="lg:col-span-3 space-y-6">
-            <div className="overflow-x-auto bg-white rounded-3xl shadow-xl">
-              <table className="min-w-full">
-                <thead className="bg-orange-500 hidden md:table-header-group">
-                  <tr>
-                    <th className="px-4 py-3 text-left text-white">Day</th>
-                    <th className="px-4 py-3 text-left text-white">Morning</th>
-                    <th className="px-4 py-3 text-left text-white">
-                      Afternoon
-                    </th>
-                    <th className="px-4 py-3 text-left text-white">Night</th>
-                  </tr>
-                </thead>
-
-                <tbody className="divide-y divide-gray-200">
-                  {schedule2.map((row, rowIndex) => (
-                    <tr
-                      key={rowIndex}
-                      className="hover:bg-gray-50 flex flex-col md:table-row mb-4 border md:border-none rounded-xl"
-                    >
-                      <td className="px-4 py-3 font-bold text-orange-600 md:text-gray-800">
-                        {row.day}
-                      </td>
-
-                      {["morning", "afternoon", "night"].map((mealType) => {
-                        const options = parseOptions(row[mealType]);
-                        const currentKey = `${rowIndex}-${mealType}`;
-                        const selectedValue =
-                          tableSelections[currentKey] || options[0];
-
-                        return (
-                          <td
-                            key={mealType}
-                            className="px-2 py-2 md:py-3 flex justify-between md:table-cell border-b md:border-none"
-                          >
-                            <span className="font-bold text-orange-600 md:hidden mr-4 capitalize">
-                              {mealType}:
-                            </span>
-
-                            {options.length > 1 ? (
-                              <div className="relative flex items-center gap-2">
-                                <select
-                                  value={selectedValue}
-                                  onChange={(e) =>
-                                    handleSelectChange(
-                                      rowIndex,
-                                      mealType,
-                                      e.target.value,
-                                    )
-                                  }
-                                  className=" bg-orange-50 border border-orange-200 text-orange-800 text-xs rounded-lg focus:ring-orange-500 focus:border-orange-500 block w-full p-1.5  cursor-pointer font-medium"
-                                >
-                                  {options.map((opt, i) => (
-                                    <option key={i} value={opt}>
-                                      {opt}
-                                    </option>
-                                  ))}
-                                </select>
-                                <label class="switch shrink-0">
-                                  <input type="checkbox" />
-                                  <span class="slider"></span>
-                                </label>
-                              </div>
-                            ) : (
-                              <span className="text-gray-700 text-xs flex items-center gap-2">
-                                <p> {row[mealType]}</p>
-
-                                <label class="switch">
-                                  <input type="checkbox" />
-                                  <span class="slider"></span>
-                                </label>
-                              </span>
-                            )}
-                          </td>
-                        );
-                      })}
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          </main>
-        )}
+          {Object.keys(selectedMeals).length > 0 && (
+            <button
+              onClick={() => setShowModal(true)}
+              className="w-1/2 lg:w-1/3 mx-auto block bg-gradient-to-r from-orange-400 to-pink-500 text-white py-3 rounded-2xl font-semibold shadow-lg hover:from-pink-500 hover:to-orange-400 transition-all"
+            >
+              Update
+            </button>
+          )}
+        </main>
       </div>
 
       {/* MODAL */}
@@ -586,10 +435,6 @@ export default function MealManagementPart() {
                 className="w-full border rounded-xl px-4 py-2"
                 placeholder="Email"
               />
-              <label class="switch">
-                <input type="checkbox" />
-                <span class="slider"></span>
-              </label>
               <input
                 className="w-full border rounded-xl px-4 py-2"
                 placeholder="Phone"

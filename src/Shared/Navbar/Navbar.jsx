@@ -31,7 +31,9 @@ export default function Navbar() {
       className={`w-full z-50 transition-all duration-500 ${
         scrolled ||
         location?.pathname === "/faq" ||
-        location?.pathname === "/contact-us"
+        location?.pathname === "/contact-us" ||
+        location?.pathname === "/register/user" ||
+        location?.pathname === "/register/mess"
           ? "fixed top-0 bg-gradient-to-r from-purple-700 to-blue-600 shadow-lg backdrop-blur"
           : "absolute top-0 bg-transparent"
       }`}
