@@ -23,6 +23,7 @@ import Foods from "../Pages/FrontEnd/Dashboard/Foods/Foods";
 import FavouriteItem from "../Pages/FrontEnd/Dashboard/Favourite/FavouriteItem";
 import FavouriteCanteen from "../Pages/FrontEnd/Dashboard/Favourite/FavouriteCanteen";
 import MessOrder from "../Pages/FrontEnd/Dashboard/UserDashboard/UserOrder/MessOrder";
+import WalletManagement from "../Pages/FrontEnd/Dashboard/UserDashboard/walletmanagement/WalletManagement";
 
 const router = createBrowserRouter([
   {
@@ -86,6 +87,7 @@ const router = createBrowserRouter([
     ),
     children: [
       {
+        index: true,
         path: "/dashboard/dashboard",
         element: (
           // <AdminProtectedRoute>
@@ -131,6 +133,11 @@ const router = createBrowserRouter([
       {
         path: "/dashboard/favourite-canteen",
         element: <FavouriteCanteen />,
+      },
+
+      {
+        path: "/dashboard/wallet-management",
+        element: <WalletManagement />,
       },
 
       // supplierpage

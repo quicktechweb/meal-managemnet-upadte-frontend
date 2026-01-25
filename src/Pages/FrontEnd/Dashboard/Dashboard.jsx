@@ -62,7 +62,7 @@ const Dashboard = () => {
               <FaBars />
             </button>
 
-            <h2 className="text-xl md:text-2xl font-bold">Dashboard</h2>
+            {/* <h2 className="text-xl md:text-2xl font-bold">Dashboard</h2> */}
           </div>
 
           <div className="flex gap-8 items-center">
@@ -89,7 +89,7 @@ const Dashboard = () => {
                   <ul>
                     <Link
                       to={"/"}
-                      className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
+                      className="px-4 py-2 block hover:bg-gray-100 cursor-pointer"
                     >
                       Profile Settings
                     </Link>
