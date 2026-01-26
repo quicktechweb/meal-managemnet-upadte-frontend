@@ -70,14 +70,14 @@ const MenuDetails = () => {
   const [activeTab, setActiveTab] = useState(1);
 
   return (
-    <div className="flex mt-28 flex-col items-center justify-center min-h-[300px] p-4 font-sans">
+    <div className="flex mt-28 flex-col items-center justify-center  p-4 font-sans">
       {/* Container with Glassmorphism effect */}
-      <div className="flex space-x-1 bg-gray-200/50 backdrop-blur-md p-1.5 rounded-2xl border border-white/50 shadow-inner">
+      <div className="flex space-x-1 bg-gray-200/50 backdrop-blur-md p-1.5 rounded-2xl border border-white/50 shadow-inner w-full md:w-[500px]">
         {stats.map((tab) => (
           <button
             key={tab.id}
             onClick={() => setActiveTab(tab.id)}
-            className={`relative px-6 py-2.5 text-sm font-semibold transition-colors duration-300 focus:outline-none ${
+            className={`relative px-2 lg:px-6 py-2.5 text-sm font-semibold transition-colors flex-1 flex items-center justify-center duration-300 focus:outline-none ${
               activeTab === tab.id
                 ? "text-[#896ADC] "
                 : "text-gray-500 hover:text-gray-800 cursor-pointer "

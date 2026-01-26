@@ -262,7 +262,7 @@ export default function MealDetails() {
     }));
   };
   return (
-    <section className="min-h-screen bg-gradient-to-br from-orange-50 via-white to-orange-100 p-3 lg:p-6 flex flex-col gap-3.5">
+    <section className="min-h-screen   flex flex-col gap-3.5">
       {/* menu table */}
 
       <div className=" h-[50px] rounded-md bg-white overflow-hidden flex items-center px-4 mx-auto shadow">
