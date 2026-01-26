@@ -11,6 +11,7 @@ import {
   Heart,
   Shield,
 } from "lucide-react";
+import { MdOutlineAddCircleOutline } from "react-icons/md";
 
 const me = {
   id: 1,
@@ -38,6 +39,8 @@ const me = {
 const MyProfile = () => {
   const [showEditModal, setShowEditModal] = useState(false);
 
+  const [showAddModal, setShowAddModal] = useState(false);
+
   return (
     <div className="p-6 bg-gray-50 min-h-screen antialiased text-gray-800">
       {/* Header Section */}
@@ -50,13 +53,22 @@ const MyProfile = () => {
             View and manage your personal identity and records.
           </p>
         </div>
-        <button
-          onClick={() => setShowEditModal(true)}
-          className="flex items-center gap-2 bg-indigo-600 text-white px-5 py-2.5 rounded-xl font-medium cursor-pointer hover:bg-indigo-700 transition-all shadow-sm"
-        >
-          <Edit3 size={18} />
-          Edit Profile
-        </button>
+        <div className="flex items-center gap-3.5">
+          <button
+            onClick={() => setShowAddModal(true)}
+            className="flex items-center gap-2 bg-indigo-600 text-white px-5 py-2.5 rounded-xl font-medium cursor-pointer hover:bg-indigo-700 transition-all shadow-sm"
+          >
+            <MdOutlineAddCircleOutline size={18} />
+            Add Member
+          </button>
+          <button
+            onClick={() => setShowEditModal(true)}
+            className="flex items-center gap-2 bg-indigo-600 text-white px-5 py-2.5 rounded-xl font-medium cursor-pointer hover:bg-indigo-700 transition-all shadow-sm"
+          >
+            <Edit3 size={18} />
+            Edit Profile
+          </button>
+        </div>
       </div>
 
       <div className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-3 gap-4">
@@ -166,6 +178,10 @@ const MyProfile = () => {
       {showEditModal && (
         <EditProfileModal onClose={() => setShowEditModal(false)} />
       )}
+
+      {showAddModal && (
+        <AddMemberModal onClose={() => setShowAddModal(false)} />
+      )}
     </div>
   );
 };
@@ -184,6 +200,160 @@ const InfoItem = ({ label, value, icon }) => (
 );
 
 export default MyProfile;
+
+// add member modal
+
+const emptyMember = {
+  name: "",
+  username: "",
+  email: "",
+  password: "",
+  phone: "",
+  fathersName: "",
+  mothersName: "",
+  guardiansName: "",
+  dateOfBirth: "",
+  nationality: "",
+  religion: "",
+  education: "",
+  maritalStatus: "",
+  city: "",
+  presentAddress: "",
+  permanentAddress: "",
+  institutionName: "",
+  hostelBranch: "",
+  img: "https://api.dicebear.com/7.x/avataaars/svg?seed=NewUser",
+};
+
+const AddMemberModal = ({ onClose, onAdd }) => {
+  const [formData, setFormData] = useState(emptyMember);
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const submitHandler = (e) => {
+    e.preventDefault();
+    onAdd(formData);
+    onClose();
+  };
+
+  return (
+    <div className="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4">
+      <div className="bg-white w-full max-w-2xl rounded-2xl shadow-2xl flex flex-col max-h-[90vh]">
+        {/* Header */}
+        <div className="p-6 border-b flex justify-between items-center bg-gray-50 rounded-t-2xl">
+          <div>
+            <h3 className="text-xl font-bold text-gray-900">Add New Member</h3>
+            <p className="text-sm text-gray-500">Create a new member profile</p>
+          </div>
+          <button
+            onClick={onClose}
+            className="p-2 hover:bg-gray-200 rounded-full transition"
+          >
+            <X size={20} />
+          </button>
+        </div>
+
+        {/* Body */}
+        <form
+          onSubmit={submitHandler}
+          className="p-6 overflow-y-auto space-y-6"
+        >
+          <div className="flex items-center gap-6 pb-6 border-b">
+            <img
+              src={formData.img}
+              className="w-20 h-20 rounded-full border"
+              alt="Preview"
+            />
+            <InputField
+              label="Profile Image URL"
+              name="img"
+              value={formData.img}
+              onChange={handleChange}
+            />
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <InputField
+              label="Full Name"
+              name="name"
+              value={formData.name}
+              onChange={handleChange}
+            />
+            <InputField
+              label="Username"
+              name="username"
+              value={formData.username}
+              onChange={handleChange}
+            />
+            <InputField
+              label="Email"
+              name="email"
+              type="email"
+              value={formData.email}
+              onChange={handleChange}
+            />
+            <InputField
+              label="Password"
+              name="password"
+              type="password"
+              value={formData.password}
+              onChange={handleChange}
+            />
+            <InputField
+              label="Phone"
+              name="phone"
+              value={formData.phone}
+              onChange={handleChange}
+            />
+            <InputField
+              label="Date of Birth"
+              name="dateOfBirth"
+              type="date"
+              value={formData.dateOfBirth}
+              onChange={handleChange}
+            />
+          </div>
+
+          <InputField
+            label="Present Address"
+            name="presentAddress"
+            value={formData.presentAddress}
+            onChange={handleChange}
+            isTextArea
+          />
+
+          <InputField
+            label="Permanent Address"
+            name="permanentAddress"
+            value={formData.permanentAddress}
+            onChange={handleChange}
+            isTextArea
+          />
+        </form>
+
+        {/* Footer */}
+        <div className="p-6 border-t bg-gray-50 flex justify-end gap-3 rounded-b-2xl">
+          <button
+            type="button"
+            onClick={onClose}
+            className="px-6 py-2.5 rounded-xl font-semibold text-gray-700 hover:bg-gray-200"
+          >
+            Cancel
+          </button>
+          <button
+            onClick={submitHandler}
+            className="px-6 py-2.5 rounded-xl font-semibold bg-indigo-600 text-white hover:bg-indigo-700 shadow"
+          >
+            Add Member
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+};
 
 // edit member modal
 
