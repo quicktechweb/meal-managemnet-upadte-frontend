@@ -308,7 +308,7 @@ const UserDashboardHome = () => {
                     />
                     <button
                       type="submit"
-                      className="w-full mt-4 py-3 bg-indigo-600 text-white font-bold rounded-xl hover:bg-indigo-700 flex items-center justify-center gap-2 transition-all"
+                      className="w-full mt-4 py-3 cursor-pointer bg-indigo-600 text-white font-bold rounded-xl hover:bg-indigo-700 flex items-center justify-center gap-2 transition-all"
                     >
                       <Send size={18} /> Submit Review
                     </button>

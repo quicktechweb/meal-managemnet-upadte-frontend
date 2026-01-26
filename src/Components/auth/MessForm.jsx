@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { IoMdEye, IoMdEyeOff } from "react-icons/io";
+import { Link } from "react-router-dom";
 
 const MessForm = () => {
   const [passwordShow, setPasswordShow] = useState(false);
@@ -129,6 +130,18 @@ const MessForm = () => {
       >
         Sign Up
       </button>
+
+      <div>
+        <div className="mb-1 mb:mb-2 text-sm md:text-[18px] flex items-center gap-2">
+          <p>Already have an account?</p>{" "}
+          <Link
+            className="text-[rgba(50,100,245,0.90)] font-semibold"
+            to={"/login"}
+          >
+            Login
+          </Link>
+        </div>
+      </div>
     </form>
   );
 };

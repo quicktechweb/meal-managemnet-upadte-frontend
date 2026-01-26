@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { IoMdEye, IoMdEyeOff } from "react-icons/io";
 import { FiPlusCircle } from "react-icons/fi";
 import { X } from "lucide-react";
+import { Link } from "react-router-dom";
 
 const institutions = ["Institute A", "Institute B", "Institute C"];
 
@@ -118,6 +119,18 @@ const UserForm = () => {
         <button className="w-full py-3 bg-black text-white rounded-lg">
           Sign Up
         </button>
+
+        <div>
+          <div className="mb-1 mb:mb-2 text-sm md:text-[18px] flex items-center gap-2">
+            <p>Already have an account?</p>{" "}
+            <Link
+              className="text-[rgba(50,100,245,0.90)] font-semibold"
+              to={"/login"}
+            >
+              Login
+            </Link>
+          </div>
+        </div>
       </form>
 
       {showHostelModal && (

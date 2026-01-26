@@ -1,3 +1,4 @@
+import { TiTick } from "react-icons/ti";
 import { NavLink, Outlet, useLocation } from "react-router-dom";
 
 const Registration = () => {
@@ -6,14 +7,14 @@ const Registration = () => {
   return (
     <div className="min-h-screen bg-[#FFFBF7] p-4 md:p-10 flex items-center justify-center w-full mt-14 md:mt-20 font-sans">
       <div className="absolute top-20 left-20 w-72 h-72 bg-orange-200 rounded-full mix-blend-multiply filter blur-3xl opacity-40 animate-pulse"></div>
-      <div className="absolute bottom-20 right-20 w-80 h-80 bg-green-100 rounded-full mix-blend-multiply filter blur-3xl opacity-50 animate-pulse transition-delay-1000"></div>
+      {/* <div className="absolute bottom-20 right-20 w-80 h-80 bg-green-100 rounded-full mix-blend-multiply filter blur-3xl opacity-50 animate-pulse transition-delay-1000"></div> */}
 
       <div
         className={`relative flex flex-row-reverse bg-white border border-orange-100
         ${location?.pathname === "/register/user" ? "h-[850px]" : "h-[850px]"} 
         justify-center items-stretch shadow-[0_30px_60px_-15px_rgba(120,50,0,0.15)] rounded-[1rem] overflow-hidden max-w-6xl w-full transition-all duration-500`}
       >
-        <div className="relative w-full lg:w-1/2 bg-white overflow-hidden hidden md:flex flex-col items-center justify-center p-12 text-black">
+        <div className="relative w-full lg:w-1/2 bg-white overflow-hidden hidden md:flex flex-col items-center justify-center px-4 text-black">
           {/* Accent Glow */}
           {/* <div className="absolute top-0 right-0 w-full h-full bg-gradient-to-br from-orange-500/20 to-transparent pointer-events-none"></div> */}
 
@@ -26,7 +27,7 @@ const Registration = () => {
             />
           </div>
 
-          <div className="z-10 mt-10 space-y-8 max-w-sm text-center lg:text-left">
+          <div className="z-10 mt-5 space-y-4 max-w-sm text-center lg:text-left">
             <div className="space-y-4">
               <h2 className="text-4xl font-serif font-bold leading-tight">
                 Fresh meals, <br />
@@ -43,8 +44,8 @@ const Registration = () => {
                     key={i}
                     className="flex items-center gap-3 justify-center lg:justify-start"
                   >
-                    <span className="flex-shrink-0 w-5 h-5 rounded-full bg-orange-500 flex items-center justify-center text-[10px] text-white">
-                      ✔
+                    <span className="flex-shrink-0 w-5 h-5 rounded-full bg-orange-500 flex items-center justify-center text-[14px] text-white">
+                      <TiTick />
                     </span>
                     <p className="text-black text-sm font-medium">{text}</p>
                   </div>
