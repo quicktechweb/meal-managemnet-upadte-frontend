@@ -94,10 +94,25 @@ const UserForm = () => {
           <button
             type="button"
             onClick={() => setShowHostelModal(true)}
-            className="h-[50px] px-4 bg-orange-500 text-white rounded-md text-2xl flex items-center justify-center"
+            className="h-[50px] px-4 bg-orange-500 text-white rounded-md text-2xl flex items-center justify-center cursor-pointer"
           >
             <FiPlusCircle />
           </button>
+        </div>
+
+        <div className="flex flex-col gap-2">
+          <select
+            className="peer w-full border border-gray-200 rounded-md px-3 h-[50px] text-lg
+                focus:outline-none focus:border-black transition-all"
+            defaultValue=""
+          >
+            <option value="" disabled>
+              Select Provide Meal
+            </option>
+
+            <option>Hostel </option>
+            <option>Outsite</option>
+          </select>
         </div>
 
         <button className="w-full py-3 bg-black text-white rounded-lg">
@@ -130,7 +145,7 @@ const AddHostelModal = ({ onClose, onAdd }) => {
       <div className="bg-white rounded-2xl w-full max-w-md p-6 relative space-y-4">
         <button
           onClick={onClose}
-          className="absolute right-4 top-4 p-1 border rounded-full"
+          className="absolute cursor-pointer right-4 top-4 p-1 border rounded-full"
         >
           <X size={18} />
         </button>
@@ -146,7 +161,7 @@ const AddHostelModal = ({ onClose, onAdd }) => {
 
         <button
           onClick={handleAdd}
-          className="w-full bg-orange-500 text-white py-2 rounded-md"
+          className="w-full cursor-pointer bg-orange-500 text-white py-2 rounded-md"
         >
           Add Hostel
         </button>

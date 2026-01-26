@@ -121,8 +121,8 @@ const HomeLogin = () => {
               <div className="w-10 h-10 bg-orange-100 rounded-full flex items-center justify-center">
                 <ChefHat className="w-6 h-6 text-orange-500" />
               </div>
-              <div className="leading-tight">
-                <p className="text-sm font-black text-slate-800">Foodie</p>
+              <div className="leading-tight uppercase">
+                <p className="text-sm font-black text-slate-800">Al Abadan</p>
               </div>
             </div>
           </div>
