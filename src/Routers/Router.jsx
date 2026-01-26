@@ -25,6 +25,7 @@ import FavouriteCanteen from "../Pages/FrontEnd/Dashboard/Favourite/FavouriteCan
 import MessOrder from "../Pages/FrontEnd/Dashboard/UserDashboard/UserOrder/MessOrder";
 import WalletManagement from "../Pages/FrontEnd/Dashboard/UserDashboard/walletmanagement/WalletManagement";
 import InstituteProfile from "../Pages/FrontEnd/Dashboard/UserDashboard/myprofile/InstituteProfile";
+import UserDashboardHome from "../Pages/FrontEnd/Dashboard/DashboardHome/UserDashboardHome";
 
 const router = createBrowserRouter([
   {
@@ -92,7 +93,8 @@ const router = createBrowserRouter([
         path: "/dashboard/dashboard",
         element: (
           // <AdminProtectedRoute>
-          <DashboardHome />
+          // <DashboardHome />
+          <UserDashboardHome />
         ),
         // </AdminProtectedRoute>
       },
