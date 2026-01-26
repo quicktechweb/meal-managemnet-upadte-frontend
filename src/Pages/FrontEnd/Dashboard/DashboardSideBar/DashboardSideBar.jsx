@@ -15,6 +15,7 @@ import { ChevronRight } from "lucide-react";
 
 import { IoRestaurant } from "react-icons/io5";
 import { GrRestaurant } from "react-icons/gr";
+import { FaUser } from "react-icons/fa";
 
 const DashboardSideBar = ({ setIsOpenSidebar }) => {
   //  const {  user, userLogOut } = useAuth();
@@ -102,8 +103,13 @@ const DashboardSideBar = ({ setIsOpenSidebar }) => {
       links: [
         {
           title: "My Profile",
-          icon: FaShoppingBag,
+          icon: FaUser,
           path: "/dashboard/profile",
+        },
+        {
+          title: "Institute Profile",
+          icon: FaUser,
+          path: "/dashboard/institute-profile",
         },
       ],
     },

@@ -43,14 +43,6 @@ const UserForm = () => {
 
           return (
             <div className="flex flex-col gap-2" key={index}>
-              <label
-                className=" bg-white px-1 text-gray-500 transition-all
-                 text-sm md:text-lg
-                  peer-focus:text-black
-                pointer-events-none"
-              >
-                {field}
-              </label>
               <select
                 className="peer w-full border border-gray-200 rounded-md px-3 h-[50px] text-lg
                 focus:outline-none focus:border-black transition-all"
