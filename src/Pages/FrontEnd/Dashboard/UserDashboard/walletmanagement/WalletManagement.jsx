@@ -68,9 +68,7 @@ const WalletPage = () => {
         {/* Header Section */}
         <header className="flex justify-between items-center mb-4">
           <div>
-            <h1 className="text-2xl font-bold tracking-tight">
-              Digital Wallet
-            </h1>
+            <h1 className="text-2xl font-bold tracking-tight">Wallet</h1>
             <p className="text-slate-500 text-sm">
               Manage your finances and top up easily.
             </p>
@@ -155,7 +153,7 @@ const WalletPage = () => {
               <div className="flex items-end">
                 <button
                   type="submit"
-                  className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-[10px] rounded-xl shadow-lg shadow-blue-100 transition active:scale-[0.98] cursor-pointer text-xs"
+                  className="w-[200px] bg-blue-600 hover:bg-blue-700 text-white font-bold py-[10px] rounded-xl shadow-lg shadow-blue-100 transition active:scale-[0.98] cursor-pointer text-xs"
                 >
                   Confirm Deposit
                 </button>
