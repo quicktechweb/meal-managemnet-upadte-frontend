@@ -25,7 +25,7 @@ const ProductDetailsModal = ({
     >
       <div
         onClick={(e) => e.stopPropagation()}
-        className="bg-white w-[95%] max-w-7xl max-h-[90vh] overflow-y-auto rounded-3xl shadow-2xl animate-scaleIn relative px-10"
+        className="bg-white w-[95%] max-w-7xl max-h-[90vh] overflow-y-auto rounded-3xl shadow-2xl animate-scaleIn relative px-2.5 md:px-5 lg:px-10"
       >
         {/* CLOSE */}
         <button
@@ -38,7 +38,7 @@ const ProductDetailsModal = ({
           ✕
         </button>
 
-        <div className="grid md:grid-cols-2 gap-3 lg:gap-6 p-3 lg:p-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-3 lg:gap-6 p-3 lg:p-6">
           {/* IMAGE */}
           <div className="rounded-2xl flex items-center justify-center">
             <img
@@ -150,9 +150,17 @@ const ProductDetailsModal = ({
             </Link>
           </div>
 
-          {/* hot deals product */}
-
-          <div className="flex flex-wrap items-center  gap-2 2xl:gap-3.5 ">
+          <div
+            className="
+    grid gap-2.5
+    grid-cols-2
+    sm:grid-cols-3
+    md:grid-cols-4
+    lg:grid-cols-5
+    xl:grid-cols-6
+    2xl:grid-cols-7
+  "
+          >
             {/* product card */}
             {products?.map((product) => {
               const qty = getQty(product.id);
@@ -161,33 +169,39 @@ const ProductDetailsModal = ({
                 <div
                   key={product.id}
                   onClick={() => handleProductDetails(product)}
-                  className="max-w-[150px] sm:max-w-[163px] md:max-w-[170px] xl:max-w-[170px] 2xl:max-w-[180px] w-full h-[280px]"
+                  className="cursor-pointer"
                 >
-                  <div className="relative aspect-square flex items-center justify-center rounded-sm group cursor-pointer">
+                  {/* Image wrapper */}
+                  <div className="relative aspect-square bg-white rounded-lg flex items-center justify-center group overflow-hidden">
                     <img
                       src={product.image}
                       alt={product.name}
-                      className="h-3/4 object-contain"
+                      className="h-[200px] object-cover transition-transform duration-300 group-hover:scale-105"
                     />
-                    {/* Quantity  */}
+
+                    {/* Quantity / Add */}
                     {qty > 0 ? (
                       <div
                         onClick={(e) => e.stopPropagation()}
-                        className="absolute bottom-3 left-1/2 -translate-x-1/2 bg-white shadow rounded-md h-[44px] w-[150px] flex items-center justify-between px-4"
+                        className="absolute bottom-5 left-1/2 -translate-x-1/2 bg-white shadow-md rounded-md h-10 w-[90%] flex items-center justify-between px-3"
                       >
-                        <span
+                        <button
                           onClick={() =>
                             dispatch(decreaseCart({ id: product.id }))
                           }
+                          className="text-lg"
                         >
                           {qty > 1 ? <FiMinus /> : <FiTrash2 />}
-                        </span>
+                        </button>
 
                         <span className="font-medium">{qty}</span>
 
-                        <span onClick={() => dispatch(addtoCart(product))}>
+                        <button
+                          onClick={() => dispatch(addtoCart(product))}
+                          className="text-lg"
+                        >
                           <FiPlus />
-                        </span>
+                        </button>
                       </div>
                     ) : (
                       <button
@@ -195,25 +209,27 @@ const ProductDetailsModal = ({
                           e.stopPropagation();
                           dispatch(addtoCart(product));
                         }}
-                        className="absolute bottom-3 right-3 bg-white w-10 h-10 rounded-full shadow cursor-pointer flex items-center justify-center"
+                        className="absolute bottom-5 right-4 bg-white w-9 h-9 rounded-full shadow flex items-center justify-center hover:bg-gray-100"
                       >
                         <FiPlus />
                       </button>
                     )}
                   </div>
 
-                  <div className="mt-2 lg:mt-4 flex items-center gap-2">
-                    <span className="text-[#e94560] text-base lg:text-xl font-medium">
+                  {/* Price */}
+                  <div className="mt-2 flex items-center gap-2">
+                    <span className="text-[#e94560] text-base font-semibold">
                       Tk {product.price}
                     </span>
                     {product.oldPrice && (
-                      <span className="text-gray-400 line-through text-base lg:text-xl">
+                      <span className="text-gray-400 line-through text-sm">
                         Tk {product.oldPrice}
                       </span>
                     )}
                   </div>
 
-                  <h3 className="mt-1.5 lg:mt-3 text-[#6b7280] text-sm lg:text-lg leading-tight hover:text-black transition-colors line-clamp-2">
+                  {/* Title */}
+                  <h3 className="mt-1 text-gray-600 text-sm leading-snug line-clamp-2 hover:text-black transition">
                     {product.name}
                   </h3>
                 </div>

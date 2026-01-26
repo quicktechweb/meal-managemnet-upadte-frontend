@@ -91,7 +91,7 @@ const MenuDetails = () => {
               />
             )}
 
-            <span className="relative z-10 flex items-center gap-2">
+            <span className="relative z-10 text-xs lg:text-base flex items-center gap-2">
               {tab.title}
             </span>
           </button>
@@ -102,9 +102,9 @@ const MenuDetails = () => {
         key={activeTab}
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
-        className="mt-10 text-center"
+        className="mt-5 text-center"
       >
-        <h2 className="text-3xl font-extrabold text-gray-900 tracking-tight">
+        <h2 className="text-xl lg:text-3xl font-extrabold text-gray-900 tracking-tight">
           Explore our {stats.find((s) => s.id === activeTab)?.title}
         </h2>
         <div className="mt-4 h-1 w-12 bg-[#896ADC] mx-auto rounded-full" />

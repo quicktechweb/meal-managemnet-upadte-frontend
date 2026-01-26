@@ -7,7 +7,7 @@ const Registration = () => {
   return (
     <div className="min-h-screen bg-[#FFFBF7] p-4 md:p-10 flex items-center justify-center w-full mt-14 md:mt-20 font-sans">
       <div className="absolute top-20 left-20 w-72 h-72 bg-orange-200 rounded-full mix-blend-multiply filter blur-3xl opacity-40 animate-pulse"></div>
-      {/* <div className="absolute bottom-20 right-20 w-80 h-80 bg-green-100 rounded-full mix-blend-multiply filter blur-3xl opacity-50 animate-pulse transition-delay-1000"></div> */}
+      <div className="absolute bottom-20 right-20 w-80 h-80 bg-green-100 rounded-full mix-blend-multiply filter blur-3xl opacity-50 animate-pulse transition-delay-1000"></div>
 
       <div
         className={`relative flex flex-row-reverse bg-white border border-orange-100
