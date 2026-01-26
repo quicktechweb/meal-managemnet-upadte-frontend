@@ -172,10 +172,10 @@ const InstituteProfile = () => {
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
             <Users size={20} className="text-indigo-600" />
-            <h5 className="text-xl font-bold">Institute Member List</h5>
+            <h5 className="text-xl font-bold">Institute Hall Admin List</h5>
           </div>
 
-          <div className="flex gap-2">
+          {/* <div className="flex gap-2">
             <button
               onClick={() => setDeleteMode((p) => !p)}
               className={`px-4 py-2 rounded-lg text-sm cursor-pointer font-medium transition ${
@@ -188,12 +188,12 @@ const InstituteProfile = () => {
             </button>
 
             <button
-              onClick={() => setShowAddModal(true)}
+              // onClick={() => setShowAddModal(true)}
               className="px-4 py-2 rounded-lg text-sm font-medium bg-indigo-600 text-white hover:bg-indigo-700 cursor-pointer"
             >
               Add Member
             </button>
-          </div>
+          </div> */}
         </div>
 
         {/* Member Cards */}

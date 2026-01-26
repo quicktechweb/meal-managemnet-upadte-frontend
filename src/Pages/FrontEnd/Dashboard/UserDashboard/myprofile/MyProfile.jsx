@@ -99,12 +99,6 @@ const MyProfile = () => {
                   {me.institutionName}
                 </p>
               </div>
-              <div>
-                <p className="text-xs text-gray-400 uppercase font-bold tracking-wider">
-                  Degree
-                </p>
-                <p className="text-gray-700 font-medium">{me.education}</p>
-              </div>
             </div>
           </div>
         </div>
