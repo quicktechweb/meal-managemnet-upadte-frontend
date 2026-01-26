@@ -18,10 +18,9 @@ import {
   useReactTable,
 } from "@tanstack/react-table";
 import { ChevronDown, ChevronUp } from "lucide-react";
-import ScrollToTop from "../../../ScrollToTop/ScrollToTop";
 
 import Marquee from "react-fast-marquee";
-import VideoSlider from "../../../../../Components/VideoSlider";
+import VideoSlider from "../../../Components/VideoSlider";
 
 const schedule = [
   {
@@ -205,7 +204,7 @@ const columns = [
   columnHelper.accessor("night", { header: "Night" }),
 ];
 
-export default function MealManagementPart() {
+export default function MealDetails() {
   const [daywiseSelect, setDaywiseSelect] = useState("show-all");
 
   const [activeIndex, setActiveIndex] = useState(0);
@@ -264,7 +263,6 @@ export default function MealManagementPart() {
   };
   return (
     <section className="min-h-screen bg-gradient-to-br from-orange-50 via-white to-orange-100 p-3 lg:p-6 flex flex-col gap-3.5">
-      <ScrollToTop />
       {/* menu table */}
 
       <div className=" h-[50px] rounded-md bg-white overflow-hidden flex items-center px-4 mx-auto shadow">
@@ -275,7 +273,7 @@ export default function MealManagementPart() {
           </span>
         </Marquee>
       </div>
-      <div className="live-kitchen-container max-w-[300px] md:max-w-[650px] xl:max-w-[1000px] w-full mx-auto">
+      <div className="live-kitchen-container max-w-[300px] md:max-w-[650px] lg:max-w-[1000px]  xl:max-w-[1240px] w-full mx-auto">
         <h4 className="text-lg font-semibold mb-3">Live Kitchen</h4>
         <VideoSlider />
       </div>
@@ -386,7 +384,7 @@ export default function MealManagementPart() {
               {/* Inactive Button */}
               <button
                 onClick={() => setDaywiseSelect("show-all")}
-                className={`px-5 flex-1 py-2 rounded-full cursor-pointer  text-xs font-semibold
+                className={`px-5 py-2 flex-1  rounded-full cursor-pointer  text-xs font-semibold
                ${daywiseSelect === "show-all" ? "bg-orange-500 text-white hover:bg-orange-600" : "text-orange-600  hover:bg-orange-100"} transition`}
               >
                 Show all
@@ -683,7 +681,7 @@ export default function MealManagementPart() {
                 type="text"
                 value={extraMealData.day}
                 disabled
-                className="w-full mt-1 px-3 py-2 border border-gray-300 rounded-lg bg-gray-100 text-sm"
+                className="w-full mt-1 px-3 py-2 border rounded-lg bg-gray-100 text-sm"
               />
             </div>
 
@@ -698,7 +696,7 @@ export default function MealManagementPart() {
                     mealType: e.target.value,
                   }))
                 }
-                className="w-full mt-1 px-3 py-2 border border-gray-300 rounded-lg text-sm"
+                className="w-full mt-1 px-3 py-2 border rounded-lg text-sm"
               >
                 <option value="breakfast">Breakfast</option>
                 <option value="lunch">Lunch</option>
@@ -719,7 +717,7 @@ export default function MealManagementPart() {
                     quantity: Number(e.target.value),
                   }))
                 }
-                className="w-full mt-1 px-3 py-2 border border-gray-300 rounded-lg text-sm"
+                className="w-full mt-1 px-3 py-2 border rounded-lg text-sm"
               />
             </div>
 
@@ -727,7 +725,7 @@ export default function MealManagementPart() {
             <div className="flex justify-end gap-3">
               <button
                 onClick={() => setExtraMealOpen(false)}
-                className="px-4 py-2 cursor-pointer rounded-lg border border-gray-300 text-sm"
+                className="px-4 py-2 cursor-pointer rounded-lg border text-sm"
               >
                 Cancel
               </button>

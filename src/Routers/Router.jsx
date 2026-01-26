@@ -26,6 +26,7 @@ import MessOrder from "../Pages/FrontEnd/Dashboard/UserDashboard/UserOrder/MessO
 import WalletManagement from "../Pages/FrontEnd/Dashboard/UserDashboard/walletmanagement/WalletManagement";
 import InstituteProfile from "../Pages/FrontEnd/Dashboard/UserDashboard/myprofile/InstituteProfile";
 import UserDashboardHome from "../Pages/FrontEnd/Dashboard/DashboardHome/UserDashboardHome";
+import MenuDetails from "../Pages/FrontEnd/MenuDetails/MenuDetails";
 
 const router = createBrowserRouter([
   {
@@ -76,6 +77,11 @@ const router = createBrowserRouter([
       {
         path: "/contact-us",
         element: <ContactPage />,
+      },
+
+      {
+        path: "/menu-details",
+        element: <MenuDetails />,
       },
     ],
   },

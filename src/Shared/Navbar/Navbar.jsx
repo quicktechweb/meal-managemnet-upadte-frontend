@@ -34,7 +34,8 @@ export default function Navbar() {
         location?.pathname === "/faq" ||
         location?.pathname === "/contact-us" ||
         location?.pathname === "/register/user" ||
-        location?.pathname === "/register/mess"
+        location?.pathname === "/register/mess" ||
+        location?.pathname === "/menu-details"
           ? "fixed top-0 bg-gradient-to-r from-purple-700 to-blue-600 shadow-lg backdrop-blur"
           : "absolute top-0 bg-transparent"
       }`}
