@@ -73,13 +73,7 @@ const AllMealCard = ({ title, icon, checked, onToggle, gradient }) => (
 /* =========================
    MAIN COMPONENT
 ========================= */
-const AllMealActivity = () => {
-  const [globalMealStatus, setGlobalMealStatus] = useState({
-    breakfast: false,
-    lunch: true,
-    dinner: true,
-  });
-
+const AllMealActivity = ({ globalMealStatus, setGlobalMealStatus }) => {
   const toggleMeal = (mealType) => {
     setGlobalMealStatus((prev) => ({
       ...prev,
@@ -114,46 +108,6 @@ const AllMealActivity = () => {
           checked={globalMealStatus.dinner}
           onToggle={() => toggleMeal("dinner")}
         />
-      </div>
-
-      {/* WEEKLY TABLE */}
-      <div className="overflow-x-auto bg-white rounded-2xl shadow">
-        <table className="min-w-full">
-          <thead className="bg-orange-500 text-white">
-            <tr>
-              <th className="px-4 py-3 text-left">Day</th>
-              <th className="px-4 py-3">Morning</th>
-              <th className="px-4 py-3">Afternoon</th>
-              <th className="px-4 py-3">Night</th>
-            </tr>
-          </thead>
-          <tbody>
-            {schedule2.map((row) => (
-              <tr key={row.day} className="border-b">
-                <td className="px-4 py-3 font-bold">{row.day}</td>
-
-                {[
-                  ["morning", "breakfast"],
-                  ["afternoon", "lunch"],
-                  ["night", "dinner"],
-                ].map(([slot, key]) => (
-                  <td key={key} className="px-4 py-3 text-sm">
-                    <div className="flex justify-between items-center">
-                      {row[slot]}
-                      <span
-                        className={`px-2 py-1 text-[9px] font-bold text-white rounded ${
-                          globalMealStatus[key] ? "bg-green-600" : "bg-red-600"
-                        }`}
-                      >
-                        {globalMealStatus[key] ? "ON" : "OFF"}
-                      </span>
-                    </div>
-                  </td>
-                ))}
-              </tr>
-            ))}
-          </tbody>
-        </table>
       </div>
     </main>
   );

@@ -169,22 +169,6 @@ const MealCard = ({
   </div>
 );
 
-MealCard.propTypes = {
-  title: PropTypes.string.isRequired,
-  icon: PropTypes.node.isRequired,
-  gradient: PropTypes.string.isRequired,
-  selected: PropTypes.bool.isRequired,
-  onToggle: PropTypes.func.isRequired,
-  data: PropTypes.shape({
-    price: PropTypes.number.isRequired,
-    options: PropTypes.arrayOf(PropTypes.string).isRequired,
-  }).isRequired,
-  quantity: PropTypes.number,
-  setQuantity: PropTypes.func,
-  selectedOption: PropTypes.string,
-  setSelectedOption: PropTypes.func,
-};
-
 // ----------------- TABLE -----------------
 const columnHelper = createColumnHelper();
 const columns = [
@@ -203,6 +187,11 @@ export default function MealManagementPart() {
   const [selectedOptions, setSelectedOptions] = useState({});
   const [showModal, setShowModal] = useState(false);
   const [isExpanded, setIsExpanded] = useState(true);
+  const [globalMealStatus, setGlobalMealStatus] = useState({
+    breakfast: false,
+    lunch: true,
+    dinner: true,
+  });
 
   const activePlan = mealPlans[activeIndex];
 
@@ -376,7 +365,9 @@ export default function MealManagementPart() {
         <h4 className="text-lg font-semibold mb-3">Your Meal Activity</h4>
         <div className="max-w-7xl grid grid-cols-1 xl:grid-cols-4 gap-y-4 xl:gap-3">
           {/* Sidebar */}
-          <aside className="bg-white/80 w-full xl:w-auto backdrop-blur-xl rounded-3xl h-fit shadow-xl p-2">
+          <aside
+            className={`bg-white/80 w-full xl:w-auto backdrop-blur-xl rounded-3xl ${daywiseSelect === "day-wise" ? "h-fit" : "h-fit"} shadow-xl p-2`}
+          >
             <h2 className="flex items-center justify-center gap-3 font-bold text-gray-800 ">
               <input
                 type="date"
@@ -416,7 +407,7 @@ export default function MealManagementPart() {
             </div>
 
             {daywiseSelect === "day-wise" && (
-              <div className="h-[70vh] overflow-y-auto p-2">
+              <div className="h-[100vh] overflow-y-auto p-2">
                 {mealPlans.map((plan, index) => {
                   const isSelected =
                     selectedMeals[plan.date] &&
@@ -592,94 +583,57 @@ export default function MealManagementPart() {
             </main>
           )}
 
-          {daywiseSelect !== "day-wise" && <AllMealActivity />}
+          {daywiseSelect !== "day-wise" && (
+            <AllMealActivity
+              globalMealStatus={setGlobalMealStatus}
+              setGlobalMealStatus={setGlobalMealStatus}
+            />
+          )}
         </div>
-      </div>
+        {/* WEEKLY TABLE */}
+        {daywiseSelect !== "day-wise" && (
+          <div className="overflow-x-auto bg-white rounded-2xl shadow">
+            <table className="min-w-full">
+              <thead className="bg-orange-500 text-white">
+                <tr>
+                  <th className="px-4 py-3 text-left">Day</th>
+                  <th className="px-4 py-3">Morning</th>
+                  <th className="px-4 py-3">Afternoon</th>
+                  <th className="px-4 py-3">Night</th>
+                </tr>
+              </thead>
+              <tbody>
+                {schedule2.map((row) => (
+                  <tr key={row.day} className="border-b">
+                    <td className="px-4 py-3 font-bold">{row.day}</td>
 
-      {/* Modal */}
-      {showModal && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 overflow-auto p-4">
-          <div className="bg-white rounded-3xl w-full max-w-lg p-6 relative max-h-[90vh] overflow-y-auto">
-            <button
-              onClick={() => setShowModal(false)}
-              className="absolute top-4 right-4 text-gray-500"
-            >
-              <FaTimes />
-            </button>
-
-            <h2 className="text-2xl font-bold mb-4 text-gray-800">
-              Confirm Order
-            </h2>
-
-            <div className="space-y-3 mb-4">
-              <input
-                className="w-full border rounded-xl px-4 py-2"
-                placeholder="Name"
-              />
-              <input
-                className="w-full border rounded-xl px-4 py-2"
-                placeholder="Email"
-              />
-              <label className="switch">
-                <input type="checkbox" />
-                <span className="slider"></span>
-              </label>
-              <input
-                className="w-full border rounded-xl px-4 py-2"
-                placeholder="Phone"
-              />
-            </div>
-
-            <div className="space-y-4 mb-4">
-              {/* User Meals */}
-              {Object.entries(selectedMeals).map(([date, meals]) => {
-                const plan = mealPlans.find((p) => p.date === date);
-                return (
-                  <div key={date} className="p-3 bg-gray-50 rounded-xl">
-                    <h3 className="font-bold mb-2 text-gray-700">
-                      {date} (User)
-                    </h3>
-                    {meals.map((meal) => (
-                      <div key={meal} className="mb-2">
-                        <p className="font-semibold capitalize text-gray-800">
-                          {selectedOptions[date][meal]} – ৳ {plan[meal].price}
-                        </p>
-                      </div>
+                    {[
+                      ["morning", "breakfast"],
+                      ["afternoon", "lunch"],
+                      ["night", "dinner"],
+                    ].map(([slot, key]) => (
+                      <td key={key} className="px-4 py-3 text-sm">
+                        <div className="flex justify-between items-center">
+                          {row[slot]}
+                          <span
+                            className={`px-2 py-1 text-[9px] font-bold text-white rounded ${
+                              globalMealStatus[key]
+                                ? "bg-green-600"
+                                : "bg-red-600"
+                            }`}
+                          >
+                            {globalMealStatus[key] ? "ON" : "OFF"}
+                          </span>
+                        </div>
+                      </td>
                     ))}
-                  </div>
-                );
-              })}
-
-              {/* Guest Meals */}
-              {Object.entries(guestMeals).map(([date, meals]) => {
-                const plan = mealPlans.find((p) => p.date === date);
-                return (
-                  <div key={date} className="p-3 bg-gray-50 rounded-xl">
-                    <h3 className="font-bold mb-2 text-gray-700">
-                      {date} (Guest)
-                    </h3>
-                    {Object.entries(meals).map(([meal, qty]) => (
-                      <div key={meal} className="mb-2">
-                        <p className="font-semibold capitalize text-gray-800">
-                          {meal} x {qty} – ৳ {plan[meal].price * qty}
-                        </p>
-                      </div>
-                    ))}
-                  </div>
-                );
-              })}
-            </div>
-
-            <div className="font-bold text-lg mb-4 text-green-600">
-              Total: ৳ {totalAmount + guestTotalAmount}
-            </div>
-
-            <button className="w-full bg-gradient-to-r from-green-500 to-emerald-600 text-white py-3 rounded-xl font-semibold shadow-lg hover:from-emerald-600 hover:to-green-500 transition-all">
-              Confirm Order
-            </button>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
           </div>
-        </div>
-      )}
+        )}
+      </div>
     </section>
   );
 }
