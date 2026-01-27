@@ -110,7 +110,7 @@ const Dashboard = () => {
           }}
         />
         {/* Page Content */}
-        <div className="p-4 w-full">
+        <div className="p-2 lg:p-4 w-full">
           <Outlet />
         </div>
       </main>

@@ -22,7 +22,6 @@ import ScrollToTop from "../../../ScrollToTop/ScrollToTop";
 
 import Marquee from "react-fast-marquee";
 import VideoSlider from "../../../../../Components/VideoSlider";
-import AllMealActivity from "./AllMealActivity";
 
 const schedule = [
   {
@@ -113,6 +112,8 @@ const schedule2 = [
     night: "Bhat, Dim + Shobji (Shak, Mushroom)",
   },
 ];
+
+const parseOptions = (str) => str.split("/").map((s) => s.trim());
 
 const today = new Date();
 const year = today.getFullYear();
@@ -253,6 +254,14 @@ export default function MealManagementPart() {
 
   const dateRef = useRef(null);
 
+  const [tableSelections, setTableSelections] = useState({});
+
+  const handleSelectChange = (rowIndex, mealType, value) => {
+    setTableSelections((prev) => ({
+      ...prev,
+      [`${rowIndex}-${mealType}`]: value,
+    }));
+  };
   return (
     <section className="min-h-screen bg-gradient-to-br from-orange-50 via-white to-orange-100 p-3 lg:p-6 flex flex-col gap-3.5">
       <ScrollToTop />
@@ -346,7 +355,7 @@ export default function MealManagementPart() {
 
         <div className="max-w-7xl  grid grid-cols-1 xl:grid-cols-4 gap-y-4 xl:gap-3">
           {/* SIDEBAR */}
-          <aside className="bg-white/80 w-full  xl:w-auto backdrop-blur-xl rounded-3xl h-fit shadow-xl p-2">
+          <aside className="bg-white/80 w-full h-auto xl:w-auto backdrop-blur-xl rounded-3xl shadow-xl p-2">
             <h2 className="flex items-center justify-center gap-3 font-bold text-gray-800 ">
               <input
                 type="date"
@@ -371,7 +380,7 @@ export default function MealManagementPart() {
                ${daywiseSelect === "day-wise" ? "bg-orange-500 text-white hover:bg-orange-600" : "text-orange-600  hover:bg-orange-100"}  
                shadow-md  transition`}
               >
-                Date Wise
+                Day Wise
               </button>
 
               {/* Inactive Button */}
@@ -380,7 +389,7 @@ export default function MealManagementPart() {
                 className={`px-5 flex-1 py-2 rounded-full cursor-pointer  text-xs font-semibold
                ${daywiseSelect === "show-all" ? "bg-orange-500 text-white hover:bg-orange-600" : "text-orange-600  hover:bg-orange-100"} transition`}
               >
-                All
+                Show all
               </button>
             </div>
             {daywiseSelect === "day-wise" && (
@@ -477,7 +486,115 @@ export default function MealManagementPart() {
             </main>
           )}
 
-          {daywiseSelect !== "day-wise" && <AllMealActivity />}
+          {daywiseSelect !== "day-wise" && (
+            <main className="lg:col-span-3 space-y-6">
+              <div className="overflow-x-auto bg-white rounded-3xl shadow-xl">
+                <table className="min-w-full">
+                  <thead className="bg-orange-500 hidden md:table-header-group">
+                    <tr>
+                      <th className="px-4 py-3 text-left text-white">Day</th>
+                      <th className="px-4 py-3 text-left text-white">
+                        Morning
+                      </th>
+                      <th className="px-4 py-3 text-left text-white">
+                        Afternoon
+                      </th>
+                      <th className="px-4 py-3 text-left text-white">Night</th>
+                      <th className="px-4 py-3 text-left text-white">Action</th>
+                    </tr>
+                  </thead>
+
+                  <tbody className="divide-y divide-gray-200">
+                    {schedule2.map((row, rowIndex) => (
+                      <tr
+                        key={rowIndex}
+                        className="hover:bg-gray-50 flex flex-col md:table-row mb-4 border md:border-none rounded-xl"
+                      >
+                        <td className="px-4 py-3 font-bold text-orange-600 md:text-gray-800">
+                          {row.day}
+                        </td>
+
+                        {["morning", "afternoon", "night"].map((mealType) => {
+                          const options = parseOptions(row[mealType]);
+                          const currentKey = `${rowIndex}-${mealType}`;
+                          const selectedValue =
+                            tableSelections[currentKey] || options[0];
+
+                          return (
+                            <td
+                              key={mealType}
+                              className="px-2 py-2 md:py-3 flex justify-between md:table-cell border-b md:border-none"
+                            >
+                              <span className="font-bold text-orange-600 md:hidden mr-4 capitalize">
+                                {mealType}:
+                              </span>
+
+                              {options.length > 1 ? (
+                                <div className="relative flex items-center justify-between w-full gap-2">
+                                  <select
+                                    value={selectedValue}
+                                    onChange={(e) =>
+                                      handleSelectChange(
+                                        rowIndex,
+                                        mealType,
+                                        e.target.value,
+                                      )
+                                    }
+                                    className=" bg-orange-50 border border-orange-200 text-orange-800 text-xs rounded-lg focus:ring-orange-500 focus:border-orange-500 block w-full p-1.5  cursor-pointer font-medium"
+                                  >
+                                    {options.map((opt, i) => (
+                                      <option
+                                        key={i}
+                                        className="text-xs "
+                                        value={opt}
+                                      >
+                                        {opt}
+                                      </option>
+                                    ))}
+                                  </select>
+                                  <label class="switch shrink-0">
+                                    <input type="checkbox" />
+                                    <span class="slider"></span>
+                                  </label>
+                                </div>
+                              ) : (
+                                <span className="text-gray-700 text-xs flex items-center justify-between w-full gap-2">
+                                  <p> {row[mealType]}</p>
+
+                                  <label class="switch">
+                                    <input type="checkbox" />
+                                    <span class="slider"></span>
+                                  </label>
+                                </span>
+                              )}
+                            </td>
+                          );
+                        })}
+
+                        {/* extra meal */}
+                        <td className="text-[10px] text-right pr-4">
+                          <button
+                            onClick={() => {
+                              setExtraMealData({
+                                week: "Week 1",
+                                day: row.day,
+                                mealType: "breakfast",
+                                quantity: 1,
+                              });
+                              setExtraMealOpen(true);
+                            }}
+                            className="text-orange-600 cursor-pointer font-semibold hover:underline"
+                          >
+                            Extra Meal
+                          </button>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </main>
+          )}
         </div>
       </div>
 

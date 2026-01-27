@@ -8,9 +8,7 @@ import CartContextProvider from "./Shared/Context/CartContextProvider";
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
     <CartContextProvider>
-        <RouterProvider router={router} />
+      <RouterProvider router={router} />
     </CartContextProvider>
-    
-       
-  </React.StrictMode>
+  </React.StrictMode>,
 );

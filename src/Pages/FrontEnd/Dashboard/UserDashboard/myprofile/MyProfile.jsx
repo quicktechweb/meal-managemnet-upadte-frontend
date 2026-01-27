@@ -42,30 +42,30 @@ const MyProfile = () => {
   const [showAddModal, setShowAddModal] = useState(false);
 
   return (
-    <div className="p-6 bg-gray-50 min-h-screen antialiased text-gray-800">
+    <div className="p-3 lg:p-6 bg-gray-50 min-h-screen antialiased text-gray-800">
       {/* Header Section */}
       <div className="max-w-6xl mx-auto mb-4 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
-          <h4 className="text-3xl font-extrabold text-gray-900">
+          <h4 className="text-xl lg:text-3xl font-extrabold text-gray-900">
             Account Profile
           </h4>
-          <p className="text-gray-500">
+          <p className="text-xs lg:text-base text-gray-500">
             View and manage your personal identity and records.
           </p>
         </div>
-        <div className="flex items-center gap-3.5">
+        <div className="flex items-center gap-2 lg:gap-3.5">
           <button
             onClick={() => setShowAddModal(true)}
-            className="flex items-center gap-2 bg-indigo-600 text-white px-5 py-2.5 rounded-xl font-medium cursor-pointer hover:bg-indigo-700 transition-all shadow-sm"
+            className="flex items-center gap-2 bg-indigo-600 text-white px-2.5 lg:px-5 py-1.5  lg:py-2.5 rounded-xl font-medium cursor-pointer hover:bg-indigo-700 transition-all whitespace-nowrap shadow-sm text-xs lg:text-base"
           >
-            <MdOutlineAddCircleOutline size={18} />
+            <MdOutlineAddCircleOutline size={12} />
             Add Member
           </button>
           <button
             onClick={() => setShowEditModal(true)}
-            className="flex items-center gap-2 bg-indigo-600 text-white px-5 py-2.5 rounded-xl font-medium cursor-pointer hover:bg-indigo-700 transition-all shadow-sm"
+            className="flex items-center gap-2 bg-indigo-600 text-white px-2.5 lg:px-5 py-1.5  lg:py-2.5  rounded-xl font-medium cursor-pointer hover:bg-indigo-700 transition-all whitespace-nowrap shadow-sm text-xs lg:text-base"
           >
-            <Edit3 size={18} />
+            <Edit3 size={12} />
             Edit Profile
           </button>
         </div>
@@ -74,19 +74,21 @@ const MyProfile = () => {
       <div className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-3 gap-4">
         {/* Left Column: Quick Profile Card */}
         <div className="lg:col-span-1 space-y-6">
-          <div className="bg-white p-8 rounded-3xl shadow-sm border border-gray-100 flex flex-col items-center text-center">
-            <div className="relative mb-4">
+          <div className="bg-white p-4 lg:p-8 rounded-3xl shadow-sm border border-gray-100 flex flex-col items-center text-center">
+            <div className="relative mb-2 lg:mb-4">
               <img
                 src={me.img}
                 alt={me.name}
                 className="w-32 h-32 rounded-full border-4 border-indigo-50 shadow-inner"
               />
-              <div className="absolute bottom-2 right-2 bg-green-500 w-5 h-5 rounded-full border-4 border-white"></div>
+              {/* <div className="absolute bottom-2 right-2 bg-green-500 w-5 h-5 rounded-full border-4 border-white"></div> */}
             </div>
-            <h2 className="text-2xl font-bold">{me.name}</h2>
-            <p className="text-indigo-600 font-medium">@{me.username}</p>
+            <h2 className="text-xl lg:text-2xl font-bold">{me.name}</h2>
+            <p className="text-indigo-600 text-sm lg:text-base font-medium ">
+              @{me.username}
+            </p>
 
-            <div className="w-full mt-6 pt-6 border-t border-gray-100 space-y-3">
+            <div className="w-full lg:mt-6 pt-3 lg:pt-6 border-t border-gray-100 space-y-3">
               <div className="flex items-center gap-3 text-gray-600">
                 <Mail size={18} className="text-gray-400" />
                 <span className="text-sm">{me.email}</span>
@@ -119,11 +121,11 @@ const MyProfile = () => {
         <div className="lg:col-span-2 space-y-6">
           {/* Personal Details Grid */}
           <div className="bg-white p-4 rounded-3xl shadow-sm border border-gray-100">
-            <h3 className="text-xl font-bold mb-6 flex items-center gap-2 border-b pb-4">
+            <h3 className="text-xl font-bold mb-6 flex items-center gap-2  border-b pb-4 border-gray-300">
               <User size={20} className="text-indigo-500" /> Personal Details
             </h3>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-3">
               <InfoItem label="Father's Name" value={me.fathersName} />
               <InfoItem label="Mother's Name" value={me.mothersName} />
               <InfoItem
@@ -149,7 +151,7 @@ const MyProfile = () => {
 
           {/* Address Section */}
           <div className="bg-white p-4 rounded-3xl shadow-sm border border-gray-100">
-            <h3 className="text-xl font-bold mb-6 flex items-center gap-2 border-b pb-4">
+            <h3 className="text-xl font-bold mb-6 flex items-center gap-2 border-b pb-4 border-gray-300">
               <MapPin size={20} className="text-indigo-500" />
               Address Information
             </h3>
