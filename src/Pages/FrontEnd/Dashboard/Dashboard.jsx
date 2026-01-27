@@ -21,6 +21,9 @@ const Dashboard = () => {
 
     document.body.style.overflow = newState ? "hidden" : "visible";
   };
+
+  const [showBalance, setShowBalance] = useState(false);
+  const balance = 1250;
   return (
     <div className="relative min-h-screen bg-gray-100 flex">
       <ScrollRestoration />
@@ -77,7 +80,7 @@ const Dashboard = () => {
               </span>
             </div>
             {/* Profile */}
-            <div className="relative">
+            {/* <div className="relative">
               <img
                 src="https://cdn.pixabay.com/photo/2017/02/23/13/05/avatar-2092113_640.png"
                 className="w-10 h-10 rounded-full cursor-pointer"
@@ -99,6 +102,31 @@ const Dashboard = () => {
                   </ul>
                 </div>
               )}
+            </div> */}
+
+            <div className="flex items-center justify-between rounded-xl w-[200px] ">
+              {/* Profile Info */}
+              <div className="flex items-center gap-3">
+                <img
+                  src="https://cdn.pixabay.com/photo/2017/02/23/13/05/avatar-2092113_640.png"
+                  alt="profile"
+                  className="w-12 h-12 rounded-full"
+                />
+                <div className="flex flex-col">
+                  <h4 className="text-sm font-semibold text-gray-800">
+                    Quick Tech
+                  </h4>
+                  <div
+                    className="flex items-center gap-1 cursor-pointer"
+                    onClick={() => setShowBalance(!showBalance)}
+                  >
+                    <span className="text-xs text-gray-500">৳</span>
+                    <p className="text-sm font-medium text-gray-800">
+                      {showBalance ? balance : "Tap for balance"}
+                    </p>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </div>
