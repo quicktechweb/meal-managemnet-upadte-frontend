@@ -73,7 +73,7 @@ const Features = () => {
   );
 
   return (
-    <section className="lg:py-28 bg-white">
+    <section className="lg:py-7 bg-white">
       <div className=" max-w-6xl mx-auto px-4 md:px-6 text-center">
         {/* HEADING */}
         <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-4">

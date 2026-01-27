@@ -15,6 +15,7 @@ import { ChevronRight } from "lucide-react";
 
 import { IoRestaurant } from "react-icons/io5";
 import { GrRestaurant } from "react-icons/gr";
+import { FaUser } from "react-icons/fa";
 
 const DashboardSideBar = ({ setIsOpenSidebar }) => {
   //  const {  user, userLogOut } = useAuth();
@@ -102,8 +103,13 @@ const DashboardSideBar = ({ setIsOpenSidebar }) => {
       links: [
         {
           title: "My Profile",
-          icon: FaShoppingBag,
+          icon: FaUser,
           path: "/dashboard/profile",
+        },
+        {
+          title: "Institute Profile",
+          icon: FaUser,
+          path: "/dashboard/institute-profile",
         },
       ],
     },
@@ -188,7 +194,7 @@ const DashboardSideBar = ({ setIsOpenSidebar }) => {
             to={"/dashboard/dashboard"}
           >
             <div className="shadow -ms-16 flex items-center justify-center gap-2 font-bold p-3 mt-4 duration-300 active:scale-75 md:pr-0">
-              <FaHome className="text-xl text-[#007cde]" />
+              <FaHome className="text-xl text-[#6C51AA]" />
               <h2 className="font-semibold  ">Dashboard - Home</h2>
             </div>
           </NavLink>
@@ -199,7 +205,7 @@ const DashboardSideBar = ({ setIsOpenSidebar }) => {
             <div className="overflow-hidden">
               <NavLink onClick={() => setIsOpenSidebar(false)} to="/">
                 <div className="dashboardNavLink -[3px] flex items-center gap-2  p-2 ml-3 mt-2 hover:scale-110 duration-300 active:scale-75 pr-0">
-                  <FaSellcast className="text-sm text-[#007cde]" />
+                  <FaSellcast className="text-sm text-[#6C51AA]" />
                   <h2 className="font-semibold ">Home</h2>
                 </div>
               </NavLink>
@@ -229,14 +235,14 @@ const DashboardSideBar = ({ setIsOpenSidebar }) => {
                         <item.icon
                           className={`text-[18px] ${
                             openSections[item.key]
-                              ? "text-gray-500"
-                              : "text-[#007cde]"
+                              ? "text-[#6c51aa]/50"
+                              : "text-[#6C51AA]"
                           } transition-colors`}
                         />
                         <h4
                           className={`font-medium text-sm ${
                             openSections[item.key]
-                              ? "text-[#007cde]"
+                              ? "text-[#6C51AA]"
                               : "text-gray-900"
                           }`}
                         >
@@ -247,9 +253,9 @@ const DashboardSideBar = ({ setIsOpenSidebar }) => {
                       {/* Right section: static arrow icon */}
                       <ChevronRight
                         size={16}
-                        className={`text-[#007cde] transition-transform duration-300 ${
+                        className={`text-[#6C51AA] transition-transform duration-300 ${
                           openSections[item.key]
-                            ? "rotate-90 text-[#007cde]"
+                            ? "rotate-90 text-[#6C51AA]"
                             : ""
                         }`}
                       />
@@ -274,7 +280,7 @@ const DashboardSideBar = ({ setIsOpenSidebar }) => {
                           <div className="dashboardNavLink border-l-[3px] flex items-center gap-2 bg-white p-1 ml-8 mt-2 hover:scale-110 duration-300 active:scale-75 pr-0">
                             {/* <FaSellcast className="text-xl text-[#01c0c9]" /> */}
                             {link.icon && (
-                              <link.icon className="text-sm text-[#01c0c9]" />
+                              <link.icon className="text-sm text-[#6C51AA]" />
                             )}
                             <h2 className="font-semibold ">{link.title}</h2>
                           </div>
