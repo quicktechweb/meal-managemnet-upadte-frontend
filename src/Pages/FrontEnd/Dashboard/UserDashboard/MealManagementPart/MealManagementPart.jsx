@@ -690,20 +690,31 @@ export default function MealManagementPart() {
             {/* Meal Type */}
             <div className="mb-3">
               <label className="text-sm font-medium">Meal Type</label>
+
               <select
+                multiple
                 value={extraMealData.mealType}
-                onChange={(e) =>
+                onChange={(e) => {
+                  const selectedValues = Array.from(
+                    e.target.selectedOptions,
+                    (option) => option.value,
+                  );
+
                   setExtraMealData((prev) => ({
                     ...prev,
-                    mealType: e.target.value,
-                  }))
-                }
-                className="w-full mt-1 px-3 py-2 border border-gray-300 rounded-lg text-sm"
+                    mealType: selectedValues,
+                  }));
+                }}
+                className="w-full mt-1 px-3 py-2 border border-gray-300 rounded-lg text-sm h-28"
               >
                 <option value="breakfast">Breakfast</option>
                 <option value="lunch">Lunch</option>
                 <option value="dinner">Dinner</option>
               </select>
+
+              <p className="text-xs text-gray-500 mt-1">
+                Hold Ctrl (Windows) or Cmd (Mac) to select multiple
+              </p>
             </div>
 
             {/* Quantity */}
