@@ -69,6 +69,15 @@ const UserForm = () => {
         </div>
 
         <InputField label="Username" />
+        <InputField label={"Father Name"} />
+        <InputField label={"Mother Name"} />
+        <InputField label={"Gurdian Name"} />
+        <InputField label={"Date of Birth"} />
+        <InputField label={"Nationality"} />
+        <InputField label={"Religion"} />
+        <InputField label={"Gender"} />
+        <InputField label={"Present Address"} />
+        <InputField label={"Permanent Address"} />
         <InputField label="Phone Number" />
 
         {/* Institution */}
