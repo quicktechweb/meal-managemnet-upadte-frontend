@@ -5,6 +5,7 @@ import { Link } from "react-router-dom";
 const hall = {
   hall_name: "Karjon Hall",
   institute_name: "Quick Tech Institute",
+  name: "Kartik Banik Shishir",
   phone: "01517834324",
   email: "naymur@gmail.com",
   img: "https://api.dicebear.com/7.x/avataaars/svg?seed=Naymur",
@@ -46,6 +47,9 @@ const SingleHallProfile = () => {
             <h1 className="text-2xl font-bold text-gray-800">
               {hall.hall_name}
             </h1>
+            <h3 className="text-sm mt-1 text-gray-900">
+              <span className="font-semibold ">Admin Name :</span> {hall?.name}
+            </h3>
             <p className="text-gray-500 flex items-center justify-center sm:justify-start gap-2 mt-1">
               <Building2 size={16} /> {hall.institute_name}
             </p>
