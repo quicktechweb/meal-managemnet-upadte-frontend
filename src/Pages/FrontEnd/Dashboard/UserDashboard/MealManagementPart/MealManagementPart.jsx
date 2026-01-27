@@ -111,24 +111,23 @@ const MealCard = ({
       </span>
     </div>
 
-    <ul className="mt-5 space-y-2">
-      {data.options.length > 1 ? (
-        <select
-          value={selectedOption}
-          onChange={(e) => setSelectedOption(e.target.value)}
-          className="w-full border border-gray-300 px-2 py-1 rounded-lg text-sm"
-        >
-          {data.options.map((option, i) => (
-            <option key={i} value={option}>
-              {option}
-            </option>
-          ))}
-        </select>
-      ) : (
-        <li className="flex items-center gap-2 text-[10px] md:text-xs whitespace-nowrap xl:text-sm bg-gray-50 xl:px-3 py-2 rounded-lg">
-          {data.options[0]}
-        </li>
-      )}
+    <ul className="mt-2.5">
+      <li className="flex items-center gap-2 text-[10px] md:text-xs whitespace-nowrap text-sm xl:px-3 py-2 rounded-lg">
+        <FaCheckCircle className="text-green-500 shrink-0" />
+        {data.options[0]}
+      </li>
+
+      <select
+        value={selectedOption}
+        onChange={(e) => setSelectedOption(e.target.value)}
+        className="w-full border border-gray-300 px-2 py-1 rounded-lg text-xs"
+      >
+        {data.options.map((option, i) => (
+          <option key={i} value={option}>
+            {option}
+          </option>
+        ))}
+      </select>
 
       {quantity !== undefined && (
         <div className="mt-2 flex items-center justify-center gap-2">
