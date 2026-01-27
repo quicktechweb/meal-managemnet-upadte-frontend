@@ -27,6 +27,7 @@ import WalletManagement from "../Pages/FrontEnd/Dashboard/UserDashboard/walletma
 import InstituteProfile from "../Pages/FrontEnd/Dashboard/UserDashboard/myprofile/InstituteProfile";
 import UserDashboardHome from "../Pages/FrontEnd/Dashboard/DashboardHome/UserDashboardHome";
 import MenuDetails from "../Pages/FrontEnd/MenuDetails/MenuDetails";
+import SingleHallProfile from "../Pages/FrontEnd/Dashboard/UserDashboard/myprofile/SingleHallProfile";
 
 const router = createBrowserRouter([
   {
@@ -123,6 +124,11 @@ const router = createBrowserRouter([
       {
         path: "/dashboard/institute-profile",
         element: <InstituteProfile />,
+      },
+
+      {
+        path: "/dashboard/hall-profile",
+        element: <SingleHallProfile />,
       },
       {
         path: "/dashboard/canteens",
