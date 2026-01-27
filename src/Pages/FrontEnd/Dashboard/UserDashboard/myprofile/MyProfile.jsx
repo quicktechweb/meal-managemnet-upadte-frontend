@@ -3,515 +3,349 @@ import {
   Phone,
   Mail,
   Edit3,
-  Users,
-  ExternalLink,
-  Trash2,
   X,
-  ChevronUp,
-  ChevronDown,
+  User,
+  MapPin,
+  Calendar,
+  BookOpen,
+  Heart,
+  Shield,
 } from "lucide-react";
-
-import MessDetailsModal from "../../../../../Components/MessDetailsModal";
-import Swal from "sweetalert2";
-import { FaTimes } from "react-icons/fa";
-import { useForm } from "react-hook-form";
-
-import {
-  createColumnHelper,
-  flexRender,
-  getCoreRowModel,
-  useReactTable,
-} from "@tanstack/react-table";
-import ScrollToTop from "../../../ScrollToTop/ScrollToTop";
-
-const schedule = [
-  {
-    day: "Sat",
-    morning: "Alu Vorta + Dal",
-    afternoon: "Murgi + Mach/Mangsho + Dal",
-    night: "Bhat, Alu (Dim-er shonge)",
-  },
-  {
-    day: "Sun",
-    morning: "Shobji Parota/Pitha",
-    afternoon: "Mach (Bhaji/Porha) + Dal",
-    night: "Murgir Jhol + Bhaja Shobji",
-  },
-  {
-    day: "Mon",
-    morning: "Nesco/Soup + Bhat/Parota",
-    afternoon: "Gosht & Murgi + Bhat/Dal (Soup/Mukhar)",
-    night: "Bhat, Dal + Alu Vorta",
-  },
-  {
-    day: "Tue",
-    morning: "Alu Vorta + Dal",
-    afternoon: "Mach (Bhaji/Porha) + Dal",
-    night: "Bhat + Dim",
-  },
-  {
-    day: "Wed",
-    morning: "Nesco/Shobji + Dal",
-    afternoon: "Murgi + Mach + Dal",
-    night: "Bhat, Alu (Dim-er shonge)",
-  },
-  {
-    day: "Thu",
-    morning: "Alu, Piaj Vorta + Dal",
-    afternoon: "Mach (Bhaji/Porha) + Dal",
-    night: "Murgir Jhol + Shobji Lettuce",
-  },
-  {
-    day: "Fri",
-    morning: "Ruti/Shobji/Dal",
-    afternoon: "Gorur Mangsho/Prani Jhol",
-    night: "Bhat, Dim + Shobji (Shak, Mushroom)",
-  },
-];
-
-const initialMembers = [
-  {
-    id: 1,
-    name: "Naymur Rahman",
-    phone: "01517834324",
-    img: "https://api.dicebear.com/7.x/avataaars/svg?seed=Naymur",
-  },
-  {
-    id: 2,
-    name: "Sakil Ahmed",
-    phone: "01712345678",
-    img: "https://api.dicebear.com/7.x/avataaars/svg?seed=Sakil",
-  },
-];
+import { MdOutlineAddCircleOutline } from "react-icons/md";
 
 const me = {
-  id: 0,
-  name: "Quick Tech",
-  phone: " 01517834534",
-  email: "quicktech@gmail.com",
-  img: "https://api.dicebear.com/7.x/avataaars/svg?seed=Sakil",
+  id: 1,
+  name: "Naymur Rahman",
+  username: "naymur_rahman",
+  email: "naymur@gmail.com",
+  password: "Password@123",
+  phone: "01712345678",
+  fathersName: "Abdul Rahman",
+  mothersName: "Fatema Begum",
+  guardiansName: "Abdul Rahman",
+  dateOfBirth: "1998-06-15",
+  nationality: "Bangladeshi",
+  religion: "Islam",
+  education: "BSc in Computer Science",
+  maritalStatus: "Unmarried",
+  city: "Dhaka",
+  presentAddress: "House 12, Road 5, Dhanmondi, Dhaka",
+  permanentAddress: "Village: Mirpur, District: Dhaka",
+  institutionName: "Dhaka University",
+  hostelBranch: "Dhanmondi Hostel",
+  img: "https://api.dicebear.com/7.x/avataaars/svg?seed=Naymur",
 };
 
-const columnHelper = createColumnHelper();
-
-const columns = [
-  columnHelper.accessor("day", { header: "Day" }),
-  columnHelper.accessor("morning", { header: "Morning" }),
-  columnHelper.accessor("afternoon", { header: "Afternoon" }),
-  columnHelper.accessor("night", { header: "Night" }),
-];
-
 const MyProfile = () => {
-  const [messMembers, setMessMembers] = useState(initialMembers);
-  const [messDetails, setMessDetails] = useState(null);
-  const [deleteMode, setDeleteMode] = useState(false);
-  const [showAddModal, setShowAddModal] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
-  const [showOrderModal, setShowOrderModal] = useState(false);
-  const [isExpanded, setIsExpanded] = useState(true);
 
-  const table = useReactTable({
-    data: schedule,
-    columns,
-    getCoreRowModel: getCoreRowModel(),
-  });
-
-  const handleMessDetails = (member) => {
-    setMessDetails(member);
-    document.body.style.overflow = "hidden";
-  };
-
-  const handleDeleteMember = (id) => {
-    Swal.fire({
-      title: "Are you sure you want to delete?",
-      text: "This action cannot be undone!",
-      icon: "warning",
-      showCancelButton: true,
-      confirmButtonColor: "#d33",
-      cancelButtonColor: "#3085d6",
-      confirmButtonText: "Delete",
-    }).then((result) => {
-      if (result.isConfirmed) {
-        setMessMembers((prev) => prev.filter((m) => m.id !== id));
-
-        Swal.fire("Deleted!", "Member has been removed.", "success");
-      }
-    });
-  };
-
-  const handleAddMember = (member) => {
-    setMessMembers((prev) => [...prev, member]);
-    setShowAddModal(false);
-  };
-
-  const handleEdit = (member) => {
-    setShowAddModal(false);
-  };
-
-  const [selectedMeals, setSelectedMeals] = useState([]);
-
-  const hasSelectedMeal = (memberId) => {
-    return selectedMeals.some((m) => m.id === memberId);
-  };
-
-  const allMembers = [me, ...messMembers];
-
-  const isAllMealsSelected = allMembers.every((member) =>
-    hasSelectedMeal(member.id),
-  );
+  const [showAddModal, setShowAddModal] = useState(false);
 
   return (
-    <div className="pr-4 pt-4 pb-4 antialiased text-gray-800 flex flex-col gap-4">
-      {/* Header */}
-      <ScrollToTop />
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+    <div className="p-6 bg-gray-50 min-h-screen antialiased text-gray-800">
+      {/* Header Section */}
+      <div className="max-w-6xl mx-auto mb-4 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
-          <h4 className="text-2xl font-bold">My Profile</h4>
-          <p className="text-sm text-gray-500">
-            Manage your account settings and information.
+          <h4 className="text-3xl font-extrabold text-gray-900">
+            Account Profile
+          </h4>
+          <p className="text-gray-500">
+            View and manage your personal identity and records.
           </p>
         </div>
-
-        <button
-          onClick={() => setShowEditModal(true)}
-          className="flex cursor-pointer items-center gap-2 bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700"
-        >
-          <Edit3 size={16} />
-          Edit Profile
-        </button>
+        <div className="flex items-center gap-3.5">
+          <button
+            onClick={() => setShowAddModal(true)}
+            className="flex items-center gap-2 bg-indigo-600 text-white px-5 py-2.5 rounded-xl font-medium cursor-pointer hover:bg-indigo-700 transition-all shadow-sm"
+          >
+            <MdOutlineAddCircleOutline size={18} />
+            Add Member
+          </button>
+          <button
+            onClick={() => setShowEditModal(true)}
+            className="flex items-center gap-2 bg-indigo-600 text-white px-5 py-2.5 rounded-xl font-medium cursor-pointer hover:bg-indigo-700 transition-all shadow-sm"
+          >
+            <Edit3 size={18} />
+            Edit Profile
+          </button>
+        </div>
       </div>
-      <div className="p-6 bg-white  rounded-2xl ">
-        <div className="grid grid-cols-1 md:grid-cols-3 xl:grid-cols-4 gap-8 items-center">
-          <div className="space-y-1 flex items-center gap-4 ">
-            <div className="w-14 h-14 rounded-full border-2 border-indigo-100 group-hover:border-indigo-400 transition-colors duration-300">
+
+      <div className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-3 gap-4">
+        {/* Left Column: Quick Profile Card */}
+        <div className="lg:col-span-1 space-y-6">
+          <div className="bg-white p-8 rounded-3xl shadow-sm border border-gray-100 flex flex-col items-center text-center">
+            <div className="relative mb-4">
               <img
-                src={me?.img}
-                alt={"hello"}
-                className="w-full h-full rounded-full bg-gray-50 object-cover"
-              />{" "}
+                src={me.img}
+                alt={me.name}
+                className="w-32 h-32 rounded-full border-4 border-indigo-50 shadow-inner"
+              />
+              <div className="absolute bottom-2 right-2 bg-green-500 w-5 h-5 rounded-full border-4 border-white"></div>
             </div>
-            <div className="space-y-1">
-              <div className="flex items-center gap-2 text-gray-400 mb-1">
-                {" "}
-                <Mail size={14} />
-                <h6 className="text-[10px] font-bold uppercase tracking-widest text-gray-500">
-                  {" "}
-                  Full Name{" "}
-                </h6>{" "}
+            <h2 className="text-2xl font-bold">{me.name}</h2>
+            <p className="text-indigo-600 font-medium">@{me.username}</p>
+
+            <div className="w-full mt-6 pt-6 border-t border-gray-100 space-y-3">
+              <div className="flex items-center gap-3 text-gray-600">
+                <Mail size={18} className="text-gray-400" />
+                <span className="text-sm">{me.email}</span>
               </div>
-              <p className="text-gray-900 font-semibold text-lg">
-                {" "}
-                {me?.name}{" "}
-              </p>{" "}
-            </div>
-          </div>{" "}
-          {/* Phone Number */}
-          <div className="space-y-1">
-            {" "}
-            <div className="flex items-center gap-2 text-gray-400 mb-1">
-              {" "}
-              <Phone size={14} />{" "}
-              <h6 className="text-[10px] font-bold uppercase tracking-widest text-gray-500">
-                {" "}
-                Phone Number{" "}
-              </h6>{" "}
-            </div>{" "}
-            <p className="text-gray-900 font-semibold text-lg">
-              {me?.phone}
-            </p>{" "}
-          </div>{" "}
-          {/* Email */}{" "}
-          <div className="space-y-1">
-            {" "}
-            <div className="flex items-center gap-2 text-gray-400 mb-1">
-              {" "}
-              <Mail size={14} />{" "}
-              <h6 className="text-[10px] font-bold uppercase tracking-widest text-gray-500">
-                {" "}
-                Email{" "}
-              </h6>{" "}
-            </div>{" "}
-            <p className="text-gray-900 font-semibold text-lg">
-              {" "}
-              quicktech@gmail.com{" "}
-            </p>{" "}
-          </div>
-          <div className="space-y-1">
-            <button
-              onClick={() => handleMessDetails(me)}
-              className="cursor-pointer  w-full flex items-center justify-center gap-2 py-2 px-4 rounded-lg bg-gray-50 text-gray-600 text-xs font-semibold hover:bg-indigo-600 hover:text-white transition-all duration-200"
-            >
-              View Details
-              <ExternalLink size={12} />
-            </button>
-          </div>
-        </div>{" "}
-      </div>
-
-      <div className="">
-        {/* DESKTOP TABLE */}
-        <div className="w-full ">
-          <button
-            onClick={() => setIsExpanded(!isExpanded)}
-            className="w-full flex justify-between items-center bg-white p-2 lg:p-4 text-black rounded-t-md cursor-pointer font-bold transition-colors hover:bg-white/40 text-xs lg:text-base"
-          >
-            <span>Weekly Meal Lists</span>
-            {isExpanded ? <ChevronUp size={20} /> : <ChevronDown size={20} />}
-          </button>
-
-          {/* Expandable Container */}
-          <div
-            className={`transition-all duration-300 ease-in-out overflow-hidden  ${isExpanded ? "max-h-[1000px] border border-gray-300" : "max-h-0"}`}
-          >
-            <div className="overflow-x-auto">
-              <table className="min-w-full text-sm sm:text-base">
-                <thead className="bg-orange-500/30 text-black hidden md:table-header-group">
-                  {table.getHeaderGroups().map((headerGroup) => (
-                    <tr key={headerGroup.id}>
-                      {headerGroup.headers.map((header) => (
-                        <th
-                          key={header.id}
-                          className="px-4 py-3 text-left font-semibold text-black/80 border-b border-black"
-                        >
-                          {flexRender(
-                            header.column.columnDef.header,
-                            header.getContext(),
-                          )}
-                        </th>
-                      ))}
-                    </tr>
-                  ))}
-                </thead>
-
-                <tbody className="divide-y divide-gray-200">
-                  {table.getRowModel().rows.map((row) => (
-                    <tr
-                      key={row.id}
-                      className="hover:bg-gray-50 flex flex-col md:table-row mb-4 md:mb-0 border md:border-none rounded-lg md:rounded-none"
-                    >
-                      {row.getVisibleCells().map((cell) => (
-                        <td
-                          key={cell.id}
-                          className="px-4 py-2 md:py-3 border-black md:border-b flex justify-between md:table-cell"
-                        >
-                          {/* Mobile Label */}
-                          <span className="font-bold text-orange-600 md:hidden mr-4">
-                            {cell.column.columnDef.header?.toString()}:
-                          </span>
-                          {/* Data */}
-                          <span className="text-right md:text-left">
-                            {flexRender(
-                              cell.column.columnDef.cell,
-                              cell.getContext(),
-                            )}
-                          </span>
-                        </td>
-                      ))}
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Member Section Header */}
-      <div className="flex flex-col gap-2">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <Users size={20} className="text-indigo-600" />
-            <h5 className="text-xl font-bold">Mess Member List</h5>
-          </div>
-
-          <div className="flex gap-2">
-            <button
-              onClick={() => setDeleteMode((p) => !p)}
-              className={`px-4 py-2 rounded-lg text-sm cursor-pointer font-medium transition ${
-                deleteMode
-                  ? "bg-red-600 text-white"
-                  : "bg-gray-100 text-gray-700 hover:bg-red-100"
-              }`}
-            >
-              {deleteMode ? "Cancel Delete" : "Delete Member"}
-            </button>
-
-            <button
-              onClick={() => setShowAddModal(true)}
-              className="px-4 py-2 rounded-lg text-sm font-medium bg-indigo-600 text-white hover:bg-indigo-700 cursor-pointer"
-            >
-              Add Member
-            </button>
-          </div>
-        </div>
-
-        {/* Member Cards */}
-        <div className="flex flex-wrap  gap-6">
-          {messMembers.map((member) => (
-            <div
-              key={member.id}
-              className="group bg-white p-5 rounded-2xl border border-gray-100 shadow-sm hover:shadow-md hover:border-indigo-100 transition-all duration-300 relative overflow-hidden w-[200px]"
-            >
-              <div className="absolute top-0 right-0 -mt-4 -mr-4 w-16 h-16 bg-indigo-50 rounded-full group-hover:scale-150 transition-transform duration-500 ease-out" />
-              {/* Delete Icon */}
-              {deleteMode && (
-                <>
-                  <div className="w-full rounded-2xl  bg-red-300/50 absolute top-0 left-0 right-0 bottom-0 z-40"></div>
-
-                  <button
-                    onClick={() => handleDeleteMember(member.id)}
-                    className="absolute cursor-pointer top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 p-2 text-2xl rounded-full text-red-600 hover:bg-red-600 z-50 bg-red-100 hover:text-white"
-                  >
-                    <Trash2 size={20} />
-                  </button>
-                </>
-              )}
-
-              <div className="relative flex flex-col items-center text-center">
-                <div className="w-14 h-14 mb-2 rounded-full p-1 border-2 border-indigo-100 group-hover:border-indigo-400 transition-colors duration-300">
-                  <img
-                    src={member.img}
-                    alt={member.name}
-                    className="w-full h-full rounded-full bg-gray-50 object-cover"
-                  />
-                </div>
-
-                <h3 className="text-lg font-bold text-gray-800 group-hover:text-indigo-600 transition-colors">
-                  {member.name}
-                </h3>
-
-                <div className="flex items-center gap-1.5 text-gray-500 mt-1">
-                  <Phone size={13} className="text-gray-400" />
-                  <p className="text-sm font-medium">{member.phone}</p>
-                </div>
-
-                <button
-                  onClick={() => handleMessDetails(member)}
-                  className="cursor-pointer  w-full flex items-center justify-center gap-2 py-2 px-4 rounded-lg bg-gray-50 text-gray-600 text-xs font-semibold hover:bg-indigo-600 hover:text-white transition-all duration-200"
-                >
-                  View Details
-                  <ExternalLink size={12} />
-                </button>
+              <div className="flex items-center gap-3 text-gray-600">
+                <Phone size={18} className="text-gray-400" />
+                <span className="text-sm">{me.phone}</span>
               </div>
             </div>
-          ))}
+          </div>
+
+          <div className="bg-white p-6 rounded-3xl shadow-sm border border-gray-100">
+            <h3 className="font-bold text-gray-900 mb-4 flex items-center gap-2">
+              <BookOpen size={18} className="text-indigo-500" /> Education
+            </h3>
+            <div className="space-y-4">
+              <div>
+                <p className="text-xs text-gray-400 uppercase font-bold tracking-wider">
+                  Institution
+                </p>
+                <p className="text-gray-700 font-medium">
+                  {me.institutionName}
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Right Column: Detailed Info */}
+        <div className="lg:col-span-2 space-y-6">
+          {/* Personal Details Grid */}
+          <div className="bg-white p-4 rounded-3xl shadow-sm border border-gray-100">
+            <h3 className="text-xl font-bold mb-6 flex items-center gap-2 border-b pb-4">
+              <User size={20} className="text-indigo-500" /> Personal Details
+            </h3>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6">
+              <InfoItem label="Father's Name" value={me.fathersName} />
+              <InfoItem label="Mother's Name" value={me.mothersName} />
+              <InfoItem
+                label="Date of Birth"
+                value={me.dateOfBirth}
+                icon={<Calendar size={14} />}
+              />
+              <InfoItem label="Nationality" value={me.nationality} />
+              <InfoItem label="Religion" value={me.religion} />
+              <InfoItem
+                label="Marital Status"
+                value={me.maritalStatus}
+                icon={<Heart size={14} />}
+              />
+              <InfoItem
+                label="Guardian"
+                value={me.guardiansName}
+                icon={<Shield size={14} />}
+              />
+              <InfoItem label="Hostel Branch" value={me.hostelBranch} />
+            </div>
+          </div>
+
+          {/* Address Section */}
+          <div className="bg-white p-4 rounded-3xl shadow-sm border border-gray-100">
+            <h3 className="text-xl font-bold mb-6 flex items-center gap-2 border-b pb-4">
+              <MapPin size={20} className="text-indigo-500" />
+              Address Information
+            </h3>
+            <div className="space-y-6">
+              <div>
+                <h6 className="text-xs font-bold text-indigo-500 uppercase tracking-widest mb-2">
+                  Present Address
+                </h6>
+                <p className="text-gray-700 bg-gray-50 p-4 rounded-xl border border-dashed border-gray-200">
+                  {me.presentAddress}
+                </p>
+              </div>
+              <div>
+                <h6 className="text-xs font-bold text-indigo-500 uppercase tracking-widest mb-2">
+                  Permanent Address
+                </h6>
+                <p className="text-gray-700 bg-gray-50 p-4 rounded-xl border border-dashed border-gray-200">
+                  {me.permanentAddress}
+                </p>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
 
-      {isAllMealsSelected && (
-        <div className="flex justify-center mt-6">
-          <button
-            onClick={() => setShowOrderModal(true)}
-            className="px-6 py-3 rounded-lg bg-green-600 text-white font-semibold hover:bg-green-700 cursor-pointer transition"
-          >
-            Placed Order
-          </button>
-        </div>
-      )}
-
-      {/* Details Modal */}
-      {messDetails && (
-        <MessDetailsModal
-          member={messDetails}
-          selectedMeals={selectedMeals}
-          setSelectedMeals={setSelectedMeals}
-          setMessDetails={setMessDetails}
-        />
-      )}
-
-      {/* Add Member Modal */}
-      {showAddModal && (
-        <AddMemberModal
-          onClose={() => setShowAddModal(false)}
-          onAdd={handleAddMember}
-        />
-      )}
-
-      {/* edit modal */}
       {showEditModal && (
-        <EditProfileModal
-          onClose={() => setShowEditModal(false)}
-          onEdit={handleEdit}
-        />
+        <EditProfileModal onClose={() => setShowEditModal(false)} />
       )}
 
-      {showOrderModal && (
-        <OrderModal
-          onClose={() => setShowOrderModal(false)}
-          selectedMeals={selectedMeals}
-        />
+      {showAddModal && (
+        <AddMemberModal onClose={() => setShowAddModal(false)} />
       )}
     </div>
   );
 };
 
+// Reusable Info Component
+const InfoItem = ({ label, value, icon }) => (
+  <div className="space-y-1">
+    <div className="flex items-center gap-2 text-gray-400">
+      {icon}
+      <span className="text-[10px] font-bold uppercase tracking-widest">
+        {label}
+      </span>
+    </div>
+    <p className="text-gray-900 font-semibold">{value || "N/A"}</p>
+  </div>
+);
+
 export default MyProfile;
 
 // add member modal
 
+const emptyMember = {
+  name: "",
+  username: "",
+  email: "",
+  password: "",
+  phone: "",
+  fathersName: "",
+  mothersName: "",
+  guardiansName: "",
+  dateOfBirth: "",
+  nationality: "",
+  religion: "",
+  education: "",
+  maritalStatus: "",
+  city: "",
+  presentAddress: "",
+  permanentAddress: "",
+  institutionName: "",
+  hostelBranch: "",
+  img: "https://api.dicebear.com/7.x/avataaars/svg?seed=NewUser",
+};
+
 const AddMemberModal = ({ onClose, onAdd }) => {
-  const [name, setName] = useState("");
-  const [phone, setPhone] = useState("");
+  const [formData, setFormData] = useState(emptyMember);
 
-  const submitHandler = () => {
-    if (!name || !phone) return;
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+  };
 
-    onAdd({
-      id: Date.now(),
-      name,
-      phone,
-      img: `https://api.dicebear.com/7.x/avataaars/svg?seed=${name}`,
-    });
+  const submitHandler = (e) => {
+    e.preventDefault();
+    onAdd(formData);
+    onClose();
   };
 
   return (
-    <div className="fixed inset-0 z-50 bg-black/40 flex items-center justify-center">
-      <div className="bg-white w-full max-w-md rounded-xl p-6 relative">
-        <button
-          onClick={onClose}
-          className="absolute top-4 cursor-pointer right-4 text-gray-400 hover:text-gray-600"
-        >
-          <X size={18} />
-        </button>
-
-        <h3 className="text-lg font-bold mb-4">Add New Member</h3>
-
-        <div className="space-y-2">
-          <input
-            type="file"
-            placeholder="Full Name"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            className="w-full border border-gray-200 rounded-lg px-3 py-2"
-          />
-
-          <input
-            type="text"
-            placeholder="Full Name"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            className="w-full border border-gray-200 rounded-lg px-3 py-2"
-          />
-
-          <input
-            type="text"
-            placeholder="Phone Number"
-            value={phone}
-            onChange={(e) => setPhone(e.target.value)}
-            className="w-full border border-gray-200 rounded-lg px-3 py-2"
-          />
-        </div>
-
-        <div className="flex justify-end gap-2 mt-6">
+    <div className="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4">
+      <div className="bg-white w-full max-w-2xl rounded-2xl shadow-2xl flex flex-col max-h-[90vh]">
+        {/* Header */}
+        <div className="p-6 border-b flex justify-between items-center bg-gray-50 rounded-t-2xl">
+          <div>
+            <h3 className="text-xl font-bold text-gray-900">Add New Member</h3>
+            <p className="text-sm text-gray-500">Create a new member profile</p>
+          </div>
           <button
             onClick={onClose}
-            className="px-4 py-2 cursor-pointer rounded bg-gray-100"
+            className="p-2 hover:bg-gray-200 rounded-full transition"
+          >
+            <X size={20} />
+          </button>
+        </div>
+
+        {/* Body */}
+        <form
+          onSubmit={submitHandler}
+          className="p-6 overflow-y-auto space-y-6"
+        >
+          <div className="flex items-center gap-6 pb-6 border-b">
+            <img
+              src={formData.img}
+              className="w-20 h-20 rounded-full border"
+              alt="Preview"
+            />
+            <InputField
+              label="Profile Image URL"
+              name="img"
+              value={formData.img}
+              onChange={handleChange}
+            />
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <InputField
+              label="Full Name"
+              name="name"
+              value={formData.name}
+              onChange={handleChange}
+            />
+            <InputField
+              label="Username"
+              name="username"
+              value={formData.username}
+              onChange={handleChange}
+            />
+            <InputField
+              label="Email"
+              name="email"
+              type="email"
+              value={formData.email}
+              onChange={handleChange}
+            />
+            <InputField
+              label="Password"
+              name="password"
+              type="password"
+              value={formData.password}
+              onChange={handleChange}
+            />
+            <InputField
+              label="Phone"
+              name="phone"
+              value={formData.phone}
+              onChange={handleChange}
+            />
+            <InputField
+              label="Date of Birth"
+              name="dateOfBirth"
+              type="date"
+              value={formData.dateOfBirth}
+              onChange={handleChange}
+            />
+          </div>
+
+          <InputField
+            label="Present Address"
+            name="presentAddress"
+            value={formData.presentAddress}
+            onChange={handleChange}
+            isTextArea
+          />
+
+          <InputField
+            label="Permanent Address"
+            name="permanentAddress"
+            value={formData.permanentAddress}
+            onChange={handleChange}
+            isTextArea
+          />
+        </form>
+
+        {/* Footer */}
+        <div className="p-6 border-t bg-gray-50 flex justify-end gap-3 rounded-b-2xl">
+          <button
+            type="button"
+            onClick={onClose}
+            className="px-6 py-2.5 rounded-xl font-semibold text-gray-700 hover:bg-gray-200"
           >
             Cancel
           </button>
           <button
             onClick={submitHandler}
-            className="px-4 py-2 rounded bg-indigo-600 cursor-pointer text-white"
+            className="px-6 py-2.5 rounded-xl font-semibold bg-indigo-600 text-white hover:bg-indigo-700 shadow"
           >
             Add Member
           </button>
@@ -524,70 +358,197 @@ const AddMemberModal = ({ onClose, onAdd }) => {
 // edit member modal
 
 const EditProfileModal = ({ onClose, onEdit }) => {
-  const [name, setName] = useState("");
-  const [phone, setPhone] = useState("");
+  // Initialize state with existing data (or empty strings)
+  const [formData, setFormData] = useState({ ...me });
 
-  const submitHandler = () => {
-    if (!name || !phone) return;
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+  };
 
-    onEdit({
-      id: Date.now(),
-      name,
-      phone,
-      img: `https://api.dicebear.com/7.x/avataaars/svg?seed=${name}`,
-    });
+  const submitHandler = (e) => {
+    e.preventDefault();
+    // In a real app, you'd send formData to an API here
+    onEdit(formData);
   };
 
   return (
-    <div className="fixed inset-0 z-50 bg-black/40 flex items-center justify-center">
-      <div className="bg-white w-full max-w-md rounded-xl p-6 relative">
-        <button
-          onClick={onClose}
-          className="absolute top-4 cursor-pointer right-4 text-gray-400 hover:text-gray-600"
-        >
-          <X size={18} />
-        </button>
-
-        <h3 className="text-lg font-bold mb-4">Edit Your Profile</h3>
-
-        <div className="space-y-2">
-          <input
-            type="file"
-            placeholder="Full Name"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            className="w-full border border-gray-200 rounded-lg px-3 py-2"
-          />
-
-          <input
-            type="text"
-            placeholder="Full Name"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            className="w-full border border-gray-200 rounded-lg px-3 py-2"
-          />
-
-          <input
-            type="text"
-            placeholder="Phone Number"
-            value={phone}
-            onChange={(e) => setPhone(e.target.value)}
-            className="w-full border border-gray-200 rounded-lg px-3 py-2"
-          />
-        </div>
-
-        <div className="flex justify-end gap-2 mt-6">
+    <div className="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4">
+      <div className="bg-white w-full max-w-2xl rounded-2xl shadow-2xl flex flex-col max-h-[90vh]">
+        {/* Modal Header */}
+        <div className="p-6 border-b flex justify-between items-center bg-gray-50 rounded-t-2xl">
+          <div>
+            <h3 className="text-xl font-bold text-gray-900">Edit Profile</h3>
+            <p className="text-sm text-gray-500">
+              Update your personal and academic information.
+            </p>
+          </div>
           <button
             onClick={onClose}
-            className="px-4 py-2 cursor-pointer rounded bg-gray-100"
+            className="p-2 hover:bg-gray-200 rounded-full transition-colors cursor-pointer"
+          >
+            <X size={20} />
+          </button>
+        </div>
+
+        {/* Modal Body - Scrollable */}
+        <form
+          onSubmit={submitHandler}
+          className="p-6 overflow-y-auto space-y-8"
+        >
+          {/* Section: Profile Picture */}
+          <div className="flex items-center gap-6 pb-6 border-b border-gray-100">
+            <img
+              src={formData.img}
+              className="w-20 h-20 rounded-full bg-indigo-50 border-2 border-indigo-100"
+              alt="Preview"
+            />
+            <div className="flex-1">
+              <label className="block text-sm font-semibold text-gray-700 mb-1">
+                Profile Image URL
+              </label>
+              <input
+                type="text"
+                name="img"
+                value={formData.img}
+                onChange={handleChange}
+                className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-indigo-500 outline-none"
+              />
+            </div>
+          </div>
+
+          {/* Section: Basic Info */}
+          <div>
+            <h4 className="text-xs font-bold text-indigo-600 uppercase tracking-widest mb-4">
+              Basic Information
+            </h4>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <InputField
+                label="Full Name"
+                name="name"
+                value={formData.name}
+                onChange={handleChange}
+              />
+              <InputField
+                label="Email Address"
+                name="email"
+                value={formData.email}
+                onChange={handleChange}
+                type="email"
+              />
+              <InputField
+                label="Phone Number"
+                name="phone"
+                value={formData.phone}
+                onChange={handleChange}
+              />
+              <InputField
+                label="Date of Birth"
+                name="dateOfBirth"
+                value={formData.dateOfBirth}
+                onChange={handleChange}
+                type="date"
+              />
+            </div>
+          </div>
+
+          {/* Section: Family & Identity */}
+          <div>
+            <h4 className="text-xs font-bold text-indigo-600 uppercase tracking-widest mb-4">
+              Family & Identity
+            </h4>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <InputField
+                label="Father's Name"
+                name="fathersName"
+                value={formData.fathersName}
+                onChange={handleChange}
+              />
+              <InputField
+                label="Mother's Name"
+                name="mothersName"
+                value={formData.mothersName}
+                onChange={handleChange}
+              />
+              <InputField
+                label="Guardian's Name"
+                name="guardiansName"
+                value={formData.guardiansName}
+                onChange={handleChange}
+              />
+              <InputField
+                label="Nationality"
+                name="nationality"
+                value={formData.nationality}
+                onChange={handleChange}
+              />
+              <InputField
+                label="Religion"
+                name="religion"
+                value={formData.religion}
+                onChange={handleChange}
+              />
+              <InputField
+                label="Marital Status"
+                name="maritalStatus"
+                value={formData.maritalStatus}
+                onChange={handleChange}
+              />
+            </div>
+          </div>
+
+          {/* Section: Academic & Address */}
+          <div>
+            <h4 className="text-xs font-bold text-indigo-600 uppercase tracking-widest mb-4">
+              Academic & Location
+            </h4>
+            <div className="grid grid-cols-1 gap-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <InputField
+                  label="Institution"
+                  name="institutionName"
+                  value={formData.institutionName}
+                  onChange={handleChange}
+                />
+                <InputField
+                  label="Education"
+                  name="education"
+                  value={formData.education}
+                  onChange={handleChange}
+                />
+              </div>
+              <InputField
+                label="Present Address"
+                name="presentAddress"
+                value={formData.presentAddress}
+                onChange={handleChange}
+                isTextArea
+              />
+              <InputField
+                label="Permanent Address"
+                name="permanentAddress"
+                value={formData.permanentAddress}
+                onChange={handleChange}
+                isTextArea
+              />
+            </div>
+          </div>
+        </form>
+
+        {/* Modal Footer */}
+        <div className="p-6 border-t bg-gray-50 flex justify-end gap-3 rounded-b-2xl">
+          <button
+            type="button"
+            onClick={onClose}
+            className="px-6 py-2.5 rounded-xl font-semibold text-gray-700 hover:bg-gray-200 transition-colors cursor-pointer"
           >
             Cancel
           </button>
           <button
             onClick={submitHandler}
-            className="px-4 py-2 rounded bg-indigo-600 cursor-pointer text-white"
+            className="px-6 py-2.5 rounded-xl font-semibold bg-indigo-600 text-white hover:bg-indigo-700 shadow-md shadow-indigo-200 transition-all cursor-pointer"
           >
-            Edit Profile
+            Save Changes
           </button>
         </div>
       </div>
@@ -595,176 +556,33 @@ const EditProfileModal = ({ onClose, onEdit }) => {
   );
 };
 
-// order modal
-const OrderModal = ({ onClose, selectedMeals }) => {
-  console.log(selectedMeals);
-
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm({
-    defaultValues: {
-      name: me?.name,
-      email: me?.email,
-      phone: me?.phone,
-    },
-  });
-
-  const onSubmit = (data) => {
-    const payload = {
-      user: data,
-      order: selectedMeals,
-    };
-
-    console.log("Order Submitted:", payload);
-
-    // onClose();
-  };
-
-  return (
-    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 overflow-auto p-4">
-      <form
-        onSubmit={handleSubmit(onSubmit)}
-        className="bg-white rounded-3xl w-full max-w-2xl p-6 relative max-h-[90vh] overflow-y-auto shadow-xl"
-      >
-        {/* Close button */}
-        <button
-          type="button"
-          className="absolute top-4 right-4 text-gray-500 hover:text-gray-700"
-          onClick={onClose}
-        >
-          <FaTimes size={20} />
-        </button>
-
-        <h2 className="text-2xl font-bold mb-6 text-gray-800 text-center">
-          Confirm Order
-        </h2>
-
-        {/* User Info Form */}
-        <div className="space-y-3 mb-6">
-          <div>
-            <input
-              className="w-full border rounded-xl px-4 py-2 focus:ring-2 focus:ring-green-400 outline-none"
-              placeholder="Name"
-              {...register("name", { required: "Name is required" })}
-            />
-            {errors.name && (
-              <p className="text-red-500 text-sm mt-1">{errors.name.message}</p>
-            )}
-          </div>
-
-          <div>
-            <input
-              className="w-full border rounded-xl px-4 py-2 focus:ring-2 focus:ring-green-400 outline-none"
-              placeholder="Email"
-              {...register("email", {
-                required: "Email is required",
-                pattern: {
-                  value: /^\S+@\S+$/i,
-                  message: "Invalid email address",
-                },
-              })}
-            />
-            {errors.email && (
-              <p className="text-red-500 text-sm mt-1">
-                {errors.email.message}
-              </p>
-            )}
-          </div>
-
-          <div>
-            <input
-              className="w-full border rounded-xl px-4 py-2 focus:ring-2 focus:ring-green-400 outline-none"
-              placeholder="Phone"
-              {...register("phone", {
-                required: "Phone number is required",
-                minLength: {
-                  value: 10,
-                  message: "Phone number must be at least 10 digits",
-                },
-              })}
-            />
-            {errors.phone && (
-              <p className="text-red-500 text-sm mt-1">
-                {errors.phone.message}
-              </p>
-            )}
-          </div>
-        </div>
-
-        {/* Order Information */}
-        {/* Order Information */}
-        <div className="space-y-5 mb-6">
-          <h3 className="text-lg font-semibold text-gray-700">
-            Order Information
-          </h3>
-
-          {selectedMeals?.map((member) => (
-            <div
-              key={member.id}
-              className="border rounded-2xl p-4 space-y-4 shadow-sm"
-            >
-              {/* Member Header */}
-              <div className="flex items-center gap-4">
-                <img
-                  src={member.img}
-                  alt={member.name}
-                  className="w-12 h-12 rounded-full border"
-                />
-                <div>
-                  <h4 className="font-semibold text-gray-800">{member.name}</h4>
-                  <p className="text-sm text-gray-500">{member.phone}</p>
-                </div>
-              </div>
-
-              {/* Meal Dates */}
-              {member.mealInfo.map((info, idx) => (
-                <div key={idx} className="bg-gray-50 rounded-xl p-4 space-y-3">
-                  {/* Date */}
-                  <div className="flex justify-between items-center">
-                    <p className="text-sm font-medium text-gray-600">
-                      📅 {info.date}
-                    </p>
-                    <p className="font-semibold text-green-600">
-                      ৳ {info.total}
-                    </p>
-                  </div>
-
-                  {/* Meals */}
-                  <div className="grid gap-3">
-                    {info.meals.map((meal, i) => (
-                      <div
-                        key={i}
-                        className="flex justify-between items-start bg-white border rounded-lg p-3"
-                      >
-                        <div>
-                          <p className="capitalize font-medium text-gray-700">
-                            🍽 {meal.type}
-                          </p>
-                          <p className="text-sm text-gray-500">
-                            {meal.items.join(", ")}
-                          </p>
-                        </div>
-                        <p className="font-semibold text-gray-800">
-                          ৳ {meal.price}
-                        </p>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              ))}
-            </div>
-          ))}
-        </div>
-
-        <button
-          type="submit"
-          className="w-full bg-gradient-to-r from-green-500 to-emerald-600 text-white py-3 rounded-xl font-semibold shadow-lg hover:from-emerald-600 hover:to-green-500 transition-all"
-        >
-          Confirm Order
-        </button>
-      </form>
-    </div>
-  );
-};
+// Reusable Input Sub-component
+const InputField = ({
+  label,
+  name,
+  value,
+  onChange,
+  type = "text",
+  isTextArea = false,
+}) => (
+  <div className="flex flex-col gap-1.5">
+    <label className="text-sm font-semibold text-gray-700">{label}</label>
+    {isTextArea ? (
+      <textarea
+        name={name}
+        value={value}
+        onChange={onChange}
+        rows="2"
+        className="w-full border border-gray-300 rounded-xl px-4 py-2 text-gray-700 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition-all resize-none"
+      />
+    ) : (
+      <input
+        type={type}
+        name={name}
+        value={value}
+        onChange={onChange}
+        className="w-full border border-gray-300 rounded-xl px-4 py-2 text-gray-700 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition-all"
+      />
+    )}
+  </div>
+);

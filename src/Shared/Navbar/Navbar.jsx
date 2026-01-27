@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { FaBars, FaTimes } from "react-icons/fa";
+import LanguageDropdown from "../LanguageDropdown";
 
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
@@ -33,23 +34,25 @@ export default function Navbar() {
         location?.pathname === "/faq" ||
         location?.pathname === "/contact-us" ||
         location?.pathname === "/register/user" ||
-        location?.pathname === "/register/mess"
+        location?.pathname === "/register/mess" ||
+        location?.pathname === "/menu-details" ||
+        location?.pathname === "/login"
           ? "fixed top-0 bg-gradient-to-r from-purple-700 to-blue-600 shadow-lg backdrop-blur"
           : "absolute top-0 bg-transparent"
       }`}
     >
       <div className="max-w-7xl mx-auto px-6 py-3 flex justify-between items-center text-white">
         {/* LOGO */}
-        <div className="text-2xl font-semibold flex items-center">
+        <Link to={"/"} className="font-semibold flex items-center">
           <img
             src="https://i.ibb.co/8gMntgXX/Gemini-Generated-Image-m517mjm517mjm7.png"
             alt="Appbeats Logo"
             className="h-16 lg:h-16 object-contain transition-transform duration-300 hover:scale-110"
           />
-        </div>
+        </Link>
 
         {/* Desktop Menu */}
-        <ul className="hidden lg:flex gap-8 text-md font-medium opacity-90">
+        <ul className="hidden lg:flex gap-8 text-md font-medium  items-center opacity-90">
           {menuItems.map((item) =>
             item.link === "/login" ? (
               <Link key={item.name} to={item.link}>
@@ -68,6 +71,8 @@ export default function Navbar() {
               </Link>
             ),
           )}
+
+          <LanguageDropdown />
         </ul>
 
         {/* Mobile Hamburger */}

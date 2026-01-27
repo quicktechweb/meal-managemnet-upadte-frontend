@@ -116,8 +116,6 @@ const ProcessSection = () => {
   const scrollToId = (id) => {
     const element = document.getElementById(id);
 
-    console.log(id, "id");
-
     if (element) {
       element.scrollIntoView({ behavior: "smooth", block: "start" });
     }
@@ -233,6 +231,15 @@ const ProcessSection = () => {
                   </div>
                 </div>
               ))}
+
+              <div className="col-span-full flex items-center justify-center mt-2">
+                <Link
+                  to={"/menu-details"}
+                  className="w-[120px] flex items-center justify-center cursor-pointer py-2 text-xs font-medium rounded-md bg-purple-800 hover:bg-transparent hover:text-black hover:outline hover:outline-purple-800 text-white duration-300 hover:scale-110"
+                >
+                  See Details
+                </Link>
+              </div>
             </div>
 
             {/* <a

@@ -24,6 +24,9 @@ import FavouriteItem from "../Pages/FrontEnd/Dashboard/Favourite/FavouriteItem";
 import FavouriteCanteen from "../Pages/FrontEnd/Dashboard/Favourite/FavouriteCanteen";
 import MessOrder from "../Pages/FrontEnd/Dashboard/UserDashboard/UserOrder/MessOrder";
 import WalletManagement from "../Pages/FrontEnd/Dashboard/UserDashboard/walletmanagement/WalletManagement";
+import InstituteProfile from "../Pages/FrontEnd/Dashboard/UserDashboard/myprofile/InstituteProfile";
+import UserDashboardHome from "../Pages/FrontEnd/Dashboard/DashboardHome/UserDashboardHome";
+import MenuDetails from "../Pages/FrontEnd/MenuDetails/MenuDetails";
 
 const router = createBrowserRouter([
   {
@@ -75,6 +78,11 @@ const router = createBrowserRouter([
         path: "/contact-us",
         element: <ContactPage />,
       },
+
+      {
+        path: "/menu-details",
+        element: <MenuDetails />,
+      },
     ],
   },
 
@@ -91,7 +99,8 @@ const router = createBrowserRouter([
         path: "/dashboard/dashboard",
         element: (
           // <AdminProtectedRoute>
-          <DashboardHome />
+          // <DashboardHome />
+          <UserDashboardHome />
         ),
         // </AdminProtectedRoute>
       },
@@ -110,6 +119,10 @@ const router = createBrowserRouter([
       {
         path: "/dashboard/profile",
         element: <MyProfile />,
+      },
+      {
+        path: "/dashboard/institute-profile",
+        element: <InstituteProfile />,
       },
       {
         path: "/dashboard/canteens",

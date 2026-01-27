@@ -22,7 +22,7 @@ const menu = [
     pathname: "/contact-us",
   },
 ];
-import { CiMenuFries } from "react-icons/ci";
+
 
 const Navbar = ({ setIsOpen, isOpen, onCategoryOpen }) => {
   const cartItems = useSelector((state) => state.cart.cartItems);
