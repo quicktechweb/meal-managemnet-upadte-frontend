@@ -695,6 +695,8 @@ export default function MealManagementPart() {
 
           {daywiseSelect !== "day-wise" && (
             <AllMealActivity
+              globalMealStatus={globalMealStatus}
+              setGlobalMealStatus={setGlobalMealStatus}
               weeklyMealStatus={weeklyMealStatus}
               setWeeklyMealStatus={setWeeklyMealStatus}
             />

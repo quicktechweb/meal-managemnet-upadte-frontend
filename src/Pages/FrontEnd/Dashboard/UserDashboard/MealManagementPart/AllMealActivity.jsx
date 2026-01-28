@@ -96,13 +96,18 @@ const AllMealCard = ({
 /* =========================
    MAIN COMPONENT
 ========================= */
-export default function AllMealPage({ weeklyMealStatus, setWeeklyMealStatus }) {
+export default function AllMealPage({
+  weeklyMealStatus,
+  globalMealStatus,
+  setGlobalMealStatus,
+  setWeeklyMealStatus,
+}) {
   /* GLOBAL MASTER SWITCH */
-  const [globalMealStatus, setGlobalMealStatus] = useState({
-    breakfast: false,
-    lunch: true,
-    dinner: true,
-  });
+  // const [globalMealStatus, setGlobalMealStatus] = useState({
+  //   breakfast: false,
+  //   lunch: true,
+  //   dinner: true,
+  // });
 
   /* WEEKLY OVERRIDE */
   const toggleGlobalMeal = (mealType) => {
