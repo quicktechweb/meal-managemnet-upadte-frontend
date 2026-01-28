@@ -211,6 +211,8 @@ export default function MealManagementPart() {
   const [activeIndex, setActiveIndex] = useState(0);
   const [selectedMeals, setSelectedMeals] = useState({});
   const [guestMeals, setGuestMeals] = useState({});
+  const [guestSelectedOptions, setGuestSelectedOptions] = useState({});
+
   const [selectedOptions, setSelectedOptions] = useState({});
   const [showModal, setShowModal] = useState(false);
   const [isExpanded, setIsExpanded] = useState(true);
@@ -240,7 +242,7 @@ export default function MealManagementPart() {
       return prev;
     });
 
-    setGuestMeals((prev) => {
+    setGuestSelectedOptions((prev) => {
       if (!prev[activeDate]) {
         return {
           ...prev,
@@ -480,6 +482,7 @@ export default function MealManagementPart() {
           {/* Content */}
           {daywiseSelect === "day-wise" && (
             <main className="lg:col-span-3 space-y-6">
+              {/* for individual meal */}
               {/* User Meals */}
               <div className="flex flex-col gap-3">
                 <div className="bg-white/90 backdrop-blur-xl rounded-3xl shadow-lg p-6 flex justify-between items-start sm:items-center flex-wrap">
@@ -579,6 +582,7 @@ export default function MealManagementPart() {
                 </div>
               </div>
 
+              {/* for guest meal */}
               {/* Guest Meals */}
               <div className="flex flex-col gap-3">
                 <div className="bg-white/90 backdrop-blur-xl rounded-3xl shadow-lg p-6 flex justify-between items-start sm:items-center flex-wrap">
@@ -610,14 +614,14 @@ export default function MealManagementPart() {
                     data={activePlan.breakfast}
                     gradient="bg-gradient-to-r from-yellow-400 to-orange-500"
                     selected={!!guestMeals[activeDate]?.breakfast}
-                    quantity={1}
+                    quantity={guestMeals[activeDate]?.breakfast || 1}
                     setQuantity={(qty) => setGuestMealQty("breakfast", qty)}
                     selectedOption={
-                      setGuestMeals[activeDate]?.breakfast ||
+                      guestSelectedOptions[activeDate]?.breakfast ||
                       activePlan.breakfast.options[0]
                     }
                     setSelectedOption={(option) =>
-                      setGuestMeals((prev) => ({
+                      setGuestSelectedOptions((prev) => ({
                         ...prev,
                         [activeDate]: {
                           ...prev[activeDate],
@@ -636,11 +640,11 @@ export default function MealManagementPart() {
                     quantity={1}
                     setQuantity={(qty) => setGuestMealQty("lunch", qty)}
                     selectedOption={
-                      setGuestMeals[activeDate]?.lunch ||
+                      guestSelectedOptions[activeDate]?.lunch ||
                       activePlan.lunch.options[0]
                     }
                     setSelectedOption={(option) =>
-                      setGuestMeals((prev) => ({
+                      setGuestSelectedOptions((prev) => ({
                         ...prev,
                         [activeDate]: {
                           ...prev[activeDate],
@@ -658,8 +662,12 @@ export default function MealManagementPart() {
                     selected={!!guestMeals[activeDate]?.dinner}
                     quantity={1}
                     setQuantity={(qty) => setGuestMealQty("dinner", qty)}
+                    selectedOption={
+                      guestSelectedOptions[activeDate]?.dinner ||
+                      activePlan.dinner.options[0]
+                    }
                     setSelectedOption={(option) =>
-                      setGuestMeals((prev) => ({
+                      setGuestSelectedOptions((prev) => ({
                         ...prev,
                         [activeDate]: {
                           ...prev[activeDate],
