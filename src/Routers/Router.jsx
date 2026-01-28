@@ -49,18 +49,7 @@ const router = createBrowserRouter([
         path: "/",
         element: <Home />,
       },
-      {
-        path: "/auth/login",
-        element: "",
-      },
-      {
-        path: "/auth/sign-up",
-        element: "",
-      },
-      {
-        path: "/login",
-        element: <Login />,
-      },
+
       {
         path: "/register",
         element: <Registration />,
@@ -104,6 +93,24 @@ const router = createBrowserRouter([
       {
         path: "all-access-register",
         element: <FullAccessRegistration />,
+      },
+      {
+        path: "login",
+        element: <Login />,
+      },
+      {
+        path: "register",
+        element: <Registration />,
+        children: [
+          {
+            path: "user",
+            element: <UserForm />,
+          },
+          {
+            path: "mess",
+            element: <MessForm />,
+          },
+        ],
       },
     ],
   },
