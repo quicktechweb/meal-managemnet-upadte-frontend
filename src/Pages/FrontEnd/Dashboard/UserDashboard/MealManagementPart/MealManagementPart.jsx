@@ -1,4 +1,4 @@
-import { useMemo, useState, useRef } from "react";
+import { useMemo, useState, useRef, useEffect } from "react";
 import {
   FaSun,
   FaUtensils,
@@ -30,9 +30,9 @@ const schedule2 = [
   },
   {
     day: "Sun",
-    morning: ["Shobji Parota / Pitha"],
-    afternoon: ["Mach (Bhaji/Porha) + Dal"],
-    night: ["Murgir Jhol + Bhaja Shobji"],
+    morning: ["Shobji Parota / Pitha", "Egg + Ruti"],
+    afternoon: ["Mach (Bhaji/Porha) + Dal", "Murgi + Mangsho + Dal"],
+    night: ["Murgir Jhol + Bhaja Shobji", "Bhat, Alu (Dim-er shonge)"],
   },
   {
     day: "Mon",
@@ -48,15 +48,15 @@ const schedule2 = [
   },
   {
     day: "Wed",
-    morning: ["Shobji + Dal / Nesco + Dal"],
-    afternoon: ["Murgi + Mach + Dal"],
-    night: ["Bhat, Alu (Dim-er shonge)"],
+    morning: ["Shobji + Dal / Nesco + Dal", "Bhat, Alu (Dim-er shonge)"],
+    afternoon: ["Murgi + Mach + Dal", "Bhat, Alu (Dim-er shonge)"],
+    night: ["Bhat, Alu (Dim-er shonge)", "Bhat, Alu (Dim-er shonge)"],
   },
   {
     day: "Thu",
-    morning: ["Alu, Piaj Vorta + Dal"],
-    afternoon: ["Mach + Dal"],
-    night: ["Murgir Jhol + Shobji Lettuce"],
+    morning: ["Alu, Piaj Vorta + Dal", "Shobji + Dal / Nesco + Dal"],
+    afternoon: ["Mach + Dal", "Murgi + Mach + Dal"],
+    night: ["Murgir Jhol + Shobji Lettuce", "Bhat, Alu (Dim-er shonge)"],
   },
   {
     day: "Fri",
@@ -132,24 +132,30 @@ const MealCard = ({
       </span>
     </div>
 
-    <ul className="mt-2.5">
-      <li className="flex items-center gap-2 text-[10px] md:text-xs whitespace-nowrap text-sm xl:px-3 py-2 rounded-lg">
-        <FaCheckCircle className="text-green-500 shrink-0" />
-        {data.options[0]}
-      </li>
+    <div className="mt-2 space-y-2">
+      {data.options.map((option, i) => {
+        const isSelected = selectedOption === option;
 
-      <select
-        value={selectedOption}
-        onChange={(e) => setSelectedOption(e.target.value)}
-        className="w-full border border-gray-300 px-2 py-1 rounded-lg text-xs"
-      >
-        {data.options.map((option, i) => (
-          <option key={i} value={option}>
-            {option}
-          </option>
-        ))}
-      </select>
+        return (
+          <button
+            key={i}
+            type="button"
+            onClick={() => setSelectedOption(option)}
+            className={`w-full cursor-pointer flex items-center gap-2 px-3 py-2 rounded-lg text-xs text-left transition
+        `}
+          >
+            {/* Tick Icon */}
+            <span className="w-4">
+              {isSelected && (
+                <FaCheckCircle className="text-green-600 text-sm" />
+              )}
+            </span>
 
+            {/* Option Text */}
+            <span className="flex-1">{option}</span>
+          </button>
+        );
+      })}
       {quantity !== undefined && (
         <div className="mt-2 flex items-center justify-center gap-2">
           <button
@@ -174,7 +180,7 @@ const MealCard = ({
           <span className="slider"></span>
         </label>
       </div>
-    </ul>
+    </div>
 
     <button
       onClick={onToggle}
@@ -219,17 +225,35 @@ export default function MealManagementPart() {
   const activeDate = activePlan.date;
   const dateRef = useRef(null);
 
-  // Initialize options for the date if not set
-  if (!selectedOptions[activeDate]) {
-    setSelectedOptions((prev) => ({
-      ...prev,
-      [activeDate]: {
-        breakfast: activePlan.breakfast.options[0],
-        lunch: activePlan.lunch.options[0],
-        dinner: activePlan.dinner.options[0],
-      },
-    }));
-  }
+  useEffect(() => {
+    setSelectedOptions((prev) => {
+      if (!prev[activeDate]) {
+        return {
+          ...prev,
+          [activeDate]: {
+            breakfast: activePlan.breakfast.options[0],
+            lunch: activePlan.lunch.options[0],
+            dinner: activePlan.dinner.options[0],
+          },
+        };
+      }
+      return prev;
+    });
+
+    setGuestMeals((prev) => {
+      if (!prev[activeDate]) {
+        return {
+          ...prev,
+          [activeDate]: {
+            breakfast: activePlan.breakfast.options[0],
+            lunch: activePlan.lunch.options[0],
+            dinner: activePlan.dinner.options[0],
+          },
+        };
+      }
+      return prev;
+    });
+  }, [activeDate]);
 
   // Toggle user meal
   const toggleMeal = (meal) => {
@@ -541,6 +565,17 @@ export default function MealManagementPart() {
                       }))
                     }
                   />
+
+                  <div className="col-span-3">
+                    {Object.keys(selectedMeals).length > 0 && (
+                      <button
+                        // onClick={() => setShowModal(true)}
+                        className="w-1/2 lg:w-1/3 mx-auto block bg-gradient-to-r from-orange-400 to-pink-500 text-white py-3 rounded-2xl font-semibold shadow-lg hover:from-pink-500 hover:to-orange-400 transition-all"
+                      >
+                        Update
+                      </button>
+                    )}
+                  </div>
                 </div>
               </div>
 
@@ -575,8 +610,21 @@ export default function MealManagementPart() {
                     data={activePlan.breakfast}
                     gradient="bg-gradient-to-r from-yellow-400 to-orange-500"
                     selected={!!guestMeals[activeDate]?.breakfast}
-                    quantity={guestMeals[activeDate]?.breakfast || 1}
+                    quantity={1}
                     setQuantity={(qty) => setGuestMealQty("breakfast", qty)}
+                    selectedOption={
+                      setGuestMeals[activeDate]?.breakfast ||
+                      activePlan.breakfast.options[0]
+                    }
+                    setSelectedOption={(option) =>
+                      setGuestMeals((prev) => ({
+                        ...prev,
+                        [activeDate]: {
+                          ...prev[activeDate],
+                          breakfast: option,
+                        },
+                      }))
+                    }
                     onToggle={() => toggleGuestMeal("breakfast")}
                   />
                   <MealCard
@@ -585,8 +633,21 @@ export default function MealManagementPart() {
                     data={activePlan.lunch}
                     gradient="bg-gradient-to-r from-green-500 to-emerald-600"
                     selected={!!guestMeals[activeDate]?.lunch}
-                    quantity={guestMeals[activeDate]?.lunch || 1}
+                    quantity={1}
                     setQuantity={(qty) => setGuestMealQty("lunch", qty)}
+                    selectedOption={
+                      setGuestMeals[activeDate]?.lunch ||
+                      activePlan.lunch.options[0]
+                    }
+                    setSelectedOption={(option) =>
+                      setGuestMeals((prev) => ({
+                        ...prev,
+                        [activeDate]: {
+                          ...prev[activeDate],
+                          lunch: option,
+                        },
+                      }))
+                    }
                     onToggle={() => toggleGuestMeal("lunch")}
                   />
                   <MealCard
@@ -595,10 +656,30 @@ export default function MealManagementPart() {
                     data={activePlan.dinner}
                     gradient="bg-gradient-to-r from-indigo-500 to-purple-600"
                     selected={!!guestMeals[activeDate]?.dinner}
-                    quantity={guestMeals[activeDate]?.dinner || 1}
+                    quantity={1}
                     setQuantity={(qty) => setGuestMealQty("dinner", qty)}
+                    setSelectedOption={(option) =>
+                      setGuestMeals((prev) => ({
+                        ...prev,
+                        [activeDate]: {
+                          ...prev[activeDate],
+                          dinner: option,
+                        },
+                      }))
+                    }
                     onToggle={() => toggleGuestMeal("dinner")}
                   />
+
+                  <div className="col-span-3">
+                    {Object.keys(guestMeals).length > 0 && (
+                      <button
+                        // onClick={() => setShowModal(true)}
+                        className="w-1/2 lg:w-1/3 mx-auto block bg-gradient-to-r from-orange-400 to-pink-500 text-white py-3 rounded-2xl font-semibold shadow-lg hover:from-pink-500 hover:to-orange-400 transition-all"
+                      >
+                        Update
+                      </button>
+                    )}
+                  </div>
                 </div>
               </div>
             </main>

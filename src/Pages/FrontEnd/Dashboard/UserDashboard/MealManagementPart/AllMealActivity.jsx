@@ -77,6 +77,13 @@ const AllMealCard = ({
       {item_name}
     </li>
 
+    <select
+      value={""}
+      className="w-full border border-gray-300 px-2 py-1 rounded-lg text-xs"
+    >
+      <option>Alu Borta</option>
+    </select>
+
     <div className="flex justify-center mt-3">
       <label className="switch !text-xs">
         <input type="checkbox" checked={checked} onChange={onToggle} />
@@ -98,8 +105,6 @@ export default function AllMealPage({ weeklyMealStatus, setWeeklyMealStatus }) {
   });
 
   /* WEEKLY OVERRIDE */
-
-  /* 🔥 GLOBAL TOGGLE */
   const toggleGlobalMeal = (mealType) => {
     setGlobalMealStatus((prev) => {
       const newValue = !prev[mealType];
@@ -128,9 +133,17 @@ export default function AllMealPage({ weeklyMealStatus, setWeeklyMealStatus }) {
   };
 
   return (
-    <div className="lg:col-span-3 space-y-8">
-      {/* ================= GLOBAL ================= */}
-      <h1 className="text-2xl font-bold">Meal Turn ON / OFF</h1>
+    <div className="lg:col-span-3 space-y-4">
+      <div className="bg-white/90 backdrop-blur-xl rounded-3xl shadow-lg p-6 flex justify-between items-start sm:items-center flex-wrap">
+        <div className="flex flex-col">
+          <h1 className="text-xl xl:text-3xl font-extrabold text-gray-800">
+            Choose Your Meals
+          </h1>
+          <p className="text-sm text-gray-500 mt-1">
+            Select your preferred meals for the selected date(s)
+          </p>
+        </div>
+      </div>
 
       <div className="grid md:grid-cols-3 gap-6">
         <AllMealCard
