@@ -4,10 +4,16 @@ import { useEffect, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { FaBars, FaTimes } from "react-icons/fa";
 import LanguageDropdown from "../LanguageDropdown";
+import useAuth from "../../Hooks/useAuth";
 
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
+  const { user } = useAuth();
+
+  console.log(user);
+
   const location = useLocation();
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 80);
@@ -24,7 +30,6 @@ export default function Navbar() {
     { name: "Reviews", link: "/reviews" },
     { name: "Pricing", link: "/pricing" },
     { name: "FAQ", link: "/faq" },
-    { name: "Login", link: "/login" },
   ];
 
   return (
@@ -72,6 +77,35 @@ export default function Navbar() {
             ),
           )}
 
+          {user ? (
+            <div className="flex items-center gap-3 text-white px-4 py-2 rounded-xl shadow-sm hover:shadow-md transition">
+              {/* Avatar */}
+              <img
+                src={
+                  user?.user?.avatar ||
+                  "https://cdn.pixabay.com/photo/2017/02/23/13/05/avatar-2092113_640.png"
+                }
+                alt="User Avatar"
+                className="w-10 h-10 rounded-full object-cover border"
+              />
+
+              {/* User Info */}
+              <div className="leading-tight">
+                <h4 className="text-sm font-semibold text-white">
+                  {user?.user?.name}
+                </h4>
+                <p className="text-xs text-white">@{user?.user?.username}</p>
+              </div>
+            </div>
+          ) : (
+            <Link
+              to="/login"
+              className="px-5 py-2 rounded-lg bg-black text-white text-sm font-medium
+                         hover:bg-gray-800 transition shadow-sm"
+            >
+              Login
+            </Link>
+          )}
           <LanguageDropdown />
         </ul>
 
@@ -128,6 +162,9 @@ export default function Navbar() {
               ),
             )}
           </ul>
+          {/* <Link to={"/login"} className="hover:text-yellow-300 transition">
+            Login
+          </Link> */}
         </div>
       </div>
     </nav>

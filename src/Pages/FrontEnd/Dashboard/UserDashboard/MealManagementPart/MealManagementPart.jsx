@@ -66,6 +66,27 @@ const schedule2 = [
   },
 ];
 
+/* =========================
+   UTIL: NEXT 7 DAYS
+========================= */
+const getNext7Days = () => {
+  const days = [];
+  const today = new Date();
+
+  for (let i = 0; i < 7; i++) {
+    const d = new Date(today);
+    d.setDate(today.getDate() + i);
+
+    days.push({
+      date: d.toISOString().split("T")[0],
+      breakfast: true,
+      lunch: true,
+      dinner: true,
+    });
+  }
+  return days;
+};
+
 // ----------------- DATE CALCULATIONS -----------------
 const today = new Date();
 const year = today.getFullYear();
@@ -179,6 +200,7 @@ const columns = [
 
 // ----------------- MAIN COMPONENT -----------------
 export default function MealManagementPart() {
+  const [weeklyMealStatus, setWeeklyMealStatus] = useState(getNext7Days());
   const [daywiseSelect, setDaywiseSelect] = useState("show-all");
   const [activeIndex, setActiveIndex] = useState(0);
   const [selectedMeals, setSelectedMeals] = useState({});
@@ -584,8 +606,8 @@ export default function MealManagementPart() {
 
           {daywiseSelect !== "day-wise" && (
             <AllMealActivity
-              globalMealStatus={setGlobalMealStatus}
-              setGlobalMealStatus={setGlobalMealStatus}
+              weeklyMealStatus={weeklyMealStatus}
+              setWeeklyMealStatus={setWeeklyMealStatus}
             />
           )}
         </div>
@@ -601,33 +623,112 @@ export default function MealManagementPart() {
                   <th className="px-4 py-3">Night</th>
                 </tr>
               </thead>
-              <tbody>
-                {schedule2.map((row) => (
-                  <tr key={row.day} className="border-b">
-                    <td className="px-4 py-3 font-bold">{row.day}</td>
 
-                    {[
-                      ["morning", "breakfast"],
-                      ["afternoon", "lunch"],
-                      ["night", "dinner"],
-                    ].map(([slot, key]) => (
-                      <td key={key} className="px-4 py-3 text-sm">
-                        <div className="flex justify-between items-center">
-                          {row[slot]}
-                          <span
-                            className={`px-2 py-1 text-[9px] font-bold text-white rounded ${
-                              globalMealStatus[key]
-                                ? "bg-green-600"
-                                : "bg-red-600"
-                            }`}
-                          >
-                            {globalMealStatus[key] ? "ON" : "OFF"}
-                          </span>
+              <tbody>
+                {schedule2.map((row, index) => {
+                  const dayStatus = weeklyMealStatus[index];
+
+                  return (
+                    <tr key={row.day} className="border-b">
+                      <td className="px-4 py-3 font-bold">
+                        {row.day}
+                        <div className="text-[10px] text-gray-500">
+                          {dayStatus.date}
                         </div>
                       </td>
-                    ))}
-                  </tr>
-                ))}
+
+                      {[
+                        ["morning", "breakfast"],
+                        ["afternoon", "lunch"],
+                        ["night", "dinner"],
+                      ].map(([slot, mealKey]) => {
+                        const finalStatus =
+                          globalMealStatus[mealKey] && dayStatus[mealKey];
+
+                        return (
+                          <td key={mealKey} className="px-4 py-3 text-sm">
+                            <div className="flex justify-between items-center gap-2">
+                              <span>{row[slot]}</span>
+
+                              <button
+                                disabled={!globalMealStatus[mealKey]}
+                                className={`px-2 py-1 text-[9px] font-bold text-white rounded ${
+                                  finalStatus ? "bg-green-600" : "bg-red-600"
+                                } ${
+                                  !globalMealStatus[mealKey] &&
+                                  "opacity-50 cursor-not-allowed"
+                                }`}
+                              >
+                                {finalStatus ? "ON" : "OFF"}
+                              </button>
+                            </div>
+                          </td>
+                        );
+                      })}
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
+        )}
+
+        {daywiseSelect === "day-wise" && (
+          <div className="overflow-x-auto bg-white rounded-2xl shadow">
+            <table className="min-w-full">
+              <thead className="bg-orange-500 text-white">
+                <tr>
+                  <th className="px-4 py-3 text-left">Day</th>
+                  <th className="px-4 py-3">Morning</th>
+                  <th className="px-4 py-3">Afternoon</th>
+                  <th className="px-4 py-3">Night</th>
+                </tr>
+              </thead>
+
+              <tbody>
+                {schedule2.map((row, index) => {
+                  const dayStatus = weeklyMealStatus[index];
+
+                  return (
+                    <tr key={row.day} className="border-b">
+                      <td className="px-4 py-3 font-bold">
+                        {row.day}
+                        <div className="text-[10px] text-gray-500">
+                          {dayStatus.date}
+                        </div>
+                      </td>
+
+                      {[
+                        ["morning", "breakfast"],
+                        ["afternoon", "lunch"],
+                        ["night", "dinner"],
+                      ].map(([slot, mealKey]) => {
+                        const finalStatus =
+                          globalMealStatus[mealKey] && dayStatus[mealKey];
+
+                        return (
+                          <td key={mealKey} className="px-4 py-3 text-sm">
+                            <div className="flex justify-between items-center gap-2">
+                              <span>{row[slot]}</span>
+
+                              <button
+                                disabled={!globalMealStatus[mealKey]}
+                                className={`px-2 py-1 text-[9px] font-bold text-white rounded ${
+                                  finalStatus ? "bg-green-600" : "bg-red-600"
+                                } ${
+                                  !globalMealStatus[mealKey] &&
+                                  "opacity-50 cursor-not-allowed"
+                                }`}
+                              >
+                                {finalStatus ? "ON" : "OFF"}
+                              </button>
+                            </div>
+                          </td>
+                        );
+                      })}
+                    </tr>
+                  );
+                })}
               </tbody>
             </table>
           </div>

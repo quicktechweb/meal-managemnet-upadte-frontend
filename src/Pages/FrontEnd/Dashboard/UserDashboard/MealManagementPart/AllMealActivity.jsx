@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { FaSun, FaUtensils, FaMoon, FaCheckCircle } from "react-icons/fa";
 
 /* =========================
-   WEEKLY SCHEDULE
+   WEEKLY MENU
 ========================= */
 const schedule2 = [
   {
@@ -67,15 +67,17 @@ const AllMealCard = ({
     >
       {icon}
       <h3 className="font-semibold">{title}</h3>
-      <span className="ml-auto bg-white/20 px-1 lg:px-2 py-1 rounded-full font-bold text-xs lg:text-sm">
+      <span className="ml-auto bg-white/20 px-2 py-1 rounded-full font-bold text-xs">
         ৳{price}
       </span>
     </div>
-    <li className="flex items-center gap-2 text-[10px] md:text-xs whitespace-nowrap text-sm xl:px-3 py-2 rounded-lg">
-      <FaCheckCircle className="text-green-500 shrink-0" />
+
+    <li className="flex items-center gap-2 text-xs py-2">
+      <FaCheckCircle className="text-green-500" />
       {item_name}
     </li>
-    <div className="flex justify-center mt-4">
+
+    <div className="flex justify-center mt-3">
       <label className="switch !text-xs">
         <input type="checkbox" checked={checked} onChange={onToggle} />
         <span className="slider"></span>
@@ -87,50 +89,80 @@ const AllMealCard = ({
 /* =========================
    MAIN COMPONENT
 ========================= */
-const AllMealActivity = ({ globalMealStatus, setGlobalMealStatus }) => {
-  const toggleMeal = (mealType) => {
-    setGlobalMealStatus((prev) => ({
-      ...prev,
-      [mealType]: !prev[mealType],
-    }));
+export default function AllMealPage({ weeklyMealStatus, setWeeklyMealStatus }) {
+  /* GLOBAL MASTER SWITCH */
+  const [globalMealStatus, setGlobalMealStatus] = useState({
+    breakfast: false,
+    lunch: true,
+    dinner: true,
+  });
+
+  /* WEEKLY OVERRIDE */
+
+  /* 🔥 GLOBAL TOGGLE */
+  const toggleGlobalMeal = (mealType) => {
+    setGlobalMealStatus((prev) => {
+      const newValue = !prev[mealType];
+
+      // sync weekly
+      setWeeklyMealStatus((days) =>
+        days.map((day) => ({
+          ...day,
+          [mealType]: newValue,
+        })),
+      );
+
+      return { ...prev, [mealType]: newValue };
+    });
+  };
+
+  /* DAY-WISE TOGGLE */
+  const toggleWeeklyMeal = (date, mealType) => {
+    if (!globalMealStatus[mealType]) return;
+
+    setWeeklyMealStatus((prev) =>
+      prev.map((day) =>
+        day.date === date ? { ...day, [mealType]: !day[mealType] } : day,
+      ),
+    );
   };
 
   return (
-    <main className="lg:col-span-3 space-y-3">
+    <div className="lg:col-span-3 space-y-8">
+      {/* ================= GLOBAL ================= */}
       <h1 className="text-2xl font-bold">Meal Turn ON / OFF</h1>
 
-      {/* GLOBAL TOGGLES */}
       <div className="grid md:grid-cols-3 gap-6">
         <AllMealCard
           title="Breakfast"
-          price={"120"}
+          price="120"
+          item_name="Ruti"
           icon={<FaSun />}
-          item_name={"Ruti"}
           gradient="bg-gradient-to-r from-yellow-400 to-orange-500"
           checked={globalMealStatus.breakfast}
-          onToggle={() => toggleMeal("breakfast")}
+          onToggle={() => toggleGlobalMeal("breakfast")}
         />
+
         <AllMealCard
           title="Lunch"
-          price={"130"}
-          item_name={"Alu vorta"}
+          price="130"
+          item_name="Alu Vorta"
           icon={<FaUtensils />}
           gradient="bg-gradient-to-r from-green-500 to-emerald-600"
           checked={globalMealStatus.lunch}
-          onToggle={() => toggleMeal("lunch")}
+          onToggle={() => toggleGlobalMeal("lunch")}
         />
+
         <AllMealCard
           title="Dinner"
-          price={"190"}
-          item_name={"Mach / Vat"}
+          price="190"
+          item_name="Mach / Vat"
           icon={<FaMoon />}
           gradient="bg-gradient-to-r from-indigo-500 to-purple-600"
           checked={globalMealStatus.dinner}
-          onToggle={() => toggleMeal("dinner")}
+          onToggle={() => toggleGlobalMeal("dinner")}
         />
       </div>
-    </main>
+    </div>
   );
-};
-
-export default AllMealActivity;
+}

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { FaBars, FaTimes } from "react-icons/fa";
 import { Link, Outlet, ScrollRestoration } from "react-router-dom";
 // import useTitle from "../hooks/useTitle";
@@ -7,10 +7,13 @@ import { CartSidebar } from "../../../Components/CartSidebar";
 import { useSelector } from "react-redux";
 import { IoCartOutline } from "react-icons/io5";
 // import useFirebase from "../Hooks/useFirebase";
-
+import { motion, AnimatePresence } from "framer-motion";
+import useAuth from "../../../Hooks/useAuth";
 const Dashboard = () => {
   const [isOpenSidebar, setIsOpenSidebar] = useState(false);
   const [isOpens, setIsOpens] = useState(false);
+
+  const { user } = useAuth();
 
   const [isOpen, setIsOpen] = useState(false);
   const cartItems = useSelector((state) => state.cart.cartItems);
@@ -24,6 +27,15 @@ const Dashboard = () => {
 
   const [showBalance, setShowBalance] = useState(false);
   const balance = 1250;
+
+  useEffect(() => {
+    if (showBalance) {
+      const timer = setTimeout(() => {
+        setShowBalance(false);
+      }, 4000);
+      return () => clearTimeout(timer);
+    }
+  }, [showBalance]);
   return (
     <div className="relative min-h-screen bg-gray-100 flex">
       <ScrollRestoration />
@@ -104,28 +116,139 @@ const Dashboard = () => {
               )}
             </div> */}
 
-            <div className="flex items-center justify-between rounded-xl w-[200px] ">
-              {/* Profile Info */}
-              <div className="flex items-center gap-3">
-                <img
-                  src="https://cdn.pixabay.com/photo/2017/02/23/13/05/avatar-2092113_640.png"
-                  alt="profile"
-                  className="w-12 h-12 rounded-full"
-                />
-                <div className="flex flex-col">
-                  <h4 className="text-sm font-semibold text-gray-800">
-                    Quick Tech
-                  </h4>
-                  <div
-                    className="flex items-center gap-1 cursor-pointer"
-                    onClick={() => setShowBalance(!showBalance)}
-                  >
-                    <span className="text-xs text-gray-500">৳</span>
-                    <p className="text-sm font-medium text-gray-800">
-                      {showBalance ? balance : "Tap for balance"}
-                    </p>
-                  </div>
+            <div
+              className="flex items-center justify-center 
+            "
+            >
+              {/* Container */}
+              <div className="flex items-center gap-3    w-[240px]">
+                {/* Profile Image */}
+                <div className="relative">
+                  <img
+                    src="https://cdn.pixabay.com/photo/2017/02/23/13/05/avatar-2092113_640.png"
+                    alt="profile"
+                    className="w-12 h-12 rounded-full border-2 border-orange-500 p-0.5"
+                  />
                 </div>
+
+                {/* Text Section */}
+                {user ? (
+                  <div className="flex flex-col">
+                    <h4 className="text-[15px] font-bold text-gray-800 leading-tight">
+                      {user?.user?.name}
+                    </h4>
+
+                    {/* Animated Balance Pill */}
+                    <div
+                      onClick={() => setShowBalance(!showBalance)}
+                      className="relative mt-1 cursor-pointer overflow-hidden bg-white border border-pink-100 rounded-full flex items-center px-2"
+                    >
+                      {/* The Currency Symbol (Static) */}
+                      <span className="text-orange-600 font-bold text-xs mr-2 z-10">
+                        ৳
+                      </span>
+
+                      <AnimatePresence mode="wait">
+                        {showBalance ? (
+                          <motion.span
+                            key="balance"
+                            initial={{ opacity: 0, x: 20 }}
+                            animate={{ opacity: 1, x: 0 }}
+                            exit={{ opacity: 0, x: -20 }}
+                            transition={{ duration: 0.3, ease: "easeOut" }}
+                            className="text-sm font-bold text-orange-600"
+                          >
+                            0
+                          </motion.span>
+                        ) : (
+                          <motion.span
+                            key="tap"
+                            initial={{ opacity: 0, x: 20 }}
+                            animate={{ opacity: 1, x: 0 }}
+                            exit={{ opacity: 0, x: -20 }}
+                            transition={{ duration: 0.3, ease: "easeOut" }}
+                            className="text-[11px] font-medium text-orange-600 whitespace-nowrap"
+                          >
+                            Tap for balance
+                          </motion.span>
+                        )}
+                      </AnimatePresence>
+
+                      {/* Shining Glow Animation (only shows when balance is hidden) */}
+                      {!showBalance && (
+                        <motion.div
+                          initial={{ x: "-100%" }}
+                          animate={{ x: "200%" }}
+                          transition={{
+                            repeat: Infinity,
+                            duration: 1.5,
+                            repeatDelay: 1,
+                            ease: "linear",
+                          }}
+                          className="absolute inset-0 w-1/2 bg-gradient-to-r from-transparent via-white/60 to-transparent skew-x-[-20deg]"
+                        />
+                      )}
+                    </div>
+                  </div>
+                ) : (
+                  <div className="flex flex-col">
+                    <h4 className="text-[15px] font-bold text-gray-800 leading-tight">
+                      Quick Tech
+                    </h4>
+
+                    {/* Animated Balance Pill */}
+                    <div
+                      onClick={() => setShowBalance(!showBalance)}
+                      className="relative mt-1 cursor-pointer overflow-hidden bg-white border border-pink-100 rounded-full flex items-center px-2"
+                    >
+                      {/* The Currency Symbol (Static) */}
+                      <span className="text-orange-600 font-bold text-xs mr-2 z-10">
+                        ৳
+                      </span>
+
+                      <AnimatePresence mode="wait">
+                        {showBalance ? (
+                          <motion.span
+                            key="balance"
+                            initial={{ opacity: 0, x: 20 }}
+                            animate={{ opacity: 1, x: 0 }}
+                            exit={{ opacity: 0, x: -20 }}
+                            transition={{ duration: 0.3, ease: "easeOut" }}
+                            className="text-sm font-bold text-orange-600"
+                          >
+                            {balance}
+                          </motion.span>
+                        ) : (
+                          <motion.span
+                            key="tap"
+                            initial={{ opacity: 0, x: 20 }}
+                            animate={{ opacity: 1, x: 0 }}
+                            exit={{ opacity: 0, x: -20 }}
+                            transition={{ duration: 0.3, ease: "easeOut" }}
+                            className="text-[11px] font-medium text-orange-600 whitespace-nowrap"
+                          >
+                            Tap for balance
+                          </motion.span>
+                        )}
+                      </AnimatePresence>
+
+                      {/* Shining Glow Animation (only shows when balance is hidden) */}
+                      {!showBalance && (
+                        <motion.div
+                          initial={{ x: "-100%" }}
+                          animate={{ x: "200%" }}
+                          transition={{
+                            repeat: Infinity,
+                            duration: 1.5,
+                            repeatDelay: 1,
+                            ease: "linear",
+                          }}
+                          className="absolute inset-0 w-1/2 bg-gradient-to-r from-transparent via-white/60 to-transparent skew-x-[-20deg]"
+                        />
+                      )}
+                    </div>
+                  </div>
+                )}
               </div>
             </div>
           </div>
