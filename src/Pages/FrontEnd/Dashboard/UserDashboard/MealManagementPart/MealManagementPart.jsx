@@ -95,13 +95,13 @@ const daysInMonth = new Date(year, month + 1, 0).getDate();
 const weekDays = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
 // ----------------- MEAL PLANS -----------------
-const mealPlans = Array.from({ length: daysInMonth }, (_, i) => {
-  const dateObj = new Date(year, month, i + 1);
+const mealPlans = getNext7Days().map((dayObj) => {
+  const dateObj = new Date(dayObj.date);
   const dayName = weekDays[dateObj.getDay()];
   const daySchedule = schedule2.find((s) => s.day === dayName);
 
   return {
-    date: `2026-01-${String(i + 1).padStart(2, "0")} (${dayName})`,
+    date: `${dayObj.date} (${dayName})`,
     breakfast: { price: 80, options: daySchedule.morning },
     lunch: { price: 150, options: daySchedule.afternoon },
     dinner: { price: 120, options: daySchedule.night },
