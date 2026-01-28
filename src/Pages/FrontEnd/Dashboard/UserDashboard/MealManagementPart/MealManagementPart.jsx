@@ -637,7 +637,7 @@ export default function MealManagementPart() {
                     data={activePlan.lunch}
                     gradient="bg-gradient-to-r from-green-500 to-emerald-600"
                     selected={!!guestMeals[activeDate]?.lunch}
-                    quantity={1}
+                    quantity={guestMeals[activeDate]?.lunch || 1}
                     setQuantity={(qty) => setGuestMealQty("lunch", qty)}
                     selectedOption={
                       guestSelectedOptions[activeDate]?.lunch ||
@@ -660,7 +660,7 @@ export default function MealManagementPart() {
                     data={activePlan.dinner}
                     gradient="bg-gradient-to-r from-indigo-500 to-purple-600"
                     selected={!!guestMeals[activeDate]?.dinner}
-                    quantity={1}
+                    quantity={guestMeals[activeDate]?.dinner || 1}
                     setQuantity={(qty) => setGuestMealQty("dinner", qty)}
                     selectedOption={
                       guestSelectedOptions[activeDate]?.dinner ||
