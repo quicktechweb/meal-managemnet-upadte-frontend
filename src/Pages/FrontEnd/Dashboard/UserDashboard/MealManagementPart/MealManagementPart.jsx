@@ -679,67 +679,6 @@ export default function MealManagementPart() {
             </table>
           </div>
         )}
-
-        {daywiseSelect !== "day-wise" && (
-          <div className="overflow-x-auto bg-white rounded-2xl shadow">
-            <table className="min-w-full">
-              <thead className="bg-orange-500 text-white">
-                <tr>
-                  <th className="px-4 py-3 text-left">Day</th>
-                  <th className="px-4 py-3">Morning</th>
-                  <th className="px-4 py-3">Afternoon</th>
-                  <th className="px-4 py-3">Night</th>
-                </tr>
-              </thead>
-
-              <tbody>
-                {schedule2.map((row, index) => {
-                  const dayStatus = weeklyMealStatus[index];
-
-                  return (
-                    <tr key={row.day} className="border-b">
-                      <td className="px-4 py-3 font-bold">
-                        {row.day}
-                        <div className="text-[10px] text-gray-500">
-                          {dayStatus.date}
-                        </div>
-                      </td>
-
-                      {[
-                        ["morning", "breakfast"],
-                        ["afternoon", "lunch"],
-                        ["night", "dinner"],
-                      ].map(([slot, mealKey]) => {
-                        const finalStatus =
-                          globalMealStatus[mealKey] && dayStatus[mealKey];
-
-                        return (
-                          <td key={mealKey} className="px-4 py-3 text-sm">
-                            <div className="flex justify-between items-center gap-2">
-                              <span>{row[slot]}</span>
-
-                              <button
-                                disabled={!globalMealStatus[mealKey]}
-                                className={`px-2 py-1 text-[9px] font-bold text-white rounded ${
-                                  finalStatus ? "bg-green-600" : "bg-red-600"
-                                } ${
-                                  !globalMealStatus[mealKey] &&
-                                  "opacity-50 cursor-not-allowed"
-                                }`}
-                              >
-                                {finalStatus ? "ON" : "OFF"}
-                              </button>
-                            </div>
-                          </td>
-                        );
-                      })}
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </table>
-          </div>
-        )}
       </div>
     </section>
   );
