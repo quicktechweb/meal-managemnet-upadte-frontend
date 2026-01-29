@@ -18,7 +18,7 @@ const Login = () => {
     reset();
   };
   return (
-    <div className="min-h-screen mt-10 bg-white p-4 md:p-10 flex items-center justify-center w-full ">
+    <div className="min-h-screen bg-white flex items-center justify-center w-full ">
       <div className="flex flex-row-reverse h-auto  justify-center items-center shadow-2xl rounded-2xl ">
         <div className="relative w-full lg:w-1/2 bg-white overflow-hidden hidden md:flex flex-col items-center justify-center p-4 text-black">
           {/* Accent Glow */}

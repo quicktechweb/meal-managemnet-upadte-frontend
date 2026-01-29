@@ -236,3 +236,4 @@ const FloatingLabel = ({ text }) => (
     {text}
   </label>
 );
+// Institute registration step form added (last step unclear)
