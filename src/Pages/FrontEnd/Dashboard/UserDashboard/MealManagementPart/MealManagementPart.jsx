@@ -1,23 +1,17 @@
-import { useMemo, useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect } from "react";
 import {
   FaSun,
   FaUtensils,
   FaMoon,
   FaCalendarAlt,
   FaCheckCircle,
-  FaTimes,
 } from "react-icons/fa";
-import PropTypes from "prop-types";
-import {
-  createColumnHelper,
-  flexRender,
-  getCoreRowModel,
-  useReactTable,
-} from "@tanstack/react-table";
-import { ChevronDown, ChevronUp } from "lucide-react";
+
 import ScrollToTop from "../../../ScrollToTop/ScrollToTop";
-import Marquee from "react-fast-marquee";
-import VideoSlider from "../../../../../Components/VideoSlider";
+
+import Headline from "../../../../../Components/Headline";
+import LiveKitchen from "../../../../../Components/LiveKitchen";
+import MenuTable from "../../../../../Components/MenuTable";
 import AllMealActivity from "./AllMealActivity";
 
 // ----------------- SCHEDULE -----------------
@@ -50,7 +44,7 @@ const schedule2 = [
     day: "Wed",
     morning: ["Shobji + Dal / Nesco + Dal", "Bhat, Alu (Dim-er shonge)"],
     afternoon: ["Murgi + Mach + Dal", "Bhat, Alu (Dim-er shonge)"],
-    night: ["Bhat, Alu (Dim-er shonge)", "Bhat, Alu (Dim-er shonge)"],
+    night: ["Bhat, Alu (Dim-er shonge)", "Murgi + Mach + Dal"],
   },
   {
     day: "Thu",
@@ -108,6 +102,9 @@ const mealPlans = getNext7Days().map((dayObj) => {
   };
 });
 
+const getDateByDayName = (dayName) => {
+  return mealPlans.find((p) => p.date.includes(`(${dayName})`))?.date;
+};
 // ----------------- MEAL CARD -----------------
 const MealCard = ({
   title,
@@ -195,19 +192,10 @@ const MealCard = ({
   </div>
 );
 
-// ----------------- TABLE -----------------
-const columnHelper = createColumnHelper();
-const columns = [
-  columnHelper.accessor("day", { header: "Day" }),
-  columnHelper.accessor("morning", { header: "Morning" }),
-  columnHelper.accessor("afternoon", { header: "Afternoon" }),
-  columnHelper.accessor("night", { header: "Night" }),
-];
-
 // ----------------- MAIN COMPONENT -----------------
 export default function MealManagementPart() {
   const [weeklyMealStatus, setWeeklyMealStatus] = useState(getNext7Days());
-  const [daywiseSelect, setDaywiseSelect] = useState("show-all");
+  const [daywiseSelect, setDaywiseSelect] = useState("day-wise");
   const [activeIndex, setActiveIndex] = useState(0);
   const [selectedMeals, setSelectedMeals] = useState({});
   const [guestMeals, setGuestMeals] = useState({});
@@ -215,12 +203,6 @@ export default function MealManagementPart() {
 
   const [selectedOptions, setSelectedOptions] = useState({});
   const [showModal, setShowModal] = useState(false);
-  const [isExpanded, setIsExpanded] = useState(true);
-  const [globalMealStatus, setGlobalMealStatus] = useState({
-    breakfast: false,
-    lunch: true,
-    dinner: true,
-  });
 
   const activePlan = mealPlans[activeIndex];
 
@@ -314,10 +296,22 @@ export default function MealManagementPart() {
   );
 
   // React Table
-  const table = useReactTable({
-    data: schedule2,
-    columns,
-    getCoreRowModel: getCoreRowModel(),
+
+  const isMealActive = (date, meal) =>
+    selectedMeals[date]?.includes(meal) || guestMeals[date]?.[meal];
+
+  const getGuestInfo = (date, meal) => {
+    const qty = guestMeals[date]?.[meal];
+    if (!qty) return null;
+
+    const option = guestSelectedOptions?.[date]?.[meal];
+    return { qty, option };
+  };
+
+  const [globalMealStatus, setGlobalMealStatus] = useState({
+    breakfast: false,
+    lunch: true,
+    dinner: true,
   });
 
   return (
@@ -325,87 +319,13 @@ export default function MealManagementPart() {
       <ScrollToTop />
 
       {/* Marquee */}
-      <div className="h-[50px] rounded-md bg-white overflow-hidden flex items-center px-4 mx-auto shadow">
-        <Marquee gradient={false} speed={50} pauseOnHover={true}>
-          <span className="text-black">
-            🚨 Notice: Hostel will remain closed on Friday due to maintenance.
-            Website • New offers available now • Please check updates regularly
-          </span>
-        </Marquee>
-      </div>
+      <Headline />
 
       {/* Live Kitchen */}
-      <div className="live-kitchen-container max-w-[300px] md:max-w-[650px] xl:max-w-[1000px] w-full mx-auto">
-        <h4 className="text-lg font-semibold mb-3">Live Kitchen</h4>
-        <VideoSlider />
-      </div>
+      <LiveKitchen />
 
       {/* Menu Table */}
-      <div className="shadow-xl">
-        <h4 className="text-lg font-semibold mb-3">Menu Lists</h4>
-        <div className="w-full ">
-          <button
-            onClick={() => setIsExpanded(!isExpanded)}
-            className="w-full flex justify-between items-center bg-orange-500 p-2 lg:p-4 text-white rounded-t-md cursor-pointer font-bold transition-colors hover:bg-orange-600 text-xs lg:text-base"
-          >
-            <span>Weekly Meal Lists</span>
-            {isExpanded ? <ChevronUp size={20} /> : <ChevronDown size={20} />}
-          </button>
-          <div
-            className={`transition-all duration-300 ease-in-out overflow-hidden  ${
-              isExpanded ? "max-h-[1000px] border border-gray-300" : "max-h-0"
-            }`}
-          >
-            <div className="overflow-x-auto">
-              <table className="min-w-full text-sm sm:text-base">
-                <thead className="bg-orange-500 hidden md:table-header-group">
-                  {table.getHeaderGroups().map((headerGroup) => (
-                    <tr key={headerGroup.id}>
-                      {headerGroup.headers.map((header) => (
-                        <th
-                          key={header.id}
-                          className="px-4 py-3 text-left font-semibold text-white border-b border-black"
-                        >
-                          {flexRender(
-                            header.column.columnDef.header,
-                            header.getContext(),
-                          )}
-                        </th>
-                      ))}
-                    </tr>
-                  ))}
-                </thead>
-
-                <tbody className="divide-y divide-gray-200">
-                  {table.getRowModel().rows.map((row) => (
-                    <tr
-                      key={row.id}
-                      className="hover:bg-gray-50 flex flex-col md:table-row mb-4 md:mb-0 border md:border-none rounded-lg md:rounded-none"
-                    >
-                      {row.getVisibleCells().map((cell) => (
-                        <td
-                          key={cell.id}
-                          className="px-4 py-2 md:py-3 border-black md:border-b flex justify-between md:table-cell"
-                        >
-                          <span className="font-bold text-orange-600 md:hidden mr-4">
-                            {cell.column.columnDef.header?.toString()}:
-                          </span>
-                          <span className="text-right md:text-left">
-                            {flexRender(
-                              cell.column.columnDef.cell,
-                              cell.getContext(),
-                            )}
-                          </span>
-                        </td>
-                      ))}
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </div>
-      </div>
+      <MenuTable />
 
       {/* Meal Activity */}
       <div className="flex flex-col gap-2.5">
@@ -702,9 +622,9 @@ export default function MealManagementPart() {
             />
           )}
         </div>
-        {/* WEEKLY TABLE */}
-        {daywiseSelect !== "day-wise" && (
-          <div className="overflow-x-auto bg-white rounded-2xl shadow">
+
+        {daywiseSelect === "day-wise" && (
+          <div className="overflow-x-auto bg-white rounded-2xl shadow mt-6">
             <table className="min-w-full">
               <thead className="bg-orange-500 text-white">
                 <tr>
@@ -714,44 +634,40 @@ export default function MealManagementPart() {
                   <th className="px-4 py-3">Night</th>
                 </tr>
               </thead>
-
               <tbody>
                 {schedule2.map((row, index) => {
-                  const dayStatus = weeklyMealStatus[index];
-
+                  const dateKey = getDateByDayName(row.day);
                   return (
                     <tr key={row.day} className="border-b">
-                      <td className="px-4 py-3 font-bold">
-                        {row.day}
-                        <div className="text-[10px] text-gray-500">
-                          {dayStatus.date}
-                        </div>
-                      </td>
+                      <td className="px-4 py-3 font-bold">{row.day}</td>
 
                       {[
                         ["morning", "breakfast"],
                         ["afternoon", "lunch"],
                         ["night", "dinner"],
-                      ].map(([slot, mealKey]) => {
-                        const finalStatus =
-                          globalMealStatus[mealKey] && dayStatus[mealKey];
+                      ].map(([slot, meal]) => {
+                        const active = isMealActive(dateKey, meal);
+                        const guestInfo = getGuestInfo(dateKey, meal);
 
                         return (
-                          <td key={mealKey} className="px-4 py-3 text-sm">
-                            <div className="flex justify-between items-center gap-2">
-                              <span>{row[slot]}</span>
+                          <td key={meal} className="px-4 py-3 text-sm">
+                            <div className="flex justify-between">
+                              <span className="flex flex-col leading-tight">
+                                <span>{row[slot]}</span>
 
-                              <button
-                                disabled={!globalMealStatus[mealKey]}
-                                className={`px-2 py-1 text-[9px] font-bold text-white rounded ${
-                                  finalStatus ? "bg-green-600" : "bg-red-600"
-                                } ${
-                                  !globalMealStatus[mealKey] &&
-                                  "opacity-50 cursor-not-allowed"
+                                {guestInfo && (
+                                  <span className="text-[10px] text-blue-600 font-semibold">
+                                    Guest: {guestInfo.option} ×{guestInfo.qty}
+                                  </span>
+                                )}
+                              </span>
+                              <span
+                                className={`px-2 py-1 text-[9px] text-white rounded ${
+                                  active ? "bg-green-600" : "bg-red-600"
                                 }`}
                               >
-                                {finalStatus ? "ON" : "OFF"}
-                              </button>
+                                {active ? "ON" : "OFF"}
+                              </span>
                             </div>
                           </td>
                         );
@@ -764,7 +680,7 @@ export default function MealManagementPart() {
           </div>
         )}
 
-        {daywiseSelect === "day-wise" && (
+        {daywiseSelect !== "day-wise" && (
           <div className="overflow-x-auto bg-white rounded-2xl shadow">
             <table className="min-w-full">
               <thead className="bg-orange-500 text-white">

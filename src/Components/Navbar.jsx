@@ -93,7 +93,7 @@ const Navbar = ({ setIsOpen, isOpen, onCategoryOpen }) => {
           </div>
         ) : (
           <Link
-            to="/login"
+            to="/auth/login"
             className="px-5 py-2 rounded-lg bg-black text-white text-sm font-medium
                hover:bg-gray-800 transition shadow-sm"
           >
