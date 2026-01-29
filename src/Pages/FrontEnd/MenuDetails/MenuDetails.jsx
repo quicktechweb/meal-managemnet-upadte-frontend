@@ -3,6 +3,7 @@ import { motion } from "framer-motion";
 import FoodDetails from "../Dashboard/Foods/FoodDetails";
 import RestaurantDetail from "../Dashboard/Restaurant/RestaurantDetail";
 import MealDetails from "../meal-details/MealDetails";
+import MealManagementPart from "../Dashboard/UserDashboard/MealManagementPart/MealManagementPart";
 
 const stats = [
   {
@@ -114,7 +115,7 @@ const MenuDetails = () => {
 
       {activeTab === 2 && <RestaurantDetail />}
 
-      {activeTab === 3 && <MealDetails />}
+      {activeTab === 3 && <MealManagementPart />}
     </div>
   );
 };
