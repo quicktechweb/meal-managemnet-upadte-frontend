@@ -155,7 +155,7 @@ const MessForm = () => {
               <label className="switch !text-xs">
                 <input
                   type="radio"
-                  value="al-abadin"
+                  value="meal"
                   {...register("service", { required: "Select Service" })}
                   className="sr-only"
                 />
@@ -167,7 +167,8 @@ const MessForm = () => {
               <label className="switch !text-xs">
                 <input
                   type="radio"
-                  value="user"
+                  onChange={handleStudent}
+                  value="student"
                   {...register("service", { required: "Select Service" })}
                   className="sr-only"
                 />
