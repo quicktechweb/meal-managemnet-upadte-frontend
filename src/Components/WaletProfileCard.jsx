@@ -3,20 +3,20 @@ import { Link } from "react-router-dom";
 
 const WalletProfileCard = () => {
   return (
-    <div className="max-w-6xl mx-auto">
-      <div className="relative flex items-center justify-between overflow-hidden rounded-3xl bg-gradient-to-r from-indigo-600 to-purple-600 p-10 text-white shadow-2xl">
+    <div className="max-w-6xl mx-auto px-3 mb-4">
+      <div className="relative flex flex-col sm:flex-row sm:items-center justify-between overflow-hidden rounded-3xl bg-[#e46330] p-5 sm:p-10 text-white shadow-2xl">
         <div className="absolute -top-16 -right-16 w-56 h-56 bg-white/10 rounded-full" />
         <div className="absolute bottom-0 right-20 w-40 h-40 bg-white/5 rounded-full" />
 
         {/* Left: Wallet Info */}
-        <div className="flex items-center gap-6 z-10">
-          <div className="bg-white/20 p-5 rounded-2xl">
-            <Wallet size={34} />
+        <div className="flex flex-col lg:flex-row  items-start lg:items-center gap-3 md:gap-6 z-10">
+          <div className="bg-white/20 p-2.5 md:p-5 rounded-2xl">
+            <Wallet className="size-5 md:size-10" />
           </div>
 
           <div>
             <p className="text-sm opacity-80">My Wallet</p>
-            <h2 className="text-4xl font-bold mt-1">৳ 5,350</h2>
+            <h2 className=" text-2xl md:text-4xl font-bold mt-1">৳ 5,350</h2>
             <p className="text-sm opacity-70 mt-1">Available Balance</p>
             <Link
               to={"/dashboard/wallet-management"}
@@ -28,22 +28,24 @@ const WalletProfileCard = () => {
         </div>
 
         {/* Right: Profile Details */}
-        <div className="text-right flex flex-col items-end justify-end z-10 space-y-2">
+        <div className="text-left sm:text-right flex flex-col items-end sm:justify-end z-10 ">
           <div>
             <img
               src="https://cdn.pixabay.com/photo/2017/02/23/13/05/avatar-2092113_640.png"
               alt="profile"
-              className="w-12 h-12 rounded-full"
+              className="w-10 h-10 md:w-12 md:h-12 rounded-full"
             />
           </div>
 
           <div>
-            <p className="text-lg font-semibold">Naymur Rahman</p>
+            <p className="text-base md:text-lg font-semibold">Quick Tech</p>
           </div>
 
           <div>
             <p className="text-xs opacity-70">Wallet ID</p>
-            <p className="text-sm font-medium tracking-wider">WL-90231</p>
+            <p className="text-xs sm:text-sm font-medium tracking-wider">
+              Id-90231
+            </p>
           </div>
         </div>
       </div>
