@@ -3,12 +3,72 @@ import { useForm } from "react-hook-form";
 import { IoMdEye, IoMdEyeOff } from "react-icons/io";
 import { Link } from "react-router-dom";
 import Stepper from "./Stepper";
+import { FaCheckCircle } from "react-icons/fa";
+
+export const schedule2 = [
+  {
+    mealTypeid: 1,
+    mealType: "breakfast",
+    items: [
+      {
+        meal_id: 1,
+        title: "Alu Vorta + Dal",
+        price: 125,
+      },
+      {
+        meal_id: 2,
+        title: "Egg + Ruti",
+        price: 110,
+      },
+    ],
+  },
+  {
+    mealTypeid: 2,
+    mealType: "lunch",
+    items: [
+      {
+        meal_id: 2,
+        title: "Murgi + Mangsho + Dal",
+        price: 200,
+      },
+      {
+        meal_id: 4,
+        title: "Murgi + Mach + Dal",
+        price: 500,
+      },
+    ],
+  },
+  {
+    meal_type_id: 3,
+    mealType: "dinner",
+    items: [
+      {
+        meal_id: 5,
+        title: "Murgi + Mach + Dal",
+        price: 900,
+      },
+      {
+        meal_id: 6,
+        title: "Murgi + Mach + Dal",
+        price: 600,
+      },
+    ],
+  },
+];
 
 const MessForm = () => {
   const [step, setStep] = useState(1);
   const [passwordShow, setPasswordShow] = useState(false);
 
   const [studentService, setStudentService] = useState(false);
+
+  const [selectedbreakfastMealOption, setSelectedbreakfastMealOption] =
+    useState(null);
+
+  const [selectedLunchMealOption, setSelectedLunchMealOption] = useState(null);
+
+  const [selecteddinnerMealOption, setSelecteddinnerMealOption] = useState(null);
+
   const {
     register,
     handleSubmit,
@@ -34,6 +94,14 @@ const MessForm = () => {
   const handleStudent = () => {
     setStudentService(true);
   };
+
+  const breakfastMeal = schedule2?.find(
+    (item) => item?.mealType === "breakfast",
+  );
+
+  const lunchMeal = schedule2?.find((item) => item?.mealType === "lunch");
+
+  const dinnerMeal = schedule2?.find((item) => item?.mealType === "dinner");
 
   return (
     <form
@@ -245,24 +313,84 @@ const MessForm = () => {
 
           {studentService && mealAddEnabled && (
             <div className="mt-6 space-y-6">
-              <p className="font-semibold">Add Meals</p>
+              <p className="font-semibold">Select the Meals</p>
 
-              {/* Breakfast */}
-              <MealTable
-                title="Breakfast"
-                register={register}
-                name="meals.breakfast"
-              />
+              <div className="overflow-x-auto">
+                <table className="min-w-full text-sm sm:text-base">
+                  <thead className="bg-orange-500 hidden md:table-header-group">
+                    <tr>
+                      <th className="px-4 py-3 text-left font-semibold text-white border-b border-gray-300">
+                        Breakfast
+                      </th>
+                      <th className="px-4 py-3 text-left font-semibold text-white border-b border-gray-300">
+                        Lunch
+                      </th>
+                      <th className="px-4 py-3 text-left font-semibold text-white border-b border-gray-300">
+                        Dinner
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-gray-200">
+                    <tr className="hover:bg-gray-50 flex flex-col md:table-row mb-4 md:mb-0 border md:border-none rounded-lg md:rounded-none">
+                      <td className=" border-gray-300  md:border-b flex justify-between md:table-cell">
+                        {breakfastMeal?.items?.map((item) => (
+                          <button
+                            type="button"
+                            onClick={() =>
+                              setSelectedbreakfastMealOption(item?.meal_id)
+                            }
+                            className={`w-full cursor-pointer flex items-center gap-2 px-3 py-2 rounded-lg text-xs text-left transition`}
+                          >
+                            {selectedbreakfastMealOption === item?.meal_id && (
+                              <span className="w-4">
+                                <FaCheckCircle className="text-green-600 text-sm" />
+                              </span>
+                            )}
+                            <span className="flex-1">{item?.title}</span>
+                          </button>
+                        ))}
+                      </td>
+                      <td className=" border-gray-300  md:border-b flex justify-between md:table-cell">
+                        {lunchMeal?.items?.map((item) => (
+                          <button
+                            onClick={() =>
+                              setSelectedLunchMealOption(item?.meal_id)
+                            }
+                            type="button"
+                            className={`w-full cursor-pointer flex items-center gap-2 px-3 py-2 rounded-lg text-xs text-left transition`}
+                          >
+                            {selectedLunchMealOption === item?.meal_id && (
+                              <span className="w-4">
+                                <FaCheckCircle className="text-green-600 text-sm" />
+                              </span>
+                            )}
+                            <span className="flex-1">{item?.title}</span>
+                          </button>
+                        ))}
+                      </td>
+                      <td className=" border-gray-300  md:border-b flex justify-between md:table-cell">
+                        {dinnerMeal?.items?.map((item) => (
+                          <button
+                            onClick={() =>
+                              setSelecteddinnerMealOption(item?.meal_id)
+                            }
+                            type="button"
+                            className={`w-full cursor-pointer flex items-center gap-2 px-3 py-2 rounded-lg text-xs text-left transition`}
+                          >
+                            {selecteddinnerMealOption === item?.meal_id && (
+                              <span className="w-4">
+                                <FaCheckCircle className="text-green-600 text-sm" />
+                              </span>
+                            )}
 
-              {/* Lunch */}
-              <MealTable title="Lunch" register={register} name="meals.lunch" />
-
-              {/* Dinner */}
-              <MealTable
-                title="Dinner"
-                register={register}
-                name="meals.dinner"
-              />
+                            <span className="flex-1">{item?.title}</span>
+                          </button>
+                        ))}
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
             </div>
           )}
 
@@ -321,41 +449,4 @@ const FloatingLabel = ({ text }) => (
   </label>
 );
 
-const MealTable = ({ title, register, name }) => {
-  return (
-    <div className="border border-gray-300 rounded-lg p-4">
-      <p className="font-medium mb-3">{title}</p>
 
-      <table className="w-full text-sm border border-gray-300">
-        <thead className="bg-gray-100">
-          <tr>
-            <th className="border border-gray-300 p-2 text-left">Meal Name</th>
-            <th className="border border-gray-300  p-2 text-left">Price</th>
-          </tr>
-        </thead>
-
-        <tbody>
-          {[1].map((i) => (
-            <tr key={i}>
-              <td className="border border-gray-300 p-2">
-                <input
-                  placeholder="Meal name"
-                  {...register(`${name}[${i}].name`)}
-                  className="w-full border border-gray-300 rounded px-2 py-1"
-                />
-              </td>
-              <td className="border border-gray-300 p-2">
-                <input
-                  type="number"
-                  placeholder="Price"
-                  {...register(`${name}[${i}].price`)}
-                  className="w-full border border-gray-300 rounded px-2 py-1"
-                />
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-    </div>
-  );
-};

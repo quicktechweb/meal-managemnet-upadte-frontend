@@ -110,12 +110,9 @@ export default function Navbar() {
                 </div>
               </div>
             ) : (
-              <button
-                onClick={handleNavbarModal}
-                className="px-5 py-2 rounded-lg cursor-pointer bg-black text-white text-sm font-medium hover:bg-gray-800 transition shadow-sm"
-              >
-                Get Started
-              </button>
+              <Link to={"#login"} className="px-5 py-2 rounded-lg cursor-pointer bg-black text-white text-sm font-medium hover:bg-gray-800 transition shadow-sm">
+                Login
+              </Link>
             )}
             <LanguageDropdown />
           </ul>
@@ -179,64 +176,66 @@ export default function Navbar() {
           </div>
         </div>
       </nav>
-
-      {navbarModalOpen && <NavbarModal handleClose={handleClose} />}
     </>
   );
 }
 
-const NavbarModal = ({ handleClose }) => {
-  return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center">
-      {/* Overlay */}
-      <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" />
+//  {
+//    navbarModalOpen && <NavbarModal handleClose={handleClose} />;
+//  }
 
-      {/* Modal */}
-      <div className="relative w-full max-w-md mx-4 rounded-2xl bg-white shadow-2xl p-6 animate-scaleIn">
-        {/* Header */}
-        <div className="flex items-center justify-between mb-4">
-          <h2></h2>
-          <button
-            onClick={handleClose}
-            className="text-gray-400 hover:text-gray-700 transition"
-          >
-            <IoMdClose size={22} />
-          </button>
-        </div>
+// const NavbarModal = ({ handleClose }) => {
+//   return (
+//     <div className="fixed inset-0 z-50 flex items-center justify-center">
+//       {/* Overlay */}
+//       <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" />
 
-        {/* Content */}
-        <div className="text-center space-y-2 mb-6">
-          <h4 className="text-2xl font-bold text-gray-900">
-            Get Started With Us
-          </h4>
-          <p className="text-sm text-gray-500">
-            Choose a service and begin your journey
-          </p>
-        </div>
+//       {/* Modal */}
+//       <div className="relative w-full max-w-md mx-4 rounded-2xl bg-white shadow-2xl p-6 animate-scaleIn">
+//         {/* Header */}
+//         <div className="flex items-center justify-between mb-4">
+//           <h2></h2>
+//           <button
+//             onClick={handleClose}
+//             className="text-gray-400 hover:text-gray-700 transition"
+//           >
+//             <IoMdClose size={22} />
+//           </button>
+//         </div>
 
-        {/* Actions */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-          <button onClick={handleClose}>
-            <Link
-              to="/register/user"
-              className="group flex items-center justify-center gap-2 rounded-xl border border-gray-200 px-4 py-3 font-medium text-gray-800 hover:bg-black hover:text-white transition-all shadow-sm"
-            >
-              <FaUtensils className="text-lg group-hover:scale-110 transition" />
-              Meal Service
-            </Link>
-          </button>
+//         {/* Content */}
+//         <div className="text-center space-y-2 mb-6">
+//           <h4 className="text-2xl font-bold text-gray-900">
+//             Get Started With Us
+//           </h4>
+//           <p className="text-sm text-gray-500">
+//             Choose a service and begin your journey
+//           </p>
+//         </div>
 
-          <button onClick={handleClose}>
-            <Link
-              to="/auth/all-access-register"
-              className="group flex items-center justify-center gap-2 rounded-xl border border-gray-200 px-4 py-3 font-medium text-gray-800 hover:bg-black hover:text-white transition-all shadow-sm"
-            >
-              <FaShoppingBag className="text-lg group-hover:scale-110 transition" />
-              Ecommerce
-            </Link>
-          </button>
-        </div>
-      </div>
-    </div>
-  );
-};
+//         {/* Actions */}
+//         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+//           <button onClick={handleClose}>
+//             <Link
+//               to="/register/user"
+//               className="group flex items-center justify-center gap-2 rounded-xl border border-gray-200 px-4 py-3 font-medium text-gray-800 hover:bg-black hover:text-white transition-all shadow-sm"
+//             >
+//               <FaUtensils className="text-lg group-hover:scale-110 transition" />
+//               Meal Service
+//             </Link>
+//           </button>
+
+//           <button onClick={handleClose}>
+//             <Link
+//               to="/auth/all-access-register"
+//               className="group flex items-center justify-center gap-2 rounded-xl border border-gray-200 px-4 py-3 font-medium text-gray-800 hover:bg-black hover:text-white transition-all shadow-sm"
+//             >
+//               <FaShoppingBag className="text-lg group-hover:scale-110 transition" />
+//               Ecommerce
+//             </Link>
+//           </button>
+//         </div>
+//       </div>
+//     </div>
+//   );
+// };

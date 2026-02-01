@@ -105,7 +105,7 @@ const stats = [
     id: 3,
     title: "Meal",
     description: "Fresh, tasty, and hygienic meals",
-    pathname: "/dashboard/mealmanagement",
+    pathname: "/register/user",
     icon: PiBowlFoodBold,
   },
 ];
