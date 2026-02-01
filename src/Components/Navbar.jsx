@@ -97,7 +97,7 @@ const Navbar = ({ setIsOpen, isOpen, onCategoryOpen }) => {
             className="px-5 py-2 rounded-lg bg-black text-white text-sm font-medium
                hover:bg-gray-800 transition shadow-sm"
           >
-            Login
+            Get Started
           </Link>
         )}
 
