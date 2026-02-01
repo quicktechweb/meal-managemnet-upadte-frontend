@@ -144,7 +144,10 @@ const ProcessSection = () => {
               <button
                 key={step.id}
                 onClick={() => {
-                  return (scrollToId("menu"), setActive(step));
+                  return (
+                    step?.id === 1 && scrollToId("menu"),
+                    setActive(step)
+                  );
                 }}
                 className="flex flex-col cursor-pointer items-center gap-1.5 lg:gap-3 focus:outline-none group"
               >

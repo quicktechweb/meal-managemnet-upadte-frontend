@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { IoMdEye, IoMdEyeOff } from "react-icons/io";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import Stepper from "./Stepper";
 import { FaCheckCircle } from "react-icons/fa";
 import MealScheduleTable from "../MealTable";
@@ -19,7 +19,7 @@ const MessForm = () => {
     watch,
     formState: { errors },
   } = useForm();
-
+  const navigate = useNavigate();
   const studentOptions = watch("studentOptions") || [];
   const mealAddEnabled = studentOptions.includes("mealadd");
 
@@ -31,6 +31,9 @@ const MessForm = () => {
   const prevStep = () => setStep(step - 1);
 
   const onSubmit = (data) => {
+    if (data) {
+      navigate("/dashboard/mealmanagement");
+    }
     console.log("FORM DATA", data);
   };
 
