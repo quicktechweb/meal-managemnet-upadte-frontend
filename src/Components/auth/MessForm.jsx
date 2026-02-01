@@ -286,7 +286,7 @@ const MessForm = () => {
 
       <div className="text-sm flex gap-2 pb-3">
         <p>Already have an account?</p>
-        <Link to="/login" className="text-blue-600 font-semibold">
+        <Link to="/auth/login" className="text-blue-600 font-semibold">
           Login
         </Link>
       </div>

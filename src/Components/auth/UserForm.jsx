@@ -148,7 +148,7 @@ const UserForm = () => {
             <p>Already have an account?</p>{" "}
             <Link
               className="text-[rgba(50,100,245,0.90)] font-semibold"
-              to={"/login"}
+              to={"/auth/login"}
             >
               Login
             </Link>
