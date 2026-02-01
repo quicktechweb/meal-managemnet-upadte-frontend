@@ -8,12 +8,17 @@ const MessForm = () => {
   const [step, setStep] = useState(1);
   const [passwordShow, setPasswordShow] = useState(false);
 
+  const [studentService, setStudentService] = useState(false);
   const {
     register,
     handleSubmit,
     trigger,
+    watch,
     formState: { errors },
   } = useForm();
+
+  const studentOptions = watch("studentOptions") || [];
+  const mealAddEnabled = studentOptions.includes("mealadd");
 
   const nextStep = async () => {
     const valid = await trigger();
@@ -23,7 +28,11 @@ const MessForm = () => {
   const prevStep = () => setStep(step - 1);
 
   const onSubmit = (data) => {
-    console.log("FORM DATA 👉", data);
+    console.log("FORM DATA", data);
+  };
+
+  const handleStudent = () => {
+    setStudentService(true);
   };
 
   return (
@@ -150,26 +159,32 @@ const MessForm = () => {
       {step === 3 && (
         <>
           <p className="font-semibold">Select Service</p>
-          <div className="flex items-center">
-            <div className="flex items-center gap-2 w-full">
+
+          {/* MAIN SERVICE */}
+          <div className="flex items-center gap-6">
+            {/* Per Meal */}
+            <div className="flex items-center gap-2">
               <label className="switch !text-xs">
                 <input
                   type="radio"
                   value="meal"
                   {...register("service", { required: "Select Service" })}
+                  onChange={() => setStudentService(false)}
                   className="sr-only"
                 />
                 <span className="slider"></span>
               </label>
               <p>Per Meal</p>
             </div>
-            <div className="flex items-center gap-2 w-full">
+
+            {/* Per Student */}
+            <div className="flex items-center gap-2">
               <label className="switch !text-xs">
                 <input
                   type="radio"
-                  onChange={handleStudent}
                   value="student"
                   {...register("service", { required: "Select Service" })}
+                  onChange={() => setStudentService(true)}
                   className="sr-only"
                 />
                 <span className="slider"></span>
@@ -182,11 +197,80 @@ const MessForm = () => {
             <p className="text-red-500 text-sm">{errors.service.message}</p>
           )}
 
-          <div className="flex gap-2">
+          {/* EXTRA OPTIONS (CHECKBOX TOGGLES) */}
+          {studentService && (
+            <div className="mt-4 space-y-3">
+              <p className="font-medium text-sm">Student Features</p>
+
+              <div className="flex items-center gap-2">
+                <label className="switch !text-xs">
+                  <input
+                    type="checkbox"
+                    value="balance"
+                    {...register("studentOptions")}
+                    className="sr-only"
+                  />
+                  <span className="slider"></span>
+                </label>
+                <p>Balance</p>
+              </div>
+
+              <div className="flex items-center gap-2">
+                <label className="switch !text-xs">
+                  <input
+                    type="checkbox"
+                    value="fingerprint"
+                    {...register("studentOptions")}
+                    className="sr-only"
+                  />
+                  <span className="slider"></span>
+                </label>
+                <p>Fingerprint</p>
+              </div>
+
+              <div className="flex items-center gap-2">
+                <label className="switch !text-xs">
+                  <input
+                    type="checkbox"
+                    value="mealadd"
+                    {...register("studentOptions")}
+                    className="sr-only"
+                  />
+                  <span className="slider"></span>
+                </label>
+                <p>Meal Add</p>
+              </div>
+            </div>
+          )}
+
+          {studentService && mealAddEnabled && (
+            <div className="mt-6 space-y-6">
+              <p className="font-semibold">Add Meals</p>
+
+              {/* Breakfast */}
+              <MealTable
+                title="Breakfast"
+                register={register}
+                name="meals.breakfast"
+              />
+
+              {/* Lunch */}
+              <MealTable title="Lunch" register={register} name="meals.lunch" />
+
+              {/* Dinner */}
+              <MealTable
+                title="Dinner"
+                register={register}
+                name="meals.dinner"
+              />
+            </div>
+          )}
+
+          <div className="flex gap-2 mt-4">
             <button
               type="button"
               onClick={prevStep}
-              className="w-full border cursor-pointer py-3 rounded-lg"
+              className="w-full border border-gray-300 cursor-pointer py-3 rounded-lg"
             >
               Back
             </button>
@@ -200,7 +284,7 @@ const MessForm = () => {
         </>
       )}
 
-      <div className="text-sm flex gap-2">
+      <div className="text-sm flex gap-2 pb-3">
         <p>Already have an account?</p>
         <Link to="/login" className="text-blue-600 font-semibold">
           Login
@@ -236,4 +320,42 @@ const FloatingLabel = ({ text }) => (
     {text}
   </label>
 );
-// Institute registration step form added (last step unclear)
+
+const MealTable = ({ title, register, name }) => {
+  return (
+    <div className="border border-gray-300 rounded-lg p-4">
+      <p className="font-medium mb-3">{title}</p>
+
+      <table className="w-full text-sm border border-gray-300">
+        <thead className="bg-gray-100">
+          <tr>
+            <th className="border border-gray-300 p-2 text-left">Meal Name</th>
+            <th className="border border-gray-300  p-2 text-left">Price</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          {[1].map((i) => (
+            <tr key={i}>
+              <td className="border border-gray-300 p-2">
+                <input
+                  placeholder="Meal name"
+                  {...register(`${name}[${i}].name`)}
+                  className="w-full border border-gray-300 rounded px-2 py-1"
+                />
+              </td>
+              <td className="border border-gray-300 p-2">
+                <input
+                  type="number"
+                  placeholder="Price"
+                  {...register(`${name}[${i}].price`)}
+                  className="w-full border border-gray-300 rounded px-2 py-1"
+                />
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  );
+};
