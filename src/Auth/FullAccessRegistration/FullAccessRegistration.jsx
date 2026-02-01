@@ -32,7 +32,7 @@ const FullAccessRegistration = () => {
 
   return (
     <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
-      <div className="bg-white rounded-[40px] shadow-2xl flex flex-col max-w-3xl w-full overflow-hidden">
+      <div className="bg-white rounded-[40px] shadow-2xl flex flex-col max-w-xl w-full overflow-hidden">
         <div className="py-10 px-5 flex flex-col justify-center">
           {/* Logo */}
           <div className="flex flex-col items-center gap-2">
@@ -249,7 +249,7 @@ const FullAccessRegistration = () => {
             Already have an account?{" "}
             <Link
               className="text-purple-700 font-semibold hover:underline"
-              to="/login"
+              to="/#login"
             >
               Login
             </Link>

@@ -179,7 +179,7 @@ const Footer = () => {
               <img
                 src="https://sellularr.netlify.app/images/playstore.png"
                 alt="Play Store"
-                className="h-8 w-6"
+                className="h-8"
               />
             </div>
           </div>
@@ -357,12 +357,7 @@ const Footer = () => {
                 <img
                   src="https://sellularr.netlify.app/images/appstore.png"
                   alt="Apple Store"
-                  className="h-8"
-                />
-                <img
-                  src="https://sellularr.netlify.app/images/playstore.png"
-                  alt="Play Store"
-                  className="h-8 w-6"
+                  className="h-8 shrink-0"
                 />
               </div>
             </div>
