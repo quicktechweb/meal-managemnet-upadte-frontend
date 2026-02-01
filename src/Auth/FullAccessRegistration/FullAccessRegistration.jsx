@@ -7,7 +7,7 @@ const FullAccessRegistration = () => {
   return (
     <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
       {/* Main Container */}
-      <div className="bg-white rounded-[40px] shadow-2xl flex flex-col md:flex-row max-w-3xl w-full overflow-hidden">
+      <div className="bg-white rounded-[40px] shadow-2xl flex flex-col max-w-3xl w-full overflow-hidden">
         <div className=" py-10 px-5 flex flex-col justify-center">
           {/* Logo */}
           <div className="flex flex-col items-center gap-2 ">
@@ -30,59 +30,76 @@ const FullAccessRegistration = () => {
             </div>
           </div>
 
-          <form className="space-y-4">
+          <form className="space-y-4 w-full">
             {/* Full Name */}
-            <input
-              type="text"
-              placeholder="Full Name"
-              className="w-full px-4 py-2 bg-gray-50 border border-gray-300 rounded-2xl focus:outline-none focus:ring-2 focus:ring-purple-700/50"
-            />
-
-            <input
-              type="text"
-              placeholder="Username"
-              className="w-full px-4 py-2 bg-gray-50 border border-gray-300 rounded-2xl focus:outline-none focus:ring-2 focus:ring-purple-700/50"
-            />
+            <div className="w-full">
+              <input
+                type="text"
+                placeholder="Full Name"
+                className="w-full px-4 py-2 bg-gray-50 border border-gray-300 rounded-2xl focus:outline-none focus:ring-2 focus:ring-purple-700/50"
+              />
+            </div>
+            <div className="w-full">
+              <input
+                type="text"
+                placeholder="Username"
+                className="w-full px-4 py-2 bg-gray-50 border border-gray-300 rounded-2xl focus:outline-none focus:ring-2 focus:ring-purple-700/50"
+              />
+            </div>
 
             {/* Email */}
-            <input
-              type="email"
-              placeholder="Email address"
-              className="w-full px-4 py-2 bg-gray-50 border border-gray-300 rounded-2xl focus:outline-none focus:ring-2 focus:ring-purple-700/50"
-            />
+            <div className="w-full">
+              {" "}
+              <input
+                type="email"
+                placeholder="Email address"
+                className="w-full px-4 py-2 bg-gray-50 border border-gray-300 rounded-2xl focus:outline-none focus:ring-2 focus:ring-purple-700/50"
+              />
+            </div>
 
-            <input
-              type="tel"
-              placeholder="Phone Number"
-              className="w-full px-4 py-2 bg-gray-50 border border-gray-300 rounded-2xl focus:outline-none focus:ring-2 focus:ring-purple-700/50"
-            />
+            <div className="w-full">
+              <input
+                type="tel"
+                placeholder="Phone Number"
+                className="w-full px-4 py-2 bg-gray-50 border border-gray-300 rounded-2xl focus:outline-none focus:ring-2 focus:ring-purple-700/50"
+              />
+            </div>
 
-            <input
-              type="text"
-              placeholder="Father Name"
-              className="w-full px-4 py-2 bg-gray-50 border border-gray-300 rounded-2xl focus:outline-none focus:ring-2 focus:ring-purple-700/50"
-            />
+            <div className="w-full">
+              {" "}
+              <input
+                type="text"
+                placeholder="Father Name"
+                className="w-full px-4 py-2 bg-gray-50 border border-gray-300 rounded-2xl focus:outline-none focus:ring-2 focus:ring-purple-700/50"
+              />
+            </div>
 
-            <input
-              type="text"
-              placeholder="Mother Name"
-              className="w-full px-4 py-2 bg-gray-50 border border-gray-300 rounded-2xl focus:outline-none focus:ring-2 focus:ring-purple-700/50"
-            />
+            <div className="w-full">
+              <input
+                type="text"
+                placeholder="Mother Name"
+                className="w-full px-4 py-2 bg-gray-50 border border-gray-300 rounded-2xl focus:outline-none focus:ring-2 focus:ring-purple-700/50"
+              />
+            </div>
 
-            <input
-              type="text"
-              placeholder="Address"
-              className="w-full px-4 py-2 bg-gray-50 border border-gray-300 rounded-2xl focus:outline-none focus:ring-2 focus:ring-purple-700/50"
-            />
+            <div className="w-full">
+              <input
+                type="text"
+                placeholder="Address"
+                className="w-full px-4 py-2 bg-gray-50 border border-gray-300 rounded-2xl focus:outline-none focus:ring-2 focus:ring-purple-700/50"
+              />
+            </div>
 
-            <input
-              type="text"
-              placeholder="Occupation"
-              className="w-full px-4 py-2 bg-gray-50 border border-gray-300 rounded-2xl focus:outline-none focus:ring-2 focus:ring-purple-700/50"
-            />
+            <div className="w-full">
+              <input
+                type="text"
+                placeholder="Occupation"
+                className="w-full px-4 py-2 bg-gray-50 border border-gray-300 rounded-2xl focus:outline-none focus:ring-2 focus:ring-purple-700/50"
+              />
+            </div>
 
             {/* Password */}
-            <div className="relative">
+            <div className="relative w-full">
               <input
                 type={showPassword ? "text" : "password"}
                 placeholder="Password"
@@ -98,11 +115,13 @@ const FullAccessRegistration = () => {
             </div>
 
             {/* Confirm Password */}
-            <input
-              type="password"
-              placeholder="Confirm Password"
-              className="w-full px-4 py-2 bg-gray-50 border border-gray-300 rounded-2xl focus:outline-none focus:ring-2 focus:ring-purple-700/50"
-            />
+            <div className="w-full">
+              <input
+                type="password"
+                placeholder="Confirm Password"
+                className="w-full px-4 py-2 bg-gray-50 border border-gray-300 rounded-2xl focus:outline-none focus:ring-2 focus:ring-purple-700/50"
+              />
+            </div>
 
             <button className="w-full bg-gradient-to-r from-purple-700 to-blue-600 text-white font-semibold py-2 text-sm cursor-pointer rounded-2xl transition-all shadow-lg shadow-orange-200">
               Create Account
