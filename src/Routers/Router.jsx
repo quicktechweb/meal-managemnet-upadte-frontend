@@ -30,6 +30,7 @@ import MenuDetails from "../Pages/FrontEnd/MenuDetails/MenuDetails";
 import SingleHallProfile from "../Pages/FrontEnd/Dashboard/UserDashboard/myprofile/SingleHallProfile";
 import FullAccessRegistration from "../Auth/FullAccessRegistration/FullAccessRegistration";
 import AuthLayout from "../AuthLayout";
+import ForgotPassword from "../Auth/ForgotPassword/ForgotPassword";
 
 const router = createBrowserRouter([
   {
@@ -97,6 +98,10 @@ const router = createBrowserRouter([
       {
         path: "login",
         element: <Login />,
+      },
+      {
+        path: "forget-password",
+        element: <ForgotPassword />,
       },
       {
         path: "register",
