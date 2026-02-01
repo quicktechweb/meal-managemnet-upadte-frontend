@@ -92,7 +92,7 @@ const FoodDetails = () => {
 
   return (
     <div className="bg-gray-50/50">
-      <div className="max-w-7xl mx-auto">
+      <div className="max-w-[1200px] mx-auto">
         {/* ---------------- HEADER ---------------- */}
         <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between mt-3 mb-4">
           {/* Categories */}

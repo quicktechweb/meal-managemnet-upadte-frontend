@@ -27,6 +27,9 @@ import WalletManagement from "../Pages/FrontEnd/Dashboard/UserDashboard/walletma
 import InstituteProfile from "../Pages/FrontEnd/Dashboard/UserDashboard/myprofile/InstituteProfile";
 import UserDashboardHome from "../Pages/FrontEnd/Dashboard/DashboardHome/UserDashboardHome";
 import MenuDetails from "../Pages/FrontEnd/MenuDetails/MenuDetails";
+import SingleHallProfile from "../Pages/FrontEnd/Dashboard/UserDashboard/myprofile/SingleHallProfile";
+import FullAccessRegistration from "../Auth/FullAccessRegistration/FullAccessRegistration";
+import AuthLayout from "../AuthLayout";
 
 const router = createBrowserRouter([
   {
@@ -46,10 +49,7 @@ const router = createBrowserRouter([
         path: "/",
         element: <Home />,
       },
-      {
-        path: "/login",
-        element: <Login />,
-      },
+
       {
         path: "/register",
         element: <Registration />,
@@ -64,6 +64,7 @@ const router = createBrowserRouter([
           },
         ],
       },
+
       {
         path: "/checkout",
         element: <CheckoutPage />,
@@ -85,7 +86,34 @@ const router = createBrowserRouter([
       },
     ],
   },
-
+  {
+    path: "/auth/",
+    element: <AuthLayout />,
+    children: [
+      {
+        path: "all-access-register",
+        element: <FullAccessRegistration />,
+      },
+      {
+        path: "login",
+        element: <Login />,
+      },
+      {
+        path: "register",
+        element: <Registration />,
+        children: [
+          {
+            path: "user",
+            element: <UserForm />,
+          },
+          {
+            path: "mess",
+            element: <MessForm />,
+          },
+        ],
+      },
+    ],
+  },
   {
     path: "/dashboard",
     element: (
@@ -123,6 +151,11 @@ const router = createBrowserRouter([
       {
         path: "/dashboard/institute-profile",
         element: <InstituteProfile />,
+      },
+
+      {
+        path: "/dashboard/hall-profile",
+        element: <SingleHallProfile />,
       },
       {
         path: "/dashboard/canteens",

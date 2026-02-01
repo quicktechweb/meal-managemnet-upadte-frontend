@@ -4,12 +4,21 @@ import { IoMdEye } from "react-icons/io";
 import { IoMdEyeOff } from "react-icons/io";
 
 import { TiTick } from "react-icons/ti";
+import { useLogin } from "../../../api/auth/auth.hook";
+import { useForm } from "react-hook-form";
 
 const Login = () => {
   const [passwordShow, setPasswordShow] = useState(false);
+  const { register, handleSubmit, reset } = useForm();
 
+  const { mutateAsync, isPending } = useLogin();
+
+  const onSubmit = async (data) => {
+    await mutateAsync(data);
+    reset();
+  };
   return (
-    <div className="min-h-screen mt-10 bg-white p-4 md:p-10 flex items-center justify-center w-full ">
+    <div className="min-h-screen bg-white flex items-center justify-center w-full ">
       <div className="flex flex-row-reverse h-auto  justify-center items-center shadow-2xl rounded-2xl ">
         <div className="relative w-full lg:w-1/2 bg-white overflow-hidden hidden md:flex flex-col items-center justify-center p-4 text-black">
           {/* Accent Glow */}
@@ -77,10 +86,14 @@ const Login = () => {
             </h3>
           </div>
 
-          <form className="mt-4 md:mt-8 space-y-3 md:space-y-6">
+          <form
+            onSubmit={handleSubmit(onSubmit)}
+            className="mt-4 md:mt-8 space-y-3 md:space-y-6"
+          >
             <div className="relative">
               <input
                 type="email"
+                {...register("email")}
                 placeholder=" "
                 className="peer w-full border border-gray-200 rounded-md px-3 h-[50px] text-lg
     focus:outline-none focus:border-black transition-all"
@@ -100,6 +113,7 @@ const Login = () => {
             <div className="relative">
               <input
                 type={passwordShow ? "text" : "password"}
+                {...register("password")}
                 placeholder=" "
                 className="peer w-full border border-gray-200 rounded-md px-3 h-[50px] text-lg
                focus:outline-none focus:border-black transition-all"
@@ -141,7 +155,7 @@ const Login = () => {
               type="submit"
               className="w-full cursor-pointer py-1.5 md:py-3 bg-black text-white text-sm md:text-xl rounded-lg shadow-lg transition-all transform active:scale-95"
             >
-              Login
+              {isPending ? "loading...." : "Login"}
             </button>
 
             <div>

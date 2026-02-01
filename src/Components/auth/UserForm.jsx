@@ -3,6 +3,7 @@ import { IoMdEye, IoMdEyeOff } from "react-icons/io";
 import { FiPlusCircle } from "react-icons/fi";
 import { X } from "lucide-react";
 import { Link } from "react-router-dom";
+import { FaCheckCircle } from "react-icons/fa";
 
 const institutions = ["Institute A", "Institute B", "Institute C"];
 
@@ -30,12 +31,10 @@ const InputField = ({ label, type = "text", children }) => (
 
 const UserForm = () => {
   const [passwordShow, setPasswordShow] = useState(false);
-  const [hostelBranches, setHostelBranches] = useState([
-    "Hostel 1",
-    "Hostel 2",
-    "Hostel 3",
-  ]);
+
   const [showHostelModal, setShowHostelModal] = useState(false);
+
+  const [occupation, setOccupation] = useState("");
 
   return (
     <>
@@ -69,52 +68,76 @@ const UserForm = () => {
         </div>
 
         <InputField label="Username" />
+        <InputField label={"Father Name"} />
+        <InputField label={"Mother Name"} />
+        <InputField label={"Gurdian Name"} />
+        <InputField label={"Date of Birth"} />
+        <InputField label={"Nationality"} />
+        <InputField label={"Religion"} />
+        <InputField label={"Gender"} />
+        <InputField label={"Present Address"} />
+        <InputField label={"Permanent Address"} />
         <InputField label="Phone Number" />
 
-        {/* Institution */}
+        <div className="ccupation-container flex flex-col gap-1">
+          <h4 className="">Occupation</h4>
+          <div className="flex items-center gap-3">
+            <button
+              type="button"
+              onClick={() => setOccupation("job_holder")}
+              className="px-4 py-1.5 cursor-pointer bg-white border border-gray-300 flex-1 text-black rounded-2xl flex items-center justify-center gap-1.5"
+            >
+              {occupation === "job_holder" && (
+                <FaCheckCircle className="text-green-600 text-sm" />
+              )}
+              Job Holder
+            </button>
+            <button
+              type="button"
+              onClick={() => setOccupation("student")}
+              className="px-4 py-1.5 cursor-pointer bg-white border border-gray-300 flex-1 text-black rounded-2xl flex items-center justify-center gap-1.5"
+            >
+              {occupation === "student" && (
+                <FaCheckCircle className="text-green-600 text-sm" />
+              )}
+              Student
+            </button>
+          </div>
+
+          {occupation === "job_holder" && (
+            <div className="mt-2 flex flex-col gap-3 md:gap-6">
+              <InputField label="Post Name" />
+              <InputField label="Company Name" />
+            </div>
+          )}
+
+          {occupation === "student" && (
+            <div className="mt-2 flex flex-col gap-3 md:gap-6">
+              <InputField label="Deptartment Name" />
+              <InputField label="Year" />
+            </div>
+          )}
+        </div>
+
         <select className="w-full border border-gray-200 rounded-md px-3 h-[50px] text-lg">
+          <option disabled selected>
+            Name Of the Hall / Hostel
+          </option>
+
+          <option value={"Hall 1"}>Hall 1</option>
+          <option value={"Hall 2"}>Hall 2</option>
+          <option value={"Hall 3"}>Hall 3</option>
+        </select>
+
+        {/* Institution */}
+        {/* <select className="w-full border border-gray-200 rounded-md px-3 h-[50px] text-lg">
           <option disabled selected>
             Name Of the Institution
           </option>
           {institutions.map((i) => (
             <option key={i}>{i}</option>
           ))}
-        </select>
-
-        {/* Hostel Branch */}
-        <div className="flex items-center gap-2">
-          <select className="w-full border border-gray-200 rounded-md px-3 h-[50px] text-lg">
-            <option disabled selected>
-              Hostel Branch
-            </option>
-            {hostelBranches.map((h) => (
-              <option key={h}>{h}</option>
-            ))}
-          </select>
-
-          <button
-            type="button"
-            onClick={() => setShowHostelModal(true)}
-            className="h-[50px] px-4 bg-orange-500 text-white rounded-md text-2xl flex items-center justify-center cursor-pointer"
-          >
-            <FiPlusCircle />
-          </button>
-        </div>
-
-        <div className="flex flex-col gap-2">
-          <select
-            className="peer w-full border border-gray-200 rounded-md px-3 h-[50px] text-lg
-                focus:outline-none focus:border-black transition-all"
-            defaultValue=""
-          >
-            <option value="" disabled>
-              Select Provide Meal
-            </option>
-
-            <option>Hostel </option>
-            <option>Outsite</option>
-          </select>
-        </div>
+        </select> */}
 
         <button className="w-full py-3 bg-black text-white rounded-lg">
           Sign Up
