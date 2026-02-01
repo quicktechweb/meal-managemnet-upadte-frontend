@@ -11,7 +11,7 @@ const Registration = () => {
 
       <div
         className={`relative flex flex-row-reverse bg-white border border-orange-100
-        ${location?.pathname === "/register/user" ? "h-[850px]" : "h-[850px]"} 
+        ${location?.pathname === "/register/user" ? "h-[850px]" : "h-auto"}
         justify-center items-stretch shadow-[0_30px_60px_-15px_rgba(120,50,0,0.15)] rounded-[1rem] overflow-hidden max-w-6xl w-full transition-all duration-500`}
       >
         <div className="relative w-full lg:w-1/2 bg-white overflow-hidden hidden md:flex flex-col items-center justify-center px-4 text-black">
@@ -116,7 +116,13 @@ const Registration = () => {
           </div>
 
           {/* Content Area */}
-          <div className="flex-grow px-5 pb-8 overflow-y-auto">
+          <div
+            className={
+              location?.pathname === "/register/user"
+                ? "flex-grow px-5 pb-8 overflow-y-auto"
+                : "flex-grow px-5  overflow-y-auto"
+            }
+          >
             <Outlet />
           </div>
         </div>

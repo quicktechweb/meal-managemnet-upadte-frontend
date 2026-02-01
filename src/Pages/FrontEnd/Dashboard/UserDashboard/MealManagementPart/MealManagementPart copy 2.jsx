@@ -18,9 +18,10 @@ import {
   useReactTable,
 } from "@tanstack/react-table";
 import { ChevronDown, ChevronUp } from "lucide-react";
+import ScrollToTop from "../../../ScrollToTop/ScrollToTop";
 
 import Marquee from "react-fast-marquee";
-import VideoSlider from "../../../Components/VideoSlider";
+import VideoSlider from "../../../../../Components/VideoSlider";
 
 const schedule = [
   {
@@ -204,7 +205,7 @@ const columns = [
   columnHelper.accessor("night", { header: "Night" }),
 ];
 
-export default function MealDetails() {
+export default function MealManagementPart() {
   const [daywiseSelect, setDaywiseSelect] = useState("show-all");
 
   const [activeIndex, setActiveIndex] = useState(0);
@@ -262,7 +263,8 @@ export default function MealDetails() {
     }));
   };
   return (
-    <section className="min-h-screen   flex flex-col gap-3.5">
+    <section className="min-h-screen bg-gradient-to-br from-orange-50 via-white to-orange-100 p-3 lg:p-6 flex flex-col gap-3.5">
+      <ScrollToTop />
       {/* menu table */}
 
       <div className=" h-[50px] rounded-md bg-white overflow-hidden flex items-center px-4 mx-auto shadow">
@@ -273,7 +275,7 @@ export default function MealDetails() {
           </span>
         </Marquee>
       </div>
-      <div className="live-kitchen-container max-w-[300px] md:max-w-[650px] lg:max-w-[1000px]  xl:max-w-[1240px] w-full mx-auto">
+      <div className="live-kitchen-container max-w-[300px] md:max-w-[650px] xl:max-w-[1000px] w-full mx-auto">
         <h4 className="text-lg font-semibold mb-3">Live Kitchen</h4>
         <VideoSlider />
       </div>
@@ -384,7 +386,7 @@ export default function MealDetails() {
               {/* Inactive Button */}
               <button
                 onClick={() => setDaywiseSelect("show-all")}
-                className={`px-5 py-2 flex-1  rounded-full cursor-pointer  text-xs font-semibold
+                className={`px-5 flex-1 py-2 rounded-full cursor-pointer  text-xs font-semibold
                ${daywiseSelect === "show-all" ? "bg-orange-500 text-white hover:bg-orange-600" : "text-orange-600  hover:bg-orange-100"} transition`}
               >
                 Show all

@@ -5,12 +5,13 @@ import { RouterProvider } from "react-router-dom";
 import router from "./Routers/Router";
 import CartContextProvider from "./Shared/Context/CartContextProvider";
 
+
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
-    <CartContextProvider>
+ 
+      <CartContextProvider>
         <RouterProvider router={router} />
-    </CartContextProvider>
-    
-       
-  </React.StrictMode>
+      </CartContextProvider>
+   
+  </React.StrictMode>,
 );

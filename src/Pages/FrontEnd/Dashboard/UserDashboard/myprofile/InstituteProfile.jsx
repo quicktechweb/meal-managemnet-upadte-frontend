@@ -12,19 +12,64 @@ import {
   ShieldCheck,
   Trash2,
 } from "lucide-react";
+import { Link } from "react-router-dom";
 
-const initialMembers = [
+const instituteHall = [
   {
     id: 1,
+    username: "naymur_1",
+    institute_id: 1,
+    institute_name: "Quick Tech",
+    email: "naymur@gmail.com",
     name: "Naymur Rahman",
+    hall_name: "karjon hall",
+    hall_id: 1,
     phone: "01517834324",
+    members: [
+      {
+        id: 1,
+        name: "Naymur Rahman",
+        username: "naymur_rahman",
+        email: "naymur@gmail.com",
+        phone: "01712345678",
+        fathersName: "Abdul Rahman",
+        mothersName: "Fatema Begum",
+        guardiansName: "Abdul Rahman",
+        dateOfBirth: "1998-06-15",
+        nationality: "Bangladeshi",
+        religion: "Islam",
+        maritalStatus: "Unmarried",
+        city: "Dhaka",
+        presentAddress: "House 12, Road 5, Dhanmondi, Dhaka",
+        permanentAddress: "Village: Mirpur, District: Dhaka",
+        institutionName: "Quick Tech Institute",
+        hall_id: 1,
+        hall_name: "karjon_hall",
+        img: "https://api.dicebear.com/7.x/avataaars/svg?seed=Naymur",
+      },
+      {
+        id: 2,
+        name: "Shakil Ahmad",
+        username: "shakil_ahmad",
+        email: "sakil@gmail.com",
+        phone: "01712345678",
+        fathersName: "Abdul Rahman",
+        mothersName: "Fatema Begum",
+        guardiansName: "Abdul Rahman",
+        dateOfBirth: "1998-06-15",
+        nationality: "Bangladeshi",
+        religion: "Islam",
+        maritalStatus: "Unmarried",
+        city: "Dhaka",
+        presentAddress: "House 12, Road 5, Dhanmondi, Dhaka",
+        permanentAddress: "Village: Mirpur, District: Dhaka",
+        institutionName: "Quick Tech Institute",
+        hall_id: 1,
+        hall_name: "karjon_hall",
+        img: "https://api.dicebear.com/7.x/avataaars/svg?seed=Naymur",
+      },
+    ],
     img: "https://api.dicebear.com/7.x/avataaars/svg?seed=Naymur",
-  },
-  {
-    id: 2,
-    name: "Sakil Ahmed",
-    phone: "01712345678",
-    img: "https://api.dicebear.com/7.x/avataaars/svg?seed=Sakil",
   },
 ];
 
@@ -43,8 +88,15 @@ const instituteData = {
 };
 
 const InstituteProfile = () => {
-  const [instituteMembers, setInstituteMembers] = useState(initialMembers);
   const [deleteMode, setDeleteMode] = useState(false);
+
+  const [openMembers, setOpenMembers] = useState(false);
+  const [selectedHall, setSelectedHall] = useState(null);
+
+  const handleViewMembers = (hall) => {
+    setSelectedHall(hall);
+    setOpenMembers(true);
+  };
 
   const [showEditModal, setShowEditModal] = useState(false);
 
@@ -172,7 +224,7 @@ const InstituteProfile = () => {
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
             <Users size={20} className="text-indigo-600" />
-            <h5 className="text-xl font-bold">Institute Hall Admin List</h5>
+            <h5 className="text-xl font-bold">Institute Hall List</h5>
           </div>
 
           {/* <div className="flex gap-2">
@@ -197,55 +249,108 @@ const InstituteProfile = () => {
         </div>
 
         {/* Member Cards */}
-        <div className="flex flex-wrap  gap-6">
-          {instituteMembers.map((member) => (
+        <div className="flex flex-wrap gap-6">
+          {instituteHall.map((hall) => (
             <div
-              key={member.id}
-              className="group bg-white p-5 rounded-2xl border border-gray-100 shadow-sm hover:shadow-md hover:border-indigo-100 transition-all duration-300 relative overflow-hidden w-[200px]"
+              key={hall.id}
+              className="group relative w-[280px] rounded-2xl bg-white border border-gray-100 shadow-sm hover:shadow-lg transition-all duration-300 overflow-hidden"
             >
-              <div className="absolute top-0 right-0 -mt-4 -mr-4 w-16 h-16 bg-indigo-50 rounded-full group-hover:scale-150 transition-transform duration-500 ease-out" />
-              {/* Delete Icon */}
-              {deleteMode && (
-                <>
-                  <div className="w-full rounded-2xl  bg-red-300/50 absolute top-0 left-0 right-0 bottom-0 z-40"></div>
+              {/* Decorative bg */}
+              <div className="absolute -top-10 -right-10 w-28 h-28 bg-indigo-100 rounded-full group-hover:scale-150 transition-transform duration-500" />
 
-                  <button
-                    onClick={() => handleDeleteMember(member.id)}
-                    className="absolute cursor-pointer top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 p-2 text-2xl rounded-full text-red-600 hover:bg-red-600 z-50 bg-red-100 hover:text-white"
-                  >
-                    <Trash2 size={20} />
-                  </button>
-                </>
-              )}
-
-              <div className="relative flex flex-col items-center text-center">
-                <div className="w-14 h-14 mb-2 rounded-full p-1 border-2 border-indigo-100 group-hover:border-indigo-400 transition-colors duration-300">
+              {/* Header */}
+              <div className="p-5 flex items-center gap-4">
+                <div className="w-14 h-14 rounded-xl bg-indigo-50 border border-indigo-100 flex items-center justify-center">
                   <img
-                    src={member.img}
-                    alt={member.name}
-                    className="w-full h-full rounded-full bg-gray-50 object-cover"
+                    src={hall.img}
+                    alt={hall.institute_name}
+                    className="w-10 h-10 rounded-full"
                   />
                 </div>
 
-                <h3 className="text-lg font-bold text-gray-800 group-hover:text-indigo-600 transition-colors">
-                  {member.name}
-                </h3>
+                <div className="z-30">
+                  <h3 className="text-lg font-bold text-gray-800">
+                    {hall.hall_name}
+                  </h3>
+                  <p className="text-sm text-gray-500">{hall.institute_name}</p>
+                </div>
+              </div>
 
-                <div className="flex items-center gap-1.5 text-gray-500 mt-1">
-                  <Phone size={13} className="text-gray-400" />
-                  <p className="text-sm font-medium">{member.phone}</p>
+              {/* Divider */}
+              <div className="border-t border-gray-100" />
+
+              {/* Info */}
+              <div className="p-5 space-y-3">
+                <div className="flex items-center justify-between text-sm">
+                  <span className="text-gray-500">Total Members</span>
+                  <span className="font-semibold text-indigo-600">
+                    {hall.members.length}
+                  </span>
                 </div>
 
+                <div className="flex items-center gap-2 text-sm text-gray-600">
+                  <Phone size={14} className="text-gray-400" />
+                  {hall.phone}
+                </div>
+
+                <div className="flex items-center gap-2 text-sm text-gray-600">
+                  <Mail size={14} className="text-gray-400" />
+                  {hall.email}
+                </div>
+              </div>
+
+              {/* Actions */}
+              <div className="p-4 pt-0 flex gap-3">
                 <button
-                  onClick={() => handleMessDetails(member)}
-                  className="cursor-pointer  w-full flex items-center justify-center gap-2 py-2 px-4 rounded-lg bg-gray-50 text-gray-600 text-xs font-semibold hover:bg-indigo-600 hover:text-white transition-all duration-200"
+                  onClick={() => handleViewMembers(hall)}
+                  className="flex-1 cursor-pointer text-xs font-semibold py-2 rounded-lg bg-indigo-600 text-white hover:bg-indigo-700 transition"
                 >
-                  View Details
-                  <ExternalLink size={12} />
+                  View Members
                 </button>
+
+                <Link
+                  to={"/dashboard/hall-profile"}
+                  className="flex-1 cursor-pointer text-xs font-semibold py-2 rounded-lg flex items-center justify-center bg-gray-100 text-gray-700 hover:bg-gray-200 transition"
+                >
+                  Details
+                </Link>
               </div>
             </div>
           ))}
+
+          {openMembers && (
+            <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm">
+              <div className="bg-white w-full max-w-4xl rounded-2xl shadow-xl overflow-hidden">
+                {/* Header */}
+                <div className="flex items-center justify-between px-6 py-4 border-b border-gray-300">
+                  <div>
+                    <h2 className="text-lg font-bold text-gray-800">
+                      {selectedHall?.hall_name} Members
+                    </h2>
+                    <p className="text-sm text-gray-500">
+                      Total {selectedHall?.members.length} members
+                    </p>
+                  </div>
+
+                  <button
+                    onClick={() => setOpenMembers(false)}
+                    className="w-9 h-9 rounded-full bg-gray-100 hover:bg-gray-200 flex items-center justify-center"
+                  >
+                    ✕
+                  </button>
+                </div>
+
+                {/* Body */}
+                <div className="p-6 max-h-[70vh] overflow-y-auto">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+                    {selectedHall?.members.map((member) => (
+                      <MemberCard key={member.id} member={member} />
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
         </div>
       </div>
     </div>
@@ -408,175 +513,47 @@ const EditProfileModal = ({ onClose, onEdit }) => {
   );
 };
 
-// const OrderModal = ({ onClose, selectedMeals }) => {
-//   console.log(selectedMeals);
+const MemberCard = ({ member }) => {
+  return (
+    <div className="group relative rounded-xl border border-gray-100 bg-white p-4 shadow-sm hover:shadow-md transition">
+      {/* Avatar */}
+      <div className="flex items-center gap-4">
+        <img
+          src={member.img}
+          alt={member.name}
+          className="w-12 h-12 rounded-full border"
+        />
 
-//   const {
-//     register,
-//     handleSubmit,
-//     formState: { errors },
-//   } = useForm({
-//     defaultValues: {
-//       name: me?.name,
-//       email: me?.email,
-//       phone: me?.phone,
-//     },
-//   });
+        <div>
+          <h4 className="font-semibold text-gray-800">{member.name}</h4>
+          <p className="text-xs text-gray-500">@{member.username}</p>
+        </div>
+      </div>
 
-//   const onSubmit = (data) => {
-//     const payload = {
-//       user: data,
-//       order: selectedMeals,
-//     };
+      {/* Info */}
+      <div className="mt-4 space-y-2 text-sm text-gray-600">
+        <div className="flex items-center gap-2">
+          <Phone size={14} className="text-gray-400" />
+          {member.phone}
+        </div>
 
-//     console.log("Order Submitted:", payload);
+        <div className="flex items-center gap-2">
+          <Mail size={14} className="text-gray-400" />
+          {member.email}
+        </div>
 
-//     // onClose();
-//   };
+        <div className="text-xs text-gray-500">🎓 {member.institutionName}</div>
+      </div>
 
-//   return (
-//     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 overflow-auto p-4">
-//       <form
-//         onSubmit={handleSubmit(onSubmit)}
-//         className="bg-white rounded-3xl w-full max-w-2xl p-6 relative max-h-[90vh] overflow-y-auto shadow-xl"
-//       >
-//         {/* Close button */}
-//         <button
-//           type="button"
-//           className="absolute top-4 right-4 text-gray-500 hover:text-gray-700"
-//           onClick={onClose}
-//         >
-//           <FaTimes size={20} />
-//         </button>
-
-//         <h2 className="text-2xl font-bold mb-6 text-gray-800 text-center">
-//           Confirm Order
-//         </h2>
-
-//         {/* User Info Form */}
-//         <div className="space-y-3 mb-6">
-//           <div>
-//             <input
-//               className="w-full border rounded-xl px-4 py-2 focus:ring-2 focus:ring-green-400 outline-none"
-//               placeholder="Name"
-//               {...register("name", { required: "Name is required" })}
-//             />
-//             {errors.name && (
-//               <p className="text-red-500 text-sm mt-1">{errors.name.message}</p>
-//             )}
-//           </div>
-
-//           <div>
-//             <input
-//               className="w-full border rounded-xl px-4 py-2 focus:ring-2 focus:ring-green-400 outline-none"
-//               placeholder="Email"
-//               {...register("email", {
-//                 required: "Email is required",
-//                 pattern: {
-//                   value: /^\S+@\S+$/i,
-//                   message: "Invalid email address",
-//                 },
-//               })}
-//             />
-//             {errors.email && (
-//               <p className="text-red-500 text-sm mt-1">
-//                 {errors.email.message}
-//               </p>
-//             )}
-//           </div>
-
-//           <div>
-//             <input
-//               className="w-full border rounded-xl px-4 py-2 focus:ring-2 focus:ring-green-400 outline-none"
-//               placeholder="Phone"
-//               {...register("phone", {
-//                 required: "Phone number is required",
-//                 minLength: {
-//                   value: 10,
-//                   message: "Phone number must be at least 10 digits",
-//                 },
-//               })}
-//             />
-//             {errors.phone && (
-//               <p className="text-red-500 text-sm mt-1">
-//                 {errors.phone.message}
-//               </p>
-//             )}
-//           </div>
-//         </div>
-
-//         {/* Order Information */}
-//         {/* Order Information */}
-//         <div className="space-y-5 mb-6">
-//           <h3 className="text-lg font-semibold text-gray-700">
-//             Order Information
-//           </h3>
-
-//           {selectedMeals?.map((member) => (
-//             <div
-//               key={member.id}
-//               className="border rounded-2xl p-4 space-y-4 shadow-sm"
-//             >
-//               {/* Member Header */}
-//               <div className="flex items-center gap-4">
-//                 <img
-//                   src={member.img}
-//                   alt={member.name}
-//                   className="w-12 h-12 rounded-full border"
-//                 />
-//                 <div>
-//                   <h4 className="font-semibold text-gray-800">{member.name}</h4>
-//                   <p className="text-sm text-gray-500">{member.phone}</p>
-//                 </div>
-//               </div>
-
-//               {/* Meal Dates */}
-//               {member.mealInfo.map((info, idx) => (
-//                 <div key={idx} className="bg-gray-50 rounded-xl p-4 space-y-3">
-//                   {/* Date */}
-//                   <div className="flex justify-between items-center">
-//                     <p className="text-sm font-medium text-gray-600">
-//                       📅 {info.date}
-//                     </p>
-//                     <p className="font-semibold text-green-600">
-//                       ৳ {info.total}
-//                     </p>
-//                   </div>
-
-//                   {/* Meals */}
-//                   <div className="grid gap-3">
-//                     {info.meals.map((meal, i) => (
-//                       <div
-//                         key={i}
-//                         className="flex justify-between items-start bg-white border rounded-lg p-3"
-//                       >
-//                         <div>
-//                           <p className="capitalize font-medium text-gray-700">
-//                             🍽 {meal.type}
-//                           </p>
-//                           <p className="text-sm text-gray-500">
-//                             {meal.items.join(", ")}
-//                           </p>
-//                         </div>
-//                         <p className="font-semibold text-gray-800">
-//                           ৳ {meal.price}
-//                         </p>
-//                       </div>
-//                     ))}
-//                   </div>
-//                 </div>
-//               ))}
-//             </div>
-//           ))}
-//         </div>
-
-//         <button
-//           type="submit"
-//           className="w-full bg-gradient-to-r from-green-500 to-emerald-600 text-white py-3 rounded-xl font-semibold shadow-lg hover:from-emerald-600 hover:to-green-500 transition-all"
-//         >
-//           Confirm Order
-//         </button>
-//       </form>
-//     </div>
-//   );
-// };
+      {/* Footer */}
+      <div className="mt-4 flex gap-2">
+        <Link
+          to={"/dashboard/profile"}
+          className="flex-1 text-xs flex items-center justify-center py-2 rounded-lg bg-indigo-50 text-indigo-600 font-bold hover:bg-indigo-100"
+        >
+          Profile
+        </Link>
+      </div>
+    </div>
+  );
+};

@@ -3,11 +3,17 @@ import { useForm } from "react-hook-form";
 import { motion } from "framer-motion";
 import { ChefHat, ArrowRight } from "lucide-react";
 import { Link } from "react-router-dom";
+import { useLogin } from "../../../../../api/auth/auth.hook";
 
 const HomeLogin = () => {
-  const { register, handleSubmit } = useForm();
+  const { register, handleSubmit, reset } = useForm();
 
-  const onSubmit = (data) => console.log(data);
+  const { mutateAsync, isPending } = useLogin();
+
+  const onSubmit = async (data) => {
+    await mutateAsync(data);
+    reset();
+  };
 
   return (
     <div className="min-h-screen bg-[#fffcf5] mt-5 md:mt-10 lg:mt-20 bg-[radial-gradient(circle_at_top_right,_var(--tw-gradient-stops))] from-orange-100/40 via-[#fffcf5] to-red-50/40 flex items-center justify-center p-4 lg:p-12 overflow-hidden">
@@ -107,9 +113,10 @@ const HomeLogin = () => {
 
                 <button
                   type="submit"
+                  disabled={isPending}
                   className="w-full bg-slate-900 text-white py-2 rounded-2xl font-bold transition-all hover:bg-black shadow-2xl active:scale-[0.98]"
                 >
-                  Login
+                  {isPending ? "loading...." : "Login"}
                 </button>
               </form>
             </div>
