@@ -2,7 +2,7 @@ import { FaUtensils, FaUsers, FaChartPie } from "react-icons/fa";
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 
- const stats = [
+const stats = [
   {
     icon: FaUtensils,
     title: "Daily Meal Control",
@@ -75,11 +75,11 @@ const MealSystemLanding = () => {
                 Food
               </button>
             </Link>
-            <Link to={"/dashboard/userOrder"}>
+            {/* <Link to={"/dashboard/userOrder"}>
               <button className="px-8 py-2 lg:py-3 border cursor-pointer border-gray-300 text-gray-700 font-semibold rounded-xl hover:bg-gray-50 transition text-sm lg:text-base">
                 My order
               </button>
-            </Link>
+            </Link> */}
           </div>
         </div>
 

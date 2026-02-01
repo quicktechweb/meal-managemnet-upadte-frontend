@@ -2,25 +2,31 @@ import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { Link } from "react-router-dom";
 import { useRegister } from "../../api/auth/auth.hook";
+import {
+  Eye,
+  EyeOff,
+  User,
+  Mail,
+  Lock,
+  Phone,
+  Home,
+  Briefcase,
+  Heart,
+} from "lucide-react";
 import toast from "react-hot-toast";
 
 const FullAccessRegistration = () => {
   const [showPassword, setShowPassword] = useState(false);
-
   const {
     register,
     handleSubmit,
     watch,
-    formState: { errors, isSubmitting },
+    formState: { errors },
   } = useForm();
-
   const { mutation, isPending } = useRegister();
 
   const onSubmit = async (data) => {
-    const userData = {
-      userType: "allAccess",
-      ...data,
-    };
+    const userData = { userType: "allAccess", ...data };
     try {
       await mutation.mutateAsync(userData);
     } catch (err) {
@@ -30,228 +36,192 @@ const FullAccessRegistration = () => {
 
   const password = watch("password");
 
+  const FormInput = ({ icon: Icon, type, placeholder, name, validation }) => (
+    <div className="space-y-1">
+      <div className="relative group">
+        <div className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-purple-600 transition-colors">
+          <Icon size={18} />
+        </div>
+        <input
+          type={type}
+          placeholder={placeholder}
+          {...register(name, validation)}
+          className="w-full pl-12 pr-4 py-2 bg-gray-50/50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500/20 focus:border-purple-500 transition-all placeholder:text-gray-400"
+        />
+      </div>
+      {errors[name] && (
+        <p className="text-red-500 text-xs ml-1">{errors[name].message}</p>
+      )}
+    </div>
+  );
+
   return (
-    <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
-      <div className="bg-white rounded-[40px] shadow-2xl flex flex-col max-w-xl w-full overflow-hidden">
-        <div className="py-10 px-5 flex flex-col justify-center">
-          {/* Logo */}
-          <div className="flex flex-col items-center gap-2">
-            <div className="bg-gradient-to-r from-purple-700 to-blue-600 p-2 rounded-lg">
-              <Link to={"/"} className="font-semibold flex items-center">
+    <div className="min-h-screen bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-purple-100 via-slate-50 to-blue-100 flex items-center justify-center p-6">
+      <div className="bg-white/80 backdrop-blur-xl rounded-[2.5rem] shadow-[0_20px_50px_rgba(0,0,0,0.1)] flex flex-col max-w-2xl w-full overflow-hidden border border-white">
+        <div className="py-5 px-4 md:px-8 flex flex-col">
+          {/* Header */}
+          <div className="text-center mb-4">
+            <div className="inline-block p-3 rounded-2xl bg-gradient-to-br from-purple-600 to-blue-600 shadow-lg hover:scale-110 transition-transform duration-300">
+              <Link to="/">
                 <img
                   src="https://i.ibb.co/8gMntgXX/Gemini-Generated-Image-m517mjm517mjm7.png"
-                  alt="Appbeats Logo"
-                  className="h-16 lg:h-16 object-contain transition-transform duration-300 hover:scale-110"
+                  alt="Logo"
+                  className="w-[150px] "
                 />
               </Link>
             </div>
-            <div className="flex items-center flex-col">
-              <h2 className="text-3xl font-bold text-gray-900 mb-2">
-                Create Account
-              </h2>
-              <p className="text-gray-500 mb-4">
-                Please fill in the details to get started
-              </p>
-            </div>
+            <h2 className="text-3xl font-extrabold text-gray-900 tracking-tight">
+              Create Account
+            </h2>
+            <p className="text-gray-500 mt-2 font-medium">
+              Join our community today
+            </p>
           </div>
 
           {/* Form */}
-          <form className="space-y-4 w-full" onSubmit={handleSubmit(onSubmit)}>
-            {/* Full Name */}
-            <div className="w-full">
-              <input
-                type="text"
-                placeholder="Full Name"
-                {...register("fullName", { required: "Full Name is required" })}
-                className="w-full px-4 py-2 bg-gray-50 border border-gray-300 rounded-2xl focus:outline-none focus:ring-2 focus:ring-purple-700/50"
-              />
-              {errors.fullName && (
-                <p className="text-red-500 text-sm mt-1">
-                  {errors.fullName.message}
-                </p>
-              )}
-            </div>
+          <form
+            className="grid grid-cols-1 md:grid-cols-2 gap-4"
+            onSubmit={handleSubmit(onSubmit)}
+          >
+            <FormInput
+              icon={User}
+              type="text"
+              placeholder="Full Name"
+              name="fullName"
+              validation={{ required: "Required" }}
+            />
+            <FormInput
+              icon={User}
+              type="text"
+              placeholder="Username"
+              name="username"
+              validation={{ required: "Required" }}
+            />
 
-            {/* Username */}
-            <div className="w-full">
-              <input
-                type="text"
-                placeholder="Username"
-                {...register("username", { required: "Username is required" })}
-                className="w-full px-4 py-2 bg-gray-50 border border-gray-300 rounded-2xl focus:outline-none focus:ring-2 focus:ring-purple-700/50"
-              />
-              {errors.username && (
-                <p className="text-red-500 text-sm mt-1">
-                  {errors.username.message}
-                </p>
-              )}
-            </div>
-
-            {/* Email */}
-            <div className="w-full">
-              <input
+            <div className="md:col-span-2">
+              <FormInput
+                icon={Mail}
                 type="email"
-                placeholder="Email address"
-                {...register("email", {
-                  required: "Email is required",
-                  pattern: {
-                    value: /^\S+@\S+$/i,
-                    message: "Invalid email address",
-                  },
-                })}
-                className="w-full px-4 py-2 bg-gray-50 border border-gray-300 rounded-2xl focus:outline-none focus:ring-2 focus:ring-purple-700/50"
+                placeholder="Email Address"
+                name="email"
+                validation={{
+                  required: "Required",
+                  pattern: { value: /^\S+@\S+$/i, message: "Invalid email" },
+                }}
               />
-              {errors.email && (
-                <p className="text-red-500 text-sm mt-1">
-                  {errors.email.message}
-                </p>
-              )}
             </div>
 
-            {/* Phone */}
-            <div className="w-full">
-              <input
-                type="tel"
-                placeholder="Phone Number"
-                {...register("phone", {
-                  required: "Phone number is required",
-                  pattern: {
-                    value: /^[0-9]{10,15}$/,
-                    message: "Invalid phone number",
-                  },
-                })}
-                className="w-full px-4 py-2 bg-gray-50 border border-gray-300 rounded-2xl focus:outline-none focus:ring-2 focus:ring-purple-700/50"
-              />
-              {errors.phone && (
-                <p className="text-red-500 text-sm mt-1">
-                  {errors.phone.message}
-                </p>
-              )}
-            </div>
+            <FormInput
+              icon={Phone}
+              type="tel"
+              placeholder="Phone Number"
+              name="phone"
+              validation={{ required: "Required" }}
+            />
+            <FormInput
+              icon={Briefcase}
+              type="text"
+              placeholder="Occupation"
+              name="occupation"
+            />
 
-            {/* Father Name */}
-            <div className="w-full">
-              <input
+            <FormInput
+              icon={Heart}
+              type="text"
+              placeholder="Father's Name"
+              name="fatherName"
+              validation={{ required: "Required" }}
+            />
+            <FormInput
+              icon={Heart}
+              type="text"
+              placeholder="Mother's Name"
+              name="motherName"
+              validation={{ required: "Required" }}
+            />
+
+            <div className="md:col-span-2">
+              <FormInput
+                icon={Home}
                 type="text"
-                placeholder="Father Name"
-                {...register("fatherName", {
-                  required: "Father Name is required",
-                })}
-                className="w-full px-4 py-2 bg-gray-50 border border-gray-300 rounded-2xl focus:outline-none focus:ring-2 focus:ring-purple-700/50"
-              />
-              {errors.fatherName && (
-                <p className="text-red-500 text-sm mt-1">
-                  {errors.fatherName.message}
-                </p>
-              )}
-            </div>
-
-            {/* Mother Name */}
-            <div className="w-full">
-              <input
-                type="text"
-                placeholder="Mother Name"
-                {...register("motherName", {
-                  required: "Mother Name is required",
-                })}
-                className="w-full px-4 py-2 bg-gray-50 border border-gray-300 rounded-2xl focus:outline-none focus:ring-2 focus:ring-purple-700/50"
-              />
-              {errors.motherName && (
-                <p className="text-red-500 text-sm mt-1">
-                  {errors.motherName.message}
-                </p>
-              )}
-            </div>
-
-            {/* Address */}
-            <div className="w-full">
-              <input
-                type="text"
-                placeholder="Address"
-                {...register("address", { required: "Address is required" })}
-                className="w-full px-4 py-2 bg-gray-50 border border-gray-300 rounded-2xl focus:outline-none focus:ring-2 focus:ring-purple-700/50"
-              />
-              {errors.address && (
-                <p className="text-red-500 text-sm mt-1">
-                  {errors.address.message}
-                </p>
-              )}
-            </div>
-
-            {/* Occupation */}
-            <div className="w-full">
-              <input
-                type="text"
-                placeholder="Occupation"
-                {...register("occupation")}
-                className="w-full px-4 py-2 bg-gray-50 border border-gray-300 rounded-2xl focus:outline-none focus:ring-2 focus:ring-purple-700/50"
+                placeholder="Residential Address"
+                name="address"
+                validation={{ required: "Required" }}
               />
             </div>
 
-            {/* Password */}
-            <div className="relative w-full">
+            {/* Password Fields */}
+            <div className="relative group">
+              <div className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-purple-600">
+                <Lock size={18} />
+              </div>
               <input
                 type={showPassword ? "text" : "password"}
                 placeholder="Password"
                 {...register("password", {
-                  required: "Password is required",
-                  minLength: {
-                    value: 6,
-                    message: "Password must be at least 6 characters",
-                  },
+                  required: "Required",
+                  minLength: { value: 6, message: "Min 6 chars" },
                 })}
-                className="w-full px-5 py-2 bg-gray-50 border border-gray-300 rounded-2xl focus:outline-none focus:ring-2 focus:ring-purple-700/50"
+                className="w-full pl-12 pr-12 py-2 bg-gray-50/50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500/20 focus:border-purple-500 transition-all"
               />
               <button
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
-                className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400"
+                className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-purple-600 transition-colors"
               >
-                👁
+                {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
               </button>
               {errors.password && (
-                <p className="text-red-500 text-sm mt-1">
+                <p className="text-red-500 text-xs mt-1">
                   {errors.password.message}
                 </p>
               )}
             </div>
 
-            {/* Confirm Password */}
-            <div className="w-full">
+            <div className="relative group">
+              <div className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400">
+                <Lock size={18} />
+              </div>
               <input
                 type="password"
                 placeholder="Confirm Password"
                 {...register("confirmPassword", {
-                  required: "Confirm Password is required",
-                  validate: (value) =>
-                    value === password || "Passwords do not match",
+                  required: "Required",
+                  validate: (v) => v === password || "Match failed",
                 })}
-                className="w-full px-4 py-2 bg-gray-50 border border-gray-300 rounded-2xl focus:outline-none focus:ring-2 focus:ring-purple-700/50"
+                className="w-full pl-12 pr-4 py-2 bg-gray-50/50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500/20 focus:border-purple-500 transition-all"
               />
               {errors.confirmPassword && (
-                <p className="text-red-500 text-sm mt-1">
+                <p className="text-red-500 text-xs mt-1">
                   {errors.confirmPassword.message}
                 </p>
               )}
             </div>
 
-            {/* Submit */}
+            {/* Submit Button */}
             <button
               type="submit"
-              disabled={isSubmitting}
-              className="w-full bg-gradient-to-r from-purple-700 to-blue-600 text-white font-semibold py-2 text-sm cursor-pointer rounded-2xl transition-all shadow-lg shadow-orange-200"
+              disabled={isPending}
+              className="md:col-span-2 mt-2 w-full bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white font-bold py-2 rounded-xl transition-all transform hover:scale-[1.02] active:scale-[0.98] shadow-xl shadow-purple-200 disabled:opacity-70 disabled:cursor-not-allowed cursor-pointer text-sm md:text-base"
             >
-              {isPending ? "creating..." : "Create Account"}
+              {isPending ? (
+                <span className="flex items-center justify-center gap-2">
+                  <span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                  Creating Account...
+                </span>
+              ) : (
+                "Create Account"
+              )}
             </button>
           </form>
 
-          <p className="text-center mt-4 text-gray-500">
+          <p className="text-center mt-4 text-gray-600 font-medium">
             Already have an account?{" "}
             <Link
-              className="text-purple-700 font-semibold hover:underline"
+              className="text-purple-600 hover:text-purple-700 font-bold underline decoration-2 underline-offset-4"
               to="/#login"
             >
-              Login
+              Sign In
             </Link>
           </p>
         </div>
