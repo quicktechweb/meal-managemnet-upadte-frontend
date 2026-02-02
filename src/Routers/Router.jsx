@@ -31,6 +31,7 @@ import SingleHallProfile from "../Pages/FrontEnd/Dashboard/UserDashboard/myprofi
 import FullAccessRegistration from "../Auth/FullAccessRegistration/FullAccessRegistration";
 import AuthLayout from "../AuthLayout";
 import ForgotPassword from "../Auth/ForgotPassword/ForgotPassword";
+import SingleMessProfile from "../Pages/FrontEnd/Dashboard/UserDashboard/myprofile/SingleMessProfile";
 
 const router = createBrowserRouter([
   {
@@ -161,6 +162,10 @@ const router = createBrowserRouter([
       {
         path: "/dashboard/hall-profile",
         element: <SingleHallProfile />,
+      },
+      {
+        path: "/dashboard/mess-profile",
+        element:<SingleMessProfile/>
       },
       {
         path: "/dashboard/canteens",

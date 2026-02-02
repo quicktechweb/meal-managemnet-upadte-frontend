@@ -73,6 +73,66 @@ const instituteData = {
         },
       ],
 
+      mess: [
+        {
+          id: 1,
+          name: "Quick Tech Mess",
+          email: "mess@gmail.com",
+          phone_number: "+8801700000000",
+          username: "mess_1",
+          phone_number: "+8801711111111",
+          occupation_type: "student",
+          occupation: {
+            department_name: "CSE",
+            year: "2nd Year",
+          },
+          member: [
+            {
+              id: 0,
+              name: "Quick Tech Mess",
+              email: "quicktech@gmail.com",
+              role: "Mess Admin",
+              username: "mess_1",
+              phone_number: "+8801711111111",
+              occupation_type: "student",
+              occupation: {
+                department_name: "CSE",
+                year: "2nd Year",
+              },
+            },
+            {
+              id: 1,
+              name: "Hasan Mahmud",
+              email: "hasan@gmail.com",
+              role: "user",
+              username: "hasan_mahmud",
+              phone_number: "+8801711111111",
+              occupation_type: "student",
+              occupation: {
+                department_name: "CSE",
+                year: "2nd Year",
+              },
+            },
+            {
+              id: 2,
+              name: "Rakib Hossain",
+              email: "rakib@gmail.com",
+              username: "rakib_h",
+              role: "user",
+              phone_number: "+8801722222222",
+              occupation_type: "job_holder",
+              occupation: {
+                post_name: "Junior Developer",
+                company_name: "BJIT",
+              },
+            },
+          ],
+          institute_info: {
+            institute_name: "Quick Tech Institute",
+            institute_address: "Silicon Tower, Dhaka",
+          },
+        },
+      ],
       institute_info: {
         institute_name: "Quick Tech Institute",
         institute_address: "Silicon Tower, Dhaka",
@@ -235,6 +295,80 @@ const InstituteProfile = () => {
         </div>
       </div>
 
+      {/* Institute Mess List */}
+      <div className="flex flex-col gap-4">
+        <div className="flex items-center gap-2">
+          <Utensils className="text-orange-500" />
+          <h3 className="text-xl font-bold">Institute Mess List</h3>
+        </div>
+
+        <div className="flex flex-wrap gap-6">
+          {profile.hall.flatMap((hall) =>
+            hall.mess.map((mess) => (
+              <div
+                key={mess.id}
+                className="w-[280px] bg-white rounded-2xl border border-gray-300 shadow-sm"
+              >
+                {/* Header */}
+                <div className="py-3 px-3 flex gap-4 items-center">
+                  <img
+                    src={`${avatar}${mess.name}`}
+                    alt={mess.name}
+                    className="w-12 h-12 rounded-xl"
+                  />
+                  <div>
+                    <h4 className="font-bold">{mess.name}</h4>
+                    <p className="text-sm text-gray-500">
+                      {mess.institute_info.institute_name}
+                    </p>
+                  </div>
+                </div>
+
+                {/* Info */}
+                <div className="border-t border-gray-300 py-3 px-3 space-y-2 text-sm">
+                  <div className="flex justify-between">
+                    <span>Total Members</span>
+                    <span className="font-semibold text-orange-600">
+                      {mess.member.length}
+                    </span>
+                  </div>
+
+                  <div className="flex gap-2 items-center">
+                    <Phone size={14} /> {mess.phone_number}
+                  </div>
+
+                  <div className="flex gap-2 items-center">
+                    <Mail size={14} /> {mess.email}
+                  </div>
+                </div>
+
+                {/* Actions */}
+                <div className="px-4 pb-2 flex gap-2">
+                  <button
+                    onClick={() =>
+                      handleViewMembers({
+                        ...mess,
+                        member: mess.member,
+                      })
+                    }
+                    className="flex-1 cursor-pointer bg-orange-500 text-white text-xs py-2 rounded-lg"
+                  >
+                    View Members
+                  </button>
+
+                  <Link
+                    to="/dashboard/mess-profile"
+                    className="flex-1 bg-gray-100 text-center text-xs py-2 rounded-lg"
+                  >
+                    Details
+                  </Link>
+                </div>
+              </div>
+            )),
+          )}
+        </div>
+      </div>
+
       {/* Members Modal */}
       {openMembers && (
         <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
@@ -281,7 +415,7 @@ const MemberCard = ({ member }) => (
     <div className="flex gap-3 items-center">
       <img src={`${avatar}${member.name}`} className="w-10 h-10 rounded-full" />
       <div>
-        <h4 className="font-semibold">{member.name}</h4>
+        <h4 className="font-semibold w-[100px] text-sm">{member.name}</h4>
         <p className="text-xs text-gray-500">@{member.username}</p>
       </div>
     </div>
