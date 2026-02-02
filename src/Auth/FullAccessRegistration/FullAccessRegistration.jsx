@@ -1,22 +1,32 @@
+import React, { useState } from "react";
 import { useForm } from "react-hook-form";
-
-import { toast } from "react-hot-toast";
+import { Link } from "react-router-dom";
 import { useRegister } from "../../api/auth/auth.hook";
+import {
+  Eye,
+  EyeOff,
+  User,
+  Mail,
+  Lock,
+  Phone,
+  Home,
+  Briefcase,
+  Heart,
+} from "lucide-react";
+import toast from "react-hot-toast";
 
-export default function FullAccessRegistration() {
+const FullAccessRegistration = () => {
+  const [showPassword, setShowPassword] = useState(false);
   const {
     register,
     handleSubmit,
-    formState: { errors, isSubmitting },
+    watch,
+    formState: { errors },
   } = useForm();
-
-  const mutation = useRegister();
+  const { mutation, isPending } = useRegister();
 
   const onSubmit = async (data) => {
-    const userData = {
-      userType: "allAccess",
-      ...data,
-    };
+    const userData = { userType: "allAccess", ...data };
     try {
       await mutation.mutateAsync(userData);
     } catch (err) {
@@ -24,163 +34,200 @@ export default function FullAccessRegistration() {
     }
   };
 
-  return (
-    <div className="min-h-screen bg-white flex flex-col md:flex-row">
-      {/* --- Left Side: Branding & Progress --- */}
-      <div className="md:w-[35%] bg-indigo-600 p-8 md:p-16 flex flex-col justify-between text-white relative overflow-hidden">
-        <div className="relative z-10">
-          <div className="w-12 h-12 bg-white/20 rounded-xl mb-12 flex items-center justify-center backdrop-blur-md">
-            <div className="w-6 h-6 bg-white rounded-full" />
-          </div>
-          <h1 className="text-4xl md:text-5xl font-bold leading-tight mb-6">
-            Start your <br /> journey with us.
-          </h1>
-          <p className="text-indigo-100 text-lg max-w-sm">
-            Join over 5,000+ professionals managing their workflow with our
-            platform.
-          </p>
+  const password = watch("password");
+
+  const FormInput = ({ icon: Icon, type, placeholder, name, validation }) => (
+    <div className="space-y-1">
+      <div className="relative group">
+        <div className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-purple-600 transition-colors">
+          <Icon size={18} />
         </div>
-
-        {/* Decorative Circles */}
-        <div className="absolute -bottom-20 -left-20 w-64 h-64 bg-indigo-500 rounded-full blur-3xl opacity-50" />
+        <input
+          type={type}
+          placeholder={placeholder}
+          {...register(name, validation)}
+          className="w-full pl-12 pr-4 py-2 bg-gray-50/50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500/20 focus:border-purple-500 transition-all placeholder:text-gray-400"
+        />
       </div>
-
-      {/* --- Right Side: The Form --- */}
-      <div className="flex-1 bg-gray-50/50 p-8 md:p-20 overflow-y-auto">
-        <div className="max-w-2xl mx-auto">
-          <form onSubmit={handleSubmit(onSubmit)} className="space-y-12">
-            {/* Section: Account Info */}
-            <section>
-              <h2 className="text-2xl font-bold text-gray-900 mb-8 flex items-center gap-3">
-                <span className="w-8 h-[2px] bg-indigo-600"></span>
-                Account Information
-              </h2>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <InputGroup label="Username" error={errors.username}>
-                  <input
-                    {...register("username", { required: "Required" })}
-                    placeholder="skywalker_7"
-                    className={inputClass(errors.username)}
-                  />
-                </InputGroup>
-                <InputGroup label="Email Address" error={errors.email}>
-                  <input
-                    {...register("email", { required: "Required" })}
-                    type="email"
-                    placeholder="name@company.com"
-                    className={inputClass(errors.email)}
-                  />
-                </InputGroup>
-                <InputGroup label="Password" error={errors.password}>
-                  <input
-                    {...register("password", { required: "Required" })}
-                    type="password"
-                    placeholder="••••••••"
-                    className={inputClass(errors.password)}
-                  />
-                </InputGroup>
-                <InputGroup label="Phone Number">
-                  <input
-                    {...register("phoneNumber")}
-                    placeholder="+1 (555) 000-0000"
-                    className={inputClass()}
-                  />
-                </InputGroup>
-              </div>
-            </section>
-
-            {/* Section: Personal Info */}
-            <section>
-              <h2 className="text-2xl font-bold text-gray-900 mb-8 flex items-center gap-3">
-                <span className="w-8 h-[2px] bg-indigo-600"></span>
-                Personal Profile
-              </h2>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div className="md:col-span-2">
-                  <InputGroup label="Full Legal Name">
-                    <input
-                      {...register("name")}
-                      className={inputClass()}
-                      placeholder="John Doe"
-                    />
-                  </InputGroup>
-                </div>
-                <InputGroup label="Date of Birth">
-                  <input
-                    type="date"
-                    {...register("dateOfBirth")}
-                    className={inputClass()}
-                  />
-                </InputGroup>
-                <InputGroup label="Gender">
-                  <select {...register("gender")} className={inputClass()}>
-                    <option value="">Select Gender</option>
-                    <option value="male">Male</option>
-                    <option value="female">Female</option>
-                  </select>
-                </InputGroup>
-                <InputGroup label="Nationality">
-                  <input
-                    {...register("nationality")}
-                    className={inputClass()}
-                    placeholder="Citizen of..."
-                  />
-                </InputGroup>
-                <InputGroup label="Religion">
-                  <input {...register("religion")} className={inputClass()} />
-                </InputGroup>
-              </div>
-            </section>
-
-            {/* Footer / Submit */}
-            <div className="pt-10 border-t border-gray-200 flex flex-col md:flex-row items-center justify-between gap-6">
-              <p className="text-gray-500 text-sm">
-                By clicking register, you agree to our{" "}
-                <span className="text-indigo-600 font-bold underline cursor-pointer">
-                  Terms
-                </span>
-                .
-              </p>
-              <button
-                type="submit"
-                disabled={isSubmitting || mutation.isLoading}
-                className="w-full md:w-auto px-10 py-4 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl font-bold shadow-lg shadow-indigo-200 transition-all hover:-translate-y-1 active:translate-y-0 disabled:opacity-50"
-              >
-                {isSubmitting || mutation.isLoading
-                  ? "Processing..."
-                  : "Create Account"}
-              </button>
-            </div>
-          </form>
-        </div>
-      </div>
-    </div>
-  );
-}
-
-// --- Sub-components remain the same ---
-
-function InputGroup({ label, children, error }) {
-  return (
-    <div className="space-y-2">
-      <label className="text-xs font-black uppercase tracking-widest text-gray-400 ml-1">
-        {label}
-      </label>
-      {children}
-      {error && (
-        <span className="text-xs text-red-500 font-medium ml-1">
-          {error.message}
-        </span>
+      {errors[name] && (
+        <p className="text-red-500 text-xs ml-1">{errors[name].message}</p>
       )}
     </div>
   );
-}
 
-const inputClass = (err) => `
-  w-full px-4 py-3.5 rounded-xl border-2 transition-all duration-200 outline-none
-  ${
-    err
-      ? "border-red-100 bg-red-50 focus:border-red-500 text-red-900"
-      : "border-gray-100 bg-white focus:border-indigo-600 focus:ring-4 focus:ring-indigo-50"
-  }
-`;
+  return (
+    <div className="min-h-screen bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-purple-100 via-slate-50 to-blue-100 flex items-center justify-center p-6">
+      <div className="bg-white/80 backdrop-blur-xl rounded-[2.5rem] shadow-[0_20px_50px_rgba(0,0,0,0.1)] flex flex-col max-w-2xl w-full overflow-hidden border border-white">
+        <div className="py-5 px-4 md:px-8 flex flex-col">
+          {/* Header */}
+          <div className="text-center mb-4">
+            <div className="inline-block p-3 rounded-2xl bg-gradient-to-br from-purple-600 to-blue-600 shadow-lg hover:scale-110 transition-transform duration-300">
+              <Link to="/">
+                <img
+                  src="https://i.ibb.co/8gMntgXX/Gemini-Generated-Image-m517mjm517mjm7.png"
+                  alt="Logo"
+                  className="w-[150px] "
+                />
+              </Link>
+            </div>
+            <h2 className="text-3xl font-extrabold text-gray-900 tracking-tight">
+              Create Account
+            </h2>
+            <p className="text-gray-500 mt-2 font-medium">
+              Join our community today
+            </p>
+          </div>
+
+          {/* Form */}
+          <form
+            className="grid grid-cols-1 md:grid-cols-2 gap-4"
+            onSubmit={handleSubmit(onSubmit)}
+          >
+            <FormInput
+              icon={User}
+              type="text"
+              placeholder="Full Name"
+              name="fullName"
+              validation={{ required: "Required" }}
+            />
+            <FormInput
+              icon={User}
+              type="text"
+              placeholder="Username"
+              name="username"
+              validation={{ required: "Required" }}
+            />
+
+            <div className="md:col-span-2">
+              <FormInput
+                icon={Mail}
+                type="email"
+                placeholder="Email Address"
+                name="email"
+                validation={{
+                  required: "Required",
+                  pattern: { value: /^\S+@\S+$/i, message: "Invalid email" },
+                }}
+              />
+            </div>
+
+            <FormInput
+              icon={Phone}
+              type="tel"
+              placeholder="Phone Number"
+              name="phone"
+              validation={{ required: "Required" }}
+            />
+            <FormInput
+              icon={Briefcase}
+              type="text"
+              placeholder="Occupation"
+              name="occupation"
+            />
+
+            <FormInput
+              icon={Heart}
+              type="text"
+              placeholder="Father's Name"
+              name="fatherName"
+              validation={{ required: "Required" }}
+            />
+            <FormInput
+              icon={Heart}
+              type="text"
+              placeholder="Mother's Name"
+              name="motherName"
+              validation={{ required: "Required" }}
+            />
+
+            <div className="md:col-span-2">
+              <FormInput
+                icon={Home}
+                type="text"
+                placeholder="Residential Address"
+                name="address"
+                validation={{ required: "Required" }}
+              />
+            </div>
+
+            {/* Password Fields */}
+            <div className="relative group">
+              <div className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-purple-600">
+                <Lock size={18} />
+              </div>
+              <input
+                type={showPassword ? "text" : "password"}
+                placeholder="Password"
+                {...register("password", {
+                  required: "Required",
+                  minLength: { value: 6, message: "Min 6 chars" },
+                })}
+                className="w-full pl-12 pr-12 py-2 bg-gray-50/50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500/20 focus:border-purple-500 transition-all"
+              />
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-purple-600 transition-colors"
+              >
+                {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+              </button>
+              {errors.password && (
+                <p className="text-red-500 text-xs mt-1">
+                  {errors.password.message}
+                </p>
+              )}
+            </div>
+
+            <div className="relative group">
+              <div className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400">
+                <Lock size={18} />
+              </div>
+              <input
+                type="password"
+                placeholder="Confirm Password"
+                {...register("confirmPassword", {
+                  required: "Required",
+                  validate: (v) => v === password || "Match failed",
+                })}
+                className="w-full pl-12 pr-4 py-2 bg-gray-50/50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500/20 focus:border-purple-500 transition-all"
+              />
+              {errors.confirmPassword && (
+                <p className="text-red-500 text-xs mt-1">
+                  {errors.confirmPassword.message}
+                </p>
+              )}
+            </div>
+
+            {/* Submit Button */}
+            <button
+              type="submit"
+              disabled={isPending}
+              className="md:col-span-2 mt-2 w-full bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white font-bold py-2 rounded-xl transition-all transform hover:scale-[1.02] active:scale-[0.98] shadow-xl shadow-purple-200 disabled:opacity-70 disabled:cursor-not-allowed cursor-pointer text-sm md:text-base"
+            >
+              {isPending ? (
+                <span className="flex items-center justify-center gap-2">
+                  <span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                  Creating Account...
+                </span>
+              ) : (
+                "Create Account"
+              )}
+            </button>
+          </form>
+
+          <p className="text-center mt-4 text-gray-600 font-medium">
+            Already have an account?{" "}
+            <Link
+              className="text-purple-600 hover:text-purple-700 font-bold underline decoration-2 underline-offset-4"
+              to="/#login"
+            >
+              Sign In
+            </Link>
+          </p>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default FullAccessRegistration;

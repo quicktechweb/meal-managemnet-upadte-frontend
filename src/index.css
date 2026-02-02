@@ -8,6 +8,10 @@
 
 /* premimum product start  */
 
+html {
+  scroll-behavior: smooth;
+}
+
 /* Add this in your global styles */
 .no-scrollbar::-webkit-scrollbar {
   display: none;

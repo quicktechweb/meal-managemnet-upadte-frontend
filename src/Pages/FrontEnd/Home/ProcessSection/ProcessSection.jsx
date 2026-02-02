@@ -105,7 +105,7 @@ const stats = [
     id: 3,
     title: "Meal",
     description: "Fresh, tasty, and hygienic meals",
-    pathname: "/dashboard/mealmanagement",
+    pathname: "/register/user",
     icon: PiBowlFoodBold,
   },
 ];
@@ -144,7 +144,10 @@ const ProcessSection = () => {
               <button
                 key={step.id}
                 onClick={() => {
-                  return (scrollToId("menu"), setActive(step));
+                  return (
+                    step?.id === 1 && scrollToId("menu"),
+                    setActive(step)
+                  );
                 }}
                 className="flex flex-col cursor-pointer items-center gap-1.5 lg:gap-3 focus:outline-none group"
               >
