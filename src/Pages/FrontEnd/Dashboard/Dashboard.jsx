@@ -11,7 +11,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import useAuth from "../../../Hooks/useAuth";
 const Dashboard = () => {
   const [isOpenSidebar, setIsOpenSidebar] = useState(false);
-  const [isOpens, setIsOpens] = useState(false);
+  const [popupOpen, setPopupopen] = useState(false);
 
   const { user } = useAuth();
 
@@ -116,14 +116,14 @@ const Dashboard = () => {
               )}
             </div> */}
 
-            <div
-              className="flex items-center justify-center 
-            "
-            >
+            <div className="flex  relative items-center justify-center">
               {/* Container */}
-              <div className="flex items-center gap-3    w-[240px]">
+              <div className="flex items-center gap-3 lg:w-[240px]">
                 {/* Profile Image */}
-                <div className="relative">
+                <div
+                  onClick={() => setPopupopen(!popupOpen)}
+                  className="relative cursor-pointer"
+                >
                   <img
                     src="https://cdn.pixabay.com/photo/2017/02/23/13/05/avatar-2092113_640.png"
                     alt="profile"
@@ -174,7 +174,6 @@ const Dashboard = () => {
                         )}
                       </AnimatePresence>
 
-                      {/* Shining Glow Animation (only shows when balance is hidden) */}
                       {!showBalance && (
                         <motion.div
                           initial={{ x: "-100%" }}
@@ -232,7 +231,6 @@ const Dashboard = () => {
                         )}
                       </AnimatePresence>
 
-                      {/* Shining Glow Animation (only shows when balance is hidden) */}
                       {!showBalance && (
                         <motion.div
                           initial={{ x: "-100%" }}
@@ -250,6 +248,29 @@ const Dashboard = () => {
                   </div>
                 )}
               </div>
+
+              {popupOpen && (
+                <div className="absolute top-16 left-0 z-20 w-[200px] rounded-lg border border-gray-200 bg-white shadow-lg">
+                  <ul className="text-sm text-gray-700">
+                    <Link
+                      to={"/dashboard/profile"}
+                      className="px-4 py-2 cursor-pointer block hover:bg-gray-100 transition"
+                    >
+                      View Profile
+                    </Link>
+                    <Link
+                      to={"/dashboard/change-password"}
+                      className="px-4 py-2 cursor-pointer hover:bg-gray-100 transition block "
+                    >
+                      Change Password
+                    </Link>
+
+                    <li className="px-4 py-2 cursor-pointer  block bg-black text-white rounded-bl-md rounded-br-md">
+                      Log out
+                    </li>
+                  </ul>
+                </div>
+              )}
             </div>
           </div>
         </div>
