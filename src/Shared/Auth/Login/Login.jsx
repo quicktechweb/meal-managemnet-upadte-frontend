@@ -143,7 +143,7 @@ const Login = () => {
                 Keep me logged in
               </label>
               <Link
-                to={"#"}
+                to={"/auth/forget-password"}
                 type="button"
                 className="text-[#818181] hover:underline"
               >

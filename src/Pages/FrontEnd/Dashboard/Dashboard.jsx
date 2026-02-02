@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { FaBars, FaTimes } from "react-icons/fa";
 import { Link, Outlet, ScrollRestoration } from "react-router-dom";
 // import useTitle from "../hooks/useTitle";
@@ -11,8 +11,20 @@ import { motion, AnimatePresence } from "framer-motion";
 import useAuth from "../../../Hooks/useAuth";
 const Dashboard = () => {
   const [isOpenSidebar, setIsOpenSidebar] = useState(false);
-  const [isOpens, setIsOpens] = useState(false);
+  const [open, setOpen] = useState(false);
+  const popupRef = useRef(null);
 
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (e) => {
+      if (popupRef.current && !popupRef.current.contains(e.target)) {
+        setOpen(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
   const { user } = useAuth();
 
   const [isOpen, setIsOpen] = useState(false);
@@ -116,14 +128,14 @@ const Dashboard = () => {
               )}
             </div> */}
 
-            <div
-              className="flex items-center justify-center 
-            "
-            >
+            <div className="flex  relative items-center justify-center">
               {/* Container */}
-              <div className="flex items-center gap-3    w-[240px]">
+              <div className="flex items-center gap-3 lg:w-[240px]">
                 {/* Profile Image */}
-                <div className="relative">
+                <div
+                  onClick={() => setOpen((prev) => !prev)}
+                  className="relative cursor-pointer"
+                >
                   <img
                     src="https://cdn.pixabay.com/photo/2017/02/23/13/05/avatar-2092113_640.png"
                     alt="profile"
@@ -174,7 +186,6 @@ const Dashboard = () => {
                         )}
                       </AnimatePresence>
 
-                      {/* Shining Glow Animation (only shows when balance is hidden) */}
                       {!showBalance && (
                         <motion.div
                           initial={{ x: "-100%" }}
@@ -232,7 +243,6 @@ const Dashboard = () => {
                         )}
                       </AnimatePresence>
 
-                      {/* Shining Glow Animation (only shows when balance is hidden) */}
                       {!showBalance && (
                         <motion.div
                           initial={{ x: "-100%" }}
@@ -250,6 +260,30 @@ const Dashboard = () => {
                   </div>
                 )}
               </div>
+              {open && (
+                <div
+                  ref={popupRef}
+                  className="absolute top-16 left-0 w-[200px] z-30 rounded-lg border border-gray-200 bg-white shadow-lg"
+                >
+                  <ul className="text-sm text-gray-700">
+                    <Link
+                      to={"/dashboard/profile"}
+                      className="block px-4 py-2 hover:bg-gray-100 transition"
+                    >
+                      View Profile
+                    </Link>
+                    <Link
+                      to={"/dashboard/change-password"}
+                      className="block px-4 py-2 hover:bg-gray-100 transition"
+                    >
+                      Change Password
+                    </Link>
+                    <li className="px-4 py-2 cursor-pointer block bg-black text-white rounded-bl-md rounded-br-md">
+                      Log out
+                    </li>
+                  </ul>
+                </div>
+              )}
             </div>
           </div>
         </div>

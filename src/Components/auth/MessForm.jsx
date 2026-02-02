@@ -106,7 +106,13 @@ const MessForm = () => {
           <FloatingInput
             label="Name of the Hall / Hostel"
             {...register("hall", { required: "hall / hostel   required" })}
-            error={errors.phone}
+            error={errors.hall}
+          />
+
+          <FloatingInput
+            label="Name of the Mess"
+            {...register("hall", { required: "mess  required" })}
+            error={errors.mess}
           />
 
           <button

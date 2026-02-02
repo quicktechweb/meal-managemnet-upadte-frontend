@@ -39,7 +39,10 @@ const testimonials = [
 
 const Testimonial = () => {
   return (
-    <section className="bg-white mt-7 md:-mt-24 mb-8t md:mb-16">
+    <section
+      id="testimonial"
+      className="bg-white mt-7 md:-mt-24 mb-8t md:mb-16"
+    >
       <div className="max-w-6xl mx-auto px-4 lg:px-6 text-center">
         {/* Heading */}
         <h2 className="text-2xl lg:text-4xl font-bold mb-2 lg:mb-4">

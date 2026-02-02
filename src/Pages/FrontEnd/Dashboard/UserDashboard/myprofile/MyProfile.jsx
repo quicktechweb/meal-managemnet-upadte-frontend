@@ -32,7 +32,11 @@ const me = {
   presentAddress: "House 12, Road 5, Dhanmondi, Dhaka",
   permanentAddress: "Village: Mirpur, District: Dhaka",
   institutionName: "Dhaka University",
-  hostelBranch: "Dhanmondi Hostel",
+  hostelBranch: "Karjon Hall",
+  occupation: {
+    post_name: "Junior Developer",
+    company_name: "BJIT",
+  },
   img: "https://api.dicebear.com/7.x/avataaars/svg?seed=Naymur",
 };
 
@@ -54,13 +58,13 @@ const MyProfile = () => {
           </p>
         </div>
         <div className="flex items-center gap-2 lg:gap-3.5">
-          <button
+          {/* <button
             onClick={() => setShowAddModal(true)}
             className="flex items-center gap-2 bg-indigo-600 text-white px-2.5 lg:px-5 py-1.5  lg:py-2.5 rounded-xl font-medium cursor-pointer hover:bg-indigo-700 transition-all whitespace-nowrap shadow-sm text-xs lg:text-base"
           >
             <MdOutlineAddCircleOutline size={12} />
             Add Member
-          </button>
+          </button> */}
           <button
             onClick={() => setShowEditModal(true)}
             className="flex items-center gap-2 bg-indigo-600 text-white px-2.5 lg:px-5 py-1.5  lg:py-2.5  rounded-xl font-medium cursor-pointer hover:bg-indigo-700 transition-all whitespace-nowrap shadow-sm text-xs lg:text-base"
@@ -102,15 +106,23 @@ const MyProfile = () => {
 
           <div className="bg-white p-6 rounded-3xl shadow-sm border border-gray-100">
             <h3 className="font-bold text-gray-900 mb-4 flex items-center gap-2">
-              <BookOpen size={18} className="text-indigo-500" /> Education
+              <BookOpen size={18} className="text-indigo-500" /> Ocupation
             </h3>
             <div className="space-y-4">
               <div>
                 <p className="text-xs text-gray-400 uppercase font-bold tracking-wider">
-                  Institution
+                  Company Name
                 </p>
                 <p className="text-gray-700 font-medium">
-                  {me.institutionName}
+                  {me?.occupation?.company_name}
+                </p>
+              </div>
+              <div>
+                <p className="text-xs text-gray-400 uppercase font-bold tracking-wider">
+                  Post Name
+                </p>
+                <p className="text-gray-700 font-medium">
+                  {me?.occupation?.post_name}
                 </p>
               </div>
             </div>
@@ -145,7 +157,7 @@ const MyProfile = () => {
                 value={me.guardiansName}
                 icon={<Shield size={14} />}
               />
-              <InfoItem label="Hostel Branch" value={me.hostelBranch} />
+              <InfoItem label="Hall Name" value={me.hostelBranch} />
             </div>
           </div>
 
@@ -272,7 +284,7 @@ const AddMemberModal = ({ onClose, onAdd }) => {
             <InputField
               label="Profile Image URL"
               name="img"
-              value={formData.img}
+              type="file"
               onChange={handleChange}
             />
           </div>
@@ -360,7 +372,6 @@ const AddMemberModal = ({ onClose, onAdd }) => {
 // edit member modal
 
 const EditProfileModal = ({ onClose, onEdit }) => {
-  // Initialize state with existing data (or empty strings)
   const [formData, setFormData] = useState({ ...me });
 
   const handleChange = (e) => {
@@ -370,7 +381,6 @@ const EditProfileModal = ({ onClose, onEdit }) => {
 
   const submitHandler = (e) => {
     e.preventDefault();
-    // In a real app, you'd send formData to an API here
     onEdit(formData);
   };
 

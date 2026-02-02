@@ -163,7 +163,7 @@ const RestaurantDetail = () => {
   return (
     <div className="min-h-screen  font-sans">
       {/* --- RESTAURANT --- */}
-      <main className="max-w-[1200px] mx-auto mt-5 ">
+      <main className="max-w-7xl mx-auto mt-5 ">
         <div className=" flex flex-wrap gap-4">
           {restaurants.map((res) => (
             <Link
