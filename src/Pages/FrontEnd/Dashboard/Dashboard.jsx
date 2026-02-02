@@ -263,7 +263,7 @@ const Dashboard = () => {
               {open && (
                 <div
                   ref={popupRef}
-                  className="absolute top-16 left-0 w-[200px] rounded-lg border border-gray-200 bg-white shadow-lg"
+                  className="absolute top-16 left-0 w-[200px] z-30 rounded-lg border border-gray-200 bg-white shadow-lg"
                 >
                   <ul className="text-sm text-gray-700">
                     <Link
