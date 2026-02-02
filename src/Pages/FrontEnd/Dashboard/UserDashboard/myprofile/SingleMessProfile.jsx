@@ -99,7 +99,7 @@ const SingleMessProfile = () => {
       {/* Members Section */}
       <div className="bg-white rounded-2xl border border-gray-300 shadow-sm">
         <div className="flex items-center justify-between px-6 py-4 border-b border-gray-300">
-          <h2 className="text-lg font-bold text-gray-800">mess Members</h2>
+          <h2 className="text-lg font-bold text-gray-800">Mess Members</h2>
           {/* <button className="px-4 py-2 text-sm font-semibold rounded-lg bg-gray-100 hover:bg-gray-200">
             + Add Member
           </button> */}
