@@ -45,7 +45,7 @@ const DashboardSideBar = ({ setIsOpenSidebar }) => {
         {
           title: "Super Admin",
           icon: FaDesktop,
-          path: "/admin/dashboard/superadmin",
+          path: "/dashboard/superadmin",
         },
       ],
     },
@@ -111,6 +111,11 @@ const DashboardSideBar = ({ setIsOpenSidebar }) => {
           icon: FaUser,
           path: "/dashboard/institute-profile",
         },
+        {
+          title: "Hall Profile",
+          icon: FaUser,
+          path: "/dashboard/hall-profile",
+        },
       ],
     },
 
@@ -161,28 +166,6 @@ const DashboardSideBar = ({ setIsOpenSidebar }) => {
       ],
     },
   ];
-
-  // Helper to check if the user can see a sidebar item
-  // Helper to check if the user can see a sidebar item
-  //  const canSee = (item) => {
-  //   if (!role) return false; // no role, no access
-  //  if (role === "SUPERadmin") {
-  //     if (item.roles && item.roles.includes("user")) return false; // hide user-only menus
-  //     return true;
-  //   } // SUPERadmin sees everything
-
-  //   // For Moderator/Support, check permissions
-  //   if (role === "Moderator" || role === "Support") {
-  //     return item.permissionKey ? user?.permissions?.[item.permissionKey]?.enabled : false;
-  //   }
-
-  //   // For normal user, check roles array
-  //   if (newroles === "user") {
-  //     return item.roles ? item.roles.includes("user") : false;
-  //   }
-
-  //   return false;
-  // };
 
   return (
     <>

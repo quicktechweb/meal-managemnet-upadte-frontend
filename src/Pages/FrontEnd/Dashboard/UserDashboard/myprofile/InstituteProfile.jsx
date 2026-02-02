@@ -9,6 +9,7 @@ import {
   ShieldCheck,
 } from "lucide-react";
 import { Link } from "react-router-dom";
+import { TiPlus } from "react-icons/ti";
 
 /* -------------------- MOCK DATA -------------------- */
 const instituteData = {
@@ -152,6 +153,8 @@ const InstituteProfile = () => {
   const [selectedHall, setSelectedHall] = useState(null);
   const [showEditModal, setShowEditModal] = useState(false);
 
+  const [showAddHall, setShowAddHall] = useState(false);
+
   const handleViewMembers = (hall) => {
     setSelectedHall(hall);
     setOpenMembers(true);
@@ -233,9 +236,19 @@ const InstituteProfile = () => {
 
       {/* Hall List */}
       <div className="flex flex-col gap-4">
-        <div className="flex items-center gap-2">
-          <Users className="text-indigo-600" />
-          <h3 className="text-xl font-bold">Institute Hall List</h3>
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <Users className="text-indigo-600" />
+            <h3 className="text-xl font-bold">Institute Hall List</h3>
+          </div>
+
+          <button
+            onClick={() => setShowAddHall(true)}
+            className="flex cursor-pointer items-center gap-2 bg-indigo-600 text-white px-6 py-2 rounded-xl"
+          >
+            <TiPlus />
+            Add Hall
+          </button>
         </div>
 
         <div className="flex flex-wrap gap-6">
@@ -326,6 +339,8 @@ const InstituteProfile = () => {
           onSave={setProfile}
         />
       )}
+
+      {showAddHall && <AddHallModal onClose={() => setShowAddHall(false)} />}
     </div>
   );
 };
@@ -377,7 +392,7 @@ const MemberCard = ({ member }) => (
 );
 
 /* -------------------- EDIT MODAL -------------------- */
-const EditProfileModal = ({ institute, onClose, onSave }) => {
+const EditProfileModal = ({ onClose }) => {
   const [name, setName] = useState(institute.institute_name);
   const [phone, setPhone] = useState(institute.phone_number);
   const [email, setEmail] = useState(institute.email);
@@ -412,6 +427,52 @@ const EditProfileModal = ({ institute, onClose, onSave }) => {
             className="w-full border border-gray-300 px-3 py-2 rounded"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
+          />
+        </div>
+
+        <div className="flex justify-end gap-2 mt-4">
+          <button
+            className="cursor-pointer text-xs bg-gray-300 px-3 font-medium rounded-md"
+            onClick={onClose}
+          >
+            Cancel
+          </button>
+          <button
+            onClick={submit}
+            className="bg-indigo-600 text-xs cursor-pointer font-semibold text-white px-4 py-2 rounded"
+          >
+            Save
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+const AddHallModal = ({ onClose }) => {
+  const submit = () => {
+    onClose();
+  };
+
+  return (
+    <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
+      <div className="bg-white p-6 rounded-2xl w-full max-w-md">
+        <div className="flex items-center justify-between mb-4">
+          <h3 className="font-bold ">Add Hall</h3>
+          <button onClick={onClose}>✕</button>
+        </div>
+        <div className="space-y-3">
+          <input
+            type="file"
+            name=""
+            id=""
+            placeholder="Upload Hall Image"
+            className="w-full border border-gray-300 px-3 py-2 rounded"
+          />
+          <input
+            type="text"
+            placeholder="Enter Hall Name"
+            className="w-full border border-gray-300 px-3 py-2 rounded"
           />
         </div>
 
