@@ -213,11 +213,48 @@ const UserForm = () => {
               className="w-full border border-gray-200 rounded-md px-3 h-[50px] text-lg"
             >
               <option value="" disabled>
+                Name Of the Institute
+              </option>
+              <option value="institute 1">Institute 1</option>
+              <option value="institute 2">Institute 2</option>
+              <option value="institute 3">Institute 3</option>
+            </select>
+          )}
+        />
+
+        {/* Hostel */}
+        <Controller
+          name="hostel"
+          control={control}
+          render={({ field }) => (
+            <select
+              {...field}
+              className="w-full border border-gray-200 rounded-md px-3 h-[50px] text-lg"
+            >
+              <option value="" disabled>
                 Name Of the Hall / Hostel
               </option>
               <option value="Hall 1">Hall 1</option>
               <option value="Hall 2">Hall 2</option>
               <option value="Hall 3">Hall 3</option>
+            </select>
+          )}
+        />
+
+        <Controller
+          name="mess"
+          control={control}
+          render={({ field }) => (
+            <select
+              {...field}
+              className="w-full border border-gray-200 rounded-md px-3 h-[50px] text-lg"
+            >
+              <option value="" disabled>
+                Name Of the Mess
+              </option>
+              <option value="mess 1">Mess 1</option>
+              <option value="mess 2">Mess 2</option>
+              <option value="mess 3">Mess 3</option>
             </select>
           )}
         />

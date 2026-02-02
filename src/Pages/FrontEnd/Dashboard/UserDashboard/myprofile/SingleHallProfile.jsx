@@ -7,15 +7,25 @@ const hall = {
   institute_name: "Quick Tech Institute",
   name: "Kartik Banik Shishir",
   phone: "01517834324",
-  email: "naymur@gmail.com",
+  email: "kartik@gmail.com",
   img: "https://api.dicebear.com/7.x/avataaars/svg?seed=Naymur",
   members: [
+    {
+      id: 0,
+      name: "kartik banik shishir",
+      username: "kartik_banik",
+      phone: "01517834543",
+      email: "kartik@gmail.com",
+      role: "Hall Admin",
+      img: "https://api.dicebear.com/7.x/avataaars/svg?seed=Naymur",
+    },
     {
       id: 1,
       name: "Naymur Rahman",
       username: "naymur_rahman",
       email: "naymur@gmail.com",
       phone: "01712345678",
+      role: "user",
       img: "https://api.dicebear.com/7.x/avataaars/svg?seed=Naymur",
     },
     {
@@ -24,6 +34,7 @@ const hall = {
       username: "shakil_ahmad",
       email: "sakil@gmail.com",
       phone: "01712345678",
+      role: "user",
       img: "https://api.dicebear.com/7.x/avataaars/svg?seed=Shakil",
     },
   ],
@@ -98,8 +109,11 @@ const SingleHallProfile = () => {
           {hall.members.map((member) => (
             <div
               key={member.id}
-              className="rounded-xl border border-gray-300 p-4 hover:shadow-md transition"
+              className="rounded-xl border relative  border-gray-300 p-4 hover:shadow-md transition"
             >
+              <div className="absolute text-xs top-2 right-2 bg-indigo-500 text-white px-2 py-1 rounded-2xl ">
+                {member?.role}
+              </div>
               <div className="flex items-center gap-3">
                 <img
                   src={member.img}

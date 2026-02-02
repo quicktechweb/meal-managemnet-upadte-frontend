@@ -272,7 +272,7 @@ const AddMemberModal = ({ onClose, onAdd }) => {
             <InputField
               label="Profile Image URL"
               name="img"
-              value={formData.img}
+              type="file"
               onChange={handleChange}
             />
           </div>
@@ -360,7 +360,6 @@ const AddMemberModal = ({ onClose, onAdd }) => {
 // edit member modal
 
 const EditProfileModal = ({ onClose, onEdit }) => {
-  // Initialize state with existing data (or empty strings)
   const [formData, setFormData] = useState({ ...me });
 
   const handleChange = (e) => {
@@ -370,7 +369,6 @@ const EditProfileModal = ({ onClose, onEdit }) => {
 
   const submitHandler = (e) => {
     e.preventDefault();
-    // In a real app, you'd send formData to an API here
     onEdit(formData);
   };
 
