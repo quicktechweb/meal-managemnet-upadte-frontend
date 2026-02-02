@@ -26,22 +26,14 @@ export default function Navbar() {
 
   const menuItems = [
     { name: "Home", link: "/" },
-    { name: "Pages", link: "/pages" },
-    { name: "Features", link: "/features" },
+    { name: "Why Choose Us", link: "/#why-choose-us" },
+    { name: "Features", link: "/#features" },
     // { name: "Meal", link: "/meal" },
-    { name: "Ride", link: "/ride" },
-    { name: "Reviews", link: "/reviews" },
-    { name: "Pricing", link: "/pricing" },
+    // { name: "Ride", link: "/ride" },
+    { name: "Reviews", link: "/#testimonial" },
+    { name: "Food", link: "/#food" },
     { name: "FAQ", link: "/faq" },
   ];
-
-  const handleNavbarModal = () => {
-    setNavbarModalOpen(!navbarModalOpen);
-  };
-
-  const handleClose = () => {
-    setNavbarModalOpen(false);
-  };
 
   return (
     <>
@@ -110,7 +102,10 @@ export default function Navbar() {
                 </div>
               </div>
             ) : (
-              <Link to={"#login"} className="px-5 py-2 rounded-lg cursor-pointer bg-black text-white text-sm font-medium hover:bg-gray-800 transition shadow-sm">
+              <Link
+                to={"#login"}
+                className="px-5 py-2 rounded-lg cursor-pointer bg-black text-white text-sm font-medium hover:bg-gray-800 transition shadow-sm"
+              >
                 Login
               </Link>
             )}

@@ -105,7 +105,7 @@ const stats = [
     id: 3,
     title: "Meal",
     description: "Fresh, tasty, and hygienic meals",
-    pathname: "/menu-details",
+    pathname: "/register/user",
     icon: PiBowlFoodBold,
   },
 ];
@@ -122,7 +122,7 @@ const ProcessSection = () => {
   };
 
   return (
-    <section className="mt-5 bg-white max-w-6xl mx-auto">
+    <section id="features" className="mt-5 bg-white max-w-6xl mx-auto">
       {/* HEADING */}
       <div className="text-center mb-5 md:mb-10 lg:mb-20">
         <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-4 px-4">
