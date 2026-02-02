@@ -20,7 +20,7 @@ const ChangePassword = () => {
         <input
           type={showOld ? "text" : "password"}
           placeholder="Enter old password"
-          className="w-full border border-gray-300 rounded-xl px-4 py-2 focus:outline-none focus:ring-2 focus:ring-black/50"
+          className="w-full border border-gray-300 rounded-xl px-4 py-2 focus:outline-none focus:ring-2 focus:ring-black"
         />
         <div
           className="absolute right-3 top-1/2 translate-y-1/2  cursor-pointer text-gray-500"

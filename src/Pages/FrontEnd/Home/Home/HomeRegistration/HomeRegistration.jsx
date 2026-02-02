@@ -109,12 +109,12 @@ const HomeLogin = () => {
                     <label className="text-sm font-bold text-slate-700">
                       Password
                     </label>
-                    <button
-                      type="button"
+                    <Link
+                      to={"/auth/forget-password"}
                       className="text-xs font-bold text-orange-600"
                     >
-                      Forgot?
-                    </button>
+                      Forgot password?
+                    </Link>
                   </div>
                   <input
                     {...register("password")}

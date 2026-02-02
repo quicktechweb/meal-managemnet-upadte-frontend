@@ -76,66 +76,6 @@ const hall = {
       },
     },
   ],
-  mess: [
-    {
-      id: 1,
-      name: "Quick Tech Mess",
-      email: "mess@gmail.com",
-
-      username: "mess_1",
-      phone_number: "+8801711111111",
-      occupation_type: "student",
-      occupation: {
-        department_name: "CSE",
-        year: "2nd Year",
-      },
-      member: [
-        {
-          id: 0,
-          name: "Quick Tech Mess",
-          email: "quicktech@gmail.com",
-          role: "Mess Admin",
-          username: "mess_1",
-          phone_number: "+8801711111111",
-          occupation_type: "student",
-          occupation: {
-            department_name: "CSE",
-            year: "2nd Year",
-          },
-        },
-        {
-          id: 1,
-          name: "Hasan Mahmud",
-          email: "hasan@gmail.com",
-          role: "user",
-          username: "hasan_mahmud",
-          phone_number: "+8801711111111",
-          occupation_type: "student",
-          occupation: {
-            department_name: "CSE",
-            year: "2nd Year",
-          },
-        },
-        {
-          id: 2,
-          name: "Rakib Hossain",
-          email: "rakib@gmail.com",
-          username: "rakib_h",
-          role: "user",
-          phone_number: "+8801722222222",
-          occupation_type: "job_holder",
-          occupation: {
-            post_name: "Junior Developer",
-            company_name: "BJIT",
-          },
-        },
-      ],
-      institute_info: {
-        institute_name: "Quick Tech Institute",
-        institute_address: "Silicon Tower, Dhaka",
-      },
-    },
-  ],
 
   members: [
     {
