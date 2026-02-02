@@ -177,13 +177,7 @@ const InstituteProfile = () => {
       </div>
 
       {/* 3. Stats Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <StatCard
-          icon={Users}
-          label="Total Members"
-          value={instituteData.total_member}
-          color="bg-blue-500"
-        />
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <StatCard
           icon={Utensils}
           label="Meal Provision"
@@ -199,7 +193,7 @@ const InstituteProfile = () => {
       </div>
 
       {/* 4. Detailed Operations Section */}
-      <div className="w-full gap-8">
+      {/* <div className="w-full gap-8">
         <div className="bg-white p-8 rounded-3xl border border-gray-100 shadow-sm">
           <h3 className="text-lg font-bold mb-6 flex items-center gap-2">
             <Receipt className="text-indigo-600" size={20} />
@@ -216,7 +210,7 @@ const InstituteProfile = () => {
             </div>
           </div>
         </div>
-      </div>
+      </div> */}
 
       {/* 5. all member lists */}
 

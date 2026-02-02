@@ -153,29 +153,31 @@ const MealCard = ({
           </button>
         );
       })}
-      {quantity !== undefined && (
-        <div className="mt-2 flex items-center justify-center gap-2">
-          <button
-            className="px-2 py-1 bg-orange-200 rounded-lg"
-            onClick={() => setQuantity(Math.max(1, quantity - 1))}
-          >
-            -
-          </button>
-          <span className="text-sm">{quantity}</span>
-          <button
-            className="px-2 py-1 bg-orange-200 rounded-lg"
-            onClick={() => setQuantity(quantity + 1)}
-          >
-            +
-          </button>
-        </div>
-      )}
+      <div className="flex items-center gap-4 justify-center">
+        {quantity !== undefined && (
+          <div className=" flex items-center justify-center gap-2">
+            <button
+              className="px-2 text-sm bg-orange-200 rounded-lg"
+              onClick={() => setQuantity(Math.max(1, quantity - 1))}
+            >
+              -
+            </button>
+            <span className="text-sm">{quantity}</span>
+            <button
+              className="px-2 text-sm bg-orange-200 rounded-lg"
+              onClick={() => setQuantity(quantity + 1)}
+            >
+              +
+            </button>
+          </div>
+        )}
 
-      <div className="flex items-center justify-center w-full mt-3">
-        <label className="switch !text-xs">
-          <input type="checkbox" checked={selected} onChange={onToggle} />
-          <span className="slider"></span>
-        </label>
+        <div className="flex items-center justify-center ">
+          <label className="switch !text-xs">
+            <input type="checkbox" checked={selected} onChange={onToggle} />
+            <span className="slider"></span>
+          </label>
+        </div>
       </div>
     </div>
 
@@ -656,13 +658,13 @@ export default function MealManagementPart() {
                                 <span>{row[slot]}</span>
 
                                 {guestInfo && (
-                                  <span className="text-[10px] text-blue-600 font-semibold">
-                                    Guest: {guestInfo.option} ×{guestInfo.qty}
+                                  <span className="text-[10px] text-blue-600 mt-2 font-semibold">
+                                    {guestInfo.option} ×{guestInfo.qty} - Guest
                                   </span>
                                 )}
                               </span>
                               <span
-                                className={`px-2 py-1 text-[9px] text-white rounded ${
+                                className={`px-2 py-1 text-[9px] h-[20px] text-white rounded ${
                                   active ? "bg-green-600" : "bg-red-600"
                                 }`}
                               >

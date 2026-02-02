@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import ProductDetailsModal from "../../../../Components/ProductDetailsModal";
 import { FaHeart } from "react-icons/fa";
 
-import { FiPlus } from "react-icons/fi";
+import { FiMinus, FiPlus, FiTrash2 } from "react-icons/fi";
 const foodData = [
   {
     id: 1,

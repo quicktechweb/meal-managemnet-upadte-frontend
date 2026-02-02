@@ -1,3 +1,4 @@
+import WalletProfileCard from "../../../../Components/WaletProfileCard";
 import Bannerparts from "../Bannerparts/Bannerparts";
 import DownloadApp from "../DownloadApp/DownloadApp";
 import Features from "../Features/Features";
@@ -15,6 +16,8 @@ const Home = () => {
       <Bannerparts />
 
       <HomeLogin />
+
+      <WalletProfileCard />
 
       <Features />
       <ProcessSection />

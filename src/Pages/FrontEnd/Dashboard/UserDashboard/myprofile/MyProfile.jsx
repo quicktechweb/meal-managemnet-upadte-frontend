@@ -378,7 +378,7 @@ const EditProfileModal = ({ onClose, onEdit }) => {
     <div className="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4">
       <div className="bg-white w-full max-w-2xl rounded-2xl shadow-2xl flex flex-col max-h-[90vh]">
         {/* Modal Header */}
-        <div className="p-6 border-b flex justify-between items-center bg-gray-50 rounded-t-2xl">
+        <div className="p-3 border-b border-gray-300 flex justify-between items-center bg-gray-50 rounded-t-2xl">
           <div>
             <h3 className="text-xl font-bold text-gray-900">Edit Profile</h3>
             <p className="text-sm text-gray-500">
@@ -396,7 +396,7 @@ const EditProfileModal = ({ onClose, onEdit }) => {
         {/* Modal Body - Scrollable */}
         <form
           onSubmit={submitHandler}
-          className="p-6 overflow-y-auto space-y-8"
+          className="p-3 overflow-y-auto space-y-8"
         >
           {/* Section: Profile Picture */}
           <div className="flex items-center gap-6 pb-6 border-b border-gray-100">
@@ -410,9 +410,8 @@ const EditProfileModal = ({ onClose, onEdit }) => {
                 Profile Image URL
               </label>
               <input
-                type="text"
+                type="file"
                 name="img"
-                value={formData.img}
                 onChange={handleChange}
                 className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-indigo-500 outline-none"
               />
@@ -538,7 +537,7 @@ const EditProfileModal = ({ onClose, onEdit }) => {
         </form>
 
         {/* Modal Footer */}
-        <div className="p-6 border-t bg-gray-50 flex justify-end gap-3 rounded-b-2xl">
+        <div className="p-3 border-t border-gray-300 bg-gray-50 flex justify-end gap-3 rounded-b-2xl">
           <button
             type="button"
             onClick={onClose}

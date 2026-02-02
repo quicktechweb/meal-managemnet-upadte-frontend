@@ -1,19 +1,27 @@
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { IoMdEye, IoMdEyeOff } from "react-icons/io";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import Stepper from "./Stepper";
+import { FaCheckCircle } from "react-icons/fa";
+import MealScheduleTable from "../MealTable";
 
 const MessForm = () => {
   const [step, setStep] = useState(1);
   const [passwordShow, setPasswordShow] = useState(false);
 
+  const [studentService, setStudentService] = useState(false);
+
   const {
     register,
     handleSubmit,
     trigger,
+    watch,
     formState: { errors },
   } = useForm();
+  const navigate = useNavigate();
+  const studentOptions = watch("studentOptions") || [];
+  const mealAddEnabled = studentOptions.includes("mealadd");
 
   const nextStep = async () => {
     const valid = await trigger();
@@ -23,7 +31,14 @@ const MessForm = () => {
   const prevStep = () => setStep(step - 1);
 
   const onSubmit = (data) => {
-    console.log("FORM DATA 👉", data);
+    if (data) {
+      navigate("/dashboard/mealmanagement");
+    }
+    console.log("FORM DATA", data);
+  };
+
+  const handleStudent = () => {
+    setStudentService(true);
   };
 
   return (
@@ -82,6 +97,18 @@ const MessForm = () => {
 
           <FloatingInput label="Address" {...register("address")} />
 
+          <FloatingInput
+            label="Name of the Institute"
+            {...register("institute", { required: "Institute required" })}
+            error={errors.phone}
+          />
+
+          <FloatingInput
+            label="Name of the Hall / Hostel"
+            {...register("hall", { required: "hall / hostel   required" })}
+            error={errors.phone}
+          />
+
           <button
             type="button"
             onClick={nextStep}
@@ -127,6 +154,93 @@ const MessForm = () => {
             <p className="text-red-500 text-sm">{errors.kitchen.message}</p>
           )}
 
+          <>
+            <p className="font-semibold">Select Service</p>
+
+            {/* MAIN SERVICE */}
+            <div className="flex items-center gap-6">
+              {/* Per Meal */}
+              <div className="flex items-center gap-2">
+                <label className="switch !text-xs">
+                  <input
+                    type="radio"
+                    value="meal"
+                    {...register("service", { required: "Select Service" })}
+                    onChange={() => setStudentService(false)}
+                    className="sr-only"
+                  />
+                  <span className="slider"></span>
+                </label>
+                <p>Per Meal</p>
+              </div>
+
+              {/* Per Student */}
+              <div className="flex items-center gap-2">
+                <label className="switch !text-xs">
+                  <input
+                    type="radio"
+                    value="student"
+                    {...register("service", { required: "Select Service" })}
+                    onChange={() => setStudentService(true)}
+                    className="sr-only"
+                  />
+                  <span className="slider"></span>
+                </label>
+                <p>Per Student</p>
+              </div>
+            </div>
+
+            {errors.service && (
+              <p className="text-red-500 text-sm">{errors.service.message}</p>
+            )}
+
+            {/*  */}
+            {studentService && (
+              <div className="mt-4 space-y-3">
+                <p className="font-medium text-sm">Student Features</p>
+
+                <div className="flex items-center gap-2">
+                  <label className="switch !text-xs">
+                    <input
+                      type="checkbox"
+                      value="balance"
+                      {...register("studentOptions")}
+                      className="sr-only"
+                    />
+                    <span className="slider"></span>
+                  </label>
+                  <p>Balance</p>
+                </div>
+
+                <div className="flex items-center gap-2">
+                  <label className="switch !text-xs">
+                    <input
+                      type="checkbox"
+                      value="fingerprint"
+                      {...register("studentOptions")}
+                      className="sr-only"
+                    />
+                    <span className="slider"></span>
+                  </label>
+                  <p>Fingerprint</p>
+                </div>
+
+                <div className="flex items-center gap-2">
+                  <label className="switch !text-xs">
+                    <input
+                      type="checkbox"
+                      value="mealadd"
+                      {...register("studentOptions")}
+                      className="sr-only"
+                    />
+                    <span className="slider"></span>
+                  </label>
+                  <p>Meal Add</p>
+                </div>
+              </div>
+            )}
+          </>
+
           <div className="flex gap-2">
             <button
               type="button"
@@ -149,44 +263,17 @@ const MessForm = () => {
       {/* ================= STEP 3 ================= */}
       {step === 3 && (
         <>
-          <p className="font-semibold">Select Service</p>
-          <div className="flex items-center">
-            <div className="flex items-center gap-2 w-full">
-              <label className="switch !text-xs">
-                <input
-                  type="radio"
-                  value="meal"
-                  {...register("service", { required: "Select Service" })}
-                  className="sr-only"
-                />
-                <span className="slider"></span>
-              </label>
-              <p>Per Meal</p>
-            </div>
-            <div className="flex items-center gap-2 w-full">
-              <label className="switch !text-xs">
-                <input
-                  type="radio"
-                  onChange={handleStudent}
-                  value="student"
-                  {...register("service", { required: "Select Service" })}
-                  className="sr-only"
-                />
-                <span className="slider"></span>
-              </label>
-              <p>Per Student</p>
-            </div>
+          <div className="mt-6 space-y-6">
+            <p className="font-semibold">Select the Meals</p>
+
+            <MealScheduleTable />
           </div>
 
-          {errors.service && (
-            <p className="text-red-500 text-sm">{errors.service.message}</p>
-          )}
-
-          <div className="flex gap-2">
+          <div className="flex gap-2 mt-4">
             <button
               type="button"
               onClick={prevStep}
-              className="w-full border cursor-pointer py-3 rounded-lg"
+              className="w-full border border-gray-300 cursor-pointer py-3 rounded-lg"
             >
               Back
             </button>
@@ -200,9 +287,9 @@ const MessForm = () => {
         </>
       )}
 
-      <div className="text-sm flex gap-2">
+      <div className="text-sm flex gap-2 pb-3">
         <p>Already have an account?</p>
-        <Link to="/login" className="text-blue-600 font-semibold">
+        <Link to="/auth/login" className="text-blue-600 font-semibold">
           Login
         </Link>
       </div>
@@ -229,11 +316,11 @@ const FloatingInput = React.forwardRef(
 const FloatingLabel = ({ text }) => (
   <label
     className="absolute left-3 bg-white px-1 text-gray-500 transition-all
-    top-1/2 -translate-y-1/2
-    peer-focus:top-1 peer-focus:text-xs
-    peer-not-placeholder-shown:top-1 peer-not-placeholder-shown:text-xs"
+      top-1/2 -translate-y-1/2 text-sm md:text-lg
+      peer-focus:top-1 peer-focus:text-xs peer-focus:text-black
+      peer-not-placeholder-shown:top-1 peer-not-placeholder-shown:text-xs
+      pointer-events-none"
   >
     {text}
   </label>
 );
-// Institute registration step form added (last step unclear)

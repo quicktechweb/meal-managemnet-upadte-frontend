@@ -1,8 +1,13 @@
 import React from "react";
-import { Outlet } from "react-router-dom";
+import { Outlet, ScrollRestoration } from "react-router-dom";
 
 const AuthLayout = () => {
-  return <div>{<Outlet />}</div>;
+  return (
+    <div>
+      <ScrollRestoration />
+      <Outlet />
+    </div>
+  );
 };
 
 export default AuthLayout;
