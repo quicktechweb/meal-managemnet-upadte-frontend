@@ -22,7 +22,10 @@ const stats = [
 
 const MealSystemLanding = () => {
   return (
-    <section className="relative py-8 md:py-16 lg:py-32 overflow-hidden">
+    <section
+      id="food"
+      className="relative py-8 md:py-16 lg:py-32 overflow-hidden"
+    >
       {/* Background shapes */}
       <div className="absolute -top-24 -right-24 md:-right-32 lg:-right-40 w-[600px] h-[500px] bg-orange-100 rounded-full blur-3xl opacity-60" />
       <div className="absolute -bottom-40 -left-24 md:-left-32 lg:-left-40 w-[500px] h-[500px] bg-yellow-100 rounded-full blur-3xl opacity-50" />

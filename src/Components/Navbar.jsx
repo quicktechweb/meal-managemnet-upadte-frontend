@@ -27,10 +27,6 @@ const menu = [
 const Navbar = ({ setIsOpen, isOpen, onCategoryOpen }) => {
   const cartItems = useSelector((state) => state.cart.cartItems);
 
-  const { user } = useAuth();
-
-  console.log(user);
-
   const handleCart = () => {
     const newState = !isOpen;
     setIsOpen(newState);
@@ -70,36 +66,6 @@ const Navbar = ({ setIsOpen, isOpen, onCategoryOpen }) => {
             </NavLink>
           ))}
         </ul>
-
-        {user ? (
-          <div className="flex items-center gap-3 bg-white px-4 py-2 rounded-xl shadow-sm hover:shadow-md transition">
-            {/* Avatar */}
-            <img
-              src={
-                user?.user?.avatar ||
-                "https://cdn.pixabay.com/photo/2017/02/23/13/05/avatar-2092113_640.png"
-              }
-              alt="User Avatar"
-              className="w-10 h-10 rounded-full object-cover border"
-            />
-
-            {/* User Info */}
-            <div className="leading-tight">
-              <h4 className="text-sm font-semibold text-gray-800">
-                {user?.user?.name}
-              </h4>
-              <p className="text-xs text-gray-500">@{user?.user?.username}</p>
-            </div>
-          </div>
-        ) : (
-          <Link
-            to="/auth/login"
-            className="px-5 py-2 rounded-lg bg-black text-white text-sm font-medium
-               hover:bg-gray-800 transition shadow-sm"
-          >
-            Get Started
-          </Link>
-        )}
 
         {/* CART */}
         <div

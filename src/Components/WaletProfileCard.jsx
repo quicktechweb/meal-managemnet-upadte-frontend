@@ -4,13 +4,13 @@ import { Link } from "react-router-dom";
 const WalletProfileCard = () => {
   return (
     <div className="max-w-6xl mx-auto px-3 mb-4">
-      <div className="relative flex flex-col sm:flex-row sm:items-center justify-between overflow-hidden rounded-3xl bg-[#e46330] p-5 sm:p-10 text-white shadow-2xl">
-        <div className="absolute -top-16 -right-16 w-56 h-56 bg-white/10 rounded-full" />
-        <div className="absolute bottom-0 right-20 w-40 h-40 bg-white/5 rounded-full" />
+      <div className="relative flex flex-col sm:flex-row sm:items-center justify-between overflow-hidden rounded-3xl bg-white p-5 sm:p-10 text-black shadow">
+        <div className="absolute -top-16 -right-16 w-56 h-56 bg-black/10 rounded-full" />
+        <div className="absolute bottom-0 right-20 w-40 h-40 bg-black/5 rounded-full" />
 
         {/* Left: Wallet Info */}
         <div className="flex flex-col lg:flex-row  items-start lg:items-center gap-3 md:gap-6 z-10">
-          <div className="bg-white/20 p-2.5 md:p-5 rounded-2xl">
+          <div className="bg-black/20 p-2.5 md:p-5 rounded-2xl">
             <Wallet className="size-5 md:size-10" />
           </div>
 

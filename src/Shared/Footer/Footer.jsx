@@ -4,6 +4,7 @@ import {
   FaYoutube,
   FaLinkedinIn,
 } from "react-icons/fa";
+import { Link } from "react-router-dom";
 
 const Footer = () => {
   return (
@@ -17,27 +18,77 @@ const Footer = () => {
           <h4 className="text-gray-800 font-semibold text-base mb-4">
             Quick Links
           </h4>
-          <ul className="space-y-2 text-gray-600">
+          <ul className="space-y-2 text-left text-gray-600">
             {[
-              "About Us",
-              "Contact Us",
-              "Quotation Request",
-              "Intellectual Property",
-              "Sitemap",
-              "Track Order",
-              "Customs Tariffs & Fees",
-              "Shipping Policy",
-              "Micro Influencer",
-              "Alabadan Membership",
-              "Alabadan Warranty",
-              "Healthcare Disclaimer",
+              {
+                id: 1,
+                title: "About Us",
+                pathname: "#",
+              },
+              {
+                id: 2,
+                title: "Contact Us",
+                pathname: "/contact-us",
+              },
+              {
+                id: 3,
+                title: "Terms and conditions",
+                pathname: "/terms-and-conditions",
+              },
+
+              {
+                id: 4,
+                title: "Privecy Policy",
+                pathname: "/privecy-policy",
+              },
+              {
+                id: 5,
+                title: "Sitemap",
+                pathname: "#",
+              },
+              {
+                id: 6,
+                title: "Track Order",
+                pathname: "#",
+              },
+              {
+                id: 7,
+                title: "Customs Tariffs & Fees",
+                pathname: "#",
+              },
+              {
+                id: 8,
+                title: "Shipping Policy",
+                pathname: "#",
+              },
+              {
+                id: 9,
+                title: "Micro Influencer",
+                pathname: "#",
+              },
+              {
+                id: 10,
+                title: "Alabadan Membership",
+                pathname: "#",
+              },
+              {
+                id: 11,
+                title: "Alabadan Warranty",
+                pathname: "#",
+              },
+              {
+                id: 12,
+                title: "Healthcare Disclaimer",
+                pathname: "#",
+              },
             ].map((link) => (
-              <li
-                key={link}
-                className="hover:text-blue-600 cursor-pointer transition"
+              <Link
+                to={link?.pathname}
+                key={link?.id}
+                className="hover:text-blue-600 block cursor-pointer transition"
               >
-                {link}
-              </li>
+                {link?.title}
+              </Link>
             ))}
           </ul>
         </div>
@@ -80,7 +131,7 @@ const Footer = () => {
                 alt="Paypal"
                 className="w-6 h-6"
               />
-              <span>PayPal</span>
+              <span>Bkash</span>
             </div>
             <div className="flex items-center space-x-2">
               <img
@@ -88,7 +139,7 @@ const Footer = () => {
                 alt="Visa"
                 className="w-6 h-6"
               />
-              <span>Visa</span>
+              <span>Nagad</span>
             </div>
             <div className="flex items-center space-x-2">
               <img
@@ -96,7 +147,7 @@ const Footer = () => {
                 alt="Mastercard"
                 className="w-6 h-6"
               />
-              <span>Mastercard</span>
+              <span>SSL </span>
             </div>
           </div>
         </div>
@@ -199,25 +250,75 @@ const Footer = () => {
             </h4>
             <ul className="space-y-2 text-center text-gray-600">
               {[
-                "About Us",
-                "Contact Us",
-                "Quotation Request",
-                "Intellectual Property",
-                "Sitemap",
-                "Track Order",
-                "Customs Tariffs & Fees",
-                "Shipping Policy",
-                "Micro Influencer",
-                "Alabadan Membership",
-                "Alabadan Warranty",
-                "Healthcare Disclaimer",
+                {
+                  id: 1,
+                  title: "About Us",
+                  pathname: "#",
+                },
+                {
+                  id: 2,
+                  title: "Contact Us",
+                  pathname: "/contact-us",
+                },
+                {
+                  id: 3,
+                  title: "Quotation Request",
+                  pathname: "#",
+                },
+
+                {
+                  id: 4,
+                  title: "Intellectual Property",
+                  pathname: "#",
+                },
+                {
+                  id: 5,
+                  title: "Sitemap",
+                  pathname: "#",
+                },
+                {
+                  id: 6,
+                  title: "Track Order",
+                  pathname: "#",
+                },
+                {
+                  id: 7,
+                  title: "Customs Tariffs & Fees",
+                  pathname: "#",
+                },
+                {
+                  id: 8,
+                  title: "Shipping Policy",
+                  pathname: "#",
+                },
+                {
+                  id: 9,
+                  title: "Micro Influencer",
+                  pathname: "#",
+                },
+                {
+                  id: 10,
+                  title: "Alabadan Membership",
+                  pathname: "#",
+                },
+                {
+                  id: 11,
+                  title: "Alabadan Warranty",
+                  pathname: "#",
+                },
+                {
+                  id: 12,
+                  title: "Healthcare Disclaimer",
+                  pathname: "#",
+                },
               ].map((link) => (
-                <li
-                  key={link}
+                <Link
+                  to={link?.pathname}
+                  key={link?.id}
                   className="hover:text-blue-600 cursor-pointer transition"
                 >
-                  {link}
-                </li>
+                  {link?.title}
+                </Link>
               ))}
             </ul>
           </div>

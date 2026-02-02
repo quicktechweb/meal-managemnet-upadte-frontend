@@ -30,6 +30,11 @@ import MenuDetails from "../Pages/FrontEnd/MenuDetails/MenuDetails";
 import SingleHallProfile from "../Pages/FrontEnd/Dashboard/UserDashboard/myprofile/SingleHallProfile";
 import FullAccessRegistration from "../Auth/FullAccessRegistration/FullAccessRegistration";
 import AuthLayout from "../AuthLayout";
+import ForgotPassword from "../Auth/ForgotPassword/ForgotPassword";
+import SingleMessProfile from "../Pages/FrontEnd/Dashboard/UserDashboard/myprofile/SingleMessProfile";
+import ChangePassword from "../Pages/FrontEnd/Dashboard/UserDashboard/ChangePassword";
+import PrivacyPolicy from "../Pages/FrontEnd/dynamicpage/PrivecyAndPolicy";
+import TermAndCondition from "../Pages/FrontEnd/dynamicpage/TermAndCondition";
 
 const router = createBrowserRouter([
   {
@@ -84,6 +89,14 @@ const router = createBrowserRouter([
         path: "/menu-details",
         element: <MenuDetails />,
       },
+      {
+        path: "/privecy-policy",
+        element: <PrivacyPolicy />,
+      },
+      {
+        path: "/terms-and-conditions",
+        element: <TermAndCondition />,
+      },
     ],
   },
   {
@@ -97,6 +110,10 @@ const router = createBrowserRouter([
       {
         path: "login",
         element: <Login />,
+      },
+      {
+        path: "forget-password",
+        element: <ForgotPassword />,
       },
       {
         path: "register",
@@ -132,6 +149,7 @@ const router = createBrowserRouter([
         ),
         // </AdminProtectedRoute>
       },
+
       {
         path: "/dashboard/mealmanagement",
         element: <MealManagementPart />,
@@ -158,6 +176,10 @@ const router = createBrowserRouter([
         element: <SingleHallProfile />,
       },
       {
+        path: "/dashboard/mess-profile",
+        element: <SingleMessProfile />,
+      },
+      {
         path: "/dashboard/canteens",
         element: <Restaurant />,
       },
@@ -165,7 +187,10 @@ const router = createBrowserRouter([
         path: "/dashboard/canteens/:id",
         element: <RestaurantDetails />,
       },
-
+      {
+        path: "/dashboard/change-password",
+        element: <ChangePassword />,
+      },
       {
         path: "/dashboard/foods",
         element: <Foods />,
