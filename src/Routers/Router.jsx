@@ -33,6 +33,8 @@ import AuthLayout from "../AuthLayout";
 import ForgotPassword from "../Auth/ForgotPassword/ForgotPassword";
 import SingleMessProfile from "../Pages/FrontEnd/Dashboard/UserDashboard/myprofile/SingleMessProfile";
 import ChangePassword from "../Pages/FrontEnd/Dashboard/UserDashboard/ChangePassword";
+import PrivacyPolicy from "../Pages/FrontEnd/dynamicpage/PrivecyAndPolicy";
+import TermAndCondition from "../Pages/FrontEnd/dynamicpage/TermAndCondition";
 
 const router = createBrowserRouter([
   {
@@ -86,6 +88,14 @@ const router = createBrowserRouter([
       {
         path: "/menu-details",
         element: <MenuDetails />,
+      },
+      {
+        path: "/privecy-policy",
+        element: <PrivacyPolicy />,
+      },
+      {
+        path: "/terms-and-conditions",
+        element: <TermAndCondition />,
       },
     ],
   },
