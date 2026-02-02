@@ -541,7 +541,7 @@ const AddHallMemberModal = ({ onClose }) => {
         <div className="flex justify-end gap-3 px-6 py-4 border-t border-gray-300 bg-gray-50">
           <button
             onClick={onClose}
-            className="px-4 py-2 text-sm font-medium rounded-lg border hover:bg-gray-100"
+            className="px-4 py-2 text-sm font-medium rounded-lg border border-gray-300 hover:bg-gray-100"
           >
             Cancel
           </button>
