@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import { Phone, Mail, Users, Building2, Utensils } from "lucide-react";
 import { Link } from "react-router-dom";
+import { TiPlus } from "react-icons/ti";
+import { X, User, MapPin } from "lucide-react";
 
 const avatar =
   "https://ui-avatars.com/api/?background=EEF2FF&color=4F46E5&name=";
@@ -169,6 +171,8 @@ const SingleHallProfile = () => {
   const [openMembers, setOpenMembers] = useState(false);
   const [selectedHall, setSelectedHall] = useState(null);
 
+  const [showAddHallMember, setShowAddHallMember] = useState(false);
+
   const handleViewMembers = (hall) => {
     setSelectedHall(hall);
     setOpenMembers(true);
@@ -317,14 +321,24 @@ const SingleHallProfile = () => {
       <div className="bg-white rounded-2xl border border-gray-300">
         <div className="flex justify-between items-center px-6 py-4 border-b border-gray-300">
           <h2 className="text-lg font-bold">Hall Members</h2>
-          <button
-            onClick={() => setIsManagingRole((p) => !p)}
-            className={`px-4 py-2 text-sm rounded-lg cursor-pointer ${
-              isManagingRole ? "bg-indigo-600 text-white" : "bg-gray-100"
-            }`}
-          >
-            {isManagingRole ? "Done" : "Manage Role"}
-          </button>
+          <div className="flex gap-3.5 items-center">
+            <button
+              onClick={() => setShowAddHallMember(true)}
+              className={`px-4 py-2 text-sm flex items-center justify-center rounded-lg cursor-pointer bg-indigo-600 text-white
+              `}
+            >
+              <TiPlus /> Add Member
+            </button>
+
+            <button
+              onClick={() => setIsManagingRole((p) => !p)}
+              className={`px-4 py-2 text-sm rounded-lg cursor-pointer ${
+                isManagingRole ? "bg-indigo-600 text-white" : "bg-gray-100"
+              }`}
+            >
+              {isManagingRole ? "Done" : "Manage Role"}
+            </button>
+          </div>
         </div>
 
         <div className="p-6 grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
@@ -398,6 +412,10 @@ const SingleHallProfile = () => {
           </div>
         </div>
       )}
+
+      {showAddHallMember && (
+        <AddHallMemberModal onClose={() => setShowAddHallMember(false)} />
+      )}
     </div>
   );
 };
@@ -441,6 +459,121 @@ const MemberCard = ({ member }) => (
     >
       Profile
     </Link>
+  </div>
+);
+
+const AddHallMemberModal = ({ onClose }) => {
+  const submit = () => {
+    onClose();
+  };
+
+  return (
+    <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 px-4">
+      <div className="bg-white w-full max-w-3xl rounded-2xl shadow-xl overflow-hidden">
+        {/* Header */}
+        <div className="flex items-center justify-between px-6 py-4 border-b border-gray-300">
+          <div>
+            <h3 className="text-lg font-bold text-gray-800">Add Hall Member</h3>
+            <p className="text-sm text-gray-500">
+              Fill in the member information below
+            </p>
+          </div>
+          <button
+            onClick={onClose}
+            className="p-2 rounded-full hover:bg-gray-100"
+          >
+            <X size={18} />
+          </button>
+        </div>
+
+        {/* Body */}
+        <div className="p-6 max-h-[70vh] overflow-y-auto">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {/* Name */}
+            <Input
+              label="Full Name"
+              placeholder="Member name"
+              icon={<User size={16} />}
+            />
+            <Input label="Username" placeholder="Username" />
+
+            {/* Contact */}
+            <Input
+              label="Email"
+              placeholder="Email address"
+              icon={<Mail size={16} />}
+            />
+            <Input
+              label="Phone"
+              placeholder="Phone number"
+              icon={<Phone size={16} />}
+            />
+
+            {/* Parents */}
+            <Input label="Father's Name" placeholder="Father name" />
+            <Input label="Mother's Name" placeholder="Mother name" />
+
+            {/* Guardian */}
+            <Input label="Guardian Name" placeholder="Guardian name" />
+            <Input label="Date of Birth" type="date" />
+
+            {/* Personal */}
+            <Input label="Nationality" placeholder="Nationality" />
+            <Input label="Religion" placeholder="Religion" />
+
+            <Input label="Gender" placeholder="Gender" />
+
+            {/* Address */}
+            <Input
+              label="Present Address"
+              placeholder="Present address"
+              icon={<MapPin size={16} />}
+            />
+            <Input
+              label="Permanent Address"
+              placeholder="Permanent address"
+              icon={<MapPin size={16} />}
+            />
+          </div>
+        </div>
+
+        {/* Footer */}
+        <div className="flex justify-end gap-3 px-6 py-4 border-t border-gray-300 bg-gray-50">
+          <button
+            onClick={onClose}
+            className="px-4 py-2 text-sm font-medium rounded-lg border hover:bg-gray-100"
+          >
+            Cancel
+          </button>
+          <button
+            onClick={submit}
+            className="px-5 py-2 text-sm font-semibold rounded-lg bg-indigo-600 text-white hover:bg-indigo-700"
+          >
+            Save Member
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+const Input = ({ label, type = "text", placeholder, icon }) => (
+  <div className="space-y-1">
+    <label className="text-xs font-medium text-gray-600">{label}</label>
+    <div className="relative">
+      {icon && (
+        <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">
+          {icon}
+        </span>
+      )}
+      <input
+        type={type}
+        placeholder={placeholder}
+        className={`w-full border border-gray-300  rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none ${
+          icon ? "pl-9" : ""
+        }`}
+      />
+    </div>
   </div>
 );
 
