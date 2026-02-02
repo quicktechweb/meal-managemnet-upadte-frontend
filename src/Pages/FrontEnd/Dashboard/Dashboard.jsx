@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { FaBars, FaTimes } from "react-icons/fa";
 import { Link, Outlet, ScrollRestoration } from "react-router-dom";
 // import useTitle from "../hooks/useTitle";
@@ -11,8 +11,20 @@ import { motion, AnimatePresence } from "framer-motion";
 import useAuth from "../../../Hooks/useAuth";
 const Dashboard = () => {
   const [isOpenSidebar, setIsOpenSidebar] = useState(false);
-  const [popupOpen, setPopupopen] = useState(false);
+  const [open, setOpen] = useState(false);
+  const popupRef = useRef(null);
 
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (e) => {
+      if (popupRef.current && !popupRef.current.contains(e.target)) {
+        setOpen(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
   const { user } = useAuth();
 
   const [isOpen, setIsOpen] = useState(false);
@@ -121,7 +133,7 @@ const Dashboard = () => {
               <div className="flex items-center gap-3 lg:w-[240px]">
                 {/* Profile Image */}
                 <div
-                  onClick={() => setPopupopen(!popupOpen)}
+                  onClick={() => setOpen((prev) => !prev)}
                   className="relative cursor-pointer"
                 >
                   <img
@@ -248,24 +260,25 @@ const Dashboard = () => {
                   </div>
                 )}
               </div>
-
-              {popupOpen && (
-                <div className="absolute top-16 left-0 z-20 w-[200px] rounded-lg border border-gray-200 bg-white shadow-lg">
+              {open && (
+                <div
+                  ref={popupRef}
+                  className="absolute top-16 left-0 w-[200px] rounded-lg border border-gray-200 bg-white shadow-lg"
+                >
                   <ul className="text-sm text-gray-700">
                     <Link
                       to={"/dashboard/profile"}
-                      className="px-4 py-2 cursor-pointer block hover:bg-gray-100 transition"
+                      className="block px-4 py-2 hover:bg-gray-100 transition"
                     >
                       View Profile
                     </Link>
                     <Link
                       to={"/dashboard/change-password"}
-                      className="px-4 py-2 cursor-pointer hover:bg-gray-100 transition block "
+                      className="block px-4 py-2 hover:bg-gray-100 transition"
                     >
                       Change Password
                     </Link>
-
-                    <li className="px-4 py-2 cursor-pointer  block bg-black text-white rounded-bl-md rounded-br-md">
+                    <li className="px-4 py-2 cursor-pointer block bg-black text-white rounded-bl-md rounded-br-md">
                       Log out
                     </li>
                   </ul>

@@ -32,6 +32,7 @@ import FullAccessRegistration from "../Auth/FullAccessRegistration/FullAccessReg
 import AuthLayout from "../AuthLayout";
 import ForgotPassword from "../Auth/ForgotPassword/ForgotPassword";
 import SingleMessProfile from "../Pages/FrontEnd/Dashboard/UserDashboard/myprofile/SingleMessProfile";
+import ChangePassword from "../Pages/FrontEnd/Dashboard/UserDashboard/ChangePassword";
 
 const router = createBrowserRouter([
   {
@@ -165,7 +166,7 @@ const router = createBrowserRouter([
       },
       {
         path: "/dashboard/mess-profile",
-        element:<SingleMessProfile/>
+        element: <SingleMessProfile />,
       },
       {
         path: "/dashboard/canteens",
@@ -175,7 +176,10 @@ const router = createBrowserRouter([
         path: "/dashboard/canteens/:id",
         element: <RestaurantDetails />,
       },
-
+      {
+        path: "/dashboard/change-password",
+        element: <ChangePassword />,
+      },
       {
         path: "/dashboard/foods",
         element: <Foods />,
