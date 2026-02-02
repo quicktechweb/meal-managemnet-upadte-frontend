@@ -32,14 +32,14 @@ const Footer = () => {
               },
               {
                 id: 3,
-                title: "Quotation Request",
-                pathname: "#",
+                title: "Terms and conditions",
+                pathname: "/terms-and-conditions",
               },
 
               {
                 id: 4,
-                title: "Intellectual Property",
-                pathname: "#",
+                title: "Privecy Policy",
+                pathname: "/privecy-policy",
               },
               {
                 id: 5,

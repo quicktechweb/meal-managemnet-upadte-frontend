@@ -78,7 +78,7 @@ const instituteData = {
           id: 1,
           name: "Quick Tech Mess",
           email: "mess@gmail.com",
-          
+
           username: "mess_1",
           phone_number: "+8801711111111",
           occupation_type: "student",
@@ -292,80 +292,6 @@ const InstituteProfile = () => {
               </div>
             </div>
           ))}
-        </div>
-      </div>
-
-      {/* Institute Mess List */}
-      <div className="flex flex-col gap-4">
-        <div className="flex items-center gap-2">
-          <Utensils className="text-orange-500" />
-          <h3 className="text-xl font-bold">Institute Mess List</h3>
-        </div>
-
-        <div className="flex flex-wrap gap-6">
-          {profile.hall.flatMap((hall) =>
-            hall.mess.map((mess) => (
-              <div
-                key={mess.id}
-                className="w-[280px] bg-white rounded-2xl border border-gray-300 shadow-sm"
-              >
-                {/* Header */}
-                <div className="py-3 px-3 flex gap-4 items-center">
-                  <img
-                    src={`${avatar}${mess.name}`}
-                    alt={mess.name}
-                    className="w-12 h-12 rounded-xl"
-                  />
-                  <div>
-                    <h4 className="font-bold">{mess.name}</h4>
-                    <p className="text-sm text-gray-500">
-                      {mess.institute_info.institute_name}
-                    </p>
-                  </div>
-                </div>
-
-                {/* Info */}
-                <div className="border-t border-gray-300 py-3 px-3 space-y-2 text-sm">
-                  <div className="flex justify-between">
-                    <span>Total Members</span>
-                    <span className="font-semibold text-orange-600">
-                      {mess.member.length}
-                    </span>
-                  </div>
-
-                  <div className="flex gap-2 items-center">
-                    <Phone size={14} /> {mess.phone_number}
-                  </div>
-
-                  <div className="flex gap-2 items-center">
-                    <Mail size={14} /> {mess.email}
-                  </div>
-                </div>
-
-                {/* Actions */}
-                <div className="px-4 pb-2 flex gap-2">
-                  <button
-                    onClick={() =>
-                      handleViewMembers({
-                        ...mess,
-                        member: mess.member,
-                      })
-                    }
-                    className="flex-1 cursor-pointer bg-orange-500 text-white text-xs py-2 rounded-lg"
-                  >
-                    View Members
-                  </button>
-
-                  <Link
-                    to="/dashboard/mess-profile"
-                    className="flex-1 bg-gray-100 text-center text-xs py-2 rounded-lg"
-                  >
-                    Details
-                  </Link>
-                </div>
-              </div>
-            )),
-          )}
         </div>
       </div>
 
