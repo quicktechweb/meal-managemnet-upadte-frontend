@@ -3,6 +3,7 @@ import { Phone, Mail, Users, Building2, Utensils } from "lucide-react";
 import { Link } from "react-router-dom";
 import { TiPlus } from "react-icons/ti";
 import { X, User, MapPin } from "lucide-react";
+import toast from "react-hot-toast";
 
 const avatar =
   "https://ui-avatars.com/api/?background=EEF2FF&color=4F46E5&name=";
@@ -193,7 +194,7 @@ const SingleHallProfile = () => {
       role !== "Hall Admin" &&
       adminCount === 1
     ) {
-      alert("At least one Hall Admin is required.");
+      toast.error("At least one Hall Admin is required.");
       return;
     }
 

@@ -54,13 +54,13 @@ const MyProfile = () => {
           </p>
         </div>
         <div className="flex items-center gap-2 lg:gap-3.5">
-          <button
+          {/* <button
             onClick={() => setShowAddModal(true)}
             className="flex items-center gap-2 bg-indigo-600 text-white px-2.5 lg:px-5 py-1.5  lg:py-2.5 rounded-xl font-medium cursor-pointer hover:bg-indigo-700 transition-all whitespace-nowrap shadow-sm text-xs lg:text-base"
           >
             <MdOutlineAddCircleOutline size={12} />
             Add Member
-          </button>
+          </button> */}
           <button
             onClick={() => setShowEditModal(true)}
             className="flex items-center gap-2 bg-indigo-600 text-white px-2.5 lg:px-5 py-1.5  lg:py-2.5  rounded-xl font-medium cursor-pointer hover:bg-indigo-700 transition-all whitespace-nowrap shadow-sm text-xs lg:text-base"
