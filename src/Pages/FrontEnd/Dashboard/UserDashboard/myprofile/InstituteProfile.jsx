@@ -23,7 +23,7 @@ const instituteData = {
       id: 1,
       name: "Karjon Hall",
       email: "hall@gmail.com",
-      phone_number: "+8801700000000",
+
       username: "karjon_1",
       phone_number: "+8801711111111",
       occupation_type: "student",
@@ -78,7 +78,7 @@ const instituteData = {
           id: 1,
           name: "Quick Tech Mess",
           email: "mess@gmail.com",
-          phone_number: "+8801700000000",
+          
           username: "mess_1",
           phone_number: "+8801711111111",
           occupation_type: "student",

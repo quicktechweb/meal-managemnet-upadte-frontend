@@ -114,33 +114,33 @@ const DashboardSideBar = ({ setIsOpenSidebar }) => {
       ],
     },
 
-    {
-      key: "Canteens",
-      title: "Canteens",
-      roles: ["user"],
-      icon: FaClipboardList,
-      links: [
-        {
-          title: "All Canteens",
-          icon: IoRestaurant,
-          path: "/dashboard/canteens",
-        },
-      ],
-    },
+    // {
+    //   key: "Canteens",
+    //   title: "Canteens",
+    //   roles: ["user"],
+    //   icon: FaClipboardList,
+    //   links: [
+    //     {
+    //       title: "All Canteens",
+    //       icon: IoRestaurant,
+    //       path: "/dashboard/canteens",
+    //     },
+    //   ],
+    // },
 
-    {
-      key: "foods",
-      title: "Foods",
-      roles: ["user"],
-      icon: FaClipboardList,
-      links: [
-        {
-          title: "Foods",
-          icon: IoRestaurant,
-          path: "/dashboard/foods",
-        },
-      ],
-    },
+    // {
+    //   key: "foods",
+    //   title: "Foods",
+    //   roles: ["user"],
+    //   icon: FaClipboardList,
+    //   links: [
+    //     {
+    //       title: "Foods",
+    //       icon: IoRestaurant,
+    //       path: "/dashboard/foods",
+    //     },
+    //   ],
+    // },
 
     {
       key: "favourite",
