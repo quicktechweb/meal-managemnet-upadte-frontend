@@ -615,8 +615,8 @@ const MealScheduleTable = () => {
     const isOpen = openDropdown[key];
 
     return (
-      <td className="px-3 py-2 flex-1 align-top relative">
-        <div className="flex flex-wrap w-[315px]  gap-2 mb-1">
+      <td className="px-3 py-2 flex-1 align-top w-full relative">
+        <div className="flex flex-wrap w-full lg:w-[315px]  gap-2 mb-1">
           {selectedMeals[day][mealType].map((id) => {
             const meal = mealData.items.find((m) => m.meal_id === id);
             return (
@@ -637,7 +637,7 @@ const MealScheduleTable = () => {
 
         {/* Dropdown toggle button */}
         <div
-          className="border relative border-gray-300 rounded-md p-2 min-w-[80px] flex items-center justify-between cursor-pointer bg-white"
+          className="border relative border-gray-300 rounded-md p-2  w-full flex items-center justify-between cursor-pointer bg-white"
           onClick={(e) => toggleDropdown(e, day, mealType)}
         >
           <span className="text-gray-400 text-xs">
@@ -683,39 +683,145 @@ const MealScheduleTable = () => {
     );
   };
 
-  return (
-    <div className="overflow-x-auto border border-gray-300 rounded-lg shadow-sm">
-      <table className="min-w-full text-sm sm:text-base border-collapse">
-        <thead className="bg-orange-500 text-white">
-          <tr>
-            <th className="px-4 py-3 text-left">Days</th>
-            <th className="px-4 py-3 text-left">Breakfast</th>
-            <th className="px-4 py-3 text-left">Lunch</th>
-            <th className="px-4 py-3 text-left">Dinner</th>
-          </tr>
-        </thead>
-        <tbody>
-          {days.map((day, i) => {
-            console.log(i);
+  const renderMobileDropDown = (day, mealType, mealData, i) => {
+    const key = `${day}-${mealType}`;
+    const isOpen = openDropdown[key];
 
-            const dayMeals = schedule2.find((m) => m.day === day);
+    return (
+      <div className="py-2 flex-1 align-top w-full relative">
+        <div className="flex flex-wrap w-full lg:w-[315px]  gap-2 mb-1">
+          {selectedMeals[day][mealType].map((id) => {
+            const meal = mealData.items.find((m) => m.meal_id === id);
             return (
-              <tr
-                key={day}
-                className="border-b w-[50%] border-gray-300 hover:bg-gray-50"
+              <div
+                key={id}
+                className="flex items-center gap-1 text-gray-700   rounded-full text-xs"
               >
-                <td className="px-4 py-2 text-center font-bold text-gray-700">
-                  {day}
-                </td>
-                {renderDropdown(day, "breakfast", dayMeals.breakfast, i)}
-                {renderDropdown(day, "lunch", dayMeals.lunch, i)}
-                {renderDropdown(day, "dinner", dayMeals.dinner, i)}
-              </tr>
+                <FaCheckCircle className="text-green-600 text-[10px]" />
+                {meal?.title} ({meal?.price})
+                <FaTimes
+                  className="cursor-pointer hover:text-red-500"
+                  onClick={(e) => removeTag(e, day, mealType, id)}
+                />
+              </div>
             );
           })}
-        </tbody>
-      </table>
-    </div>
+        </div>
+
+        {/* Dropdown toggle button */}
+        <div
+          className="border relative border-gray-300 rounded-md p-2  w-full flex items-center justify-between cursor-pointer bg-white"
+          onClick={(e) => toggleDropdown(e, day, mealType)}
+        >
+          <span className="text-gray-400 text-xs">
+            {selectedMeals[day][mealType].length > 0
+              ? `Select ${mealData?.items[2]?.title}...`
+              : `Select ${mealData?.items[0]?.title}`}
+          </span>
+          <FaChevronDown className="ml-2 text-xs" />
+        </div>
+
+        {/* Dropdown list */}
+        {isOpen && (
+          <div
+            onClick={(e) => e.stopPropagation()}
+            className={`absolute ${(i === 5 || i === 6) && "-top-20"} border-gray-300 z-20  mt-1 w-[315px] bg-white border rounded-md shadow-lg max-h-30 overflow-y-auto`}
+          >
+            {mealData.items.map((item, idx) => {
+              const isSelected = selectedMeals[day][mealType].includes(
+                item.meal_id,
+              );
+              return (
+                <label
+                  key={`${item.meal_id}-${idx}`}
+                  className="flex items-center justify-between px-3 py-2 hover:bg-orange-50 cursor-pointer text-sm"
+                >
+                  <span>
+                    {item.title} ({item.price}৳)
+                  </span>
+                  <input
+                    type="checkbox"
+                    className="cursor-pointer"
+                    checked={isSelected}
+                    onChange={() =>
+                      handleMealToggle(day, mealType, item.meal_id)
+                    }
+                  />
+                </label>
+              );
+            })}
+          </div>
+        )}
+      </div>
+    );
+  };
+
+  return (
+    <>
+      <div className="hidden lg:block  overflow-x-auto border border-gray-300 rounded-lg shadow-sm">
+        <table className="min-w-full text-sm sm:text-base border-collapse">
+          <thead className="bg-orange-500 text-white">
+            <tr>
+              <th className="px-4 py-3 text-left">Days</th>
+              <th className="px-4 py-3 text-left">Breakfast</th>
+              <th className="px-4 py-3 text-left">Lunch</th>
+              <th className="px-4 py-3 text-left">Dinner</th>
+            </tr>
+          </thead>
+          <tbody>
+            {days.map((day, i) => {
+              const dayMeals = schedule2.find((m) => m.day === day);
+              return (
+                <tr
+                  key={day}
+                  className="border-b w-[50%] border-gray-300 hover:bg-gray-50"
+                >
+                  <td className="px-4 py-2 text-center font-bold text-gray-700">
+                    {day}
+                  </td>
+                  {renderDropdown(day, "breakfast", dayMeals.breakfast, i)}
+                  {renderDropdown(day, "lunch", dayMeals.lunch, i)}
+                  {renderDropdown(day, "dinner", dayMeals.dinner, i)}
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
+      </div>
+
+      <div className="lg:hidden space-y-2 lg:space-y-0">
+        {days.map((day, i) => {
+          const dayMeals = schedule2.find((m) => m.day === day);
+
+          return (
+            <div
+              key={day}
+              className="border border-gray-300 rounded-xl p-3 shadow-sm bg-white"
+            >
+              <h3 className="text-center font-bold text-orange-500 ">{day}</h3>
+
+              {/* Breakfast */}
+              <div className=" w-full">
+                <p className="text-sm font-semibold">Breakfast</p>
+                {renderMobileDropDown(day, "breakfast", dayMeals.breakfast, i)}
+              </div>
+
+              {/* Lunch */}
+              <div className="w-full">
+                <p className="text-sm font-semibold ">Lunch</p>
+                {renderMobileDropDown(day, "lunch", dayMeals.lunch, i)}
+              </div>
+
+              {/* Dinner */}
+              <div className="w-full">
+                <p className="text-sm font-semibold">Dinner</p>
+                {renderMobileDropDown(day, "dinner", dayMeals.dinner, i)}
+              </div>
+            </div>
+          );
+        })}
+      </div>
+    </>
   );
 };
 

@@ -195,7 +195,7 @@ const MessForm = () => {
           <button
             type="button"
             onClick={nextStep}
-            className="w-full cursor-pointer bg-black text-white py-3 rounded-lg"
+            className="w-full cursor-pointer bg-black text-white py-1.5 lg:py-3 rounded-lg"
           >
             Next
           </button>
@@ -208,7 +208,7 @@ const MessForm = () => {
           <p className="font-semibold">Select Kitchen Type</p>
           <div className="flex items-center">
             <div className="flex items-center gap-2 w-full">
-              <label className="switch !text-xs">
+              <label className="switch !text-[10px] lg:!text-xs">
                 <input
                   type="radio"
                   value="al-abadin"
@@ -220,10 +220,10 @@ const MessForm = () => {
                 />
                 <span className="slider"></span>
               </label>
-              <p>Al Abadin Kitchen</p>
+              <p className="text-sm lg:text-base">Al Abadin Kitchen</p>
             </div>
             <div className="flex items-center gap-2 w-full">
-              <label className="switch !text-xs">
+              <label className="switch !text-[10px] lg:!text-xs">
                 <input
                   type="radio"
                   value="user"
@@ -235,7 +235,7 @@ const MessForm = () => {
                 />
                 <span className="slider"></span>
               </label>
-              <p>User Kitchen</p>
+              <p className="text-sm lg:text-base">User Kitchen</p>
             </div>
           </div>
 
@@ -246,10 +246,10 @@ const MessForm = () => {
           {kitchenType === "al-abadan-kitchen" && (
             <div className="flex flex-col gap-3">
               <h6 className="font-semibold">Utility Service</h6>
-              <div className="flex items-center gap-6">
+              <div className="flex flex-wrap items-center gap-3 lg:gap-6">
                 {utilitybillalabadanservice.map((bill) => (
                   <div key={bill.id} className="flex items-center gap-2">
-                    <label className="switch !text-xs">
+                    <label className="switch !text-[10px] lg:!text-xs">
                       <input
                         type="checkbox"
                         value={bill.id}
@@ -259,7 +259,7 @@ const MessForm = () => {
                       />
                       <span className="slider"></span>
                     </label>
-                    <p>{bill.title}</p>
+                    <p className="text-sm lg:text-base">{bill.title}</p>
                   </div>
                 ))}
               </div>
@@ -272,7 +272,7 @@ const MessForm = () => {
               <div className="flex items-center gap-6">
                 {utilitybilluserservice.map((bill) => (
                   <div key={bill.id} className="flex items-center gap-2">
-                    <label className="switch !text-xs">
+                    <label className="switch !text-[10px] lg:!text-xs">
                       <input
                         type="checkbox"
                         value={bill.id}
@@ -282,7 +282,7 @@ const MessForm = () => {
                       />
                       <span className="slider"></span>
                     </label>
-                    <p>{bill.title}</p>
+                    <p className="text-sm lg:text-base">{bill.title}</p>
                   </div>
                 ))}
               </div>
@@ -296,7 +296,7 @@ const MessForm = () => {
             <div className="flex items-center gap-6">
               {/* Per Meal */}
               <div className="flex items-center gap-2">
-                <label className="switch !text-xs">
+                <label className="switch !text-[10px] lg:!text-xs">
                   <input
                     type="radio"
                     value="meal"
@@ -306,12 +306,12 @@ const MessForm = () => {
                   />
                   <span className="slider"></span>
                 </label>
-                <p>Per Meal</p>
+                <p className="text-sm lg:text-base">Per Meal</p>
               </div>
 
               {/* Per Student */}
               <div className="flex items-center gap-2">
-                <label className="switch !text-xs">
+                <label className="switch !text-[10px] lg:!text-xs">
                   <input
                     type="radio"
                     value="student"
@@ -321,7 +321,7 @@ const MessForm = () => {
                   />
                   <span className="slider"></span>
                 </label>
-                <p>Per Student</p>
+                <p className="text-sm lg:text-base">Per Student</p>
               </div>
             </div>
 
@@ -335,7 +335,7 @@ const MessForm = () => {
                 <p className="font-medium text-sm">Student Features</p>
 
                 <div className="flex items-center gap-2">
-                  <label className="switch !text-xs">
+                  <label className="switch !text-[10px] lg:!text-xs">
                     <input
                       type="checkbox"
                       value="balance"
@@ -344,11 +344,11 @@ const MessForm = () => {
                     />
                     <span className="slider"></span>
                   </label>
-                  <p>Balance</p>
+                  <p className="text-sm lg:text-base">Balance</p>
                 </div>
 
                 <div className="flex items-center gap-2">
-                  <label className="switch !text-xs">
+                  <label className="switch !text-[10px] lg:!text-xs">
                     <input
                       type="checkbox"
                       value="fingerprint"
@@ -357,11 +357,11 @@ const MessForm = () => {
                     />
                     <span className="slider"></span>
                   </label>
-                  <p>Fingerprint</p>
+                  <p className="text-sm lg:text-base">Fingerprint</p>
                 </div>
 
                 <div className="flex items-center gap-2">
-                  <label className="switch !text-xs">
+                  <label className="switch !text-[10px] lg:!text-xs">
                     <input
                       type="checkbox"
                       value="mealadd"
@@ -370,7 +370,7 @@ const MessForm = () => {
                     />
                     <span className="slider"></span>
                   </label>
-                  <p>Meal Add</p>
+                  <p className="text-sm lg:text-base">Meal Add</p>
                 </div>
               </div>
             )}
@@ -380,14 +380,14 @@ const MessForm = () => {
             <button
               type="button"
               onClick={prevStep}
-              className="w-full border cursor-pointer py-3 rounded-lg"
+              className="w-full border cursor-pointer py-1.5 lg:py-3 rounded-lg"
             >
               Back
             </button>
             <button
               type="button"
               onClick={nextStep}
-              className="w-full bg-black cursor-pointer text-white py-3 rounded-lg"
+              className="w-full bg-black cursor-pointer text-white py-1.5 lg:py-3 rounded-lg"
             >
               Next
             </button>
