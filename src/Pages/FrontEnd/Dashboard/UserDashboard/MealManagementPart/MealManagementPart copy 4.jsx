@@ -30,18 +30,15 @@ const schedule2 = [
   },
   {
     day: "Mon",
-    morning: ["Nesco/Soup + Bhat/Parota", "Nesco/Soup + Bhat/Parota"],
-    afternoon: ["Gosht & Murgi + Bhat/Dal (Soup/Mukhar)", "Alu Vorta + Dal"],
-    night: ["Bhat, Dal + Alu Vorta", "Gosht & Murgi + Bhat/Dal (Soup/Mukhar)"],
+    morning: ["Nesco/Soup + Bhat/Parota"],
+    afternoon: ["Gosht & Murgi + Bhat/Dal (Soup/Mukhar)"],
+    night: ["Bhat, Dal + Alu Vorta"],
   },
   {
     day: "Tue",
-    morning: ["Alu Vorta + Dal", "Nesco/Soup + Bhat/Parota"],
-    afternoon: [
-      "Mach (Bhaji/Porha) + Dal",
-      "Gosht & Murgi + Bhat/Dal (Soup/Mukhar)",
-    ],
-    night: ["Bhat + Dim", "Mach (Bhaji/Porha) + Dal"],
+    morning: ["Alu Vorta + Dal"],
+    afternoon: ["Mach (Bhaji/Porha) + Dal"],
+    night: ["Bhat + Dim"],
   },
   {
     day: "Wed",
@@ -120,117 +117,82 @@ const MealCard = ({
   setQuantity,
   selectedOption,
   setSelectedOption,
-}) => {
-  const [selectOtherOption, setSelectOtherOption] = useState(null);
+}) => (
+  <div className="bg-white/90 backdrop-blur-xl rounded-2xl p-3 shadow-lg transition hover:shadow-2xl transform hover:-translate-y-1">
+    <div
+      className={`flex items-center gap-1.5 lg:gap-3 px-2 lg:px-4 py-3 rounded-xl text-white ${gradient}`}
+    >
+      <div className="text-sm lg:text-xl">{icon}</div>
+      <h3 className="font-semibold text-sm lg:text-lg">{title}</h3>
+      <span className="ml-auto bg-white/20 px-1 lg:px-2 py-1 rounded-full font-bold text-xs lg:text-sm">
+        ৳{data.price}
+      </span>
+    </div>
 
-  return (
-    <div className="bg-white/90 backdrop-blur-xl rounded-2xl p-3 sm:p-4 lg:p-5 shadow-lg transition hover:shadow-2xl transform hover:-translate-y-1 min-w-0 overflow-hidden">
-      {/* Header */}
-      <div
-        className={`flex items-center gap-2 sm:gap-3 px-3 sm:px-4 py-2 sm:py-3 rounded-xl text-white ${gradient}`}
-      >
-        <div className="text-sm sm:text-lg">{icon}</div>
+    <div className="mt-2 space-y-2">
+      {data.options.map((option, i) => {
+        const isSelected = selectedOption === option;
 
-        <h3 className="font-semibold text-xs sm:text-sm lg:text-lg truncate">
-          {title}
-        </h3>
-
-        <span className="ml-auto bg-white/20 px-2 py-1 rounded-full font-bold text-[10px] sm:text-xs lg:text-sm">
-          ৳{data.price}
-        </span>
-      </div>
-
-      {/* Options */}
-      <div className="mt-2 space-y-2">
-        {data.options?.slice(0, 1).map((option, i) => {
-          const isSelected = selectedOption === option;
-
-          return (
-            <button
-              key={i}
-              type="button"
-              onClick={() => setSelectedOption(option)}
-              className={`w-full flex items-center gap-2 px-3 py-2 rounded-lg text-xs transition
+        return (
+          <button
+            key={i}
+            type="button"
+            onClick={() => setSelectedOption(option)}
+            className={`w-full cursor-pointer flex items-center gap-2 px-3 py-2 rounded-lg text-xs text-left transition
         `}
-            >
-              <span>
-                {isSelected && (
-                  <FaCheckCircle className="text-green-600 text-sm" />
-                )}
-              </span>
-              <span>{option}</span>
-            </button>
-          );
-        })}
-
-        <div className="flex items-center justify-center gap-2">
-          <input type="checkbox" />
-          <select
-            value={selectOtherOption}
-            onChange={(e) => setSelectOtherOption(e.target.value)}
-            className="w-full rounded-lg border border-gray-300 bg-white px-2 py-2.5 text-sm
-        focus:border-orange-500 focus:ring-2 focus:ring-indigo-200"
           >
-            <option value="">Select {title}</option>
+            {/* Tick Icon */}
+            <span className="w-4">
+              {isSelected && (
+                <FaCheckCircle className="text-green-600 text-sm" />
+              )}
+            </span>
 
-            {data.options?.slice(1).map((option, i) => {
-              const isSelected = selectOtherOption === option;
-              return (
-                <option key={i} value={option}>
-                  {isSelected && (
-                    <FaCheckCircle className="text-green-600 text-sm" />
-                  )}
-                  {option}
-                </option>
-              );
-            })}
-          </select>
-        </div>
+            {/* Option Text */}
+            <span className="flex-1">{option}</span>
+          </button>
+        );
+      })}
+      <div className="flex items-center gap-4 justify-center">
+        {quantity !== undefined && (
+          <div className=" flex items-center justify-center gap-2">
+            <button
+              className="px-2 text-sm bg-orange-200 rounded-lg"
+              onClick={() => setQuantity(Math.max(1, quantity - 1))}
+            >
+              -
+            </button>
+            <span className="text-sm">{quantity}</span>
+            <button
+              className="px-2 text-sm bg-orange-200 rounded-lg"
+              onClick={() => setQuantity(quantity + 1)}
+            >
+              +
+            </button>
+          </div>
+        )}
 
-        {/* QUANTITY  */}
-        <div className="flex items-center gap-4 justify-center">
-          {quantity !== undefined && (
-            <div className="flex items-center gap-2">
-              <button
-                className="px-2 text-sm bg-orange-200 rounded-lg"
-                onClick={() => setQuantity(Math.max(1, quantity - 1))}
-              >
-                -
-              </button>
-
-              <span className="text-sm">{quantity}</span>
-
-              <button
-                className="px-2 text-sm bg-orange-200 rounded-lg"
-                onClick={() => setQuantity(quantity + 1)}
-              >
-                +
-              </button>
-            </div>
-          )}
-
+        <div className="flex items-center justify-center ">
           <label className="switch !text-xs">
             <input type="checkbox" checked={selected} onChange={onToggle} />
             <span className="slider"></span>
           </label>
         </div>
       </div>
-
-      {/* Action Button */}
-      <button
-        onClick={onToggle}
-        className={`mt-4 w-full py-2 rounded-xl font-semibold text-xs sm:text-sm lg:text-base transition
-          ${
-            selected
-              ? "bg-green-500 text-white hover:bg-green-600"
-              : "bg-gradient-to-r from-orange-400 to-pink-500 text-white hover:from-pink-500 hover:to-orange-400"
-          }`}
-      >
-        {selected ? "Selected" : "Select Meal"}
-      </button>
     </div>
-  );
-};
+
+    <button
+      onClick={onToggle}
+      className={`mt-5 w-full py-2 cursor-pointer text-sm lg:text-base rounded-xl font-semibold transition ${
+        selected
+          ? "bg-green-500 text-white shadow-lg hover:bg-green-600"
+          : "bg-gradient-to-r from-orange-400 to-pink-500 text-white shadow-md hover:from-pink-500 hover:to-orange-400"
+      }`}
+    >
+      {selected ? "Selected" : "Select Meal"}
+    </button>
+  </div>
+);
 
 // ----------------- MAIN COMPONENT -----------------
 export default function MealManagementPart() {
@@ -414,7 +376,7 @@ export default function MealManagementPart() {
             </div>
 
             {daywiseSelect === "day-wise" && (
-              <div className="h-auto overflow-y-auto p-2">
+              <div className="h-[100vh] overflow-y-auto p-2">
                 {mealPlans.map((plan, index) => {
                   const isSelected =
                     selectedMeals[plan.date] &&
@@ -467,7 +429,7 @@ export default function MealManagementPart() {
                   </div>
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <div className="grid md:grid-cols-3 gap-6">
                   {/* Breakfast */}
                   <MealCard
                     title="Breakfast"
@@ -567,7 +529,7 @@ export default function MealManagementPart() {
                   </div>
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <div className="grid md:grid-cols-3 gap-6">
                   <MealCard
                     title="Breakfast"
                     icon={<FaSun />}
@@ -638,7 +600,7 @@ export default function MealManagementPart() {
                     onToggle={() => toggleGuestMeal("dinner")}
                   />
 
-                  <div className="lg:col-span-3">
+                  <div className="col-span-3">
                     {Object.keys(guestMeals).length > 0 && (
                       <button
                         // onClick={() => setShowModal(true)}
