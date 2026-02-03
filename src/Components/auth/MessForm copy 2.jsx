@@ -4,62 +4,10 @@ import { IoMdEye, IoMdEyeOff } from "react-icons/io";
 import { Link, useNavigate } from "react-router-dom";
 import Stepper from "./Stepper";
 import MealScheduleTable from "../MealTable";
-import useStep from "../../Hooks/useStep";
-
-const utilitybillalabadanservice = [
-  {
-    id: 1,
-    title: "Electricity Bill",
-    percentage: 0,
-  },
-
-  {
-    id: 2,
-    title: "Staff Bill",
-    percentage: 10,
-  },
-
-  {
-    id: 3,
-    title: "Gas Bill",
-    percentage: 0,
-  },
-];
-
-const utilitybilluserservice = [
-  {
-    id: 1,
-    title: "Electricity Bill",
-    percentage: 0,
-  },
-
-  {
-    id: 2,
-    title: "Staff Bill",
-    percentage: 20,
-  },
-
-  {
-    id: 3,
-    title: "Gas Bill",
-    percentage: 0,
-  },
-];
 
 const MessForm = () => {
-  const { step, setStep } = useStep();
+  const [step, setStep] = useState(1);
   const [passwordShow, setPasswordShow] = useState(false);
-
-  const [utilityElectricityBill, setUtilityElectricityBill] = useState(null);
-  const [utilityStaffBill, setUtilityStaffBill] = useState(null);
-  const [utilityGasBill, setUtilityGassBill] = useState(null);
-
-  const [utilityUserElectricityBill, setUtilityUserElectricityBill] =
-    useState(null);
-  const [utilityUserStaffBill, setUserUtilityStaffBill] = useState(null);
-  const [utilityUserGasBill, setUserUtilityGassBill] = useState(null);
-
-  const [kitchenType, setKitchenType] = useState(null);
 
   const [studentService, setStudentService] = useState(false);
 
@@ -71,6 +19,8 @@ const MessForm = () => {
     formState: { errors },
   } = useForm();
   const navigate = useNavigate();
+  const studentOptions = watch("studentOptions") || [];
+  const mealAddEnabled = studentOptions.includes("mealadd");
 
   const nextStep = async () => {
     const valid = await trigger();
@@ -88,34 +38,6 @@ const MessForm = () => {
 
   const handleStudent = () => {
     setStudentService(true);
-  };
-
-  const handleUtilityBill = (bill) => {
-    if (bill?.title === "Electricity Bill") {
-      setUtilityElectricityBill(bill);
-    }
-
-    if (bill?.title === "Staff Bill") {
-      setUtilityStaffBill(bill);
-    }
-
-    if (bill?.title === "Gas Bill") {
-      setUtilityGassBill(bill);
-    }
-  };
-
-  const handleUserUtilityBill = () => {
-    if (bill?.title === "Electricity Bill") {
-      setUtilityUserElectricityBill(bill);
-    }
-
-    if (bill?.title === "Staff Bill") {
-      setUserUtilityStaffBill(bill);
-    }
-
-    if (bill?.title === "Gas Bill") {
-      setUserUtilityGassBill(bill);
-    }
   };
 
   return (
@@ -214,9 +136,6 @@ const MessForm = () => {
                   value="al-abadin"
                   {...register("kitchen", { required: "Select kitchen" })}
                   className="sr-only"
-                  onChange={() => {
-                    setKitchenType("al-abadan-kitchen");
-                  }}
                 />
                 <span className="slider"></span>
               </label>
@@ -228,9 +147,6 @@ const MessForm = () => {
                   type="radio"
                   value="user"
                   {...register("kitchen", { required: "Select kitchen" })}
-                  onChange={() => {
-                    setKitchenType("user-kitchen");
-                  }}
                   className="sr-only"
                 />
                 <span className="slider"></span>
@@ -243,54 +159,8 @@ const MessForm = () => {
             <p className="text-red-500 text-sm">{errors.kitchen.message}</p>
           )}
 
-          {kitchenType === "al-abadan-kitchen" && (
-            <div className="flex flex-col gap-3">
-              <h6 className="font-semibold">Utility Service</h6>
-              <div className="flex items-center gap-6">
-                {utilitybillalabadanservice.map((bill) => (
-                  <div key={bill.id} className="flex items-center gap-2">
-                    <label className="switch !text-xs">
-                      <input
-                        type="checkbox"
-                        value={bill.id}
-                        {...register("bill", { required: "Select Bill" })}
-                        onChange={() => handleUtilityBill(bill)}
-                        className="sr-only"
-                      />
-                      <span className="slider"></span>
-                    </label>
-                    <p>{bill.title}</p>
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
-
-          {kitchenType === "user-kitchen" && (
-            <div className="flex flex-col gap-3">
-              <h6 className="font-semibold">Utility Service</h6>
-              <div className="flex items-center gap-6">
-                {utilitybilluserservice.map((bill) => (
-                  <div key={bill.id} className="flex items-center gap-2">
-                    <label className="switch !text-xs">
-                      <input
-                        type="checkbox"
-                        value={bill.id}
-                        {...register("bill", { required: "Select Bill" })}
-                        onChange={() => handleUserUtilityBill(bill)}
-                        className="sr-only"
-                      />
-                      <span className="slider"></span>
-                    </label>
-                    <p>{bill.title}</p>
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
-
           <>
-            <h6 className="font-semibold">Select Service</h6>
+            <p className="font-semibold">Select Service</p>
 
             {/* MAIN SERVICE */}
             <div className="flex items-center gap-6">
@@ -301,7 +171,7 @@ const MessForm = () => {
                     type="radio"
                     value="meal"
                     {...register("service", { required: "Select Service" })}
-                    onChange={() => setStudentService(true)}
+                    onChange={() => setStudentService(false)}
                     className="sr-only"
                   />
                   <span className="slider"></span>
@@ -459,33 +329,3 @@ const FloatingLabel = ({ text }) => (
     {text}
   </label>
 );
-
-{
-  /* <div className="flex items-center gap-2">
-  <label className="switch !text-xs">
-    <input
-      type="radio"
-      value="staff"
-      {...register("bill", { required: "Select Bill" })}
-      onChange={() => setStudentService(true)}
-      className="sr-only"
-    />
-    <span className="slider"></span>
-  </label>
-  <p>Per Student</p>
-</div>;
-
-<div className="flex items-center gap-2">
-  <label className="switch !text-xs">
-    <input
-      type="radio"
-      value="student"
-      {...register("service", { required: "Select Service" })}
-      onChange={() => setStudentService(true)}
-      className="sr-only"
-    />
-    <span className="slider"></span>
-  </label>
-  <p>Gas Bill</p>
-</div>; */
-}
