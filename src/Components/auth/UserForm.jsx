@@ -44,6 +44,8 @@ const UserForm = () => {
   const navigate = useNavigate();
   const [passwordShow, setPasswordShow] = useState(false);
 
+  const [hallSelect, setHallSelect] = useState(false);
+
   const occupation = watch("occupation");
 
   const onSubmit = (data) => {
@@ -229,6 +231,7 @@ const UserForm = () => {
           render={({ field }) => (
             <select
               {...field}
+              onChange={() => setHallSelect(true)}
               className="w-full border border-gray-200 rounded-md px-3 h-[50px] text-lg"
             >
               <option value="" disabled>
@@ -240,6 +243,32 @@ const UserForm = () => {
             </select>
           )}
         />
+
+        {hallSelect && (
+          <div className="w-full max-w-xl">
+            <label className="block text-sm md:text-base font-medium text-gray-600 mb-2">
+              Upload Your Hall Admission Form Image
+            </label>
+
+            <div className="relative flex items-center justify-between gap-3 px-4 py-3 border-2 border-dashed border-gray-300 rounded-xl bg-white hover:border-orange-500 transition">
+              <input
+                type="file"
+                id="image"
+                className="absolute inset-0 opacity-0 cursor-pointer"
+              />
+
+              <span className="text-gray-400 text-sm truncate">
+                Choose an image…
+              </span>
+
+              <span className="shrink-0 bg-orange-600 text-white text-sm px-4 py-1.5 rounded-lg hover:bg-orange-700 transition">
+                Browse
+              </span>
+            </div>
+
+            <p className="text-xs text-gray-400 mt-1">PNG, JPG up to 5MB</p>
+          </div>
+        )}
 
         <Controller
           name="mess"
