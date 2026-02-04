@@ -221,7 +221,7 @@ const Footer = () => {
           </div>
           <div>
             <p className="font-semibold mb-2">📲 Download Alabadan App</p>
-            <div className="flex space-x-3">
+            <div className="flex flex-col space-y-3 xl:flex-row xl:space-x-3">
               <img
                 src="https://sellularr.netlify.app/images/appstore.png"
                 alt="Apple Store"

@@ -67,7 +67,6 @@ export default function AllMealActivity({}) {
     dinner: null,
   });
 
-  console.log(selectedGuestMeals);
 
   const handleGuestSelect = (mealType, option) => {
     setSelectedGuestMeals((prev) => ({
