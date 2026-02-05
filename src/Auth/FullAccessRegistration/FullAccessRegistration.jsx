@@ -13,6 +13,10 @@ import {
   Briefcase,
   Heart,
 } from "lucide-react";
+
+import { FaRegIdCard } from "react-icons/fa";
+import { BiSolidInstitution } from "react-icons/bi";
+
 import toast from "react-hot-toast";
 
 const FullAccessRegistration = () => {
@@ -24,6 +28,8 @@ const FullAccessRegistration = () => {
     formState: { errors },
   } = useForm();
   const { mutation, isPending } = useRegister();
+
+  const selectedUserType = watch("userType");
 
   const onSubmit = async (data) => {
     const userData = { userType: "allAccess", ...data };
@@ -148,6 +154,119 @@ const FullAccessRegistration = () => {
                 name="address"
                 validation={{ required: "Required" }}
               />
+            </div>
+
+            <div className="user-type flex flex-col  md:col-span-2 gap-6">
+              <h3>Select User Type</h3>
+
+              {/* for normal user */}
+
+              <div className="flex items-center gap-2.5">
+                {/* Normal User */}
+                <div className="flex items-center gap-2">
+                  <label className="switch !text-[10px] lg:!text-xs">
+                    <input
+                      type="radio"
+                      value="user"
+                      {...register("userType", {
+                        required: "Select User Type",
+                      })}
+                    />
+                    <span className="slider"></span>
+                  </label>
+                  <p className="text-sm lg:text-base">Normal User</p>
+                </div>
+
+                {/* Institute User */}
+                <div className="flex items-center gap-2">
+                  <label className="switch !text-[10px] lg:!text-xs">
+                    <input
+                      type="radio"
+                      value="institute"
+                      {...register("userType", {
+                        required: "Select User Type",
+                      })}
+                    />
+                    <span className="slider"></span>
+                  </label>
+                  <p className="text-sm lg:text-base">Institute User</p>
+                </div>
+              </div>
+
+              {selectedUserType === "user" && (
+                <div className="flex flex-col gap-2">
+                  <FormInput
+                    icon={FaRegIdCard}
+                    type="number"
+                    placeholder="NID Number"
+                    name="nid"
+                    validation={{ required: "NID is Required" }}
+                  />
+                  <div className="w-full max-w-xl">
+                    <label className="block text-sm md:text-base font-medium text-gray-600 mb-2">
+                      Upload Your NID
+                    </label>
+
+                    <div className="relative flex items-center justify-between gap-3 px-4 py-3 border-2 border-dashed border-gray-300 rounded-xl bg-white hover:border-purple-600  transition">
+                      <input
+                        type="file"
+                        id="image"
+                        className="absolute inset-0 opacity-0 cursor-pointer"
+                      />
+
+                      <span className="text-gray-400 text-sm truncate">
+                        Choose an image…
+                      </span>
+
+                      <span className="shrink-0 bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white text-sm px-4 py-1.5 rounded-lg  transition">
+                        Browse
+                      </span>
+                    </div>
+
+                    <p className="text-xs text-gray-400 mt-1">
+                      PNG, JPG up to 5MB
+                    </p>
+                  </div>
+                </div>
+              )}
+
+              {selectedUserType === "institute" && (
+                <div className="flex flex-col gap-2.5">
+                  <FormInput
+                    icon={BiSolidInstitution}
+                    type="text"
+                    placeholder="Institute Name"
+                    name="institute"
+                    validation={{ required: "Institute is Required" }}
+                  />
+
+                  <div className="w-full max-w-xl">
+                    <label className="block text-sm md:text-base font-medium text-gray-600 mb-2">
+                      Upload Your Institute Document
+                    </label>
+
+                    <div className="relative flex items-center justify-between gap-3 px-4 py-3 border-2 border-dashed border-gray-300 rounded-xl bg-white hover:border-purple-600  transition">
+                      <input
+                        type="file"
+                        id="image"
+                        className="absolute inset-0 opacity-0 cursor-pointer"
+                      />
+
+                      <span className="text-gray-400 text-sm truncate">
+                        Choose an image…
+                      </span>
+
+                      <span className="shrink-0 bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white text-sm px-4 py-1.5 rounded-lg  transition">
+                        Browse
+                      </span>
+                    </div>
+
+                    <p className="text-xs text-gray-400 mt-1">
+                      PNG, JPG up to 5MB
+                    </p>
+                  </div>
+                </div>
+              )}
             </div>
 
             {/* Password Fields */}
