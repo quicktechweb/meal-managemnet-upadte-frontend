@@ -5,7 +5,6 @@ export const axiosSecure = axios.create({
   baseURL: import.meta.env.VITE_SITE_URL,
 });
 
-// ✅ Attach token to requests if available
 axiosSecure.interceptors.request.use(
   (config) => {
     const token = getItem("token");
@@ -19,7 +18,6 @@ axiosSecure.interceptors.request.use(
   },
 );
 
-// ✅ Handle expired/invalid tokens globally
 axiosSecure.interceptors.response.use(
   (response) => response,
   async (error) => {

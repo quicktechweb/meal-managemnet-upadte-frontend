@@ -1,6 +1,7 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
 import {
   getUserDataFunction,
+  googleLoginFunction,
   loginFunction,
   registerFunction,
 } from "./auth.api";
@@ -29,6 +30,7 @@ export const useLogin = () => {
 
 export const useRegister = () => {
   const navigate = useNavigate();
+
   return useMutation({
     mutationKey: ["register"],
     mutationFn: (payload) => registerFunction(payload),
@@ -36,12 +38,29 @@ export const useRegister = () => {
     onSuccess: (data) => {
       if (data) {
         toast.success(data?.message);
-        // setInterval(() => {
-        //   navigate("/#login");
-        // }, 1000);
+        setInterval(() => {
+          navigate("/#login");
+        }, 1000);
       }
     },
     onError: (err) => {},
+  });
+};
+
+export const useGoogleLogin = () => {
+  const navigate = useNavigate();
+  const { setToken } = useAuth();
+  return useMutation({
+    mutationKey: "google-login",
+    mutationFn: (payload) => googleLoginFunction(payload),
+    onSuccess: (data) => {
+      toast.success(data?.message);
+      setToken(data?.token);
+      // navigate("/dashboard/dashboard");
+    },
+    onError: (err) => {
+      toast.error(err?.response?.data?.error);
+    },
   });
 };
 
