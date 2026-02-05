@@ -160,9 +160,9 @@ export default function AllMealActivity({}) {
             selectedMeal={selectedGuestMeals[type]}
             onSelect={(option) => handleGuestSelect(type, option)}
             setSelectedOption={(option) =>
-              setSelectedGuestMeals((prev) => ({ ...prev, [type]: option }))
+              setSelectedOptions((prev) => ({ ...prev, [type]: option }))
             }
-            selectedOption={selectedGuestMeals[type]}
+            selectedOption={selectedOptions[type]}
           />
         ))}
       </div>
