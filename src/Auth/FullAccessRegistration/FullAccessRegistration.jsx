@@ -21,22 +21,66 @@ import toast from "react-hot-toast";
 
 const FullAccessRegistration = () => {
   const [showPassword, setShowPassword] = useState(false);
+
+  const [nidImage, setNidImage] = useState(null);
+
+  const [instituteImage, setInstituteImage] = useState(null);
+
+  const handleNidImageChange = (e) => {
+    const file = e.target.files[0];
+    setNidImage(URL.createObjectURL(file));
+  };
+
+  const handleInstituteImageChange = (e) => {
+    const file = e.target.files[0];
+    setInstituteImage(URL.createObjectURL(file));
+  };
+
   const {
     register,
     handleSubmit,
     watch,
     formState: { errors },
   } = useForm();
-  const { mutation, isPending } = useRegister();
+  const { mutateAsync, isPending } = useRegister();
 
   const selectedUserType = watch("userType");
 
   const onSubmit = async (data) => {
-    const userData = { websiteAccesstype: "allAccess", ...data };
+    const formData = new FormData();
+
+    formData.append("name", data?.fullName);
+    formData.append("email", data?.email);
+    formData.append("username", data.username);
+    formData.append("password", data.password);
+    formData.append("phoneNumber", data.phone);
+    formData.append("occupation", data.occupation);
+    formData.append("fatherName", data.fatherName);
+    formData.append("motherName", data.motherName);
+    formData.append("address", data.address);
+    formData.append("websiteAccesstype", "all-access");
+    formData.append("userType", selectedUserType);
+
+    if (data.nid) {
+      formData.append("nid_number", data.nid);
+    }
+
+    if (data?.nid_image) {
+      formData.append("nid_image", data?.nid_image[0]);
+    }
+
+    if (data?.institute) {
+      formData.append("instituteName", data?.institute);
+    }
+
+    if (data?.institute_image) {
+      formData.append("institute_image", data?.institute_image[0]);
+    }
     try {
-      await mutation.mutateAsync(userData);
+      await mutateAsync(formData);
     } catch (err) {
-      toast.error(err?.response?.data?.message || "Something went wrong");
+      console.log(err);
+      toast.error(err?.response?.data?.error || "Something went wrong");
     }
   };
 
@@ -200,7 +244,6 @@ const FullAccessRegistration = () => {
                     type="number"
                     placeholder="NID Number"
                     name="nid"
-                    validation={{ required: "NID is Required" }}
                   />
                   <div className="w-full max-w-xl">
                     <label className="block text-sm md:text-base font-medium text-gray-600 mb-2">
@@ -211,6 +254,8 @@ const FullAccessRegistration = () => {
                       <input
                         type="file"
                         id="image"
+                        {...register("nid_image")}
+                        onChange={handleNidImageChange}
                         className="absolute inset-0 opacity-0 cursor-pointer"
                       />
 
@@ -227,6 +272,14 @@ const FullAccessRegistration = () => {
                       PNG, JPG up to 5MB
                     </p>
                   </div>
+
+                  {nidImage && (
+                    <img
+                      src={nidImage}
+                      alt="NID Preview"
+                      className="w-40 rounded-lg"
+                    />
+                  )}
                 </div>
               )}
 
@@ -237,7 +290,6 @@ const FullAccessRegistration = () => {
                     type="text"
                     placeholder="Institute Name"
                     name="institute"
-                    validation={{ required: "Institute is Required" }}
                   />
 
                   <div className="w-full max-w-xl">
@@ -249,6 +301,8 @@ const FullAccessRegistration = () => {
                       <input
                         type="file"
                         id="image"
+                        onChange={handleInstituteImageChange}
+                        {...register("institute_image")}
                         className="absolute inset-0 opacity-0 cursor-pointer"
                       />
 
@@ -265,6 +319,14 @@ const FullAccessRegistration = () => {
                       PNG, JPG up to 5MB
                     </p>
                   </div>
+
+                  {instituteImage && (
+                    <img
+                      src={instituteImage}
+                      alt="institute preview"
+                      className="w-40 rounded-lg"
+                    />
+                  )}
                 </div>
               )}
             </div>
