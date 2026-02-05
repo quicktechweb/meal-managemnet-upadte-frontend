@@ -32,7 +32,7 @@ const FullAccessRegistration = () => {
   const selectedUserType = watch("userType");
 
   const onSubmit = async (data) => {
-    const userData = { userType: "allAccess", ...data };
+    const userData = { websiteAccesstype: "allAccess", ...data };
     try {
       await mutation.mutateAsync(userData);
     } catch (err) {
