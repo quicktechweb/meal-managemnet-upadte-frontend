@@ -3,8 +3,11 @@ import { auth, provider, signInWithPopup } from "../firebase/firebase";
 import axios from "axios";
 import toast from "react-hot-toast";
 import { FcGoogle } from "react-icons/fc";
+import { useNavigate } from "react-router-dom";
 
 const GoogleLoginButton = () => {
+  const navigate = useNavigate();
+
   const handleGoogleLogin = async () => {
     try {
       const result = await signInWithPopup(auth, provider);
@@ -16,6 +19,12 @@ const GoogleLoginButton = () => {
       );
 
       toast.success(res.data.message);
+
+      console.log(res?.data);
+
+      if (res?.data?.success) {
+        navigate("/dashboard/dashboard");
+      }
 
       localStorage.setItem("token", JSON.stringify(res.data.token));
     } catch (err) {
