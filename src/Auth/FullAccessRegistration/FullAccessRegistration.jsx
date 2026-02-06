@@ -13,24 +13,74 @@ import {
   Briefcase,
   Heart,
 } from "lucide-react";
+
+import { FaRegIdCard } from "react-icons/fa";
+import { BiSolidInstitution } from "react-icons/bi";
+
 import toast from "react-hot-toast";
 
 const FullAccessRegistration = () => {
   const [showPassword, setShowPassword] = useState(false);
+
+  const [nidImage, setNidImage] = useState(null);
+
+  const [instituteImage, setInstituteImage] = useState(null);
+
+  const handleNidImageChange = (e) => {
+    const file = e.target.files[0];
+    setNidImage(URL.createObjectURL(file));
+  };
+
+  const handleInstituteImageChange = (e) => {
+    const file = e.target.files[0];
+    setInstituteImage(URL.createObjectURL(file));
+  };
+
   const {
     register,
     handleSubmit,
     watch,
     formState: { errors },
   } = useForm();
-  const { mutation, isPending } = useRegister();
+  const { mutateAsync, isPending } = useRegister();
+
+  const selectedUserType = watch("userType");
 
   const onSubmit = async (data) => {
-    const userData = { userType: "allAccess", ...data };
+    const formData = new FormData();
+
+    formData.append("name", data?.fullName);
+    formData.append("email", data?.email);
+    formData.append("username", data.username);
+    formData.append("password", data.password);
+    formData.append("phoneNumber", data.phone);
+    formData.append("occupation", data.occupation);
+    formData.append("fatherName", data.fatherName);
+    formData.append("motherName", data.motherName);
+    formData.append("address", data.address);
+    formData.append("websiteAccesstype", "all-access");
+    formData.append("userType", selectedUserType);
+
+    if (data.nid) {
+      formData.append("nid_number", data.nid);
+    }
+
+    if (data?.nid_image) {
+      formData.append("nid_image", data?.nid_image[0]);
+    }
+
+    if (data?.institute) {
+      formData.append("instituteName", data?.institute);
+    }
+
+    if (data?.institute_image) {
+      formData.append("institute_image", data?.institute_image[0]);
+    }
     try {
-      await mutation.mutateAsync(userData);
+      await mutateAsync(formData);
     } catch (err) {
-      toast.error(err?.response?.data?.message || "Something went wrong");
+      console.log(err);
+      toast.error(err?.response?.data?.error || "Something went wrong");
     }
   };
 
@@ -148,6 +198,137 @@ const FullAccessRegistration = () => {
                 name="address"
                 validation={{ required: "Required" }}
               />
+            </div>
+
+            <div className="user-type flex flex-col  md:col-span-2 gap-6">
+              <h3>Select User Type</h3>
+
+              {/* for normal user */}
+
+              <div className="flex items-center gap-2.5">
+                {/* Normal User */}
+                <div className="flex items-center gap-2">
+                  <label className="switch !text-[10px] lg:!text-xs">
+                    <input
+                      type="radio"
+                      value="user"
+                      {...register("userType", {
+                        required: "Select User Type",
+                      })}
+                    />
+                    <span className="slider"></span>
+                  </label>
+                  <p className="text-sm lg:text-base">Normal User</p>
+                </div>
+
+                {/* Institute User */}
+                <div className="flex items-center gap-2">
+                  <label className="switch !text-[10px] lg:!text-xs">
+                    <input
+                      type="radio"
+                      value="institute"
+                      {...register("userType", {
+                        required: "Select User Type",
+                      })}
+                    />
+                    <span className="slider"></span>
+                  </label>
+                  <p className="text-sm lg:text-base">Institute User</p>
+                </div>
+              </div>
+
+              {selectedUserType === "user" && (
+                <div className="flex flex-col gap-2">
+                  <FormInput
+                    icon={FaRegIdCard}
+                    type="number"
+                    placeholder="NID Number"
+                    name="nid"
+                  />
+                  <div className="w-full max-w-xl">
+                    <label className="block text-sm md:text-base font-medium text-gray-600 mb-2">
+                      Upload Your NID
+                    </label>
+
+                    <div className="relative flex items-center justify-between gap-3 px-4 py-3 border-2 border-dashed border-gray-300 rounded-xl bg-white hover:border-purple-600  transition">
+                      <input
+                        type="file"
+                        id="image"
+                        {...register("nid_image")}
+                        onChange={handleNidImageChange}
+                        className="absolute inset-0 opacity-0 cursor-pointer"
+                      />
+
+                      <span className="text-gray-400 text-sm truncate">
+                        Choose an image…
+                      </span>
+
+                      <span className="shrink-0 bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white text-sm px-4 py-1.5 rounded-lg  transition">
+                        Browse
+                      </span>
+                    </div>
+
+                    <p className="text-xs text-gray-400 mt-1">
+                      PNG, JPG up to 5MB
+                    </p>
+                  </div>
+
+                  {nidImage && (
+                    <img
+                      src={nidImage}
+                      alt="NID Preview"
+                      className="w-40 rounded-lg"
+                    />
+                  )}
+                </div>
+              )}
+
+              {selectedUserType === "institute" && (
+                <div className="flex flex-col gap-2.5">
+                  <FormInput
+                    icon={BiSolidInstitution}
+                    type="text"
+                    placeholder="Institute Name"
+                    name="institute"
+                  />
+
+                  <div className="w-full max-w-xl">
+                    <label className="block text-sm md:text-base font-medium text-gray-600 mb-2">
+                      Upload Your Institute Document
+                    </label>
+
+                    <div className="relative flex items-center justify-between gap-3 px-4 py-3 border-2 border-dashed border-gray-300 rounded-xl bg-white hover:border-purple-600  transition">
+                      <input
+                        type="file"
+                        id="image"
+                        onChange={handleInstituteImageChange}
+                        {...register("institute_image")}
+                        className="absolute inset-0 opacity-0 cursor-pointer"
+                      />
+
+                      <span className="text-gray-400 text-sm truncate">
+                        Choose an image…
+                      </span>
+
+                      <span className="shrink-0 bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white text-sm px-4 py-1.5 rounded-lg  transition">
+                        Browse
+                      </span>
+                    </div>
+
+                    <p className="text-xs text-gray-400 mt-1">
+                      PNG, JPG up to 5MB
+                    </p>
+                  </div>
+
+                  {instituteImage && (
+                    <img
+                      src={instituteImage}
+                      alt="institute preview"
+                      className="w-40 rounded-lg"
+                    />
+                  )}
+                </div>
+              )}
             </div>
 
             {/* Password Fields */}

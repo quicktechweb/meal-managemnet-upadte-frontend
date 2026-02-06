@@ -6,6 +6,7 @@ import { Link } from "react-router-dom";
 import { useLogin } from "../../../../../api/auth/auth.hook";
 import { FaShoppingBag, FaUtensils } from "react-icons/fa";
 import { IoMdClose } from "react-icons/io";
+import GoogleLoginButton from "../../../../../Components/GoogleLoginButton";
 
 const HomeLogin = () => {
   const { register, handleSubmit, reset } = useForm();
@@ -132,6 +133,9 @@ const HomeLogin = () => {
                   {isPending ? "loading...." : "Login"}
                 </button>
               </form>
+              <div className="flex items-center justify-center mt-5">
+                <GoogleLoginButton />
+              </div>
             </div>
           </div>
 
