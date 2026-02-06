@@ -109,6 +109,7 @@ const getDateByDayName = (dayName) => {
   return mealPlans.find((p) => p.date.includes(`(${dayName})`))?.date;
 };
 // ----------------- MEAL CARD -----------------
+
 const MealCard = ({
   title,
   icon,
@@ -121,109 +122,100 @@ const MealCard = ({
   selectedOption,
   setSelectedOption,
 }) => {
-  const [selectOtherOption, setSelectOtherOption] = useState(null);
+  const [checkedSource, setCheckedSource] = useState("default");
+
+  const [selectOtherOption, setSelectOtherOption] = useState("");
 
   return (
-    <div className="bg-white/90 backdrop-blur-xl rounded-2xl p-3 sm:p-4 lg:p-5 shadow-lg transition hover:shadow-2xl transform hover:-translate-y-1 min-w-0 overflow-hidden">
-      {/* Header */}
+    <div className="bg-white rounded-2xl p-4 shadow-lg w-full md:w-[350px] lg:w-[320px] xl:w-[300px]">
+      {/* HEADER */}
       <div
-        className={`flex items-center gap-2 sm:gap-3 px-3 sm:px-4 py-2 sm:py-3 rounded-xl text-white ${gradient}`}
+        className={`flex items-center gap-3 px-4 py-3 rounded-xl text-white ${gradient}`}
       >
-        <div className="text-sm sm:text-lg">{icon}</div>
-
-        <h3 className="font-semibold text-xs sm:text-sm lg:text-lg truncate">
-          {title}
-        </h3>
-
-        <span className="ml-auto bg-white/20 px-2 py-1 rounded-full font-bold text-[10px] sm:text-xs lg:text-sm">
+        <div>{icon}</div>
+        <h3 className="font-semibold">{title}</h3>
+        <span className="ml-auto bg-white/20 px-2 py-1 rounded-full text-xs">
           ৳{data.price}
         </span>
       </div>
 
-      {/* Options */}
-      <div className="mt-2 space-y-2">
-        {data.options?.slice(0, 1).map((option, i) => {
-          const isSelected = selectedOption === option;
+      {/* OPTIONS */}
+      <div className="mt-4 space-y-3">
+        {data.options?.slice(0, 1).map((option, i) => (
+          <button
+            key={i}
+            type="button"
+            onClick={() => {
+              setSelectedOption(option);
+              setCheckedSource("default");
+            }}
+            className="w-full flex items-center gap-2 px-3 py-2  rounded-lg"
+          >
+            {checkedSource === "default" && (
+              <FaCheckCircle className="text-green-600" />
+            )}
+            <span>{option}</span>
+          </button>
+        ))}
 
-          return (
-            <button
-              key={i}
-              type="button"
-              onClick={() => setSelectedOption(option)}
-              className={`w-full flex items-center gap-2 px-3 py-2 rounded-lg text-xs transition
-        `}
-            >
-              <span>
-                {isSelected && (
-                  <FaCheckCircle className="text-green-600 text-sm" />
-                )}
-              </span>
-              <span>{option}</span>
-            </button>
-          );
-        })}
+        <div className="flex items-center gap-2">
+          <input
+            type="checkbox"
+            checked={checkedSource === "other"}
+            onChange={(e) => {
+              if (e.target.checked) {
+                setCheckedSource("other");
+              } else {
+                setCheckedSource("default");
+              }
+            }}
+          />
 
-        <div className="flex items-center justify-center gap-2">
-          <input type="checkbox" />
           <select
             value={selectOtherOption}
-            onChange={(e) => setSelectOtherOption(e.target.value)}
-            className="w-full rounded-lg border border-gray-300 bg-white px-2 py-2.5 text-sm
-        focus:border-orange-500 focus:ring-2 focus:ring-indigo-200"
+            onChange={(e) => {
+              setSelectOtherOption(e.target.value);
+              setSelectedOption(e.target.value);
+            }}
+            className="w-full border border-gray-300 rounded-lg px-2 py-2"
           >
             <option value="">Select {title}</option>
-
-            {data.options?.slice(1).map((option, i) => {
-              const isSelected = selectOtherOption === option;
-              return (
-                <option key={i} value={option}>
-                  {isSelected && (
-                    <FaCheckCircle className="text-green-600 text-sm" />
-                  )}
-                  {option}
-                </option>
-              );
-            })}
+            {data.options?.slice(1).map((option, i) => (
+              <option key={i} value={option}>
+                {option}
+              </option>
+            ))}
           </select>
         </div>
 
-        {/* QUANTITY  */}
-        <div className="flex items-center gap-4 justify-center">
-          {quantity !== undefined && (
-            <div className="flex items-center gap-2">
-              <button
-                className="px-2 text-sm bg-orange-200 rounded-lg"
-                onClick={() => setQuantity(Math.max(1, quantity - 1))}
-              >
-                -
-              </button>
-
-              <span className="text-sm">{quantity}</span>
-
-              <button
-                className="px-2 text-sm bg-orange-200 rounded-lg"
-                onClick={() => setQuantity(quantity + 1)}
-              >
-                +
-              </button>
-            </div>
-          )}
-
-          <label className="switch !text-xs">
-            <input type="checkbox" checked={selected} onChange={onToggle} />
-            <span className="slider"></span>
-          </label>
-        </div>
+        {/* QUANTITY */}
+        {quantity !== undefined && (
+          <div className="flex items-center gap-3 justify-center">
+            <button
+              onClick={() => setQuantity(Math.max(1, quantity - 1))}
+              className="px-2 bg-orange-200 rounded"
+            >
+              -
+            </button>
+            <span>{quantity}</span>
+            <button
+              onClick={() => setQuantity(quantity + 1)}
+              className="px-2 bg-orange-200 rounded"
+            >
+              +
+            </button>
+          </div>
+        )}
       </div>
 
-      {/* Action Button */}
+      {/* ACTION BUTTON */}
       <button
         onClick={onToggle}
-        className={`mt-4 w-full py-2 rounded-xl font-semibold text-xs sm:text-sm lg:text-base transition
+        className={`mt-4 w-full py-2 rounded-xl font-semibold
           ${
             selected
-              ? "bg-green-500 text-white hover:bg-green-600"
-              : "bg-gradient-to-r from-orange-400 to-pink-500 text-white hover:from-pink-500 hover:to-orange-400"
+              ? "bg-green-500 text-white"
+              : "bg-gradient-to-r from-orange-400 to-pink-500 text-white"
           }`}
       >
         {selected ? "Selected" : "Select Meal"}
@@ -354,6 +346,18 @@ export default function MealManagementPart() {
     dinner: true,
   });
 
+  const getSelectedText = (date, meal) => {
+    const userOption = selectedOptions[date]?.[meal];
+    const guestOption = guestSelectedOptions[date]?.[meal];
+    const guestQty = guestMeals[date]?.[meal];
+
+    return {
+      userOption,
+      guestOption,
+      guestQty,
+    };
+  };
+
   return (
     <section className="min-h-screen bg-gradient-to-br from-orange-50 via-white to-orange-100 p-3 lg:p-6 flex flex-col gap-3.5">
       <ScrollToTop />
@@ -370,10 +374,10 @@ export default function MealManagementPart() {
       {/* Meal Activity */}
       <div className="flex flex-col gap-2.5">
         <h4 className="text-lg font-semibold mb-3">Your Meal Activity</h4>
-        <div className="max-w-7xl grid grid-cols-1 xl:grid-cols-4 gap-y-4 xl:gap-3">
+        <div className="max-w-7xl flex flex-col xl:flex-row gap-y-4 xl:gap-3">
           {/* Sidebar */}
           <aside
-            className={`bg-white/80 w-full xl:w-auto backdrop-blur-xl rounded-3xl ${daywiseSelect === "day-wise" ? "h-fit" : "h-fit"} shadow-xl p-2`}
+            className={`bg-white/80 w-full backdrop-blur-xl rounded-3xl ${daywiseSelect === "day-wise" ? "h-fit" : "h-fit"} shadow-xl p-2 max-w-[300px] shrink-0`}
           >
             <h2 className="flex items-center justify-center gap-3 font-bold text-gray-800 ">
               <input
@@ -441,7 +445,7 @@ export default function MealManagementPart() {
 
           {/* Content */}
           {daywiseSelect === "day-wise" && (
-            <main className="lg:col-span-3 space-y-6">
+            <main className=" space-y-6">
               {/* for individual meal */}
               {/* User Meals */}
               <div className="flex flex-col gap-3">
@@ -467,7 +471,7 @@ export default function MealManagementPart() {
                   </div>
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <div className="flex flex-wrap gap-6">
                   {/* Breakfast */}
                   <MealCard
                     title="Breakfast"
@@ -528,17 +532,16 @@ export default function MealManagementPart() {
                       }))
                     }
                   />
-
-                  <div className="col-span-3">
-                    {Object.keys(selectedMeals).length > 0 && (
-                      <button
-                        // onClick={() => setShowModal(true)}
-                        className="w-1/2 lg:w-1/3 mx-auto block bg-gradient-to-r from-orange-400 to-pink-500 text-white py-3 rounded-2xl font-semibold shadow-lg hover:from-pink-500 hover:to-orange-400 transition-all"
-                      >
-                        Update
-                      </button>
-                    )}
-                  </div>
+                </div>
+                <div className="flex items-center justify-center w-fulla">
+                  {Object.keys(selectedMeals).length > 0 && (
+                    <button
+                      // onClick={() => setShowModal(true)}
+                      className="w-[200px]  mx-auto  bg-gradient-to-r from-orange-400 to-pink-500 text-white py-3 rounded-2xl font-semibold shadow-lg hover:from-pink-500 hover:to-orange-400 transition-all"
+                    >
+                      Update
+                    </button>
+                  )}
                 </div>
               </div>
 
@@ -567,7 +570,7 @@ export default function MealManagementPart() {
                   </div>
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <div className="flex flex-wrap gap-6">
                   <MealCard
                     title="Breakfast"
                     icon={<FaSun />}
@@ -637,17 +640,16 @@ export default function MealManagementPart() {
                     }
                     onToggle={() => toggleGuestMeal("dinner")}
                   />
-
-                  <div className="lg:col-span-3">
-                    {Object.keys(guestMeals).length > 0 && (
-                      <button
-                        // onClick={() => setShowModal(true)}
-                        className="w-1/2 lg:w-1/3 mx-auto block bg-gradient-to-r from-orange-400 to-pink-500 text-white py-3 rounded-2xl font-semibold shadow-lg hover:from-pink-500 hover:to-orange-400 transition-all"
-                      >
-                        Update
-                      </button>
-                    )}
-                  </div>
+                </div>
+                <div>
+                  {Object.keys(guestMeals).length > 0 && (
+                    <button
+                      // onClick={() => setShowModal(true)}
+                      className="w-1/2 lg:w-1/3 mx-auto block bg-gradient-to-r from-orange-400 to-pink-500 text-white py-3 rounded-2xl font-semibold shadow-lg hover:from-pink-500 hover:to-orange-400 transition-all"
+                    >
+                      Update
+                    </button>
+                  )}
                 </div>
               </div>
             </main>
@@ -664,59 +666,152 @@ export default function MealManagementPart() {
         </div>
 
         {daywiseSelect === "day-wise" && (
-          <div className="overflow-x-auto bg-white rounded-2xl shadow mt-6">
-            <table className="min-w-full">
-              <thead className="bg-orange-500 text-white">
-                <tr>
-                  <th className="px-4 py-3 text-left">Day</th>
-                  <th className="px-4 py-3">Morning</th>
-                  <th className="px-4 py-3">Afternoon</th>
-                  <th className="px-4 py-3">Night</th>
-                </tr>
-              </thead>
-              <tbody>
-                {schedule2.map((row, index) => {
-                  const dateKey = getDateByDayName(row.day);
-                  return (
-                    <tr key={row.day} className="border-b">
-                      <td className="px-4 py-3 font-bold">{row.day}</td>
+          <div className="mt-6">
+            {/* Desktop Table */}
+            <div className="hidden md:block overflow-x-auto bg-white rounded-2xl shadow">
+              <table className="min-w-full">
+                <thead className="bg-orange-500 text-white">
+                  <tr>
+                    <th className="px-4 py-3 text-left">Date</th>
+                    <th className="px-4 py-3">Breakfast</th>
+                    <th className="px-4 py-3">Lunch</th>
+                    <th className="px-4 py-3">Dinner</th>
+                  </tr>
+                </thead>
 
-                      {[
-                        ["morning", "breakfast"],
-                        ["afternoon", "lunch"],
-                        ["night", "dinner"],
-                      ].map(([slot, meal]) => {
-                        const active = isMealActive(dateKey, meal);
-                        const guestInfo = getGuestInfo(dateKey, meal);
+                <tbody>
+                  {mealPlans.map((plan) => {
+                    const dateKey = plan.date;
 
-                        return (
-                          <td key={meal} className="px-4 py-3 text-sm">
-                            <div className="flex justify-between">
-                              <span className="flex flex-col leading-tight">
-                                <span>{row[slot]}</span>
+                    return (
+                      <tr key={dateKey} className="border-b">
+                        <td className="px-4 py-3 font-bold text-sm">
+                          {dateKey}
+                        </td>
 
-                                {guestInfo && (
-                                  <span className="text-[10px] text-blue-600 mt-2 font-semibold">
-                                    {guestInfo.option} ×{guestInfo.qty} - Guest
+                        {["breakfast", "lunch", "dinner"].map((meal) => {
+                          const isUserActive =
+                            selectedMeals?.[dateKey]?.includes(meal);
+
+                          const userOption =
+                            selectedOptions?.[dateKey]?.[meal] ||
+                            plan[meal].options[0];
+
+                          const guestQty = guestMeals?.[dateKey]?.[meal];
+                          const guestOption =
+                            guestSelectedOptions?.[dateKey]?.[meal] ||
+                            plan[meal].options[0];
+
+                          const isActive = isUserActive || guestQty;
+
+                          return (
+                            <td key={meal} className="px-4 py-3 text-sm">
+                              <div className="flex justify-between items-start gap-2">
+                                <div className="flex flex-col leading-tight">
+                                  <span
+                                    className={`font-medium ${
+                                      isUserActive
+                                        ? "text-gray-800"
+                                        : "text-gray-400 italic"
+                                    }`}
+                                  >
+                                    {isUserActive
+                                      ? userOption
+                                      : plan[meal].options[0]}
                                   </span>
-                                )}
+
+                                  {guestQty && (
+                                    <span className="text-[10px] text-blue-600 font-semibold mt-1">
+                                      {guestOption} ×{guestQty} (Guest)
+                                    </span>
+                                  )}
+                                </div>
+
+                                <span
+                                  className={`px-2 py-1 text-[9px] h-[20px] text-white rounded ${
+                                    isActive ? "bg-green-600" : "bg-red-600"
+                                  }`}
+                                >
+                                  {isActive ? "ON" : "OFF"}
+                                </span>
+                              </div>
+                            </td>
+                          );
+                        })}
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+            </div>
+
+            {/* Mobile Card View */}
+            <div className="md:hidden flex flex-col gap-4">
+              {mealPlans.map((plan) => {
+                const dateKey = plan.date;
+                return (
+                  <div
+                    key={dateKey}
+                    className="bg-white rounded-2xl shadow p-4 flex flex-col gap-3"
+                  >
+                    <div className="font-bold text-gray-700">{dateKey}</div>
+
+                    {["breakfast", "lunch", "dinner"].map((meal) => {
+                      const isUserActive =
+                        selectedMeals?.[dateKey]?.includes(meal);
+
+                      const userOption =
+                        selectedOptions?.[dateKey]?.[meal] ||
+                        plan[meal].options[0];
+
+                      const guestQty = guestMeals?.[dateKey]?.[meal];
+                      const guestOption =
+                        guestSelectedOptions?.[dateKey]?.[meal] ||
+                        plan[meal].options[0];
+
+                      const isActive = isUserActive || guestQty;
+
+                      return (
+                        <div
+                          key={meal}
+                          className="flex justify-between items-center border-b border-gray-200 pb-2"
+                        >
+                          <div className="flex flex-col">
+                            <span className="font-medium text-gray-800 capitalize">
+                              {meal}
+                            </span>
+                            <span
+                              className={`${
+                                isUserActive
+                                  ? "text-gray-800"
+                                  : "text-gray-400 italic"
+                              }`}
+                            >
+                              {isUserActive
+                                ? userOption
+                                : plan[meal].options[0]}
+                            </span>
+                            {guestQty && (
+                              <span className="text-[10px] text-blue-600 font-semibold">
+                                {guestOption} ×{guestQty} (Guest)
                               </span>
-                              <span
-                                className={`px-2 py-1 text-[9px] h-[20px] text-white rounded ${
-                                  active ? "bg-green-600" : "bg-red-600"
-                                }`}
-                              >
-                                {active ? "ON" : "OFF"}
-                              </span>
-                            </div>
-                          </td>
-                        );
-                      })}
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </table>
+                            )}
+                          </div>
+
+                          <span
+                            className={`px-2 py-1 text-[9px] h-[20px] text-white rounded ${
+                              isActive ? "bg-green-600" : "bg-red-600"
+                            }`}
+                          >
+                            {isActive ? "ON" : "OFF"}
+                          </span>
+                        </div>
+                      );
+                    })}
+                  </div>
+                );
+              })}
+            </div>
           </div>
         )}
       </div>
