@@ -1,5 +1,6 @@
-import React from "react";
-import { useForm, useFieldArray, Controller } from "react-hook-form";
+import React, { useState } from "react";
+import axios from "axios";
+// Optional: Install lucide-react for icons: npm install lucide-react
 import {
   PlusCircle,
   Trash2,
@@ -12,41 +13,56 @@ import {
 import { useCreateSchedule } from "../../../api/admin/admin.api";
 
 const AddSchedule = () => {
+  const [day, setDay] = useState("Sat");
+  const [breakfastItems, setBreakfastItems] = useState([
+    { meal_id: 1, title: "", price: "" },
+  ]);
+  const [lunchItems, setLunchItems] = useState([
+    { meal_id: 1, title: "", price: "" },
+  ]);
+  const [dinnerItems, setDinnerItems] = useState([
+    { meal_id: 1, title: "", price: "" },
+  ]);
+
   const { mutateAsync, isPending } = useCreateSchedule();
 
-  // 1. Initialize useForm
-  const { register, control, handleSubmit, setValue, watch } = useForm({
-    defaultValues: {
-      day: "Sat",
-      breakfast: [{ title: "", price: "" }],
-      lunch: [{ title: "", price: "" }],
-      dinner: [{ title: "", price: "" }],
-    },
-  });
-
-  const selectedDay = watch("day");
-
-  // 2. Setup Field Arrays for each meal type
-  const breakfastFields = useFieldArray({ control, name: "breakfast" });
-  const lunchFields = useFieldArray({ control, name: "lunch" });
-  const dinnerFields = useFieldArray({ control, name: "dinner" });
-
-  const onSubmit = async (data) => {
-    // Transform data to match your API payload
+  const handleSubmit = async (e) => {
+    e.preventDefault();
     const payload = {
-      day: data.day,
-      breakfast: { mealType: "breakfast", items: data.breakfast },
-      lunch: { mealType: "lunch", items: data.lunch },
-      dinner: { mealType: "dinner", items: data.dinner },
+      day,
+      breakfast: { mealType: "breakfast", items: breakfastItems },
+      lunch: { mealType: "lunch", items: lunchItems },
+      dinner: { mealType: "dinner", items: dinnerItems },
     };
 
     await mutateAsync(payload);
+
+   
+  };
+
+  const handleItemChange = (setter, index, field, value) => {
+    setter((prev) =>
+      prev.map((item, i) => (i === index ? { ...item, [field]: value } : item)),
+    );
+  };
+
+  const addItem = (setter) => {
+    setter((prev) => [
+      ...prev,
+      { meal_id: prev.length + 1, title: "", price: "" },
+    ]);
+  };
+
+  const removeItem = (setter, index) => {
+    setter((prev) =>
+      prev.length > 1 ? prev.filter((_, i) => i !== index) : prev,
+    );
   };
 
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen ">
       <form
-        onSubmit={handleSubmit(onSubmit)}
+        onSubmit={handleSubmit}
         className="w-full bg-white rounded-2xl shadow-xl overflow-hidden border border-gray-100"
       >
         {/* Header */}
@@ -70,9 +86,9 @@ const AddSchedule = () => {
                 <button
                   key={d}
                   type="button"
-                  onClick={() => setValue("day", d)}
+                  onClick={() => setDay(d)}
                   className={`px-4 py-2 rounded-full font-medium transition-all ${
-                    selectedDay === d
+                    day === d
                       ? "bg-purple-600 text-white shadow-md scale-105"
                       : "bg-white text-gray-600 hover:bg-purple-100 border border-gray-200"
                   }`}
@@ -87,24 +103,30 @@ const AddSchedule = () => {
           <div className="grid gap-6">
             <MealSection
               title="Breakfast"
-              name="breakfast"
               icon={<Sunrise className="text-orange-500" />}
-              fieldArray={breakfastFields}
-              register={register}
+              items={breakfastItems}
+              setItems={setBreakfastItems}
+              handleItemChange={handleItemChange}
+              addItem={addItem}
+              removeItem={removeItem}
             />
             <MealSection
               title="Lunch"
-              name="lunch"
               icon={<Sun className="text-yellow-500" />}
-              fieldArray={lunchFields}
-              register={register}
+              items={lunchItems}
+              setItems={setLunchItems}
+              handleItemChange={handleItemChange}
+              addItem={addItem}
+              removeItem={removeItem}
             />
             <MealSection
               title="Dinner"
-              name="dinner"
               icon={<Moon className="text-indigo-500" />}
-              fieldArray={dinnerFields}
-              register={register}
+              items={dinnerItems}
+              setItems={setDinnerItems}
+              handleItemChange={handleItemChange}
+              addItem={addItem}
+              removeItem={removeItem}
             />
           </div>
 
@@ -112,7 +134,7 @@ const AddSchedule = () => {
           <button
             type="submit"
             disabled={isPending}
-            className="w-full bg-purple-600 hover:bg-purple-700 text-white py-2 text-sm rounded-xl font-bold flex items-center justify-center gap-2 transition-transform active:scale-[0.98] shadow-lg shadow-purple-200 cursor-pointer"
+            className="w-full bg-purple-600 hover:bg-purple-700 text-white py-2 text-sm rounded-xl font-bold flex items-center justify-center gap-2 transition-transform active:scale-[0.98] shadow-lg shadow-purple-200 cursor-pointer "
           >
             <Save className="w-5 h-5" />
             {isPending ? "Saving..." : "Save"}
@@ -123,9 +145,15 @@ const AddSchedule = () => {
   );
 };
 
-const MealSection = ({ title, name, icon, fieldArray, register }) => {
-  const { fields, append, remove } = fieldArray;
-
+const MealSection = ({
+  title,
+  icon,
+  items,
+  setItems,
+  handleItemChange,
+  addItem,
+  removeItem,
+}) => {
   return (
     <div className="group border border-gray-200 rounded-xl p-5 hover:border-purple-300 transition-colors bg-white">
       <div className="flex items-center gap-2 mb-4 border-b border-gray-100 pb-2">
@@ -136,16 +164,19 @@ const MealSection = ({ title, name, icon, fieldArray, register }) => {
       </div>
 
       <div className="space-y-3">
-        {fields.map((field, index) => (
+        {items.map((item, index) => (
           <div
-            key={field.id}
+            key={index}
             className="flex gap-3 items-center animate-in fade-in slide-in-from-left-2"
           >
             <div className="flex-grow grid grid-cols-3 gap-2">
               <input
-                {...register(`${name}.${index}.title`, { required: true })}
                 type="text"
                 placeholder="Ex: Pancakes"
+                value={item.title}
+                onChange={(e) =>
+                  handleItemChange(setItems, index, "title", e.target.value)
+                }
                 className="col-span-2 border border-gray-300 p-2.5 rounded-lg focus:ring-2 focus:ring-purple-500 focus:outline-none transition-all"
               />
               <div className="relative">
@@ -153,19 +184,22 @@ const MealSection = ({ title, name, icon, fieldArray, register }) => {
                   ৳
                 </span>
                 <input
-                  {...register(`${name}.${index}.price`, { required: true })}
                   type="number"
                   placeholder="0.00"
+                  value={item.price}
+                  onChange={(e) =>
+                    handleItemChange(setItems, index, "price", e.target.value)
+                  }
                   className="w-full border border-gray-300 p-2.5 pl-7 rounded-lg focus:ring-2 focus:ring-purple-500 focus:outline-none transition-all"
                 />
               </div>
             </div>
 
-            {fields.length > 1 && (
+            {items.length > 1 && (
               <button
                 type="button"
-                onClick={() => remove(index)}
-                className="p-2 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-full transition-colors cursor-pointer"
+                onClick={() => removeItem(setItems, index)}
+                className="p-2 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-full transition-colors"
               >
                 <Trash2 className="w-5 h-5" />
               </button>
@@ -176,8 +210,8 @@ const MealSection = ({ title, name, icon, fieldArray, register }) => {
 
       <button
         type="button"
-        onClick={() => append({ title: "", price: "" })}
-        className="mt-4 flex items-center gap-1 text-purple-600 font-semibold text-sm hover:text-purple-800 cursor-pointer transition-colors"
+        onClick={() => addItem(setItems)}
+        className="mt-4 flex items-center gap-1 text-purple-600 font-semibold text-sm hover:text-purple-800 transition-colors"
       >
         <PlusCircle className="w-4 h-4" /> Add another item
       </button>

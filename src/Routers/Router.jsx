@@ -38,6 +38,7 @@ import TermAndCondition from "../Pages/FrontEnd/dynamicpage/TermAndCondition";
 import AdminDashboard from "../Layout/AdminDashboard";
 import AllSchedule from "../Pages/FrontEnd/admin/AllSchedule";
 import AddSchedule from "../Pages/FrontEnd/admin/AddSchedule";
+import UpdateSchedule from "../Pages/FrontEnd/admin/UpdateSchedule";
 
 const router = createBrowserRouter([
   {
@@ -248,6 +249,10 @@ const router = createBrowserRouter([
         path: "add-schedule",
         element: <AddSchedule />,
       },
+      {
+        path:`update-schedule/:id`,
+        element:<UpdateSchedule/>
+      }
     ],
   },
 ]);

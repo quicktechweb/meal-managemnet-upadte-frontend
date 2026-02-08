@@ -136,9 +136,12 @@ const AllSchedule = () => {
                     <MealCell items={day.lunch?.items} type="lunch" />
                     <MealCell items={day.dinner?.items} type="dinner" />
                     <td className="flex items-center gap-2.5 justify-center mt-5">
-                      <button className="text-xl cursor-pointer hover:text-violet-700  duration-300">
+                      <Link
+                        to={`/admin/dashboard/update-schedule/${day?._id}`}
+                        className="text-xl cursor-pointer hover:text-violet-700  duration-300"
+                      >
                         <FiEdit />
-                      </button>
+                      </Link>
                       <button
                         onClick={() => handleDelete(day)}
                         disabled={isPending}
