@@ -35,6 +35,9 @@ import SingleMessProfile from "../Pages/FrontEnd/Dashboard/UserDashboard/myprofi
 import ChangePassword from "../Pages/FrontEnd/Dashboard/UserDashboard/ChangePassword";
 import PrivacyPolicy from "../Pages/FrontEnd/dynamicpage/PrivecyAndPolicy";
 import TermAndCondition from "../Pages/FrontEnd/dynamicpage/TermAndCondition";
+import AdminDashboard from "../Layout/AdminDashboard";
+import AllSchedule from "../Pages/FrontEnd/admin/AllSchedule";
+import AddSchedule from "../Pages/FrontEnd/admin/AddSchedule";
 
 const router = createBrowserRouter([
   {
@@ -214,7 +217,6 @@ const router = createBrowserRouter([
       // supplierpage
     ],
   },
-
   {
     path: "/ecommercesite",
     element: <EcommerceLayout />,
@@ -222,6 +224,29 @@ const router = createBrowserRouter([
       {
         path: "/ecommercesite",
         element: <EcommerceSite />,
+      },
+    ],
+  },
+  {
+    path: "/admin/dashboard/",
+    element: (
+      //  <PrivateRoute>
+      <AdminDashboard />
+      //  </PrivateRoute>
+    ),
+    children: [
+      {
+        index: true,
+        path: "home",
+        element: <UserDashboardHome />,
+      },
+      {
+        path: "all-Schedule",
+        element: <AllSchedule />,
+      },
+      {
+        path: "add-schedule",
+        element: <AddSchedule />,
       },
     ],
   },

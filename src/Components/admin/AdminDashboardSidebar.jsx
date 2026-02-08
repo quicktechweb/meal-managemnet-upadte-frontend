@@ -17,8 +17,7 @@ import { IoRestaurant } from "react-icons/io5";
 import { GrRestaurant } from "react-icons/gr";
 import { FaUser } from "react-icons/fa";
 
-const DashboardSideBar = ({ setIsOpenSidebar }) => {
- 
+const AdminDashboardSidebar = ({ setIsOpenSidebar }) => {
   const [openSections, setOpenSections] = useState({});
 
   const toggleSection = (key) => {
@@ -30,21 +29,6 @@ const DashboardSideBar = ({ setIsOpenSidebar }) => {
 
   // Sidebar configuration
   const sidebarItems = [
-    {
-      key: "Admin",
-      title: "Admin",
-      icon: FaHome,
-      roles: ["SUPERadmin"],
-      links: [
-        // { title: "Make Admin", path: "/dashboard/makeadmin" },
-        {
-          title: "Super Admin",
-          icon: FaDesktop,
-          path: "/dashboard/superadmin",
-        },
-      ],
-    },
-
     //   {
     //   key: "CompanySettings",
     //   title: "CompanySettings",
@@ -61,102 +45,23 @@ const DashboardSideBar = ({ setIsOpenSidebar }) => {
     // },
 
     {
-      key: "Meal Management",
-      title: "Meal Management",
-      roles: ["user"],
+      key: "Home",
+      title: "Home",
+      roles: ["admin"],
       icon: FaClipboardList,
-      permissionKey: "Meal Management",
+      permissionKey: "Home",
+    },
+    {
+      key: "Schedule",
+      title: "Schedule",
+      roles: ["admin"],
+      icon: FaClipboardList,
+      permissionKey: "schedule",
       links: [
         {
-          title: "Meal Management",
+          title: "All Schedule",
           icon: FaShoppingBag,
-          path: "/dashboard/mealmanagement",
-        },
-      ],
-    },
-    // {
-    //   key: "My Order",
-    //   title: "MyOrder",
-    //   roles: ["user"],
-    //   icon: FaClipboardList,
-    //   permissionKey: "MyOrder",
-    //   links: [
-    //     { title: "MyOrder", icon: FaShoppingBag, path: "/dashboard/userOrder" },
-    //     {
-    //       title: "MessOrder",
-    //       icon: FaShoppingBag,
-    //       path: "/dashboard/messOrder",
-    //     },
-    //   ],
-    // },
-
-    {
-      key: "Profile Manage",
-      title: "Profile Manage",
-      roles: ["user"],
-      icon: FaClipboardList,
-      links: [
-        {
-          title: "My Profile",
-          icon: FaUser,
-          path: "/dashboard/profile",
-        },
-        {
-          title: "Institute Profile",
-          icon: FaUser,
-          path: "/dashboard/institute-profile",
-        },
-        {
-          title: "Hall Profile",
-          icon: FaUser,
-          path: "/dashboard/hall-profile",
-        },
-      ],
-    },
-
-    // {
-    //   key: "Canteens",
-    //   title: "Canteens",
-    //   roles: ["user"],
-    //   icon: FaClipboardList,
-    //   links: [
-    //     {
-    //       title: "All Canteens",
-    //       icon: IoRestaurant,
-    //       path: "/dashboard/canteens",
-    //     },
-    //   ],
-    // },
-
-    // {
-    //   key: "foods",
-    //   title: "Foods",
-    //   roles: ["user"],
-    //   icon: FaClipboardList,
-    //   links: [
-    //     {
-    //       title: "Foods",
-    //       icon: IoRestaurant,
-    //       path: "/dashboard/foods",
-    //     },
-    //   ],
-    // },
-
-    {
-      key: "favourite",
-      title: "Favourite",
-      roles: ["user"],
-      icon: FaClipboardList,
-      links: [
-        {
-          title: "Favourite Items",
-          icon: IoRestaurant,
-          path: "/dashboard/favourite-item",
-        },
-        {
-          title: "Favourite Canteens",
-          icon: GrRestaurant,
-          path: "/dashboard/favourite-canteen",
+          path: "/admin/dashboard/all-schedule",
         },
       ],
     },
@@ -248,22 +153,23 @@ const DashboardSideBar = ({ setIsOpenSidebar }) => {
                     }`}
                   >
                     <div className="overflow-hidden">
-                      {item.links.map((link) => (
-                        <NavLink
-                          key={link.path}
-                          onClick={() => setIsOpenSidebar(false)}
-                          to={link.path}
-                          className={"inline-block"}
-                        >
-                          <div className="dashboardNavLink border-l-[3px] flex items-center gap-2 bg-white p-1 ml-8 mt-2 hover:scale-110 duration-300 active:scale-75 pr-0">
-                            {/* <FaSellcast className="text-xl text-[#01c0c9]" /> */}
-                            {link.icon && (
-                              <link.icon className="text-sm text-[#6C51AA]" />
-                            )}
-                            <h2 className="font-semibold ">{link.title}</h2>
-                          </div>
-                        </NavLink>
-                      ))}
+                      {item?.links &&
+                        item.links.map((link) => (
+                          <NavLink
+                            key={link.path}
+                            onClick={() => setIsOpenSidebar(false)}
+                            to={link.path}
+                            className={"inline-block"}
+                          >
+                            <div className="dashboardNavLink border-l-[3px] flex items-center gap-2 bg-white p-1 ml-8 mt-2 hover:scale-110 duration-300 active:scale-75 pr-0">
+                              {/* <FaSellcast className="text-xl text-[#01c0c9]" /> */}
+                              {link.icon && (
+                                <link.icon className="text-sm text-[#6C51AA]" />
+                              )}
+                              <h2 className="font-semibold ">{link.title}</h2>
+                            </div>
+                          </NavLink>
+                        ))}
                     </div>
                   </div>
                 </div>
@@ -293,8 +199,8 @@ const DashboardSideBar = ({ setIsOpenSidebar }) => {
   );
 };
 
-DashboardSideBar.propTypes = {
+AdminDashboardSidebar.propTypes = {
   setIsOpenSidebar: PropTypes.func.isRequired,
 };
 
-export default DashboardSideBar;
+export default AdminDashboardSidebar;
