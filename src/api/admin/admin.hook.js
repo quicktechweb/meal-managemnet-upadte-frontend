@@ -10,3 +10,7 @@ export const addscheduleFunction = async (payload) => {
   return data;
 };
 
+export const deleteScheduleFunction = async (id) => {
+  const { data } = await axiosPublic.delete(`/api/delete-schedule/${id}`);
+  return data;
+};

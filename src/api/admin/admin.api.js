@@ -1,6 +1,10 @@
 import toast from "react-hot-toast";
-import { addscheduleFunction, getallschedulefunction } from "./admin.hook";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import {
+  addscheduleFunction,
+  deleteScheduleFunction,
+  getallschedulefunction,
+} from "./admin.hook";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 export const useScheduleAdminData = () => {
   return useQuery({
@@ -19,6 +23,20 @@ export const useCreateSchedule = () => {
     },
     onError: (err) => {
       toast.error(err?.response?.data?.message);
+    },
+  });
+};
+
+export const useDeleteSchedule = () => {
+  const query = useQueryClient();
+  return useMutation({
+    mutationKey: ["delete-schedule"],
+    mutationFn: (id) => deleteScheduleFunction(id),
+    onSuccess: (data) => {
+      if (data?.success) {
+        toast.success(data?.message);
+        query.invalidateQueries(["schedule-admin"]);
+      }
     },
   });
 };

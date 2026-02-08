@@ -1,5 +1,8 @@
 import React from "react";
-import { useScheduleAdminData } from "../../../api/admin/admin.api";
+import {
+  useDeleteSchedule,
+  useScheduleAdminData,
+} from "../../../api/admin/admin.api";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { Coffee, Sun, Moon, Plus, UtensilsCrossed } from "lucide-react";
@@ -10,12 +13,15 @@ const dayOrder = ["Sat", "Sun", "Mon", "Tue", "Wed", "Thu", "Fri"];
 
 const AllSchedule = () => {
   const { data, isLoading } = useScheduleAdminData();
-  const rawSchedules = data?.data || [];
 
-  // Sort schedules by week day
-  const schedules = [...rawSchedules].sort(
-    (a, b) => dayOrder.indexOf(a.day) - dayOrder.indexOf(b.day),
-  );
+  const { mutateAsync, isPending } = useDeleteSchedule();
+
+  const Schedules = data?.data || [];
+
+  const handleDelete = async (day) => {
+    console.log(day, "day");
+    await mutateAsync(day?._id);
+  };
 
   const MealCell = ({ items, type }) => {
     const config = {
@@ -113,7 +119,7 @@ const AllSchedule = () => {
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-100">
-                {schedules.map((day) => (
+                {Schedules.map((day) => (
                   <tr
                     key={day._id}
                     className="hover:bg-slate-50/30 transition-colors"
@@ -133,7 +139,11 @@ const AllSchedule = () => {
                       <button className="text-xl cursor-pointer hover:text-violet-700  duration-300">
                         <FiEdit />
                       </button>
-                      <button className="text-xl duration-300 hover:text-red-600 cursor-pointer">
+                      <button
+                        onClick={() => handleDelete(day)}
+                        disabled={isPending}
+                        className="text-xl duration-300 hover:text-red-600 cursor-pointer"
+                      >
                         <MdDelete />
                       </button>
                     </td>
@@ -144,7 +154,7 @@ const AllSchedule = () => {
           </div>
 
           {/* Table Footer / Empty State */}
-          {!schedules.length && !isLoading && (
+          {!Schedules.length && !isLoading && (
             <div className="py-20 flex flex-col items-center justify-center text-slate-400">
               <UtensilsCrossed size={48} className="mb-4 opacity-20" />
               <p className="font-medium">No meal schedule records found.</p>
