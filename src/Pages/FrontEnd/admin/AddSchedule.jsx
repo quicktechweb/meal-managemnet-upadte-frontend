@@ -1,6 +1,4 @@
 import React, { useState } from "react";
-import axios from "axios";
-// Optional: Install lucide-react for icons: npm install lucide-react
 import {
   PlusCircle,
   Trash2,
@@ -36,8 +34,6 @@ const AddSchedule = () => {
     };
 
     await mutateAsync(payload);
-
-   
   };
 
   const handleItemChange = (setter, index, field, value) => {
