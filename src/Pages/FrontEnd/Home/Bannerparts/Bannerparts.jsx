@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { HeroBottomSvg } from "../../../../svg/SvgContainer";
 
 const slides = [
   {
@@ -104,13 +105,9 @@ const Bannerparts = () => {
       </div>
 
       {/* BOTTOM SHAPE */}
-      {/* <div className="absolute left-0 right-0 bottom-[-2px] z-[1] w-full">
-        <img
-          src="https://appbeats.themetags.com/img/hero-shape.svg"
-          alt="bottom shape"
-          className="w-full"
-        />
-      </div> */}
+      <div className="absolute left-0 right-0 bottom-[-2px] z-[1] w-full">
+        <HeroBottomSvg />
+      </div>
     </section>
   );
 };
