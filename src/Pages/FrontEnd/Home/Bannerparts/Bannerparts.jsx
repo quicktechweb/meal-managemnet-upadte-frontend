@@ -6,20 +6,20 @@ const slides = [
   {
     title: "How to Deliver Digital Experiences",
     desc: "Our design projects are fresh and simple and will benefit your business greatly.",
-    bg: "https://appbeats.themetags.com/img/galaxy-image.jpg",
-    image: "https://appbeats.themetags.com/img/hero-app-image.png",
+    bg: "",
+    image: "https://i.ibb.co.com/tMSSj1JG/hero-app-image.png",
   },
   {
     title: "Build Modern Mobile Apps",
     desc: "We help you build scalable, modern and fast mobile applications.",
     bg: "https://images.unsplash.com/photo-1521737604893-d14cc237f11d",
-    image: "https://appbeats.themetags.com/img/hero-app-image.png",
+    image: "https://i.ibb.co.com/tMSSj1JG/hero-app-image.png",
   },
   {
     title: "Grow Your Business Digitally",
     desc: "Transform your ideas into digital products that users love.",
     bg: "https://images.unsplash.com/photo-1529333166437-7750a6dd5a70",
-    image: "https://appbeats.themetags.com/img/hero-app-image.png",
+    image: "https://i.ibb.co.com/tMSSj1JG/hero-app-image.png",
   },
 ];
 
@@ -104,13 +104,13 @@ const Bannerparts = () => {
       </div>
 
       {/* BOTTOM SHAPE */}
-      <div className="absolute left-0 right-0 bottom-[-2px] z-[1] w-full">
+      {/* <div className="absolute left-0 right-0 bottom-[-2px] z-[1] w-full">
         <img
           src="https://appbeats.themetags.com/img/hero-shape.svg"
           alt="bottom shape"
           className="w-full"
         />
-      </div>
+      </div> */}
     </section>
   );
 };

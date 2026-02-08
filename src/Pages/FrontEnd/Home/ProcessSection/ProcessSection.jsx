@@ -25,11 +25,12 @@ const steps = [
       "Manage daily meals, member consumption, and food records with complete accuracy and transparency.",
     desc2:
       "Automate meal counts, cost calculations, and monthly summaries in one smart platform.",
-    image: "https://appbeats.themetags.com/img/dasboard-screen-1.png",
+    image:
+      "https://i.ibb.co.com/0pWgtCjV/b686d54f-e40e-4f89-ae29-b44c2561e87f.jpg",
     cards: [
-      "https://appbeats.themetags.com/img/process-card-1.png",
-      "https://appbeats.themetags.com/img/process-card-2.png",
-      "https://appbeats.themetags.com/img/process-card-3.png",
+      "https://i.ibb.co.com/0pWgtCjV/b686d54f-e40e-4f89-ae29-b44c2561e87f.jpg",
+      "https://i.ibb.co.com/0pWgtCjV/b686d54f-e40e-4f89-ae29-b44c2561e87f.jpg",
+      "https://i.ibb.co.com/0pWgtCjV/b686d54f-e40e-4f89-ae29-b44c2561e87f.jpg",
     ],
     icon: <FiGitBranch />,
   },
@@ -42,11 +43,12 @@ const steps = [
       "Simplify ride bookings, driver assignments, and route planning through a centralized system.",
     desc2:
       "Track trips, manage users, and optimize transport efficiency in real-time.",
-    image: "https://appbeats.themetags.com/img/dasboard-screen-2.png",
+    image:
+      "https://i.ibb.co.com/0pWgtCjV/b686d54f-e40e-4f89-ae29-b44c2561e87f.jpg",
     cards: [
-      "https://appbeats.themetags.com/img/process-card-2.png",
-      "https://appbeats.themetags.com/img/process-card-3.png",
-      "https://appbeats.themetags.com/img/process-card-1.png",
+      "https://i.ibb.co.com/0pWgtCjV/b686d54f-e40e-4f89-ae29-b44c2561e87f.jpg",
+      "https://i.ibb.co.com/0pWgtCjV/b686d54f-e40e-4f89-ae29-b44c2561e87f.jpg",
+      "https://i.ibb.co.com/0pWgtCjV/b686d54f-e40e-4f89-ae29-b44c2561e87f.jpg",
     ],
     icon: <FiGrid />,
   },
@@ -59,11 +61,12 @@ const steps = [
       "Organize courses, lessons, and student progress using a modern learning management solution.",
     desc2:
       "Deliver engaging educational experiences with structured content and performance tracking.",
-    image: "https://appbeats.themetags.com/img/dasboard-screen-3.png",
+    image:
+      "https://i.ibb.co.com/0pWgtCjV/b686d54f-e40e-4f89-ae29-b44c2561e87f.jpg",
     cards: [
-      "https://appbeats.themetags.com/img/process-card-3.png",
-      "https://appbeats.themetags.com/img/process-card-1.png",
-      "https://appbeats.themetags.com/img/process-card-2.png",
+      "https://i.ibb.co.com/0pWgtCjV/b686d54f-e40e-4f89-ae29-b44c2561e87f.jpg",
+      "https://i.ibb.co.com/0pWgtCjV/b686d54f-e40e-4f89-ae29-b44c2561e87f.jpg",
+      "https://i.ibb.co.com/0pWgtCjV/b686d54f-e40e-4f89-ae29-b44c2561e87f.jpg",
     ],
     icon: <FiPenTool />,
   },
@@ -76,11 +79,12 @@ const steps = [
       "Launch and manage your online store with powerful product, order, and inventory tools.",
     desc2:
       "Scale your ecommerce business using analytics, customer insights, and automation.",
-    image: "https://appbeats.themetags.com/img/dasboard-screen-4.png",
+    image:
+      "https://i.ibb.co.com/0pWgtCjV/b686d54f-e40e-4f89-ae29-b44c2561e87f.jpg",
     cards: [
-      "https://appbeats.themetags.com/img/process-card-1.png",
-      "https://appbeats.themetags.com/img/process-card-2.png",
-      "https://appbeats.themetags.com/img/process-card-3.png",
+      "https://i.ibb.co.com/0pWgtCjV/b686d54f-e40e-4f89-ae29-b44c2561e87f.jpg",
+      "https://i.ibb.co.com/0pWgtCjV/b686d54f-e40e-4f89-ae29-b44c2561e87f.jpg",
+      "https://i.ibb.co.com/0pWgtCjV/b686d54f-e40e-4f89-ae29-b44c2561e87f.jpg",
     ],
     icon: <FiAward />,
   },
@@ -261,7 +265,7 @@ const ProcessSection = () => {
               className="w-[520px] relative z-10"
             />
 
-            <img
+            {/* <img
               src={active.cards[0]}
               className="absolute -left-10 top-24 w-40 shadow-lg"
               alt=""
@@ -275,7 +279,7 @@ const ProcessSection = () => {
               src={active.cards[2]}
               className="absolute right-16 bottom-10 w-40 shadow-lg"
               alt=""
-            />
+            /> */}
           </div>
         </div>
       </div>

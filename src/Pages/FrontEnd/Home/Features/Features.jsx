@@ -94,7 +94,7 @@ const Features = () => {
           {/* CENTER IMAGE */}
           <div className="flex justify-center">
             <img
-              src="https://appbeats.themetags.com/img/image-10.png"
+              src="https://i.ibb.co.com/Sw9D3dHw/8aba889c-2e12-47f5-9a28-303f84168c59.jpg"
               alt="mobile"
               className="w-[250px] h-[360px] lg:h-auto lg:w-[320px]"
             />
