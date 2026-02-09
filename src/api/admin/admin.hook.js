@@ -25,18 +25,25 @@ export const getallutilitiesfunction = async () => {
   return data;
 };
 
-
 export const deleteutilitiesFunction = async (id) => {
   const { data } = await axiosPublic.delete(`/api/delete-utilities/${id}`);
   return data;
 };
 
-
-
-
 export const updateUtilitiesFunction = async ({ id, payload }) => {
-  const { data } = await axiosPublic.put(`/api/update-utilities/${id}`, payload);
+  const { data } = await axiosPublic.put(
+    `/api/update-utilities/${id}`,
+    payload,
+  );
   return data;
 };
 
+export const getAllKitchenFunction = async () => {
+  const { data } = await axiosPublic("/api/all-kitchen");
+  return data;
+};
 
+export const addutilitiesFunction = async (payload) => {
+  const { data } = await axiosPublic.post("/api/create-utilities", payload);
+  return data;
+};

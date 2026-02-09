@@ -21,14 +21,14 @@ const Services = () => {
   return (
     <div className="service-container ">
       {/* Header */}
-      <div className="flex items-center justify-between mb-6">
+      <div className="flex items-center justify-between mb-3">
         <h3 className="text-2xl font-extrabold text-slate-900 tracking-tight">
           Utilities Services
         </h3>
 
         <Link
-          to="/admin/dashboard/add-utilities"
-          className="inline-flex items-center gap-2 px-6 py-3 bg-violet-600 hover:bg-violet-700 text-white rounded-xl font-semibold shadow-lg text-sm transition active:scale-95"
+          to="/admin/dashboard/add-utilites-service"
+          className="inline-flex items-center gap-2 px-6 py-2 bg-violet-600 hover:bg-violet-700  text-white rounded-xl font-semibold shadow-lg text-sm transition active:scale-95"
         >
           <Plus size={18} />
           Add New Utilities

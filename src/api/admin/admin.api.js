@@ -1,8 +1,10 @@
 import toast from "react-hot-toast";
 import {
   addscheduleFunction,
+  addutilitiesFunction,
   deleteScheduleFunction,
   deleteutilitiesFunction,
+  getAllKitchenFunction,
   getallschedulefunction,
   getallutilitiesfunction,
   updateScheduleFunction,
@@ -90,11 +92,30 @@ export const useUpdateUtilities = () => {
     mutationFn: updateUtilitiesFunction,
     onSuccess: (data) => {
       if (data?.success) {
-        console.log(data);
-
         toast.success(data?.message);
         query.invalidateQueries(["get-all-utilities"]);
       }
+    },
+  });
+};
+
+export const useAllKitchen = () => {
+  return useQuery({
+    queryKey: ["all-kitchen"],
+    queryFn: getAllKitchenFunction,
+    retry: false,
+  });
+};
+
+export const useCreateUtilites = () => {
+  return useMutation({
+    mutationKey: ["create-utilities"],
+    mutationFn: (payload) => addutilitiesFunction(payload),
+    onSuccess: (data) => {
+      toast.success(data?.message);
+    },
+    onError: (err) => {
+      toast.error(err?.response?.data?.message);
     },
   });
 };
