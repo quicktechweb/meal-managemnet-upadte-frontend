@@ -180,6 +180,18 @@ const MessForm = () => {
             error={errors.phone}
           />
 
+          <FloatingInput
+            label="Name of the Hall / Hostel"
+            {...register("hall", { required: "hall / hostel   required" })}
+            error={errors.hall}
+          />
+
+          <FloatingInput
+            label="Name of the Mess"
+            {...register("hall", { required: "mess  required" })}
+            error={errors.mess}
+          />
+
           <div className="w-full max-w-xl">
             <label className="block text-sm md:text-base font-medium text-gray-600 mb-2">
               Upload Institute Documents
@@ -203,18 +215,6 @@ const MessForm = () => {
 
             <p className="text-xs text-gray-400 mt-1">PNG, JPG up to 5MB</p>
           </div>
-          <FloatingInput
-            label="Name of the Hall / Hostel"
-            {...register("hall", { required: "hall / hostel   required" })}
-            error={errors.hall}
-          />
-
-          <FloatingInput
-            label="Name of the Mess"
-            {...register("hall", { required: "mess  required" })}
-            error={errors.mess}
-          />
-
           <button
             type="button"
             onClick={nextStep}

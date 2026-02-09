@@ -39,6 +39,8 @@ import AdminDashboard from "../Layout/AdminDashboard";
 import AllSchedule from "../Pages/FrontEnd/admin/AllSchedule";
 import AddSchedule from "../Pages/FrontEnd/admin/AddSchedule";
 import UpdateSchedule from "../Pages/FrontEnd/admin/UpdateSchedule";
+import NormalUserForm from "../Pages/FrontEnd/all-access-register/NormalUserForm";
+import InstituteUserForm from "../Pages/FrontEnd/all-access-register/InstituteUserForm";
 
 const router = createBrowserRouter([
   {
@@ -110,6 +112,16 @@ const router = createBrowserRouter([
       {
         path: "all-access-register",
         element: <FullAccessRegistration />,
+        children: [
+          {
+            path: "normal-user",
+            element: <NormalUserForm />,
+          },
+          {
+            path: "institute",
+            element: <InstituteUserForm />,
+          },
+        ],
       },
       {
         path: "login",
@@ -250,9 +262,9 @@ const router = createBrowserRouter([
         element: <AddSchedule />,
       },
       {
-        path:`update-schedule/:id`,
-        element:<UpdateSchedule/>
-      }
+        path: `update-schedule/:id`,
+        element: <UpdateSchedule />,
+      },
     ],
   },
 ]);
