@@ -47,3 +47,9 @@ export const addutilitiesFunction = async (payload) => {
   const { data } = await axiosPublic.post("/api/create-utilities", payload);
   return data;
 };
+
+
+export const getallfeaturefunction = async () => {
+  const { data } = await axiosPublic("/api/all-feature");
+  return data;
+};

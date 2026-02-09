@@ -4,6 +4,7 @@ import {
   addutilitiesFunction,
   deleteScheduleFunction,
   deleteutilitiesFunction,
+  getallfeaturefunction,
   getAllKitchenFunction,
   getallschedulefunction,
   getallutilitiesfunction,
@@ -117,5 +118,13 @@ export const useCreateUtilites = () => {
     onError: (err) => {
       toast.error(err?.response?.data?.message);
     },
+  });
+};
+
+export const useGetFeature = () => {
+  return useQuery({
+    queryKey: ["get-all-feature"],
+    queryFn: getallfeaturefunction,
+    retry: false,
   });
 };

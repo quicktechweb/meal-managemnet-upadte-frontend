@@ -44,6 +44,7 @@ import InstituteUserForm from "../Pages/FrontEnd/all-access-register/InstituteUs
 import Services from "../Pages/FrontEnd/admin/Services";
 import AddUtilitiesService from "../Pages/FrontEnd/admin/AddUtilitiesService";
 import UpdateUtilitiesService from "../Pages/FrontEnd/admin/UpdateUtilitiesService";
+import Features from "../Pages/FrontEnd/admin/Features";
 
 const router = createBrowserRouter([
   {
@@ -279,6 +280,11 @@ const router = createBrowserRouter([
       {
         path: "update-utilities-service/:id",
         element: <UpdateUtilitiesService />,
+      },
+
+      {
+        path: "features",
+        element: <Features />,
       },
     ],
   },
