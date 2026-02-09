@@ -233,7 +233,7 @@ const NormalUserForm = () => {
       </div>
 
       <div className="lg:col-span-2">
-        <div className="w-full max-w-xl">
+        <div className="w-full ">
           <label className="block text-sm md:text-base font-medium text-gray-600 mb-2">
             Upload Your NID
           </label>

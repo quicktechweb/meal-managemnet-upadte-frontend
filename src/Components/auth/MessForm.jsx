@@ -24,6 +24,11 @@ const utilitybillalabadanservice = [
     title: "Gas Bill",
     percentage: 0,
   },
+  {
+    id: 4,
+    title: "Transport Bill",
+    percentage: 0,
+  },
 ];
 
 const utilitybilluserservice = [
@@ -42,6 +47,11 @@ const utilitybilluserservice = [
   {
     id: 3,
     title: "Gas Bill",
+    percentage: 0,
+  },
+  {
+    id: 4,
+    title: "Transport Bill",
     percentage: 0,
   },
 ];
@@ -292,7 +302,7 @@ const MessForm = () => {
           {kitchenType === "user-kitchen" && (
             <div className="flex flex-col gap-3">
               <h6 className="font-semibold">Utility Service</h6>
-              <div className="flex items-center gap-6">
+              <div className="flex flex-wrap items-center gap-6">
                 {utilitybilluserservice.map((bill) => (
                   <div key={bill.id} className="flex items-center gap-2">
                     <label className="switch !text-[10px] lg:!text-xs">
