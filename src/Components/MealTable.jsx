@@ -763,18 +763,6 @@ const MealScheduleTable = () => {
           const active = activeMeals.includes(meal);
 
           return (
-            // <button
-            //   key={meal}
-            //   type="button"
-            //   onClick={() => toggleMealColumn(meal)}
-            //   className={`py-2 px-4 rounded-xl text-sm capitalize cursor-pointer font-semibold transition ${
-            //     active
-            //       ? "bg-orange-500 text-white"
-            //       : "bg-gray-200 text-gray-600"
-            //   }`}
-            // >
-            //   {meal}
-            // </button>
             <div className="bg-white rounded-2xl p-4 shadow-lg w-full  md:w-[200px]">
               {/* HEADER */}
               <div

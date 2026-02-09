@@ -421,7 +421,7 @@ const MessForm = () => {
       {/* ================= STEP 3 ================= */}
       {step === 3 && (
         <>
-          <div className="mt-6 space-y-6">
+          <div className=" space-y-3">
             <p className="font-semibold">Select the Meals</p>
 
             <MealScheduleTable />
