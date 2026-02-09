@@ -48,8 +48,12 @@ export const addutilitiesFunction = async (payload) => {
   return data;
 };
 
-
 export const getallfeaturefunction = async () => {
   const { data } = await axiosPublic("/api/all-feature");
+  return data;
+};
+
+export const deletefeatureFunction = async (id) => {
+  const { data } = await axiosPublic("/api/delete-feature");
   return data;
 };

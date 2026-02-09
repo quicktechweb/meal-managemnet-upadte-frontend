@@ -128,3 +128,18 @@ export const useGetFeature = () => {
     retry: false,
   });
 };
+
+
+export const useDeleteFeature = () => {
+   const query = useQueryClient();
+   return useMutation({
+     mutationKey: ["delete-feature"],
+     mutationFn: (id) => deletefeatureFunction(id),
+     onSuccess: (data) => {
+       if (data?.success) {
+         toast.success(data?.message);
+         query.invalidateQueries(["get-all-feature"]);
+       }
+     },
+   });
+}

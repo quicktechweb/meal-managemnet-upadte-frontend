@@ -17,8 +17,6 @@ const UpdateUtilitiesService = () => {
     (item) => item?._id === id,
   );
 
-  console.log(singleUtilities);
-
   const { data } = useAllKitchen();
   const { mutateAsync, isPending } = useUpdateUtilities();
 
@@ -32,20 +30,21 @@ const UpdateUtilitiesService = () => {
   } = useForm();
 
   useEffect(() => {
-    if (singleUtilities) {
+    if (singleUtilities && kitchens.length > 0) {
       reset({
         name: singleUtilities.name,
         price: singleUtilities.price,
         kitchen: singleUtilities?.kitchen?._id || "",
       });
     }
-  }, [singleUtilities, reset]);
+  }, [singleUtilities, kitchens, reset]);
 
   const onSubmit = async (formData) => {
     try {
       await mutateAsync({
         id,
-        data: {
+        payload: {
+          ...formData,
           ...formData,
           price: Number(formData.price),
         },
@@ -132,7 +131,7 @@ const UpdateUtilitiesService = () => {
           <button
             type="submit"
             disabled={isPending}
-            className="w-full bg-blue-600 text-white py-2.5 rounded-xl"
+            className="w-full bg-blue-600 cursor-pointer text-white py-2.5 rounded-xl"
           >
             {isPending ? "Updating..." : "Update Service"}
           </button>
