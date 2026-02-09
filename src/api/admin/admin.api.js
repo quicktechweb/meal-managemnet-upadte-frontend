@@ -3,6 +3,7 @@ import {
   addscheduleFunction,
   deleteScheduleFunction,
   getallschedulefunction,
+  getallutilitiesfunction,
   updateScheduleFunction,
 } from "./admin.hook";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
@@ -55,5 +56,13 @@ export const useUpdateSchedule = () => {
         query.invalidateQueries(["schedule-admin"]);
       }
     },
+  });
+};
+
+export const useUtilitiesService = () => {
+  return useQuery({
+    queryKey: ["get-all-utilities"],
+    queryFn: getallutilitiesfunction,
+    retry: false,
   });
 };

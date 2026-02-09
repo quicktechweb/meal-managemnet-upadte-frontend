@@ -41,6 +41,7 @@ import AddSchedule from "../Pages/FrontEnd/admin/AddSchedule";
 import UpdateSchedule from "../Pages/FrontEnd/admin/UpdateSchedule";
 import NormalUserForm from "../Pages/FrontEnd/all-access-register/NormalUserForm";
 import InstituteUserForm from "../Pages/FrontEnd/all-access-register/InstituteUserForm";
+import Services from "../Pages/FrontEnd/admin/Services";
 
 const router = createBrowserRouter([
   {
@@ -264,6 +265,10 @@ const router = createBrowserRouter([
       {
         path: `update-schedule/:id`,
         element: <UpdateSchedule />,
+      },
+      {
+        path: "service",
+        element: <Services />,
       },
     ],
   },

@@ -65,6 +65,20 @@ const AdminDashboardSidebar = ({ setIsOpenSidebar }) => {
         },
       ],
     },
+    {
+      key: "Service",
+      title: "Service",
+      roles: ["admin"],
+      icon: FaClipboardList,
+      permissionKey: "service",
+      links: [
+        {
+          title: "Service",
+          icon: FaShoppingBag,
+          path: "/admin/dashboard/service",
+        },
+      ],
+    },
   ];
 
   return (

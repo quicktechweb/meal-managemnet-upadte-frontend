@@ -19,3 +19,8 @@ export const updateScheduleFunction = async ({ id, payload }) => {
   const { data } = await axiosPublic.put(`/api/update-schedule/${id}`, payload);
   return data;
 };
+
+export const getallutilitiesfunction = async () => {
+  const { data } = await axiosPublic("/api/all-utilities");
+  return data;
+};
