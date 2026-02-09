@@ -54,6 +54,11 @@ export const getallfeaturefunction = async () => {
 };
 
 export const deletefeatureFunction = async (id) => {
-  const { data } = await axiosPublic("/api/delete-feature");
+  const { data } = await axiosPublic.delete(`/api/delete-feature `,id);
   return data;
 };
+
+
+export const serviceFeatureFunction = async () => {
+  const {data} = await axiosPublic("/api/service")
+}
