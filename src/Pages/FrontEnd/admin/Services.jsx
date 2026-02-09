@@ -1,14 +1,22 @@
 import { Plus } from "lucide-react";
 import React from "react";
 import { Link } from "react-router-dom";
-import { useUtilitiesService } from "../../../api/admin/admin.api";
+import {
+  useDeleteUtilities,
+  useUtilitiesService,
+} from "../../../api/admin/admin.api";
 import { FiEdit } from "react-icons/fi";
 import { MdDelete } from "react-icons/md";
 
 const Services = () => {
   const { data, isLoading } = useUtilitiesService();
+  const { mutateAsync, isPending } = useDeleteUtilities();
 
   const utilities = data?.data || [];
+
+  const handleDelete = async (item) => {
+    await mutateAsync(item?._id);
+  };
 
   return (
     <div className="service-container ">
@@ -78,7 +86,7 @@ const Services = () => {
                       <FiEdit />
                     </Link>
                     <button
-                      // onClick={() => handleDelete(day)}
+                      onClick={() => handleDelete(item)}
                       className="text-xl duration-300 hover:text-red-600 cursor-pointer"
                     >
                       <MdDelete />

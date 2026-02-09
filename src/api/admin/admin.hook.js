@@ -24,3 +24,19 @@ export const getallutilitiesfunction = async () => {
   const { data } = await axiosPublic("/api/all-utilities");
   return data;
 };
+
+
+export const deleteutilitiesFunction = async (id) => {
+  const { data } = await axiosPublic.delete(`/api/delete-utilities/${id}`);
+  return data;
+};
+
+
+
+
+export const updateUtilitiesFunction = async ({ id, payload }) => {
+  const { data } = await axiosPublic.put(`/api/update-utilities/${id}`, payload);
+  return data;
+};
+
+

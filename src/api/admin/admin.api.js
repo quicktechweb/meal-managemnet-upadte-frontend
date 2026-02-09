@@ -2,9 +2,11 @@ import toast from "react-hot-toast";
 import {
   addscheduleFunction,
   deleteScheduleFunction,
+  deleteutilitiesFunction,
   getallschedulefunction,
   getallutilitiesfunction,
   updateScheduleFunction,
+  updateUtilitiesFunction,
 } from "./admin.hook";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
@@ -64,5 +66,35 @@ export const useUtilitiesService = () => {
     queryKey: ["get-all-utilities"],
     queryFn: getallutilitiesfunction,
     retry: false,
+  });
+};
+
+export const useDeleteUtilities = () => {
+  const query = useQueryClient();
+  return useMutation({
+    mutationKey: ["delete-utilities"],
+    mutationFn: (id) => deleteutilitiesFunction(id),
+    onSuccess: (data) => {
+      if (data?.success) {
+        toast.success(data?.message);
+        query.invalidateQueries(["get-all-utilities"]);
+      }
+    },
+  });
+};
+
+export const useUpdateUtilities = () => {
+  const query = useQueryClient();
+  return useMutation({
+    mutationKey: ["update-utilities"],
+    mutationFn: updateUtilitiesFunction,
+    onSuccess: (data) => {
+      if (data?.success) {
+        console.log(data);
+
+        toast.success(data?.message);
+        query.invalidateQueries(["get-all-utilities"]);
+      }
+    },
   });
 };
