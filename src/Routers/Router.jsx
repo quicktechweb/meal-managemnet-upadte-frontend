@@ -43,6 +43,7 @@ import NormalUserForm from "../Pages/FrontEnd/all-access-register/NormalUserForm
 import InstituteUserForm from "../Pages/FrontEnd/all-access-register/InstituteUserForm";
 import Services from "../Pages/FrontEnd/admin/Services";
 import AddUtilitiesService from "../Pages/FrontEnd/admin/AddUtilitiesService";
+import UpdateUtilitiesService from "../Pages/FrontEnd/admin/UpdateUtilitiesService";
 
 const router = createBrowserRouter([
   {
@@ -272,10 +273,13 @@ const router = createBrowserRouter([
         element: <Services />,
       },
       {
-        path: 'add-utilites-service',
-        element:<AddUtilitiesService/>
-      }
-
+        path: "add-utilites-service",
+        element: <AddUtilitiesService />,
+      },
+      {
+        path: "update-utilities-service/:id",
+        element: <UpdateUtilitiesService />,
+      },
     ],
   },
 ]);

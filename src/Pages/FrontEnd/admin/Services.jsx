@@ -42,13 +42,6 @@ const Services = () => {
         </div>
       )}
 
-      {/* Empty State */}
-      {!isLoading && utilities.length === 0 && (
-        <div className="text-center py-20 text-slate-500">
-          No utilities found
-        </div>
-      )}
-
       <div className="bg-white rounded-2xl shadow border border-slate-100 overflow-hidden">
         <table className="w-full">
           <thead className="bg-slate-50">
@@ -82,11 +75,15 @@ const Services = () => {
 
                 <td className="px-6 py-4 flex items-center justify-end gap-2.5 ">
                   <div className="flex items-center gap-2">
-                    <Link className="text-xl cursor-pointer hover:text-violet-700  duration-300">
+                    <Link
+                      to={`/admin/dashboard/update-utilities-service/${item?._id}`}
+                      className="text-xl cursor-pointer hover:text-violet-700  duration-300"
+                    >
                       <FiEdit />
                     </Link>
                     <button
                       onClick={() => handleDelete(item)}
+                      disabled={isPending}
                       className="text-xl duration-300 hover:text-red-600 cursor-pointer"
                     >
                       <MdDelete />
