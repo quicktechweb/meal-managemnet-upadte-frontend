@@ -67,3 +67,8 @@ export const addfeatureFunction = async (payload) => {
   const { data } = await axiosPublic.post("/api/create-feature", payload);
   return data;
 };
+
+export const updateFeatureFunction = async ({ id, payload }) => {
+  const { data } = await axiosPublic.put(`/api/update-feature/${id}`, payload);
+  return data;
+};

@@ -73,7 +73,7 @@ const Features = () => {
                 <td className="px-6 py-4 flex items-center justify-end gap-2.5 ">
                   <div className="flex items-center gap-2">
                     <Link
-                      to={`/admin/dashboard/update-utilities-service/${item?._id}`}
+                      to={`/admin/dashboard/update-feature/${item?._id}`}
                       className="text-xl cursor-pointer hover:text-violet-700  duration-300"
                     >
                       <FiEdit />

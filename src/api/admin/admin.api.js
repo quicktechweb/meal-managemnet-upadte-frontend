@@ -11,6 +11,7 @@ import {
   getallschedulefunction,
   getAllServiceFunction,
   getallutilitiesfunction,
+  updateFeatureFunction,
   updateScheduleFunction,
   updateUtilitiesFunction,
 } from "./admin.hook";
@@ -163,6 +164,20 @@ export const useCreateFeature = () => {
     },
     onError: (err) => {
       toast.error(err?.response?.data?.message);
+    },
+  });
+};
+
+export const useUpdateFeature = () => {
+  const query = useQueryClient();
+  return useMutation({
+    mutationKey: ["update-feature"],
+    mutationFn: updateFeatureFunction,
+    onSuccess: (data) => {
+      if (data?.success) {
+        toast.success(data?.message);
+        query.invalidateQueries(["get-all-feature"]);
+      }
     },
   });
 };

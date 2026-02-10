@@ -45,7 +45,6 @@ const UpdateUtilitiesService = () => {
         id,
         payload: {
           ...formData,
-          ...formData,
           price: Number(formData.price),
         },
       });
