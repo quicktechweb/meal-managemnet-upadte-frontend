@@ -1,7 +1,8 @@
 import React from "react";
-import { useForm } from "react-hook-form";
+import { useFieldArray, useForm } from "react-hook-form";
 import { useAllKitchen, useCreateUtilites } from "../../../api/admin/admin.api";
 import { PlusCircle, Utensils, Tag } from "lucide-react";
+import { RxCross2 } from "react-icons/rx";
 
 const AddUtilitiesService = () => {
   const { data, isLoading } = useAllKitchen();
@@ -11,19 +12,32 @@ const AddUtilitiesService = () => {
 
   const {
     register,
+    control,
     handleSubmit,
     reset,
     formState: { errors },
-  } = useForm();
+  } = useForm({
+    defaultValues: {
+      name: "",
+      price: "",
+      kitchen: "",
+      ranges: [],
+    },
+  });
+
+  const { fields, append, remove } = useFieldArray({
+    control,
+    name: "ranges",
+  });
 
   const onSubmit = async (formData) => {
     try {
       await mutateAsync({
         ...formData,
-        price: Number(formData.price),
+        price: formData.price && Number(formData.price),
       });
 
-      reset(); // clear form after success
+      reset();
     } catch (error) {
       console.error(error);
     }
@@ -103,7 +117,6 @@ const AddUtilitiesService = () => {
                 type="number"
                 placeholder="0.00"
                 {...register("price", {
-                  required: "Price is required",
                   min: { value: 1, message: "Price must be greater than 0" },
                 })}
                 className="w-full bg-slate-50 border border-slate-200 text-slate-900 rounded-xl p-3 pl-10 outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500"
@@ -119,11 +132,64 @@ const AddUtilitiesService = () => {
             )}
           </div>
 
+          {/* range */}
+
+          <div className="flex flex-col gap-2 items-start">
+            <label className="text-sm font-semibold text-slate-700 flex items-center gap-2">
+              <Tag size={16} className="text-slate-400" />
+              Price Range (if needed for any service)
+            </label>
+
+            {fields.map((field, index) => (
+              <div
+                key={field.id}
+                className="flex flex-wrap items-center gap-2 mb-2"
+              >
+                <input
+                  type="number"
+                  placeholder="Min"
+                  {...register(`ranges.${index}.min`)}
+                  className=" bg-slate-50 border border-slate-200 text-slate-900 rounded-xl p-3 w-full sm:w-fit outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500"
+                />
+
+                <input
+                  type="number"
+                  placeholder="Max"
+                  {...register(`ranges.${index}.max`)}
+                  className=" bg-slate-50 border border-slate-200 text-slate-900 rounded-xl p-3 w-full sm:w-fit  outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500"
+                />
+
+                <input
+                  type="number"
+                  placeholder="Price"
+                  {...register(`ranges.${index}.price`)}
+                  className=" bg-slate-50 border border-slate-200 text-slate-900 rounded-xl p-3 w-full sm:w-fit outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500"
+                />
+
+                <button
+                  type="button"
+                  onClick={() => remove(index)}
+                  className="bg-red-500 text-white px-3 cursor-pointer sm:w-[100px] rounded-xl h-[40px] w-[50px] sm:h-[50px] flex items-center justify-center font-semibold"
+                >
+                  <RxCross2 />
+                </button>
+              </div>
+            ))}
+
+            <button
+              type="button"
+              onClick={() => append({ min: "", max: "", price: "" })}
+              className="bg-blue-500 cursor-pointer rounded-xl text-white px-4 py-2"
+            >
+              Add Range
+            </button>
+          </div>
+
           {/* Submit */}
           <button
             type="submit"
             disabled={isPending}
-            className="w-full mt-4 bg-blue-600 hover:bg-blue-700 text-white font-bold py-2.5 rounded-xl shadow-lg shadow-blue-200 hover:shadow-blue-300 transform active:scale-[0.98] transition-all disabled:opacity-50 disabled:cursor-not-allowed text-sm flex justify-center items-center gap-2"
+            className="w-full mt-4 bg-blue-600 hover:bg-blue-700 text-white font-bold py-2.5 rounded-xl shadow-lg shadow-blue-200 hover:shadow-blue-300 transform active:scale-[0.98] transition-all disabled:opacity-50 disabled:cursor-not-allowed text-sm flex justify-center items-center gap-2 cursor-pointer"
           >
             {isPending ? "Processing..." : "Create Service"}
           </button>

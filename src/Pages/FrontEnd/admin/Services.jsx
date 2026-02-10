@@ -10,6 +10,9 @@ import { MdDelete } from "react-icons/md";
 
 const Services = () => {
   const { data, isLoading } = useUtilitiesService();
+
+  console.log(data);
+
   const { mutateAsync, isPending } = useDeleteUtilities();
 
   const utilities = data?.data || [];
@@ -49,6 +52,7 @@ const Services = () => {
               <th className="px-6 py-4 font-semibold">Utility Service Name</th>
               <th className="px-6 py-4 font-semibold">Kitchen</th>
               <th className="px-6 py-4 font-semibold">Price</th>
+              <th className="px-6 py-4 font-semibold">Ranges</th>
               <th className="px-6 py-4 font-semibold text-right">Action</th>
             </tr>
           </thead>
@@ -69,10 +73,39 @@ const Services = () => {
                   </span>
                 </td>
 
-                <td className="px-6 py-4 font-bold text-violet-600">
-                  ৳ {item.price}
+                <td className="px-6 text-xs py-4 font-bold text-violet-600">
+                  {item?.price ? `৳ ${item.price}` : "N/A"}
                 </td>
+                <td className="px-6 py-4 font-bold text-violet-600">
+                  {item?.ranges?.length > 0 ? (
+                    <div className="flex flex-wrap gap-2">
+                      {item?.ranges?.map((range, index) => (
+                        <div
+                          key={index}
+                          className="px-3 py-2 rounded-lg bg-gradient-to-r from-indigo-50 to-purple-50 border border-indigo-100 shadow-sm hover:shadow-md transition"
+                        >
+                          <p className="text-xs font-medium text-gray-700">
+                            <span className="text-indigo-600 font-semibold">
+                              {range?.min}
+                            </span>
+                            {" - "}
+                            <span className="text-purple-600 font-semibold">
+                              {range?.max}
+                            </span>
+                          </p>
 
+                          <p className="text-sm font-bold text-gray-900">
+                            {range?.price}৳
+                          </p>
+                        </div>
+                      ))}
+                    </div>
+                  ) : (
+                    <p className="text-xs text-gray-400 italic">
+                      No Range Available
+                    </p>
+                  )}
+                </td>
                 <td className="px-6 py-4 flex items-center justify-end gap-2.5 ">
                   <div className="flex items-center gap-2">
                     <Link
