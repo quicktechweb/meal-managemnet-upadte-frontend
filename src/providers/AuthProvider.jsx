@@ -11,12 +11,8 @@ const AuthProvider = ({ children }) => {
   const [loading, setLoading] = useState(false);
   const [token, setToken, clearToken] = useLocalStorage("token", null);
 
-  console.log(token);
-
   // mutation:
   const { data: getUserData, isLoading } = useGetUserData(token);
-
-  console.log(getUserData);
 
   // get data:
   useEffect(() => {

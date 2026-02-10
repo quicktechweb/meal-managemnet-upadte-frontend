@@ -1,0 +1,252 @@
+import React, { useEffect } from "react";
+import { useForm, useFieldArray } from "react-hook-form";
+import {
+  PlusCircle,
+  Trash2,
+  Utensils,
+  Sun,
+  Sunrise,
+  Moon,
+  Save,
+} from "lucide-react";
+import {
+  useScheduleAdminData,
+  useUpdateSchedule,
+} from "../../../api/admin/admin.api";
+import { useParams } from "react-router-dom";
+
+const UpdateSchedule = () => {
+  const { id } = useParams();
+  const { data, isLoading } = useScheduleAdminData();
+  const { mutateAsync, isPending } = useUpdateSchedule();
+
+  const singleSchedule = data?.data?.find((schedule) => schedule?._id === id);
+
+  const { control, handleSubmit, watch, setValue, register, reset } = useForm({
+    defaultValues: {
+      day: "Sat",
+      breakfast: [{ meal_id: 1, title: "", price: "" }],
+      lunch: [{ meal_id: 1, title: "", price: "" }],
+      dinner: [{ meal_id: 1, title: "", price: "" }],
+    },
+  });
+
+  const day = watch("day");
+
+  const breakfastArray = useFieldArray({
+    control,
+    name: "breakfast",
+  });
+
+  const lunchArray = useFieldArray({
+    control,
+    name: "lunch",
+  });
+
+  const dinnerArray = useFieldArray({
+    control,
+    name: "dinner",
+  });
+
+  useEffect(() => {
+    if (singleSchedule) {
+      reset({
+        day: singleSchedule?.day || "Sat",
+        breakfast:
+          singleSchedule?.breakfast?.items?.length > 0
+            ? singleSchedule.breakfast.items
+            : [{ meal_id: Date.now(), title: "", price: "" }],
+
+        lunch:
+          singleSchedule?.lunch?.items?.length > 0
+            ? singleSchedule.lunch.items
+            : [{ meal_id: Date.now(), title: "", price: "" }],
+
+        dinner:
+          singleSchedule?.dinner?.items?.length > 0
+            ? singleSchedule.dinner.items
+            : [{ meal_id: Date.now(), title: "", price: "" }],
+      });
+    }
+  }, [singleSchedule, reset]);
+
+  const onSubmit = async (formData) => {
+    const payload = {
+      id,
+      day: formData.day,
+      breakfast: {
+        mealType: "breakfast",
+        items: formData.breakfast,
+      },
+      lunch: {
+        mealType: "lunch",
+        items: formData.lunch,
+      },
+      dinner: {
+        mealType: "dinner",
+        items: formData.dinner,
+      },
+    };
+
+    await mutateAsync({ id: singleSchedule._id, payload });
+  };
+
+  if (isLoading) return <p className="p-10">Loading...</p>;
+
+  return (
+    <div className="min-h-screen">
+      <form
+        onSubmit={handleSubmit(onSubmit)}
+        className="w-full bg-white rounded-2xl shadow-xl overflow-hidden border border-gray-100"
+      >
+        {/* Header */}
+        <div className="bg-gradient-to-r from-purple-600 to-indigo-600 p-8 text-white">
+          <h2 className="text-3xl font-extrabold flex items-center gap-3">
+            <Utensils className="w-8 h-8" /> Update Meal Schedule
+          </h2>
+        </div>
+
+        <div className="p-8 space-y-8">
+          {/* Day Selector */}
+          <div className="flex flex-col md:flex-row md:items-center gap-4 p-4 bg-purple-50 rounded-lg border border-purple-100">
+            <label className="text-purple-900 font-bold text-lg min-w-[120px]">
+              Select Day:
+            </label>
+
+            <div className="flex flex-wrap gap-2">
+              {["Sat", "Sun", "Mon", "Tue", "Wed", "Thu", "Fri"].map((d) => (
+                <button
+                  key={d}
+                  type="button"
+                  onClick={() => setValue("day", d)}
+                  className={`px-4 py-2 rounded-full font-medium transition-all ${
+                    day === d
+                      ? "bg-purple-600 text-white shadow-md scale-105"
+                      : "bg-white text-gray-600 hover:bg-purple-100 border border-gray-200"
+                  }`}
+                >
+                  {d}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* Meals */}
+          <MealSection
+            title="Breakfast"
+            icon={<Sunrise className="text-orange-500" />}
+            fieldArray={breakfastArray}
+            register={register}
+            name="breakfast"
+          />
+
+          <MealSection
+            title="Lunch"
+            icon={<Sun className="text-yellow-500" />}
+            fieldArray={lunchArray}
+            register={register}
+            name="lunch"
+          />
+
+          <MealSection
+            title="Dinner"
+            icon={<Moon className="text-indigo-500" />}
+            fieldArray={dinnerArray}
+            register={register}
+            name="dinner"
+          />
+
+          {/* Submit */}
+          <button
+            type="submit"
+            disabled={isPending}
+            className="w-full bg-purple-600 hover:bg-purple-700 text-white py-2 text-sm rounded-xl font-bold flex items-center justify-center gap-2 shadow-lg"
+          >
+            <Save className="w-5 h-5" />
+            {isPending ? "Updating..." : "Update"}
+          </button>
+        </div>
+      </form>
+    </div>
+  );
+};
+
+export default UpdateSchedule;
+const MealSection = ({ title, icon, fieldArray, register, name }) => {
+  const { fields, append, remove } = fieldArray;
+
+  return (
+    <div className="border border-gray-200 rounded-xl p-5 hover:border-purple-300 transition-colors bg-white">
+      {/* Section Header */}
+      <div className="flex items-center gap-2 mb-4 border-b border-gray-100 pb-2">
+        {icon}
+        <h3 className="font-bold text-gray-800 text-lg uppercase tracking-wide">
+          {title}
+        </h3>
+      </div>
+
+      {/* Meal Items */}
+      <div className="space-y-3">
+        {fields.map((field, index) => (
+          <div key={field.id} className="flex gap-3 items-center">
+            {/* Hidden meal_id */}
+            <input
+              type="hidden"
+              {...register(`${name}.${index}.meal_id`)}
+              defaultValue={field.meal_id}
+            />
+
+            {/* Title and Price */}
+            <div className="flex-grow grid grid-cols-3 gap-2">
+              {/* Meal title */}
+              <input
+                {...register(`${name}.${index}.title`)}
+                placeholder="Ex: Pancakes"
+                className="col-span-2 border border-gray-300 p-2.5 rounded-lg focus:ring-2 focus:ring-purple-500"
+              />
+
+              {/* Meal price */}
+              <div className="relative">
+                <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">
+                  ৳
+                </span>
+                <input
+                  type="number"
+                  {...register(`${name}.${index}.price`)}
+                  placeholder="0.00"
+                  className="w-full border border-gray-300 p-2.5 pl-7 rounded-lg focus:ring-2 focus:ring-purple-500"
+                />
+              </div>
+            </div>
+
+            {/* Remove Item Button */}
+            {fields.length > 1 && (
+              <button
+                type="button"
+                onClick={() => remove(index)}
+                className="p-2 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-full transition-colors"
+              >
+                <Trash2 className="w-5 h-5" />
+              </button>
+            )}
+          </div>
+        ))}
+      </div>
+
+      {/* Add Item Button */}
+      <button
+        type="button"
+        onClick={() =>
+          append({
+            meal_id: Date.now(), // unique ID for meal
+            title: "",
+            price: "",
+          })
+        }
+        className="mt-4 flex items-center gap-1 text-purple-600 font-semibold text-sm hover:text-purple-800"
+      >
+        <PlusCircle className="w-4 h-4" /> Add another item
+      </button>
+    </div>
+  );
+};

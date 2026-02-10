@@ -22,7 +22,7 @@ const LearningManagement = () => {
 
           {/* Girl Image */}
           <img
-            src="https://appbeats.themetags.com/img/image-10.png" // 🔁 replace with your image path
+            src="https://i.ibb.co.com/Sw9D3dHw/8aba889c-2e12-47f5-9a28-303f84168c59.jpg"
             alt="Student"
             className="relative z-10 w-72  rounded-xl"
           />

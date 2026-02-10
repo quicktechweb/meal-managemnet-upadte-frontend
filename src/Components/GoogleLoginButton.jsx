@@ -4,29 +4,30 @@ import axios from "axios";
 import toast from "react-hot-toast";
 import { FcGoogle } from "react-icons/fc";
 import { useNavigate } from "react-router-dom";
+import { useGoogleLogin } from "../api/auth/auth.hook";
 
 const GoogleLoginButton = () => {
   const navigate = useNavigate();
+
+  const { mutateAsync, isPending } = useGoogleLogin();
 
   const handleGoogleLogin = async () => {
     try {
       const result = await signInWithPopup(auth, provider);
       const token = await result.user.getIdToken();
 
-      const res = await axios.post(
-        "http://localhost:5000/api/firebaseAuth/google",
-        { token },
-      );
+      // const res = await axios.post(
+      //   "http://localhost:5000/api/firebaseAuth/google",
+      //   { token },
+      // );
 
-      toast.success(res.data.message);
+      await mutateAsync({ token });
 
-      console.log(res?.data);
+      // if (res?.data?.success) {
+      //   navigate("/dashboard/dashboard");
+      // }
 
-      if (res?.data?.success) {
-        navigate("/dashboard/dashboard");
-      }
-
-      localStorage.setItem("token", JSON.stringify(res.data.token));
+      // localStorage.setItem("token", JSON.stringify(res.data.token));
     } catch (err) {
       toast.error(err);
     }

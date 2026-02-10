@@ -35,6 +35,17 @@ import SingleMessProfile from "../Pages/FrontEnd/Dashboard/UserDashboard/myprofi
 import ChangePassword from "../Pages/FrontEnd/Dashboard/UserDashboard/ChangePassword";
 import PrivacyPolicy from "../Pages/FrontEnd/dynamicpage/PrivecyAndPolicy";
 import TermAndCondition from "../Pages/FrontEnd/dynamicpage/TermAndCondition";
+import AdminDashboard from "../Layout/AdminDashboard";
+import AllSchedule from "../Pages/FrontEnd/admin/AllSchedule";
+import AddSchedule from "../Pages/FrontEnd/admin/AddSchedule";
+import UpdateSchedule from "../Pages/FrontEnd/admin/UpdateSchedule";
+import NormalUserForm from "../Pages/FrontEnd/all-access-register/NormalUserForm";
+import InstituteUserForm from "../Pages/FrontEnd/all-access-register/InstituteUserForm";
+import Services from "../Pages/FrontEnd/admin/Services";
+import AddUtilitiesService from "../Pages/FrontEnd/admin/AddUtilitiesService";
+import UpdateUtilitiesService from "../Pages/FrontEnd/admin/UpdateUtilitiesService";
+import Features from "../Pages/FrontEnd/admin/Features";
+import AddFeature from "../Pages/FrontEnd/admin/AddFeature";
 
 const router = createBrowserRouter([
   {
@@ -106,6 +117,16 @@ const router = createBrowserRouter([
       {
         path: "all-access-register",
         element: <FullAccessRegistration />,
+        children: [
+          {
+            path: "normal-user",
+            element: <NormalUserForm />,
+          },
+          {
+            path: "institute",
+            element: <InstituteUserForm />,
+          },
+        ],
       },
       {
         path: "login",
@@ -214,7 +235,6 @@ const router = createBrowserRouter([
       // supplierpage
     ],
   },
-
   {
     path: "/ecommercesite",
     element: <EcommerceLayout />,
@@ -223,6 +243,55 @@ const router = createBrowserRouter([
         path: "/ecommercesite",
         element: <EcommerceSite />,
       },
+    ],
+  },
+  {
+    path: "/admin/dashboard/",
+    element: (
+      //  <PrivateRoute>
+      <AdminDashboard />
+      //  </PrivateRoute>
+    ),
+    children: [
+      {
+        index: true,
+        path: "home",
+        element: <UserDashboardHome />,
+      },
+      {
+        path: "all-Schedule",
+        element: <AllSchedule />,
+      },
+      {
+        path: "add-schedule",
+        element: <AddSchedule />,
+      },
+      {
+        path: `update-schedule/:id`,
+        element: <UpdateSchedule />,
+      },
+      {
+        path: "service",
+        element: <Services />,
+      },
+      {
+        path: "add-utilites-service",
+        element: <AddUtilitiesService />,
+      },
+      {
+        path: "update-utilities-service/:id",
+        element: <UpdateUtilitiesService />,
+      },
+
+      {
+        path: "features",
+        element: <Features />,
+      },
+
+      {
+        path: "add-feature",
+        element:<AddFeature/>
+      }
     ],
   },
 ]);
