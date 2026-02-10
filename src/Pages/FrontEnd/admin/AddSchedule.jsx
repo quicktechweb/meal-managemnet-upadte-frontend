@@ -32,8 +32,6 @@ const AddSchedule = () => {
   const { mutateAsync, isPending } = useCreateSchedule();
 
   const onSubmit = async (data) => {
-    console.log(data, "meal data");
-
     const meals = data.meals.map((meal) => ({
       mealType: meal.mealType,
       items: meal.items.map((item, idx) => ({ ...item, meal_id: idx + 1 })),

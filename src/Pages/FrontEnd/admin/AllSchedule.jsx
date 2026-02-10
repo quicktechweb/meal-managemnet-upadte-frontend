@@ -53,13 +53,20 @@ const AllSchedule = () => {
   };
 
   return (
-    <div className="p-4 md:p-8 bg-[#F8FAFC] min-h-screen">
+    <div className="p-4 bg-[#F8FAFC] min-h-screen">
       <div className="max-w-7xl mx-auto">
         {/* Header */}
-        <div className="flex justify-between mb-8">
-          <h1 className="text-3xl font-extrabold text-slate-900">
-            Weekly <span className="text-violet-600">Menu</span>
-          </h1>
+        <div className="flex justify-between items-start mb-8">
+          <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
+            <div>
+              <h1 className="text-3xl font-extrabold text-slate-900 tracking-tight">
+                Weekly <span className="text-violet-600">Menu</span> Matrix
+              </h1>
+              <p className="text-slate-500 text-sm mt-1">
+                Manage and view your weekly meal distribution
+              </p>
+            </div>
+          </div>
 
           <Link
             to="/admin/dashboard/add-schedule"
@@ -113,6 +120,7 @@ const AllSchedule = () => {
                       </Link>
                       <button
                         onClick={() => handleDelete(day)}
+                        className="cursor-pointer"
                         disabled={isPending}
                       >
                         <MdDelete />
