@@ -1,5 +1,6 @@
 import toast from "react-hot-toast";
 import {
+  addfeatureFunction,
   addscheduleFunction,
   addutilitiesFunction,
   deleteScheduleFunction,
@@ -7,6 +8,7 @@ import {
   getallfeaturefunction,
   getAllKitchenFunction,
   getallschedulefunction,
+  getAllServiceFunction,
   getallutilitiesfunction,
   updateScheduleFunction,
   updateUtilitiesFunction,
@@ -129,17 +131,37 @@ export const useGetFeature = () => {
   });
 };
 
-
 export const useDeleteFeature = () => {
-   const query = useQueryClient();
-   return useMutation({
-     mutationKey: ["delete-feature"],
-     mutationFn: (id) => deletefeatureFunction(id),
-     onSuccess: (data) => {
-       if (data?.success) {
-         toast.success(data?.message);
-         query.invalidateQueries(["get-all-feature"]);
-       }
-     },
-   });
-}
+  const query = useQueryClient();
+  return useMutation({
+    mutationKey: ["delete-feature"],
+    mutationFn: (id) => deletefeatureFunction(id),
+    onSuccess: (data) => {
+      if (data?.success) {
+        toast.success(data?.message);
+        query.invalidateQueries(["get-all-feature"]);
+      }
+    },
+  });
+};
+
+export const useAllService = () => {
+  return useQuery({
+    queryKey: ["all-service"],
+    queryFn: getAllServiceFunction,
+    retry: false,
+  });
+};
+
+export const useCreateFeature = () => {
+  return useMutation({
+    mutationKey: ["create-feature"],
+    mutationFn: (payload) => addfeatureFunction(payload),
+    onSuccess: (data) => {
+      toast.success(data?.message);
+    },
+    onError: (err) => {
+      toast.error(err?.response?.data?.message);
+    },
+  });
+};

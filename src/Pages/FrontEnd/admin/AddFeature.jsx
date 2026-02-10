@@ -1,13 +1,15 @@
 import React from "react";
 import { useForm } from "react-hook-form";
-import { useAllKitchen, useCreateUtilites } from "../../../api/admin/admin.api";
+import { useAllService, useCreateFeature } from "../../../api/admin/admin.api";
 import { PlusCircle, Utensils, Tag } from "lucide-react";
 
 const AddFeature = () => {
-  const { data, isLoading } = useAllKitchen();
-  const { mutateAsync, isPending } = useCreateUtilites();
+  const { data, isLoading } = useAllService();
+  const { mutateAsync, isPending } = useCreateFeature();
 
-  const kitchens = data?.data || [];
+  console.log(data);
+
+  const services = data?.data || [];
 
   const {
     register,
@@ -45,7 +47,7 @@ const AddFeature = () => {
         </div>
 
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-          {/* Kitchen */}
+          {/* service */}
           <div className="space-y-2">
             <label className="text-sm font-semibold text-slate-700 flex items-center gap-2">
               <Utensils size={16} className="text-slate-400" />
@@ -53,19 +55,19 @@ const AddFeature = () => {
             </label>
 
             <select
-              {...register("kitchen", { required: "Kitchen is required" })}
+              {...register("service", { required: "service is required" })}
               className="w-full bg-slate-50 border border-slate-200 text-slate-900 rounded-xl p-3 outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500"
             >
-              <option value="">Choose a kitchen...</option>
-              {kitchens.map((item) => (
+              <option value="">Choose a services...</option>
+              {services?.map((item) => (
                 <option key={item._id} value={item._id}>
                   {item.title}
                 </option>
               ))}
             </select>
 
-            {errors.kitchen && (
-              <p className="text-red-500 text-sm">{errors.kitchen.message}</p>
+            {errors.services && (
+              <p className="text-red-500 text-sm">{errors.services.message}</p>
             )}
           </div>
 
@@ -73,12 +75,12 @@ const AddFeature = () => {
           <div className="space-y-2">
             <label className="text-sm font-semibold text-slate-700 flex items-center gap-2">
               <Tag size={16} className="text-slate-400" />
-              Service Name
+              Feature Name
             </label>
 
             <input
               type="text"
-              placeholder="e.g. Gas Maintenance"
+              placeholder="e.g. balance"
               {...register("name", { required: "Service name is required" })}
               className="w-full bg-slate-50 border border-slate-200 text-slate-900 rounded-xl p-3 outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500"
             />
@@ -92,7 +94,7 @@ const AddFeature = () => {
           <div className="space-y-2">
             <label className="text-sm font-semibold text-slate-700 flex items-center gap-2">
               <span className="text-slate-400 text-lg">৳</span>
-              Service Price
+              Feature Price
             </label>
 
             <div className="relative">
@@ -122,7 +124,7 @@ const AddFeature = () => {
             disabled={isPending}
             className="w-full mt-4 bg-blue-600 hover:bg-blue-700 text-white font-bold py-2.5 rounded-xl shadow-lg shadow-blue-200 hover:shadow-blue-300 transform active:scale-[0.98] transition-all disabled:opacity-50 disabled:cursor-not-allowed text-sm flex justify-center items-center gap-2"
           >
-            {isPending ? "Processing..." : "Create Service"}
+            {isPending ? "Processing..." : "Create Feature"}
           </button>
         </form>
       </div>
