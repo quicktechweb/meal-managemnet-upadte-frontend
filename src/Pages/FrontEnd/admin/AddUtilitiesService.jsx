@@ -43,6 +43,10 @@ const AddUtilitiesService = () => {
     }
   };
 
+  const handleChange = (e) => {
+    console.log(e.target.value);
+  };
+
   return (
     <div className="flex bg-gray-50/50">
       <div className="w-full bg-white rounded-2xl shadow-xl shadow-slate-200/60 border border-slate-100 p-4">
@@ -70,6 +74,7 @@ const AddUtilitiesService = () => {
             </label>
 
             <select
+              onChange={(e) => handleChange(e)}
               {...register("kitchen", { required: "Kitchen is required" })}
               className="w-full bg-slate-50 border border-slate-200 text-slate-900 rounded-xl p-3 outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500"
             >

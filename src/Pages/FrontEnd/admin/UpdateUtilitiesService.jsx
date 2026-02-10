@@ -18,8 +18,6 @@ const UpdateUtilitiesService = () => {
     (item) => item?._id === id,
   );
 
-  console.log(singleUtilities);
-
   const { data } = useAllKitchen();
   const { mutateAsync, isPending } = useUpdateUtilities();
 
