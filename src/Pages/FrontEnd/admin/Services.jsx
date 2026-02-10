@@ -1,4 +1,4 @@
-import { Plus } from "lucide-react";
+import { Plus, UtensilsCrossed } from "lucide-react";
 import React from "react";
 import { Link } from "react-router-dom";
 import {
@@ -58,7 +58,7 @@ const Services = () => {
           </thead>
 
           <tbody>
-            {utilities.map((item) => (
+            {utilities?.map((item) => (
               <tr
                 key={item._id}
                 className="border-t border-gray-300 hover:bg-slate-50 transition"
@@ -127,6 +127,13 @@ const Services = () => {
             ))}
           </tbody>
         </table>
+
+        {utilities?.length === 0 && (
+          <div className="py-20 flex flex-col items-center justify-center text-slate-400">
+            <UtensilsCrossed size={48} className="mb-4 opacity-20" />
+            <p className="font-medium">No Utilities records found.</p>
+          </div>
+        )}
       </div>
     </div>
   );
