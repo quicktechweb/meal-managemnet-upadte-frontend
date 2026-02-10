@@ -3,8 +3,8 @@ import { FaUser, FaUtensils, FaConciergeBell } from "react-icons/fa";
 const Stepper = ({ step }) => {
   const steps = [
     { id: 1, label: "Personal", icon: <FaUser /> },
-    { id: 2, label: "Kitchen", icon: <FaUtensils /> },
-    { id: 3, label: "Service", icon: <FaConciergeBell /> },
+    { id: 2, label: "Service", icon: <FaUtensils /> },
+    { id: 3, label: "Routine", icon: <FaConciergeBell /> },
   ];
 
   return (

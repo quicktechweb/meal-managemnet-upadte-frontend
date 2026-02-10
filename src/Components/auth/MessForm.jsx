@@ -24,6 +24,11 @@ const utilitybillalabadanservice = [
     title: "Gas Bill",
     percentage: 0,
   },
+  {
+    id: 4,
+    title: "Transport Bill",
+    percentage: 0,
+  },
 ];
 
 const utilitybilluserservice = [
@@ -42,6 +47,11 @@ const utilitybilluserservice = [
   {
     id: 3,
     title: "Gas Bill",
+    percentage: 0,
+  },
+  {
+    id: 4,
+    title: "Transport Bill",
     percentage: 0,
   },
 ];
@@ -180,6 +190,18 @@ const MessForm = () => {
             error={errors.phone}
           />
 
+          <FloatingInput
+            label="Name of the Hall / Hostel"
+            {...register("hall", { required: "hall / hostel   required" })}
+            error={errors.hall}
+          />
+
+          <FloatingInput
+            label="Name of the Mess"
+            {...register("hall", { required: "mess  required" })}
+            error={errors.mess}
+          />
+
           <div className="w-full max-w-xl">
             <label className="block text-sm md:text-base font-medium text-gray-600 mb-2">
               Upload Institute Documents
@@ -203,18 +225,6 @@ const MessForm = () => {
 
             <p className="text-xs text-gray-400 mt-1">PNG, JPG up to 5MB</p>
           </div>
-          <FloatingInput
-            label="Name of the Hall / Hostel"
-            {...register("hall", { required: "hall / hostel   required" })}
-            error={errors.hall}
-          />
-
-          <FloatingInput
-            label="Name of the Mess"
-            {...register("hall", { required: "mess  required" })}
-            error={errors.mess}
-          />
-
           <button
             type="button"
             onClick={nextStep}
@@ -292,7 +302,7 @@ const MessForm = () => {
           {kitchenType === "user-kitchen" && (
             <div className="flex flex-col gap-3">
               <h6 className="font-semibold">Utility Service</h6>
-              <div className="flex items-center gap-6">
+              <div className="flex flex-wrap items-center gap-6">
                 {utilitybilluserservice.map((bill) => (
                   <div key={bill.id} className="flex items-center gap-2">
                     <label className="switch !text-[10px] lg:!text-xs">
@@ -421,7 +431,7 @@ const MessForm = () => {
       {/* ================= STEP 3 ================= */}
       {step === 3 && (
         <>
-          <div className="mt-6 space-y-6">
+          <div className=" space-y-3">
             <p className="font-semibold">Select the Meals</p>
 
             <MealScheduleTable />

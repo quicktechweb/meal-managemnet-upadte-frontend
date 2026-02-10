@@ -1,12 +1,24 @@
-import { useState, useRef, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { FaCheckCircle, FaChevronDown, FaTimes } from "react-icons/fa";
+
+/* ===============================
+   CONFIG
+================================ */
+
+const dynamicTableBaseData = [
+  "breakfast",
+  "tiffin",
+  "lunch",
+  "snack",
+  "dinner",
+];
 
 export const schedule2 = [
   {
-    mealTypeid: 1,
     day: "Sat",
     breakfast: {
       mealType: "breakfast",
+      time: "8:00-10:00",
       items: [
         {
           meal_id: 1,
@@ -32,6 +44,7 @@ export const schedule2 = [
     },
     lunch: {
       mealType: "lunch",
+      time: "1:30-2:30",
       items: [
         {
           meal_id: 1,
@@ -62,6 +75,7 @@ export const schedule2 = [
     },
     dinner: {
       mealType: "dinner",
+      time: "9:00 - 11:00",
       items: [
         {
           meal_id: 1,
@@ -87,10 +101,10 @@ export const schedule2 = [
     },
   },
   {
-    mealTypeid: 2,
     day: "Sun",
     breakfast: {
       mealType: "breakfast",
+      time: "8:00-10:00",
       items: [
         {
           meal_id: 1,
@@ -116,6 +130,7 @@ export const schedule2 = [
     },
     lunch: {
       mealType: "lunch",
+      time: "1:30-2:30",
       items: [
         {
           meal_id: 1,
@@ -146,6 +161,7 @@ export const schedule2 = [
     },
     dinner: {
       mealType: "dinner",
+      time: "9:00 - 11:00",
       items: [
         {
           meal_id: 1,
@@ -171,10 +187,10 @@ export const schedule2 = [
     },
   },
   {
-    meal_type_id: 3,
     day: "Mon",
     breakfast: {
       mealType: "breakfast",
+      time: "8:00-10:00",
       items: [
         {
           meal_id: 1,
@@ -195,6 +211,7 @@ export const schedule2 = [
     },
     lunch: {
       mealType: "lunch",
+      time: "1:30-2:30",
       items: [
         {
           meal_id: 1,
@@ -215,6 +232,7 @@ export const schedule2 = [
     },
     dinner: {
       mealType: "dinner",
+      time: "9:00 - 11:00",
       items: [
         {
           meal_id: 1,
@@ -235,10 +253,10 @@ export const schedule2 = [
     },
   },
   {
-    meal_type_id: 3,
     day: "Tue",
     breakfast: {
       mealType: "breakfast",
+      time: "8:00-10:00",
       items: [
         {
           meal_id: 1,
@@ -274,6 +292,7 @@ export const schedule2 = [
     },
     lunch: {
       mealType: "lunch",
+      time: "1:30-2:30",
       items: [
         {
           meal_id: 1,
@@ -294,6 +313,7 @@ export const schedule2 = [
     },
     dinner: {
       mealType: "dinner",
+      time: "9:00 - 11:00",
       items: [
         {
           meal_id: 1,
@@ -319,10 +339,10 @@ export const schedule2 = [
     },
   },
   {
-    meal_type_id: 3,
     day: "Wed",
     breakfast: {
       mealType: "breakfast",
+      time: "8:00-10:00",
       items: [
         {
           meal_id: 1,
@@ -358,6 +378,7 @@ export const schedule2 = [
     },
     lunch: {
       mealType: "lunch",
+      time: "1:30-2:30",
       items: [
         {
           meal_id: 1,
@@ -378,6 +399,7 @@ export const schedule2 = [
     },
     dinner: {
       mealType: "dinner",
+      time: "9:00 - 11:00",
       items: [
         {
           meal_id: 1,
@@ -404,10 +426,10 @@ export const schedule2 = [
   },
 
   {
-    mealTypeid: 1,
     day: "Thu",
     breakfast: {
       mealType: "breakfast",
+      time: "8:00-10:00",
       items: [
         {
           meal_id: 1,
@@ -433,6 +455,7 @@ export const schedule2 = [
     },
     lunch: {
       mealType: "lunch",
+      time: "1:30-2:30",
       items: [
         {
           meal_id: 1,
@@ -463,6 +486,7 @@ export const schedule2 = [
     },
     dinner: {
       mealType: "dinner",
+      time: "9:00 - 11:00",
       items: [
         {
           meal_id: 1,
@@ -488,10 +512,10 @@ export const schedule2 = [
     },
   },
   {
-    meal_type_id: 3,
     day: "Fri",
     breakfast: {
       mealType: "breakfast",
+      time: "8:00-10:00",
       items: [
         {
           meal_id: 1,
@@ -512,6 +536,7 @@ export const schedule2 = [
     },
     lunch: {
       mealType: "lunch",
+      time: "1:30-2:30",
       items: [
         {
           meal_id: 1,
@@ -532,6 +557,7 @@ export const schedule2 = [
     },
     dinner: {
       mealType: "dinner",
+      time: "9:00 - 11:00",
       items: [
         {
           meal_id: 1,
@@ -553,52 +579,84 @@ export const schedule2 = [
   },
 ];
 
+/* ===============================
+   COMPONENT
+================================ */
+
 const MealScheduleTable = () => {
   const days = ["Sat", "Sun", "Mon", "Tue", "Wed", "Thu", "Fri"];
 
+  /* -------- Active Column Selection -------- */
+  const [activeMeals, setActiveMeals] = useState([
+    "breakfast",
+    "lunch",
+    "dinner",
+  ]);
+
+  /* -------- Toggle Column -------- */
+  const toggleMealColumn = (meal) => {
+    setActiveMeals((prev) =>
+      prev.includes(meal)
+        ? prev.length === 1
+          ? prev
+          : prev.filter((m) => m !== meal)
+        : [...prev, meal],
+    );
+  };
+
+  /* -------- Schedule Fast Map -------- */
+  const scheduleMap = useMemo(() => {
+    return Object.fromEntries(schedule2.map((d) => [d.day, d]));
+  }, []);
+
+  /* -------- Selected Meal Items -------- */
   const [selectedMeals, setSelectedMeals] = useState(() =>
     days.reduce((acc, day) => {
-      acc[day] = { breakfast: [], lunch: [], dinner: [] };
+      acc[day] = dynamicTableBaseData.reduce((mAcc, meal) => {
+        mAcc[meal] = [];
+        return mAcc;
+      }, {});
       return acc;
     }, {}),
   );
 
+  /* -------- Dropdown Open State -------- */
   const [openDropdown, setOpenDropdown] = useState({});
 
   useEffect(() => {
-    const handleClickOutside = () => {
-      setOpenDropdown({});
-    };
-    window.addEventListener("click", handleClickOutside);
-    return () => window.removeEventListener("click", handleClickOutside);
+    const close = () => setOpenDropdown({});
+    window.addEventListener("click", close);
+    return () => window.removeEventListener("click", close);
   }, []);
 
+  /* -------- Dropdown Toggle -------- */
   const toggleDropdown = (e, day, mealType) => {
     e.stopPropagation();
-
     const key = `${day}-${mealType}`;
-    setOpenDropdown({
-      [key]: !openDropdown[key],
-    });
+    setOpenDropdown((prev) => ({
+      [key]: !prev[key],
+    }));
   };
 
+  /* -------- Item Select Toggle -------- */
   const handleMealToggle = (day, mealType, mealId) => {
     setSelectedMeals((prev) => {
-      const currentSelection = prev[day][mealType];
-      const isSelected = currentSelection.includes(mealId);
+      const current = prev[day][mealType];
+      const isSelected = current.includes(mealId);
 
       return {
         ...prev,
         [day]: {
           ...prev[day],
           [mealType]: isSelected
-            ? currentSelection.filter((id) => id !== mealId)
-            : [...currentSelection, mealId],
+            ? current.filter((id) => id !== mealId)
+            : [...current, mealId],
         },
       };
     });
   };
 
+  /* -------- Remove Tag -------- */
   const removeTag = (e, day, mealType, mealId) => {
     e.stopPropagation();
     setSelectedMeals((prev) => ({
@@ -610,22 +668,30 @@ const MealScheduleTable = () => {
     }));
   };
 
-  const renderDropdown = (day, mealType, mealData, i) => {
+  /* ===============================
+     DROPDOWN CELL
+  ================================ */
+
+  const renderDropdown = (day, mealType, mealData) => {
     const key = `${day}-${mealType}`;
     const isOpen = openDropdown[key];
+    const items = mealData?.items || [];
 
     return (
-      <td className="px-3 py-2 flex-1 align-top w-full relative">
-        <div className="flex flex-wrap w-full lg:w-[315px]  gap-2 mb-1">
+      <td key={mealType} className="px-3 py-2 align-top relative">
+        {/* Selected Tags */}
+        <div className="flex flex-wrap gap-2 mb-1">
           {selectedMeals[day][mealType].map((id) => {
-            const meal = mealData.items.find((m) => m.meal_id === id);
+            const meal = items.find((m) => m.meal_id === id);
+            if (!meal) return null;
+
             return (
               <div
                 key={id}
-                className="flex items-center gap-1 text-gray-700   rounded-full text-xs"
+                className="flex items-center gap-1 text-gray-700 text-xs"
               >
                 <FaCheckCircle className="text-green-600 text-[10px]" />
-                {meal?.title} ({meal?.price})
+                {meal.title} ({meal.price})
                 <FaTimes
                   className="cursor-pointer hover:text-red-500"
                   onClick={(e) => removeTag(e, day, mealType, id)}
@@ -635,153 +701,134 @@ const MealScheduleTable = () => {
           })}
         </div>
 
-        {/* Dropdown toggle button */}
+        {/* Toggle */}
         <div
-          className="border relative border-gray-300 rounded-md p-2  w-full flex items-center justify-between cursor-pointer bg-white"
+          className="border border-gray-300 rounded-md p-2 flex justify-between cursor-pointer bg-white"
           onClick={(e) => toggleDropdown(e, day, mealType)}
         >
           <span className="text-gray-400 text-xs">
             {selectedMeals[day][mealType].length > 0
-              ? `Select ${mealData?.items[2]?.title}...`
-              : `Select ${mealData?.items[0]?.title}`}
+              ? `${selectedMeals[day][mealType].length} selected`
+              : `Select ${mealType}`}
           </span>
-          <FaChevronDown className="ml-2 text-xs" />
+          <FaChevronDown className="text-xs" />
         </div>
 
-        {/* Dropdown list */}
+        {/* Dropdown */}
         {isOpen && (
           <div
             onClick={(e) => e.stopPropagation()}
-            className={`absolute ${(i === 5 || i === 6) && "-top-20"} border-gray-300 z-20  mt-1 w-[315px] bg-white border rounded-md shadow-lg max-h-30 overflow-y-auto`}
+            className="absolute z-20 mt-1 w-full bg-white border rounded-md shadow-lg max-h-40 overflow-y-auto"
           >
-            {mealData.items.map((item, idx) => {
-              const isSelected = selectedMeals[day][mealType].includes(
-                item.meal_id,
-              );
-              return (
-                <label
-                  key={`${item.meal_id}-${idx}`}
-                  className="flex items-center justify-between px-3 py-2 hover:bg-orange-50 cursor-pointer text-sm"
-                >
-                  <span>
-                    {item.title} ({item.price}৳)
-                  </span>
-                  <input
-                    type="checkbox"
-                    className="cursor-pointer"
-                    checked={isSelected}
-                    onChange={() =>
-                      handleMealToggle(day, mealType, item.meal_id)
-                    }
-                  />
-                </label>
-              );
-            })}
+            {items.length === 0 ? (
+              <div className="p-2 text-gray-400 text-sm">
+                No {mealType} available
+              </div>
+            ) : (
+              items.map((item) => {
+                const isSelected = selectedMeals[day][mealType].includes(
+                  item.meal_id,
+                );
+
+                return (
+                  <label
+                    key={item.meal_id}
+                    className="flex justify-between px-3 py-2 hover:bg-orange-50 cursor-pointer text-sm"
+                  >
+                    <span>
+                      {item.title} ({item.price}৳)
+                    </span>
+
+                    <input
+                      type="checkbox"
+                      checked={isSelected}
+                      onChange={() =>
+                        handleMealToggle(day, mealType, item.meal_id)
+                      }
+                    />
+                  </label>
+                );
+              })
+            )}
           </div>
         )}
       </td>
     );
   };
 
-  const renderMobileDropDown = (day, mealType, mealData, i) => {
-    const key = `${day}-${mealType}`;
-    const isOpen = openDropdown[key];
-
-    return (
-      <div className="py-2 flex-1 align-top w-full relative">
-        <div className="flex flex-wrap w-full lg:w-[315px]  gap-2 mb-1">
-          {selectedMeals[day][mealType].map((id) => {
-            const meal = mealData.items.find((m) => m.meal_id === id);
-            return (
-              <div
-                key={id}
-                className="flex items-center gap-1 text-gray-700   rounded-full text-xs"
-              >
-                <FaCheckCircle className="text-green-600 text-[10px]" />
-                {meal?.title} ({meal?.price})
-                <FaTimes
-                  className="cursor-pointer hover:text-red-500"
-                  onClick={(e) => removeTag(e, day, mealType, id)}
-                />
-              </div>
-            );
-          })}
-        </div>
-
-        {/* Dropdown toggle button */}
-        <div
-          className="border relative border-gray-300 rounded-md p-2  w-full flex items-center justify-between cursor-pointer bg-white"
-          onClick={(e) => toggleDropdown(e, day, mealType)}
-        >
-          <span className="text-gray-400 text-xs">
-            {selectedMeals[day][mealType].length > 0
-              ? `Select ${mealData?.items[2]?.title}...`
-              : `Select ${mealData?.items[0]?.title}`}
-          </span>
-          <FaChevronDown className="ml-2 text-xs" />
-        </div>
-
-        {/* Dropdown list */}
-        {isOpen && (
-          <div
-            onClick={(e) => e.stopPropagation()}
-            className={`absolute ${(i === 5 || i === 6) && "-top-20"} border-gray-300 z-20  mt-1 w-[315px] bg-white border rounded-md shadow-lg max-h-30 overflow-y-auto`}
-          >
-            {mealData.items.map((item, idx) => {
-              const isSelected = selectedMeals[day][mealType].includes(
-                item.meal_id,
-              );
-              return (
-                <label
-                  key={`${item.meal_id}-${idx}`}
-                  className="flex items-center justify-between px-3 py-2 hover:bg-orange-50 cursor-pointer text-sm"
-                >
-                  <span>
-                    {item.title} ({item.price}৳)
-                  </span>
-                  <input
-                    type="checkbox"
-                    className="cursor-pointer"
-                    checked={isSelected}
-                    onChange={() =>
-                      handleMealToggle(day, mealType, item.meal_id)
-                    }
-                  />
-                </label>
-              );
-            })}
-          </div>
-        )}
-      </div>
-    );
-  };
-
   return (
     <>
-      <div className="hidden lg:block  overflow-x-auto border border-gray-300 rounded-lg shadow-sm">
-        <table className="min-w-full text-sm sm:text-base border-collapse">
+      <div className="flex flex-wrap gap-2 mb-4">
+        {dynamicTableBaseData.map((meal) => {
+          const active = activeMeals.includes(meal);
+
+          return (
+            <div className="bg-white rounded-2xl p-4 shadow-lg w-full  md:w-[200px]">
+              {/* HEADER */}
+              <div
+                className={`flex flex-col items-center gap-3 px-4 py-3 rounded-xl `}
+              >
+                <h3 className="font-semibold capitalize">{meal}</h3>
+                <div className="flex justify-center ">
+                  <label className="switch !text-[10px]">
+                    <input
+                      type="checkbox"
+                      checked={!!active}
+                      onClick={() => toggleMealColumn(meal)}
+                    />
+                    <span className="slider"></span>
+                  </label>
+                </div>
+              </div>
+
+              {/* ACTION BUTTON */}
+              <button
+                key={meal}
+                type="button"
+                onClick={() => toggleMealColumn(meal)}
+                className={` w-full py-2 text-sm cursor-pointer rounded-xl font-semibold
+                      ${
+                        active
+                          ? "bg-green-500 text-white"
+                          : "bg-gradient-to-r from-orange-400 to-pink-500 text-white"
+                      }`}
+              >
+                {active ? "Selected" : "Select Meal"}
+              </button>
+            </div>
+          );
+        })}
+      </div>
+
+      {/* Desktop Table */}
+      <div className="hidden lg:block overflow-x-auto border border-gray-300 rounded-lg shadow-sm">
+        <table className="min-w-full text-sm border-collapse">
           <thead className="bg-orange-500 text-white">
             <tr>
-              <th className="px-4 py-3 text-left">Days</th>
-              <th className="px-4 py-3 text-left">Breakfast</th>
-              <th className="px-4 py-3 text-left">Lunch</th>
-              <th className="px-4 py-3 text-left">Dinner</th>
+              <th className="px-4 py-3 text-left">Day</th>
+
+              {activeMeals.map((meal) => (
+                <th key={meal} className="px-4 py-3 text-left capitalize">
+                  {meal}
+                </th>
+              ))}
             </tr>
           </thead>
+
           <tbody>
-            {days.map((day, i) => {
-              const dayMeals = schedule2.find((m) => m.day === day);
+            {days.map((day) => {
+              const dayMeals = scheduleMap[day] || {};
+
               return (
                 <tr
                   key={day}
-                  className="border-b w-[50%] border-gray-300 hover:bg-gray-50"
+                  className="border-b border-gray-300 hover:bg-gray-50"
                 >
-                  <td className="px-4 py-2 text-center font-bold text-gray-700">
-                    {day}
-                  </td>
-                  {renderDropdown(day, "breakfast", dayMeals.breakfast, i)}
-                  {renderDropdown(day, "lunch", dayMeals.lunch, i)}
-                  {renderDropdown(day, "dinner", dayMeals.dinner, i)}
+                  <td className="px-4 py-2 font-bold text-gray-700">{day}</td>
+
+                  {activeMeals.map((mealType) =>
+                    renderDropdown(day, mealType, dayMeals?.[mealType]),
+                  )}
                 </tr>
               );
             })}
@@ -789,34 +836,30 @@ const MealScheduleTable = () => {
         </table>
       </div>
 
-      <div className="lg:hidden space-y-2 lg:space-y-0">
-        {days.map((day, i) => {
-          const dayMeals = schedule2.find((m) => m.day === day);
+      {/* Mobile View */}
+      <div className="lg:hidden space-y-3">
+        {days.map((day) => {
+          const dayMeals = scheduleMap[day] || {};
 
           return (
             <div
               key={day}
               className="border border-gray-300 rounded-xl p-3 shadow-sm bg-white"
             >
-              <h3 className="text-center font-bold text-orange-500 ">{day}</h3>
+              <h3 className="text-center font-bold text-orange-500">{day}</h3>
 
-              {/* Breakfast */}
-              <div className=" w-full">
-                <p className="text-sm font-semibold">Breakfast</p>
-                {renderMobileDropDown(day, "breakfast", dayMeals.breakfast, i)}
-              </div>
-
-              {/* Lunch */}
-              <div className="w-full">
-                <p className="text-sm font-semibold ">Lunch</p>
-                {renderMobileDropDown(day, "lunch", dayMeals.lunch, i)}
-              </div>
-
-              {/* Dinner */}
-              <div className="w-full">
-                <p className="text-sm font-semibold">Dinner</p>
-                {renderMobileDropDown(day, "dinner", dayMeals.dinner, i)}
-              </div>
+              {activeMeals.map((mealType) => (
+                <div key={mealType}>
+                  <p className="text-sm font-semibold capitalize">{mealType}</p>
+                  <table className="w-full">
+                    <tbody>
+                      <tr>
+                        {renderDropdown(day, mealType, dayMeals?.[mealType])}
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              ))}
             </div>
           );
         })}

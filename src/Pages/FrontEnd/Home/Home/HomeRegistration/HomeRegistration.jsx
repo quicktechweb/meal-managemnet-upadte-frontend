@@ -54,7 +54,7 @@ const HomeLogin = () => {
 
           <div className="flex">
             <Link
-              to={"/auth/all-access-register"}
+              to={"/auth/all-access-register/normal-user"}
               className="group bg-orange-500 text-white px-6 py-2 rounded-2xl font-bold transition-all hover:bg-orange-600 flex items-center gap-3 shadow-xl shadow-orange-200 cursor-pointer"
             >
               Registration

@@ -54,6 +54,8 @@ export const useGoogleLogin = () => {
     mutationKey: "google-login",
     mutationFn: (payload) => googleLoginFunction(payload),
     onSuccess: (data) => {
+      console.log(data, "google data");
+
       toast.success(data?.message);
       setToken(data?.token);
       // navigate("/dashboard/dashboard");
