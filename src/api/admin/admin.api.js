@@ -16,6 +16,7 @@ import {
   updateUtilitiesFunction,
 } from "./admin.hook";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useNavigate } from "react-router-dom";
 
 export const useScheduleAdminData = () => {
   return useQuery({
@@ -92,6 +93,7 @@ export const useDeleteUtilities = () => {
 
 export const useUpdateUtilities = () => {
   const query = useQueryClient();
+  const navigate = useNavigate();
   return useMutation({
     mutationKey: ["update-utilities"],
     mutationFn: updateUtilitiesFunction,
@@ -99,6 +101,7 @@ export const useUpdateUtilities = () => {
       if (data?.success) {
         toast.success(data?.message);
         query.invalidateQueries(["get-all-utilities"]);
+        navigate("/admin/dashboard/service");
       }
     },
   });
@@ -113,11 +116,15 @@ export const useAllKitchen = () => {
 };
 
 export const useCreateUtilites = () => {
+  const query = useQueryClient();
+  const navigate = useNavigate();
   return useMutation({
     mutationKey: ["create-utilities"],
     mutationFn: (payload) => addutilitiesFunction(payload),
     onSuccess: (data) => {
       toast.success(data?.message);
+      query.invalidateQueries(["get-all-feature"]);
+      navigate("/admin/dashboard/service");
     },
     onError: (err) => {
       toast.error(err?.response?.data?.message);
@@ -156,11 +163,15 @@ export const useAllService = () => {
 };
 
 export const useCreateFeature = () => {
+  const query = useQueryClient();
+  const navigate = useNavigate();
   return useMutation({
     mutationKey: ["create-feature"],
     mutationFn: (payload) => addfeatureFunction(payload),
     onSuccess: (data) => {
       toast.success(data?.message);
+      query.invalidateQueries(["get-all-feature"]);
+      navigate("/admin/dashboard/features");
     },
     onError: (err) => {
       toast.error(err?.response?.data?.message);
@@ -170,6 +181,7 @@ export const useCreateFeature = () => {
 
 export const useUpdateFeature = () => {
   const query = useQueryClient();
+  const navigate = useNavigate();
   return useMutation({
     mutationKey: ["update-feature"],
     mutationFn: updateFeatureFunction,
@@ -177,6 +189,7 @@ export const useUpdateFeature = () => {
       if (data?.success) {
         toast.success(data?.message);
         query.invalidateQueries(["get-all-feature"]);
+        navigate("/admin/dashboard/features");
       }
     },
   });
