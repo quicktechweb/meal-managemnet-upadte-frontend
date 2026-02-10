@@ -53,24 +53,28 @@ const AllSchedule = () => {
   };
 
   return (
-    <div className="p-4 bg-[#F8FAFC] min-h-screen">
-      <div className="mx-auto">
+    <div className="p-4 md:p-8 bg-[#F8FAFC] min-h-screen">
+      <div className="max-w-7xl mx-auto">
         {/* Header */}
-        <div className="flex flex-wrap justify-between items-start ">
-          <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-2">
+        <div className="flex justify-between items-start flex-wrap mb-4">
+          <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 ">
+            {" "}
             <div>
+              {" "}
               <h1 className="text-3xl font-extrabold text-slate-900 tracking-tight">
-                Weekly <span className="text-violet-600">Menu</span> Matrix
-              </h1>
+                {" "}
+                Weekly <span className="text-violet-600">Menu</span> Matrix{" "}
+              </h1>{" "}
               <p className="text-slate-500 text-sm mt-1">
-                Manage and view your weekly meal distribution
+                {" "}
+                Manage and view your weekly meal distribution{" "}
               </p>
             </div>
           </div>
 
           <Link
             to="/admin/dashboard/add-schedule"
-            className="inline-flex items-center gap-2 px-4 py-2 bg-violet-600 text-white rounded-xl text-sm"
+            className="inline-flex items-center gap-2 px-6 py-3 bg-violet-600 text-white rounded-xl"
           >
             <Plus size={18} />
             Add Schedule
@@ -78,31 +82,26 @@ const AllSchedule = () => {
         </div>
 
         {/* Table */}
-        <div className="bg-white rounded-3xl border border-slate-200 shadow-sm overflow-x-auto">
-          <table className="min-w-[900px] w-full text-left border-collapse">
+        <div className="bg-white rounded-3xl border overflow-x-auto border-slate-200 shadow-sm w-full">
+          <table className="w-full text-left border-collapse">
             <thead>
-              <tr className="bg-slate-50 border-b border-gray-300">
-                <th className="py-4 px-4 text-sm font-bold ">Day</th>
+              <tr className="bg-slate-50 border-slate-200">
+                <th className="py-5 px-6 text-sm font-bold">Day</th>
 
                 {allMealTypes.map((type) => (
-                  <th key={type} className="py-4 px-4 text-sm font-bold ">
+                  <th key={type} className="py-5 px-4 text-sm font-bold">
                     {type}
                   </th>
                 ))}
 
-                <th className="py-4 px-4 text-sm font-bold  text-center">
-                  Action
-                </th>
+                <th className="py-5 px-4 text-sm font-bold">Action</th>
               </tr>
             </thead>
 
             <tbody>
               {schedules.map((day) => (
-                <tr
-                  key={day._id}
-                  className="border-b border-gray-300 hover:bg-slate-50"
-                >
-                  <td className="py-4 px-4 font-semibold">{day.day}</td>
+                <tr key={day._id} className="hover:bg-slate-50">
+                  <td className="py-6 px-6 font-bold">{day.day}</td>
 
                   {allMealTypes.map((type) => {
                     const meal = day.meals?.find(
@@ -118,20 +117,16 @@ const AllSchedule = () => {
                     );
                   })}
 
-                  <td className="py-4 px-4">
-                    <div className="flex items-center justify-center gap-3">
-                      <Link to={`/admin/dashboard/update-schedule/${day?._id}`}>
-                        <FiEdit size={18} />
-                      </Link>
-
-                      <button
-                        onClick={() => handleDelete(day)}
-                        className="cursor-pointer"
-                        disabled={isPending}
-                      >
-                        <MdDelete size={18} />
-                      </button>
-                    </div>
+                  <td className="flex gap-2 justify-center mt-5">
+                    <Link to={`/admin/dashboard/update-schedule/${day?._id}`}>
+                      <FiEdit />
+                    </Link>
+                    <button
+                      onClick={() => handleDelete(day)}
+                      disabled={isPending}
+                    >
+                      <MdDelete />
+                    </button>
                   </td>
                 </tr>
               ))}
