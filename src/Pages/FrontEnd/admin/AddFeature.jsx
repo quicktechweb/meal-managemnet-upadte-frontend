@@ -7,8 +7,6 @@ const AddFeature = () => {
   const { data, isLoading } = useAllService();
   const { mutateAsync, isPending } = useCreateFeature();
 
-  console.log(data);
-
   const services = data?.data || [];
 
   const {
@@ -122,7 +120,7 @@ const AddFeature = () => {
           <button
             type="submit"
             disabled={isPending}
-            className="w-full mt-4 bg-blue-600 hover:bg-blue-700 text-white font-bold py-2.5 rounded-xl shadow-lg shadow-blue-200 hover:shadow-blue-300 transform active:scale-[0.98] transition-all disabled:opacity-50 disabled:cursor-not-allowed text-sm flex justify-center items-center gap-2"
+            className="w-full mt-4 bg-blue-600 hover:bg-blue-700 text-white font-bold py-2.5 rounded-xl shadow-lg shadow-blue-200 hover:shadow-blue-300 transform active:scale-[0.98] transition-all disabled:opacity-50 disabled:cursor-not-allowed text-sm flex justify-center items-center gap-2 cursor-pointer"
           >
             {isPending ? "Processing..." : "Create Feature"}
           </button>

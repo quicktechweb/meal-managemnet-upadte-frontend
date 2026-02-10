@@ -3,6 +3,7 @@ import {
   addfeatureFunction,
   addscheduleFunction,
   addutilitiesFunction,
+  deletefeatureFunction,
   deleteScheduleFunction,
   deleteutilitiesFunction,
   getallfeaturefunction,

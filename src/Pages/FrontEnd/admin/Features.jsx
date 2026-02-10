@@ -1,16 +1,13 @@
 import { Plus } from "lucide-react";
 import React from "react";
 import { Link } from "react-router-dom";
-import {
-  useDeleteUtilities,
-  useGetFeature,
-} from "../../../api/admin/admin.api";
+import { useDeleteFeature, useGetFeature } from "../../../api/admin/admin.api";
 import { FiEdit } from "react-icons/fi";
 import { MdDelete } from "react-icons/md";
 
 const Features = () => {
   const { data, isLoading } = useGetFeature();
-  const { mutateAsync, isPending } = useDeleteUtilities();
+  const { mutateAsync, isPending } = useDeleteFeature();
 
   const features = data?.data || [];
 
