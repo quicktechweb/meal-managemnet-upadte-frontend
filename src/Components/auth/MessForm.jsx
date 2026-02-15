@@ -283,7 +283,13 @@ const MessForm = () => {
             {...register("institute", { required: "Institute required" })}
             error={errors.phone}
           />
-
+          <FloatingInput
+            label="Total Number of Member In Your Institute"
+            {...register("institute-member", {
+              required: "Institute Member required",
+            })}
+            error={errors.institute_member}
+          />
           <FloatingInput
             label="Name of the Hall / Hostel"
             {...register("hall", { required: "hall / hostel   required" })}
