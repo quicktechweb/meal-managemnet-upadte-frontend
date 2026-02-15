@@ -1,9 +1,10 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useForm, Controller } from "react-hook-form";
 import { IoMdEye, IoMdEyeOff } from "react-icons/io";
 import { X } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import { FaCheckCircle } from "react-icons/fa";
+import { api } from "../../utils/countryApi";
 
 const InputField = ({ label, name, control, type = "text", rules = {} }) => (
   <Controller
@@ -40,6 +41,48 @@ const InputField = ({ label, name, control, type = "text", rules = {} }) => (
 );
 
 const UserForm = () => {
+  const [countries, setCountries] = useState([]);
+  const [states, setStates] = useState([]);
+  const [cities, setCities] = useState([]);
+
+  const [country, setCountry] = useState("");
+  const [state, setState] = useState("");
+  const [city, setCity] = useState("");
+
+  useEffect(() => {
+    const loadCountries = async () => {
+      const res = await api.get("/countries");
+      setCountries(res.data);
+    };
+    loadCountries();
+  }, []);
+
+  useEffect(() => {
+    if (!country) return;
+
+    const loadStates = async () => {
+      const res = await api.get(`/countries/${country}/states`);
+      setStates(res.data);
+      setCities([]);
+      setState("");
+    };
+
+    loadStates();
+  }, [country]);
+
+  // Load Cities
+  useEffect(() => {
+    if (!country || !state) return;
+
+    const loadCities = async () => {
+      const res = await api.get(`/countries/${country}/states/${state}/cities`);
+      setCities(res.data);
+      setCity("");
+    };
+
+    loadCities();
+  }, [state, country]);
+
   const { handleSubmit, control, watch, setValue } = useForm();
   const navigate = useNavigate();
   const [passwordShow, setPasswordShow] = useState(false);
@@ -139,18 +182,74 @@ const UserForm = () => {
           type="date"
         />
         <InputField label="Nationality" name="nationality" control={control} />
-        <InputField label="Religion" name="religion" control={control} />
+
         <InputField label="Gender" name="gender" control={control} />
-        <InputField
-          label="Present Address"
-          name="presentAddress"
-          control={control}
-        />
-        <InputField
-          label="Permanent Address"
-          name="permanentAddress"
-          control={control}
-        />
+
+        <div className="md:col-span-2 space-y-2">
+          {/* Country */}
+          <select
+            value={country}
+            onChange={(e) => setCountry(e.target.value)}
+            className="border focus:border-purple-500  border-gray-300 px-2 py-3 rounded w-full  text-gray-600"
+          >
+            <option value="">Select Country</option>
+            {countries.map((c) => (
+              <option key={c.iso2} value={c.iso2}>
+                {c.name}
+              </option>
+            ))}
+          </select>
+
+          {/* State */}
+          {country && (
+            <select
+              value={state}
+              onChange={(e) => setState(e.target.value)}
+              disabled={!country}
+              className="border focus:border-purple-500  border-gray-300 px-2 py-3 p-2 rounded w-full  text-gray-600"
+            >
+              <option value="">Select State</option>
+              {states.map((s) => (
+                <option key={s.iso2} value={s.iso2}>
+                  {s.name}
+                </option>
+              ))}
+            </select>
+          )}
+
+          {/* City */}
+          {state && (
+            <select
+              value={city}
+              onChange={(e) => setCity(e.target.value)}
+              disabled={!state}
+              className="border focus:border-purple-500  border-gray-300 px-2 py-3 p-2 rounded w-full text-gray-600"
+            >
+              <option value="">Select City</option>
+              {cities.map((c) => (
+                <option key={c.id} value={c.name}>
+                  {c.name}
+                </option>
+              ))}
+            </select>
+          )}
+        </div>
+
+        {country && state && city && (
+          <>
+            <InputField
+              label="Present Address"
+              name="presentAddress"
+              control={control}
+            />
+            <InputField
+              label="Permanent Address"
+              name="permanentAddress"
+              control={control}
+            />
+          </>
+        )}
+
         <InputField label="Phone Number" name="phone" control={control} />
 
         {/* Occupation */}
