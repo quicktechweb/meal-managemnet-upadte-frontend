@@ -1,11 +1,24 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useForm } from "react-hook-form";
-import { useAllService, useCreateFeature } from "../../../api/admin/admin.api";
+import {
+  useAllService,
+  useCreateFeature,
+  useGetFeature,
+  useUpdateFeature,
+} from "../../../api/admin/admin.api";
 import { PlusCircle, Utensils, Tag } from "lucide-react";
+import { useParams } from "react-router-dom";
 
-const AddFeature = () => {
+const UpdateFeature = () => {
+  const { id } = useParams();
+
+  const { data: allFeature, isLoading: featureLoading } = useGetFeature();
+
+  const singleFeature = allFeature?.data?.find((item) => item?._id === id);
+
   const { data, isLoading } = useAllService();
-  const { mutateAsync, isPending } = useCreateFeature();
+
+  const { mutateAsync, isPending } = useUpdateFeature();
 
   const services = data?.data || [];
 
@@ -16,11 +29,24 @@ const AddFeature = () => {
     formState: { errors },
   } = useForm();
 
+  useEffect(() => {
+    if (singleFeature && services.length > 0) {
+      reset({
+        name: singleFeature.name,
+        price: singleFeature.price,
+        service: singleFeature?.service?._id || "",
+      });
+    }
+  }, [singleFeature, services, reset]);
+
   const onSubmit = async (formData) => {
     try {
       await mutateAsync({
-        ...formData,
-        price: Number(formData.price),
+        id,
+        payload: {
+          ...formData,
+          price: Number(formData.price),
+        },
       });
 
       reset();
@@ -39,7 +65,7 @@ const AddFeature = () => {
               <PlusCircle className="text-blue-600 w-6 h-6" />
             </div>
             <h3 className="text-2xl font-bold text-slate-800 tracking-tight">
-              Add Feature
+              Update Feature
             </h3>
           </div>
         </div>
@@ -130,4 +156,4 @@ const AddFeature = () => {
   );
 };
 
-export default AddFeature;
+export default UpdateFeature;

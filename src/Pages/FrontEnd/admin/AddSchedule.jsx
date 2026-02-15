@@ -1,70 +1,55 @@
-import React, { useState } from "react";
-import {
-  PlusCircle,
-  Trash2,
-  Utensils,
-  Sun,
-  Sunrise,
-  Moon,
-  Save,
-} from "lucide-react";
+import React from "react";
+import { useForm, useFieldArray, Controller } from "react-hook-form";
+import { PlusCircle, Trash2, Save } from "lucide-react";
 import { useCreateSchedule } from "../../../api/admin/admin.api";
 
 const AddSchedule = () => {
-  const [day, setDay] = useState("Sat");
-  const [breakfastItems, setBreakfastItems] = useState([
-    { meal_id: 1, title: "", price: "" },
-  ]);
-  const [lunchItems, setLunchItems] = useState([
-    { meal_id: 1, title: "", price: "" },
-  ]);
-  const [dinnerItems, setDinnerItems] = useState([
-    { meal_id: 1, title: "", price: "" },
-  ]);
+  const { control, handleSubmit, register, watch, setValue } = useForm({
+    defaultValues: {
+      day: "Sat",
+      meals: [
+        {
+          mealType: "Breakfast",
+          items: [{ meal_id: 1, title: "", price: "" }],
+        },
+        { mealType: "Lunch", items: [{ meal_id: 1, title: "", price: "" }] },
+        { mealType: "Dinner", items: [{ meal_id: 1, title: "", price: "" }] },
+      ],
+    },
+  });
+
+  const selectedDay = watch("day");
+
+  const {
+    fields: mealsFields,
+    append: appendMeal,
+    remove: removeMeal,
+  } = useFieldArray({
+    control,
+    name: "meals",
+  });
 
   const { mutateAsync, isPending } = useCreateSchedule();
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    const payload = {
-      day,
-      breakfast: { mealType: "breakfast", items: breakfastItems },
-      lunch: { mealType: "lunch", items: lunchItems },
-      dinner: { mealType: "dinner", items: dinnerItems },
-    };
+  const onSubmit = async (data) => {
+    const meals = data.meals.map((meal) => ({
+      mealType: meal.mealType,
+      items: meal.items.map((item, idx) => ({ ...item, meal_id: idx + 1 })),
+    }));
 
-    await mutateAsync(payload);
-  };
-
-  const handleItemChange = (setter, index, field, value) => {
-    setter((prev) =>
-      prev.map((item, i) => (i === index ? { ...item, [field]: value } : item)),
-    );
-  };
-
-  const addItem = (setter) => {
-    setter((prev) => [
-      ...prev,
-      { meal_id: prev.length + 1, title: "", price: "" },
-    ]);
-  };
-
-  const removeItem = (setter, index) => {
-    setter((prev) =>
-      prev.length > 1 ? prev.filter((_, i) => i !== index) : prev,
-    );
+    await mutateAsync({ day: data.day, meals });
   };
 
   return (
-    <div className="min-h-screen ">
+    <div className="min-h-screen">
       <form
-        onSubmit={handleSubmit}
+        onSubmit={handleSubmit(onSubmit)}
         className="w-full bg-white rounded-2xl shadow-xl overflow-hidden border border-gray-100"
       >
         {/* Header */}
         <div className="bg-gradient-to-r from-purple-600 to-indigo-600 p-8 text-white">
           <h2 className="text-3xl font-extrabold flex items-center gap-3">
-            <Utensils className="w-8 h-8" /> Add Meal Schedule
+            Add Meal Schedule
           </h2>
           <p className="mt-2 text-purple-100">
             Plan and price your meals for the week
@@ -77,53 +62,45 @@ const AddSchedule = () => {
             <label className="text-purple-900 font-bold text-lg min-w-[120px]">
               Select Day:
             </label>
-            <div className="flex flex-wrap gap-2">
-              {["Sat", "Sun", "Mon", "Tue", "Wed", "Thu", "Fri"].map((d) => (
-                <button
-                  key={d}
-                  type="button"
-                  onClick={() => setDay(d)}
-                  className={`px-4 py-2 rounded-full font-medium transition-all ${
-                    day === d
-                      ? "bg-purple-600 text-white shadow-md scale-105"
-                      : "bg-white text-gray-600 hover:bg-purple-100 border border-gray-200"
-                  }`}
-                >
-                  {d}
-                </button>
-              ))}
-            </div>
+            {["Sat", "Sun", "Mon", "Tue", "Wed", "Thu", "Fri"].map((d) => (
+              <button
+                key={d}
+                type="button"
+                onClick={() => setValue("day", d)}
+                className={`px-4 py-2 rounded-full cursor-pointer font-medium transition-all ${
+                  selectedDay === d
+                    ? "bg-purple-600 text-white shadow-md scale-105"
+                    : "bg-white text-gray-600 hover:bg-purple-100 outline outline-gray-200"
+                }`}
+              >
+                {d}
+              </button>
+            ))}
           </div>
 
           {/* Meals Sections */}
-          <div className="grid gap-6">
-            <MealSection
-              title="Breakfast"
-              icon={<Sunrise className="text-orange-500" />}
-              items={breakfastItems}
-              setItems={setBreakfastItems}
-              handleItemChange={handleItemChange}
-              addItem={addItem}
-              removeItem={removeItem}
-            />
-            <MealSection
-              title="Lunch"
-              icon={<Sun className="text-yellow-500" />}
-              items={lunchItems}
-              setItems={setLunchItems}
-              handleItemChange={handleItemChange}
-              addItem={addItem}
-              removeItem={removeItem}
-            />
-            <MealSection
-              title="Dinner"
-              icon={<Moon className="text-indigo-500" />}
-              items={dinnerItems}
-              setItems={setDinnerItems}
-              handleItemChange={handleItemChange}
-              addItem={addItem}
-              removeItem={removeItem}
-            />
+          <div className="space-y-6">
+            {mealsFields.map((meal, mealIndex) => (
+              <MealSection
+                key={meal.id}
+                mealIndex={mealIndex}
+                control={control}
+                register={register}
+              />
+            ))}
+
+            <button
+              type="button"
+              onClick={() =>
+                appendMeal({
+                  mealType: "New Meal",
+                  items: [{ meal_id: 1, title: "", price: "" }],
+                })
+              }
+              className="flex items-center gap-1 text-purple-600 font-semibold text-sm hover:text-purple-800 transition-colors"
+            >
+              <PlusCircle className="w-4 h-4" /> Add New Meal Type
+            </button>
           </div>
 
           {/* Submit Button */}
@@ -141,60 +118,49 @@ const AddSchedule = () => {
   );
 };
 
-const MealSection = ({
-  title,
-  icon,
-  items,
-  setItems,
-  handleItemChange,
-  addItem,
-  removeItem,
-}) => {
+const MealSection = ({ mealIndex, control, register }) => {
+  const {
+    fields: itemFields,
+    append,
+    remove,
+  } = useFieldArray({
+    control,
+    name: `meals.${mealIndex}.items`,
+  });
+
   return (
     <div className="group border border-gray-200 rounded-xl p-5 hover:border-purple-300 transition-colors bg-white">
+      {/* Meal Name  */}
       <div className="flex items-center gap-2 mb-4 border-b border-gray-100 pb-2">
-        {icon}
-        <h3 className="font-bold text-gray-800 text-lg uppercase tracking-wide">
-          {title}
-        </h3>
+        <input
+          {...register(`meals.${mealIndex}.mealType`, { required: true })}
+          className="font-bold text-gray-800 text-lg uppercase tracking-wide border-b border-gray-300 focus:outline-none rounded-md focus:ring-1 focus:ring-purple-500 p-1"
+        />
       </div>
 
+      {/* Items */}
       <div className="space-y-3">
-        {items.map((item, index) => (
+        {itemFields.map((item, index) => (
           <div
-            key={index}
-            className="flex gap-3 items-center animate-in fade-in slide-in-from-left-2"
+            key={item.id}
+            className="flex flex-wrap sm:flex-nowrap gap-3 items-center"
           >
-            <div className="flex-grow grid grid-cols-3 gap-2">
-              <input
-                type="text"
-                placeholder="Ex: Pancakes"
-                value={item.title}
-                onChange={(e) =>
-                  handleItemChange(setItems, index, "title", e.target.value)
-                }
-                className="col-span-2 border border-gray-300 p-2.5 rounded-lg focus:ring-2 focus:ring-purple-500 focus:outline-none transition-all"
-              />
-              <div className="relative">
-                <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">
-                  ৳
-                </span>
-                <input
-                  type="number"
-                  placeholder="0.00"
-                  value={item.price}
-                  onChange={(e) =>
-                    handleItemChange(setItems, index, "price", e.target.value)
-                  }
-                  className="w-full border border-gray-300 p-2.5 pl-7 rounded-lg focus:ring-2 focus:ring-purple-500 focus:outline-none transition-all"
-                />
-              </div>
-            </div>
-
-            {items.length > 1 && (
+            <input
+              type="text"
+              placeholder="Item Name"
+              {...register(`meals.${mealIndex}.items.${index}.title`)}
+              className="flex-1 border border-gray-300 p-2 rounded-lg focus:ring-2 focus:ring-purple-500 focus:outline-none transition-all"
+            />
+            <input
+              type="number"
+              placeholder="Price"
+              {...register(`meals.${mealIndex}.items.${index}.price`)}
+              className="w-24 border border-gray-300 p-2 rounded-lg focus:ring-2 focus:ring-purple-500 focus:outline-none transition-all"
+            />
+            {itemFields.length > 1 && (
               <button
                 type="button"
-                onClick={() => removeItem(setItems, index)}
+                onClick={() => remove(index)}
                 className="p-2 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-full transition-colors"
               >
                 <Trash2 className="w-5 h-5" />
@@ -206,10 +172,12 @@ const MealSection = ({
 
       <button
         type="button"
-        onClick={() => addItem(setItems)}
-        className="mt-4 flex items-center gap-1 text-purple-600 font-semibold text-sm hover:text-purple-800 transition-colors"
+        onClick={() =>
+          append({ meal_id: itemFields.length + 1, title: "", price: "" })
+        }
+        className="mt-3 flex items-center gap-1 text-purple-600 font-semibold text-sm hover:text-purple-800 transition-colors"
       >
-        <PlusCircle className="w-4 h-4" /> Add another item
+        <PlusCircle className="w-4 h-4" /> Add Item
       </button>
     </div>
   );
