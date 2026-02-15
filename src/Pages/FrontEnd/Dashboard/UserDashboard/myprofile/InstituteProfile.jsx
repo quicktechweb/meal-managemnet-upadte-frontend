@@ -7,6 +7,9 @@ import {
   Users,
   Utensils,
   ShieldCheck,
+  MapPin,
+  User,
+  X,
 } from "lucide-react";
 import { Link } from "react-router-dom";
 import { TiPlus } from "react-icons/ti";
@@ -18,7 +21,33 @@ const instituteData = {
   phone_number: "+8801517834534",
   address: "123 Tech Avenue, Silicon Tower, Dhaka",
   institute_name: "Quick Tech Institute",
-
+  memberList: [
+    {
+      name: "Naymur Rahman",
+      username: "naymur_rahman",
+      email: "naymur@gmail.com",
+      password: "Password@123",
+      phone: "01712345678",
+      fathersName: "Abdul Rahman",
+      mothersName: "Fatema Begum",
+      guardiansName: "Abdul Rahman",
+      dateOfBirth: "1998-06-15",
+      nationality: "Bangladeshi",
+      religion: "Islam",
+      education: "BSc in Computer Science",
+      maritalStatus: "Unmarried",
+      city: "Dhaka",
+      presentAddress: "House 12, Road 5, Dhanmondi, Dhaka",
+      permanentAddress: "Village: Mirpur, District: Dhaka",
+      institutionName: "Dhaka University",
+      hostelBranch: "Karjon Hall",
+      occupation: {
+        post_name: "Junior Developer",
+        company_name: "BJIT",
+      },
+      img: "https://api.dicebear.com/7.x/avataaars/svg?seed=Naymur",
+    },
+  ],
   hall: [
     {
       id: 1,
@@ -152,7 +181,7 @@ const InstituteProfile = () => {
   const [openMembers, setOpenMembers] = useState(false);
   const [selectedHall, setSelectedHall] = useState(null);
   const [showEditModal, setShowEditModal] = useState(false);
-
+  const [instituteMember, setInstituteMember] = useState(false);
   const [showAddHall, setShowAddHall] = useState(false);
 
   const handleViewMembers = (hall) => {
@@ -232,6 +261,71 @@ const InstituteProfile = () => {
           value="Verified"
           color="bg-emerald-500"
         />
+      </div>
+
+      {/* Hall List */}
+      <div className="flex flex-col gap-4">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <Users className="text-indigo-600" />
+            <h3 className="text-xl font-bold">Institute Member List</h3>
+          </div>
+
+          <button
+            onClick={() => setInstituteMember(true)}
+            className="flex cursor-pointer items-center gap-2 bg-indigo-600 text-white px-6 py-2 rounded-xl"
+          >
+            <TiPlus />
+            Add Member
+          </button>
+        </div>
+
+        <div className="flex flex-wrap gap-6">
+          {profile?.memberList?.map((hall) => (
+            <div
+              key={hall.id}
+              className="w-[280px] bg-white rounded-2xl border border-gray-300 shadow-sm"
+            >
+              <div className="py-3 px-3 flex gap-4 items-center">
+                <img
+                  src={`${avatar}${hall.name}`}
+                  alt={hall.name}
+                  className="w-12 h-12 rounded-xl"
+                />
+                <div>
+                  <h4 className="font-bold">{hall.name}</h4>
+                  <p className="text-sm text-gray-500"></p>
+                </div>
+              </div>
+
+              <div className="border-t border-gray-300 py-3 px-3 space-y-2 text-sm">
+                <div className="flex justify-between">
+                  <span>Hall Name</span>
+                  <span className="font-semibold text-indigo-600">
+                    {hall?.hostelBranch}
+                  </span>
+                </div>
+
+                <div className="flex gap-2 items-center">
+                  <Phone size={14} /> {hall.phone}
+                </div>
+
+                <div className="flex gap-2 items-center">
+                  <Mail size={14} /> {hall.email}
+                </div>
+              </div>
+
+              <div className="px-4 pb-2 flex gap-2">
+                <Link
+                  to="/dashboard/profile"
+                  className="flex-1 bg-gray-100 text-center text-xs py-2 rounded-lg"
+                >
+                  Details
+                </Link>
+              </div>
+            </div>
+          ))}
+        </div>
       </div>
 
       {/* Hall List */}
@@ -341,6 +435,10 @@ const InstituteProfile = () => {
       )}
 
       {showAddHall && <AddHallModal onClose={() => setShowAddHall(false)} />}
+
+      {instituteMember && (
+        <AddInstituteMemberModal onClose={() => setInstituteMember(false)} />
+      )}
     </div>
   );
 };
@@ -494,3 +592,130 @@ const AddHallModal = ({ onClose }) => {
     </div>
   );
 };
+
+// add member modal
+
+const AddInstituteMemberModal = ({ onClose }) => {
+  const submit = () => {
+    onClose();
+  };
+
+  return (
+    <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 px-4">
+      <div className="bg-white w-full max-w-3xl rounded-2xl shadow-xl overflow-hidden">
+        {/* Header */}
+        <div className="flex items-center justify-between px-6 py-4 border-b border-gray-300">
+          <div>
+            <h3 className="text-lg font-bold text-gray-800">Add Member</h3>
+            <p className="text-sm text-gray-500">
+              Fill in the member information below
+            </p>
+          </div>
+          <button
+            onClick={onClose}
+            className="p-2 rounded-full hover:bg-gray-100"
+          >
+            <X size={18} />
+          </button>
+        </div>
+
+        {/* Body */}
+        <div className="p-6 max-h-[70vh] overflow-y-auto">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {/* Name */}
+            <Input
+              label="Full Name"
+              placeholder="Member name"
+              icon={<User size={16} />}
+            />
+            <Input label="Username" placeholder="Username" />
+
+            {/* Contact */}
+            <Input
+              label="Email"
+              placeholder="Email address"
+              icon={<Mail size={16} />}
+            />
+            <Input
+              label="Phone"
+              placeholder="Phone number"
+              icon={<Phone size={16} />}
+            />
+
+            {/* Parents */}
+            <Input label="Father's Name" placeholder="Father name" />
+            <Input label="Mother's Name" placeholder="Mother name" />
+
+            {/* Guardian */}
+            <Input label="Guardian Name" placeholder="Guardian name" />
+            <Input label="Date of Birth" type="date" />
+
+            {/* Personal */}
+            <Input label="Nationality" placeholder="Nationality" />
+            <Input label="Religion" placeholder="Religion" />
+
+            <Input label="Gender" placeholder="Gender" />
+
+            {/* Address */}
+            <Input
+              label="Present Address"
+              placeholder="Present address"
+              icon={<MapPin size={16} />}
+            />
+            <Input
+              label="Permanent Address"
+              placeholder="Permanent address"
+              icon={<MapPin size={16} />}
+            />
+
+            <div className="space-y-1 flex flex-col gap-1">
+              <label className="text-xs font-medium text-gray-600">
+                Select Hall Name
+              </label>
+              <select className="border px-3 py-2 rounded border-gray-300">
+                <option value="hall-1">Hall 1</option>
+                <option value="hall-2">Hall 2</option>
+                <option value="hall-3">Hall 3</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        {/* Footer */}
+        <div className="flex justify-end gap-3 px-6 py-4 border-t border-gray-300 bg-gray-50">
+          <button
+            onClick={onClose}
+            className="px-4 py-2 text-sm font-medium rounded-lg border border-gray-300 hover:bg-gray-100"
+          >
+            Cancel
+          </button>
+          <button
+            onClick={submit}
+            className="px-5 py-2 text-sm font-semibold rounded-lg bg-indigo-600 text-white hover:bg-indigo-700"
+          >
+            Save Member
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+};
+const Input = ({ label, type = "text", placeholder, icon }) => (
+  <div className="space-y-1">
+    <label className="text-xs font-medium text-gray-600">{label}</label>
+    <div className="relative">
+      {icon && (
+        <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">
+          {icon}
+        </span>
+      )}
+      <input
+        type={type}
+        placeholder={placeholder}
+        className={`w-full border border-gray-300  rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none ${
+          icon ? "pl-9" : ""
+        }`}
+      />
+    </div>
+  </div>
+);
