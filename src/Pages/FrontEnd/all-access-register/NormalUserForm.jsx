@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 import {
   Eye,
@@ -13,11 +13,53 @@ import {
 } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { FaRegIdCard } from "react-icons/fa";
-import { BiSolidInstitution } from "react-icons/bi";
 
 import toast from "react-hot-toast";
 import { useRegister } from "../../../api/auth/auth.hook";
+import { api } from "../../../utils/countryApi";
 const NormalUserForm = () => {
+  const [countries, setCountries] = useState([]);
+  const [states, setStates] = useState([]);
+  const [cities, setCities] = useState([]);
+
+  const [country, setCountry] = useState("");
+  const [state, setState] = useState("");
+  const [city, setCity] = useState("");
+
+  useEffect(() => {
+    const loadCountries = async () => {
+      const res = await api.get("/countries");
+      setCountries(res.data);
+    };
+    loadCountries();
+  }, []);
+
+  useEffect(() => {
+    if (!country) return;
+
+    const loadStates = async () => {
+      const res = await api.get(`/countries/${country}/states`);
+      setStates(res.data);
+      setCities([]);
+      setState("");
+    };
+
+    loadStates();
+  }, [country]);
+
+  // Load Cities
+  useEffect(() => {
+    if (!country || !state) return;
+
+    const loadCities = async () => {
+      const res = await api.get(`/countries/${country}/states/${state}/cities`);
+      setCities(res.data);
+      setCity("");
+    };
+
+    loadCities();
+  }, [state, country]);
+
   const [showPassword, setShowPassword] = useState(false);
 
   const [nidImage, setNidImage] = useState(null);
@@ -165,15 +207,66 @@ const NormalUserForm = () => {
         validation={{ required: "Required" }}
       />
 
-      <div className="md:col-span-2">
-        <FormInput
-          icon={Home}
-          type="text"
-          placeholder="Residential Address"
-          name="address"
-          validation={{ required: "Required" }}
-        />
+      <div className="md:col-span-2 space-y-2">
+        {/* Country */}
+        <select
+          value={country}
+          onChange={(e) => setCountry(e.target.value)}
+          className="border focus:border-purple-500  border-gray-300 px-2 py-3 rounded w-full  text-gray-600"
+        >
+          <option value="">Select Country</option>
+          {countries.map((c) => (
+            <option key={c.iso2} value={c.iso2}>
+              {c.name}
+            </option>
+          ))}
+        </select>
+
+        {/* State */}
+        {country && (
+          <select
+            value={state}
+            onChange={(e) => setState(e.target.value)}
+            disabled={!country}
+            className="border focus:border-purple-500  border-gray-300 px-2 py-3 p-2 rounded w-full  text-gray-600"
+          >
+            <option value="">Select State</option>
+            {states.map((s) => (
+              <option key={s.iso2} value={s.iso2}>
+                {s.name}
+              </option>
+            ))}
+          </select>
+        )}
+
+        {/* City */}
+        {state && (
+          <select
+            value={city}
+            onChange={(e) => setCity(e.target.value)}
+            disabled={!state}
+            className="border focus:border-purple-500  border-gray-300 px-2 py-3 p-2 rounded w-full text-gray-600"
+          >
+            <option value="">Select City</option>
+            {cities.map((c) => (
+              <option key={c.id} value={c.name}>
+                {c.name}
+              </option>
+            ))}
+          </select>
+        )}
       </div>
+      {city && (
+        <div className="md:col-span-2">
+          <FormInput
+            icon={Home}
+            type="text"
+            placeholder="Residential Address"
+            name="address"
+            validation={{ required: "Required" }}
+          />
+        </div>
+      )}
 
       <div className="user-type flex flex-col  md:col-span-2 gap-6">
         <div className="flex flex-col gap-2">
