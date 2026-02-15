@@ -4,10 +4,8 @@ import { useAllService, useCreateFeature } from "../../../api/admin/admin.api";
 import { PlusCircle, Utensils, Tag } from "lucide-react";
 
 const AddFeature = () => {
-  const { data, isLoading } = useAllService();
+  const { data: services, isLoading } = useAllService();
   const { mutateAsync, isPending } = useCreateFeature();
-
-  const services = data?.data || [];
 
   const {
     register,

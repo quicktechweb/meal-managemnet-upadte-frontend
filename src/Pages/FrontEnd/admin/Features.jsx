@@ -6,10 +6,8 @@ import { FiEdit } from "react-icons/fi";
 import { MdDelete } from "react-icons/md";
 
 const Features = () => {
-  const { data, isLoading } = useGetFeature();
+  const { data: features, isLoading } = useGetFeature();
   const { mutateAsync, isPending } = useDeleteFeature();
-
-  const features = data?.data || [];
 
   const handleDelete = async (item) => {
     await mutateAsync(item?._id);

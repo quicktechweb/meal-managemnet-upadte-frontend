@@ -9,13 +9,9 @@ import { FiEdit } from "react-icons/fi";
 import { MdDelete } from "react-icons/md";
 
 const Services = () => {
-  const { data, isLoading } = useUtilitiesService();
-
-  console.log(data);
+  const { data: utilities, isLoading } = useUtilitiesService();
 
   const { mutateAsync, isPending } = useDeleteUtilities();
-
-  const utilities = data?.data || [];
 
   const handleDelete = async (item) => {
     await mutateAsync(item?._id);
