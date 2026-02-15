@@ -79,6 +79,20 @@ const AdminDashboardSidebar = ({ setIsOpenSidebar }) => {
         },
       ],
     },
+    {
+      key: "Feature",
+      title: "Feature",
+      roles: ["admin"],
+      icon: FaClipboardList,
+      permissionKey: "feature",
+      links: [
+        {
+          title: "Feature",
+          icon: FaShoppingBag,
+          path: "/admin/dashboard/features",
+        },
+      ],
+    },
   ];
 
   return (

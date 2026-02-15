@@ -54,11 +54,21 @@ export const getallfeaturefunction = async () => {
 };
 
 export const deletefeatureFunction = async (id) => {
-  const { data } = await axiosPublic.delete(`/api/delete-feature `,id);
+  const { data } = await axiosPublic.delete(`/api/delete-feature/${id}`);
   return data;
 };
 
+export const getAllServiceFunction = async () => {
+  const { data } = await axiosPublic("/api/all-services");
+  return data;
+};
 
-export const serviceFeatureFunction = async () => {
-  const {data} = await axiosPublic("/api/service")
-}
+export const addfeatureFunction = async (payload) => {
+  const { data } = await axiosPublic.post("/api/create-feature", payload);
+  return data;
+};
+
+export const updateFeatureFunction = async ({ id, payload }) => {
+  const { data } = await axiosPublic.put(`/api/update-feature/${id}`, payload);
+  return data;
+};

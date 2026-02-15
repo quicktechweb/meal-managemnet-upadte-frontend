@@ -9,12 +9,12 @@ const FullAccessRegistration = () => {
         <div className="py-5 px-4 md:px-8 flex flex-col">
           {/* Header */}
           <div className="text-center mb-4">
-            <div className="inline-block p-3 rounded-2xl bg-gradient-to-br from-purple-600 to-blue-600 shadow-lg hover:scale-110 transition-transform duration-300">
+            <div className="inline-block rounded-2xl  hover:scale-110 transition-transform duration-300">
               <Link to="/">
                 <img
-                  src="https://i.ibb.co/8gMntgXX/Gemini-Generated-Image-m517mjm517mjm7.png"
+                  src="https://i.ibb.co.com/jj22tMj/Whats-App-Image-2026-01-14-at.png"
                   alt="Logo"
-                  className="w-[150px] "
+                  className="h-28  w-[120px]  "
                 />
               </Link>
             </div>

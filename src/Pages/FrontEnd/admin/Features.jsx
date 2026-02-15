@@ -1,16 +1,13 @@
 import { Plus } from "lucide-react";
 import React from "react";
 import { Link } from "react-router-dom";
-import {
-  useDeleteUtilities,
-  useGetFeature,
-} from "../../../api/admin/admin.api";
+import { useDeleteFeature, useGetFeature } from "../../../api/admin/admin.api";
 import { FiEdit } from "react-icons/fi";
 import { MdDelete } from "react-icons/md";
 
 const Features = () => {
   const { data, isLoading } = useGetFeature();
-  const { mutateAsync, isPending } = useDeleteUtilities();
+  const { mutateAsync, isPending } = useDeleteFeature();
 
   const features = data?.data || [];
 
@@ -76,7 +73,7 @@ const Features = () => {
                 <td className="px-6 py-4 flex items-center justify-end gap-2.5 ">
                   <div className="flex items-center gap-2">
                     <Link
-                      to={`/admin/dashboard/update-utilities-service/${item?._id}`}
+                      to={`/admin/dashboard/update-feature/${item?._id}`}
                       className="text-xl cursor-pointer hover:text-violet-700  duration-300"
                     >
                       <FiEdit />

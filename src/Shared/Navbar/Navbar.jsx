@@ -34,7 +34,7 @@ export default function Navbar() {
     { name: "Food", link: "/#food" },
     { name: "FAQ", link: "/faq" },
   ];
-
+  // bg-gradient-to-r from-purple-700 to-blue-600
   return (
     <>
       <nav
@@ -48,17 +48,17 @@ export default function Navbar() {
           location?.pathname === "/login" ||
           location?.pathname === "/privecy-policy" ||
           location?.pathname === "/terms-and-conditions"
-            ? "fixed top-0 bg-gradient-to-r from-purple-700 to-blue-600 shadow-lg backdrop-blur"
-            : "absolute top-0 bg-transparent"
+            ? "fixed top-0  shadow-lg backdrop-blur text-black bg-white"
+            : "absolute top-0 bg-transparent text-white"
         }`}
       >
-        <div className="max-w-7xl mx-auto px-6 py-3 flex justify-between items-center text-white">
+        <div className="max-w-7xl mx-auto px-6 py-3 flex justify-between items-center ">
           {/* LOGO */}
           <Link to={"/"} className="font-semibold flex items-center">
             <img
-              src="https://i.ibb.co/8gMntgXX/Gemini-Generated-Image-m517mjm517mjm7.png"
+              src="https://i.ibb.co.com/jj22tMj/Whats-App-Image-2026-01-14-at.png"
               alt="Appbeats Logo"
-              className="h-16 lg:h-16 object-contain transition-transform duration-300 hover:scale-110"
+              className="h-20 w-[120px] transition-transform duration-300 hover:scale-110"
             />
           </Link>
 
