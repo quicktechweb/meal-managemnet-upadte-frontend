@@ -285,7 +285,7 @@ const MessForm = () => {
           />
           <FloatingInput
             label="Total Number of Member In Your Institute"
-            {...register("institute-member", {
+            {...register("institute_member", {
               required: "Institute Member required",
             })}
             error={errors.institute_member}
