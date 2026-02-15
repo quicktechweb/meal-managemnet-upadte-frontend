@@ -84,6 +84,8 @@ const NormalUserForm = () => {
   } = useForm();
   const { mutateAsync, isPending } = useRegister();
 
+  const [documentType, setdocumentType] = useState(null);
+
   const selectedUserType = watch("userType");
 
   const onSubmit = async (data) => {
@@ -268,8 +270,60 @@ const NormalUserForm = () => {
         </div>
       )}
 
-      <div className="user-type flex flex-col  md:col-span-2 gap-6">
-        <div className="flex flex-col gap-2">
+      <div className="md:col-span-2 flex flex-col gap-2.5">
+        <label className="block text-sm md:text-base font-medium text-gray-600 mb-2">
+          Select Document Type
+        </label>
+        <div className="flex gap-2.5 flex-wrap items-center">
+          {/* nid */}
+          <div className="flex items-center gap-2">
+            <label className="switch !text-[10px] lg:!text-xs">
+              <input
+                type="radio"
+                value="nid"
+                {...register("documentType")}
+                className="sr-only"
+                onChange={() => setdocumentType("nid")}
+              />
+              <span className="slider"></span>
+            </label>
+            <p className="text-sm lg:text-base">NID</p>
+          </div>
+
+          {/* tin */}
+          <div className="flex items-center gap-2">
+            <label className="switch !text-[10px] lg:!text-xs">
+              <input
+                type="radio"
+                value="tin"
+                {...register("documentType")}
+                className="sr-only"
+                onChange={() => setdocumentType("tin")}
+              />
+              <span className="slider"></span>
+            </label>
+            <p className="text-sm lg:text-base">TIN</p>
+          </div>
+
+          {/* others */}
+          <div className="flex items-center gap-2">
+            <label className="switch !text-[10px] lg:!text-xs">
+              <input
+                type="radio"
+                value="others"
+                {...register("documentType")}
+                className="sr-only"
+                onChange={() => setdocumentType("others")}
+              />
+              <span className="slider"></span>
+            </label>
+            <p className="text-sm lg:text-base">Others</p>
+          </div>
+        </div>
+      </div>
+
+      {documentType === "nid" && (
+        <div className="md:col-span-2 ">
           <FormInput
             icon={FaRegIdCard}
             type="number"
@@ -277,7 +331,29 @@ const NormalUserForm = () => {
             name="nid"
           />
         </div>
-      </div>
+      )}
+
+      {documentType === "tin" && (
+        <div className="md:col-span-2 ">
+          <FormInput
+            icon={FaRegIdCard}
+            type="number"
+            placeholder="Tin Number"
+            name="tin"
+          />
+        </div>
+      )}
+
+      {documentType === "others" && (
+        <div className="md:col-span-2 ">
+          <FormInput
+            icon={FaRegIdCard}
+            type="number"
+            placeholder="Others.."
+            name="other"
+          />
+        </div>
+      )}
 
       {/* Password Fields */}
       <div className="relative group">
@@ -325,37 +401,41 @@ const NormalUserForm = () => {
         )}
       </div>
 
-      <div className="lg:col-span-2">
-        <div className="w-full ">
-          <label className="block text-sm md:text-base font-medium text-gray-600 mb-2">
-            Upload Your NID
-          </label>
+      {(documentType === "nid" ||
+        documentType === "tin" ||
+        documentType === "others") && (
+        <div className="lg:col-span-2">
+          <div className="w-full ">
+            <label className="block text-sm md:text-base font-medium text-gray-600 mb-2">
+              Upload Your Documents
+            </label>
 
-          <div className="relative flex items-center justify-between gap-3 px-4 py-3 border-2 border-dashed border-gray-300 rounded-xl bg-white hover:border-purple-600  transition">
-            <input
-              type="file"
-              id="image"
-              {...register("nid_image")}
-              onChange={handleNidImageChange}
-              className="absolute inset-0 opacity-0 cursor-pointer"
-            />
+            <div className="relative flex items-center justify-between gap-3 px-4 py-3 border-2 border-dashed border-gray-300 rounded-xl bg-white hover:border-purple-600  transition">
+              <input
+                type="file"
+                id="image"
+                {...register("nid_image")}
+                onChange={handleNidImageChange}
+                className="absolute inset-0 opacity-0 cursor-pointer"
+              />
 
-            <span className="text-gray-400 text-sm truncate">
-              Choose an image…
-            </span>
+              <span className="text-gray-400 text-sm truncate">
+                Choose an image…
+              </span>
 
-            <span className="shrink-0 bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white text-sm px-4 py-1.5 rounded-lg  transition">
-              Browse
-            </span>
+              <span className="shrink-0 bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white text-sm px-4 py-1.5 rounded-lg  transition">
+                Browse
+              </span>
+            </div>
+
+            <p className="text-xs text-gray-400 mt-1">PNG, JPG up to 5MB</p>
           </div>
 
-          <p className="text-xs text-gray-400 mt-1">PNG, JPG up to 5MB</p>
+          {nidImage && (
+            <img src={nidImage} alt="NID Preview" className="w-40 rounded-lg" />
+          )}
         </div>
-
-        {nidImage && (
-          <img src={nidImage} alt="NID Preview" className="w-40 rounded-lg" />
-        )}
-      </div>
+      )}
 
       {/* Submit Button */}
       <button
