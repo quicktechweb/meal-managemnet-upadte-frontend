@@ -22,7 +22,7 @@ export const updateScheduleFunction = async ({ id, payload }) => {
 
 export const getallutilitiesfunction = async () => {
   const { data } = await axiosPublic("/api/all-utilities");
-  return data;
+  return data?.data;
 };
 
 export const deleteutilitiesFunction = async (id) => {
@@ -40,7 +40,7 @@ export const updateUtilitiesFunction = async ({ id, payload }) => {
 
 export const getAllKitchenFunction = async () => {
   const { data } = await axiosPublic("/api/all-kitchen");
-  return data;
+  return data?.data;
 };
 
 export const addutilitiesFunction = async (payload) => {
@@ -50,7 +50,7 @@ export const addutilitiesFunction = async (payload) => {
 
 export const getallfeaturefunction = async () => {
   const { data } = await axiosPublic("/api/all-feature");
-  return data;
+  return data?.data;
 };
 
 export const deletefeatureFunction = async (id) => {
@@ -60,7 +60,7 @@ export const deletefeatureFunction = async (id) => {
 
 export const getAllServiceFunction = async () => {
   const { data } = await axiosPublic("/api/all-services");
-  return data;
+  return data?.data;
 };
 
 export const addfeatureFunction = async (payload) => {
