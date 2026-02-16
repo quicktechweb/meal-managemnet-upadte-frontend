@@ -28,6 +28,10 @@ const InstituteUserForm = () => {
   const [state, setState] = useState("");
   const [city, setCity] = useState("");
 
+  const [singleCountry, setSingleCountry] = useState(null);
+  const [singleState, setSingleState] = useState(null);
+  const [singleCity, setSingleCity] = useState(null);
+
   const [documentType, setdocumentType] = useState(null);
 
   const [instituteType, setInstituteType] = useState(null);
@@ -72,8 +76,6 @@ const InstituteUserForm = () => {
 
   const [instituteImages, setInstituteImages] = useState(null);
 
-  console.log(instituteImages);
-
   const {
     register,
     handleSubmit,
@@ -95,9 +97,9 @@ const InstituteUserForm = () => {
     formData.append("occupation", data.occupation);
     formData.append("fatherName", data.fatherName);
     formData.append("motherName", data.motherName);
-    formData.append("country", country);
-    formData.append("state", state);
-    formData.append("city", city);
+    formData.append("country", singleCountry?.name);
+    formData.append("state", singleState?.name);
+    formData.append("city", singleCity?.name);
     formData.append("address", data.address);
     formData.append("websiteAccesstype", "all-access");
     formData.append("userType", selectedUserType);
@@ -188,7 +190,11 @@ const InstituteUserForm = () => {
         {/* Country */}
         <select
           value={country}
-          onChange={(e) => setCountry(e.target.value)}
+          onChange={(e) => {
+            const selected = countries.find((s) => s.iso2 === e.target.value);
+            setCountry(e.target.value);
+            setsingleCountry(selected);
+          }}
           className="border focus:border-purple-500  border-gray-300 px-2 py-3 rounded w-full  text-gray-600"
         >
           <option value="">Select Country</option>
@@ -203,7 +209,12 @@ const InstituteUserForm = () => {
         {country && (
           <select
             value={state}
-            onChange={(e) => setState(e.target.value)}
+            onChange={(e) => {
+              const selected = states.find((s) => s.iso2 === e.target.value);
+              setState(e.target.value);
+
+              setSingleState(selected);
+            }}
             disabled={!country}
             className="border focus:border-purple-500  border-gray-300 px-2 py-3 p-2 rounded w-full  text-gray-600"
           >
@@ -220,7 +231,11 @@ const InstituteUserForm = () => {
         {state && (
           <select
             value={city}
-            onChange={(e) => setCity(e.target.value)}
+            onChange={(e) => {
+              const selected = cities.find((s) => s.name === e.target.value);
+              setCity(e.target.value);
+              setSingleCity(selected);
+            }}
             disabled={!state}
             className="border focus:border-purple-500  border-gray-300 px-2 py-3 p-2 rounded w-full text-gray-600"
           >
