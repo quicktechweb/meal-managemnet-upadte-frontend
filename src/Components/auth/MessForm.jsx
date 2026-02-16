@@ -1,10 +1,11 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { IoMdEye, IoMdEyeOff } from "react-icons/io";
 import { Link, useNavigate } from "react-router-dom";
 import Stepper from "./Stepper";
 import MealScheduleTable from "../MealTable";
 import useStep from "../../Hooks/useStep";
+import { api } from "../../utils/countryApi";
 
 const utilitybillalabadanservice = [
   {
@@ -57,6 +58,48 @@ const utilitybilluserservice = [
 ];
 
 const MessForm = () => {
+  const [countries, setCountries] = useState([]);
+  const [states, setStates] = useState([]);
+  const [cities, setCities] = useState([]);
+
+  const [country, setCountry] = useState("");
+  const [state, setState] = useState("");
+  const [city, setCity] = useState("");
+
+  useEffect(() => {
+    const loadCountries = async () => {
+      const res = await api.get("/countries");
+      setCountries(res.data);
+    };
+    loadCountries();
+  }, []);
+
+  useEffect(() => {
+    if (!country) return;
+
+    const loadStates = async () => {
+      const res = await api.get(`/countries/${country}/states`);
+      setStates(res.data);
+      setCities([]);
+      setState("");
+    };
+
+    loadStates();
+  }, [country]);
+
+  // Load Cities
+  useEffect(() => {
+    if (!country || !state) return;
+
+    const loadCities = async () => {
+      const res = await api.get(`/countries/${country}/states/${state}/cities`);
+      setCities(res.data);
+      setCity("");
+    };
+
+    loadCities();
+  }, [state, country]);
+
   const { step, setStep } = useStep();
   const [passwordShow, setPasswordShow] = useState(false);
 
@@ -182,14 +225,71 @@ const MessForm = () => {
             error={errors.phone}
           />
 
-          <FloatingInput label="Address" {...register("address")} />
+          <div className="md:col-span-2 space-y-2">
+            {/* Country */}
+            <select
+              value={country}
+              onChange={(e) => setCountry(e.target.value)}
+              className="border focus:border-purple-500  border-gray-300 px-2 py-3 rounded w-full  text-gray-600"
+            >
+              <option value="">Select Country</option>
+              {countries.map((c) => (
+                <option key={c.iso2} value={c.iso2}>
+                  {c.name}
+                </option>
+              ))}
+            </select>
+
+            {/* State */}
+            {country && (
+              <select
+                value={state}
+                onChange={(e) => setState(e.target.value)}
+                disabled={!country}
+                className="border focus:border-purple-500  border-gray-300 px-2 py-3 p-2 rounded w-full  text-gray-600"
+              >
+                <option value="">Select State</option>
+                {states.map((s) => (
+                  <option key={s.iso2} value={s.iso2}>
+                    {s.name}
+                  </option>
+                ))}
+              </select>
+            )}
+
+            {/* City */}
+            {state && (
+              <select
+                value={city}
+                onChange={(e) => setCity(e.target.value)}
+                disabled={!state}
+                className="border focus:border-purple-500  border-gray-300 px-2 py-3 p-2 rounded w-full text-gray-600"
+              >
+                <option value="">Select City</option>
+                {cities.map((c) => (
+                  <option key={c.id} value={c.name}>
+                    {c.name}
+                  </option>
+                ))}
+              </select>
+            )}
+          </div>
+          {country && state && city && (
+            <FloatingInput label="Address" {...register("address")} />
+          )}
 
           <FloatingInput
             label="Name of the Institute"
             {...register("institute", { required: "Institute required" })}
             error={errors.phone}
           />
-
+          <FloatingInput
+            label="Total Number of Member In Your Institute"
+            {...register("institute_member", {
+              required: "Institute Member required",
+            })}
+            error={errors.institute_member}
+          />
           <FloatingInput
             label="Name of the Hall / Hostel"
             {...register("hall", { required: "hall / hostel   required" })}

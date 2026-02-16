@@ -45,8 +45,8 @@ import Services from "../Pages/FrontEnd/admin/Services";
 import AddUtilitiesService from "../Pages/FrontEnd/admin/AddUtilitiesService";
 import UpdateUtilitiesService from "../Pages/FrontEnd/admin/UpdateUtilitiesService";
 import Features from "../Pages/FrontEnd/admin/Features";
-import AddFeature from "../Pages/FrontEnd/admin/AddFeature";
 import UpdateFeature from "../Pages/FrontEnd/admin/UpdateFeature";
+import AddFeature from "../Pages/FrontEnd/admin/AddFeature";
 
 const router = createBrowserRouter([
   {

@@ -16,11 +16,9 @@ const UpdateFeature = () => {
 
   const singleFeature = allFeature?.data?.find((item) => item?._id === id);
 
-  const { data, isLoading } = useAllService();
+  const { data: services, isLoading } = useAllService();
 
   const { mutateAsync, isPending } = useUpdateFeature();
-
-  const services = data?.data || [];
 
   const {
     register,
