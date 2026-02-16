@@ -49,7 +49,7 @@ const Features = () => {
           </thead>
 
           <tbody>
-            {features.map((item) => (
+            {features?.map((item) => (
               <tr
                 key={item._id}
                 className="border-t border-gray-300 hover:bg-slate-50 transition"

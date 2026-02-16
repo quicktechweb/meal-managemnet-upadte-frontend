@@ -8,6 +8,7 @@ import {
   deleteutilitiesFunction,
   getallfeaturefunction,
   getAllKitchenFunction,
+  getAllNotices,
   getallschedulefunction,
   getAllServiceFunction,
   getallutilitiesfunction,
@@ -192,5 +193,13 @@ export const useUpdateFeature = () => {
         navigate("/admin/dashboard/features");
       }
     },
+  });
+};
+
+export const useGetNotices = () => {
+  return useQuery({
+    queryKey: ["get-all-notice"],
+    queryFn: getAllNotices,
+    retry: false,
   });
 };

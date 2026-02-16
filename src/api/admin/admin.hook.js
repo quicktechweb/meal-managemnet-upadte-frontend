@@ -72,3 +72,8 @@ export const updateFeatureFunction = async ({ id, payload }) => {
   const { data } = await axiosPublic.put(`/api/update-feature/${id}`, payload);
   return data;
 };
+
+export const getAllNotices = async () => {
+  const { data } = await axiosPublic("/api/all-notices");
+  return data?.data;
+};
