@@ -17,6 +17,7 @@ import { FaRegIdCard } from "react-icons/fa";
 import toast from "react-hot-toast";
 import { useRegister } from "../../../api/auth/auth.hook";
 import { api } from "../../../utils/countryApi";
+import { IoCloseCircle } from "react-icons/io5";
 const NormalUserForm = () => {
   const [countries, setCountries] = useState([]);
   const [states, setStates] = useState([]);
@@ -67,13 +68,13 @@ const NormalUserForm = () => {
   const [instituteImage, setInstituteImage] = useState(null);
 
   const handleNidImageChange = (e) => {
-    const file = e.target.files[0];
-    setNidImage(URL.createObjectURL(file));
+    const files = Array.from(e.target.files);
+    const previewUrls = files.map((file) => URL.createObjectURL(file));
+    setNidImage(previewUrls);
   };
 
-  const handleInstituteImageChange = (e) => {
-    const file = e.target.files[0];
-    setInstituteImage(URL.createObjectURL(file));
+  const handleDelete = (index) => {
+    setNidImage((prev) => prev.filter((_, i) => i !== index));
   };
 
   const {
@@ -414,7 +415,7 @@ const NormalUserForm = () => {
               <input
                 type="file"
                 id="image"
-                {...register("nid_image")}
+                multiple
                 onChange={handleNidImageChange}
                 className="absolute inset-0 opacity-0 cursor-pointer"
               />
@@ -430,9 +431,25 @@ const NormalUserForm = () => {
 
             <p className="text-xs text-gray-400 mt-1">PNG, JPG up to 5MB</p>
           </div>
-
-          {nidImage && (
-            <img src={nidImage} alt="NID Preview" className="w-40 rounded-lg" />
+          {Array.isArray(nidImage) && (
+            <div className="flex flex-wrap gap-2.5 items-center mt-2">
+              {nidImage.map((img, index) => (
+                <div className="relative w-20 h-20">
+                  <img
+                    key={index}
+                    src={img}
+                    className="w-full h-full object-cover border border-gray-300 "
+                  />
+                  <button
+                    onClick={() => handleDelete(index)}
+                    type="button"
+                    className="absolute cursor-pointer top-1 left-1 text-red-500"
+                  >
+                    <IoCloseCircle />
+                  </button>
+                </div>
+              ))}
+            </div>
           )}
         </div>
       )}

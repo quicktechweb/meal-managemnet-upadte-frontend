@@ -486,7 +486,7 @@ const Footer = () => {
           </span>
         </div>
         <div className="text-gray-500 text-sm">
-          © 2025 Alabadan. Designed & Developed by{" "}
+          &copy; {new Date().getFullYear()} Alabadan. Designed & Developed by
           <a href="#" className="text-blue-600 hover:underline">
             QuickTech IT
           </a>
