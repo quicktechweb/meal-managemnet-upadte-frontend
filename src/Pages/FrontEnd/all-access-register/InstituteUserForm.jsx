@@ -70,7 +70,9 @@ const InstituteUserForm = () => {
 
   const [instituteImage, setInstituteImage] = useState(null);
 
-  console.log(instituteImage);
+  const [instituteImages, setInstituteImages] = useState(null);
+
+  console.log(instituteImages);
 
   const {
     register,
@@ -93,25 +95,22 @@ const InstituteUserForm = () => {
     formData.append("occupation", data.occupation);
     formData.append("fatherName", data.fatherName);
     formData.append("motherName", data.motherName);
+    formData.append("country", country);
+    formData.append("state", state);
+    formData.append("city", city);
     formData.append("address", data.address);
     formData.append("websiteAccesstype", "all-access");
     formData.append("userType", selectedUserType);
 
-    if (data.nid) {
-      formData.append("nid_number", data.nid);
-    }
-
-    if (data?.nid_image) {
-      formData.append("nid_image", data?.nid_image[0]);
-    }
-
     if (data?.institute) {
       formData.append("instituteName", data?.institute);
     }
-
-    if (data?.institute_image) {
-      formData.append("institute_image", data?.institute_image[0]);
+    if (instituteImages.length > 0) {
+      instituteImages.forEach((image) => {
+        formData.append("institute_image", image);
+      });
     }
+
     try {
       await mutateAsync(formData);
     } catch (err) {
@@ -144,13 +143,13 @@ const InstituteUserForm = () => {
     const files = Array.from(e.target.files);
     const previewUrls = files.map((file) => URL.createObjectURL(file));
 
+    setInstituteImages(files);
     setInstituteImage(previewUrls);
   };
 
   const handleDelete = (index) => {
     setInstituteImage((prev) => prev.filter((_, i) => i !== index));
   };
-
 
   return (
     <form
@@ -185,7 +184,66 @@ const InstituteUserForm = () => {
           validation={{ required: "Required" }}
         />
       </div>
+      <div className="md:col-span-2 space-y-2">
+        {/* Country */}
+        <select
+          value={country}
+          onChange={(e) => setCountry(e.target.value)}
+          className="border focus:border-purple-500  border-gray-300 px-2 py-3 rounded w-full  text-gray-600"
+        >
+          <option value="">Select Country</option>
+          {countries.map((c) => (
+            <option key={c.iso2} value={c.iso2}>
+              {c.name}
+            </option>
+          ))}
+        </select>
 
+        {/* State */}
+        {country && (
+          <select
+            value={state}
+            onChange={(e) => setState(e.target.value)}
+            disabled={!country}
+            className="border focus:border-purple-500  border-gray-300 px-2 py-3 p-2 rounded w-full  text-gray-600"
+          >
+            <option value="">Select State</option>
+            {states.map((s) => (
+              <option key={s.iso2} value={s.iso2}>
+                {s.name}
+              </option>
+            ))}
+          </select>
+        )}
+
+        {/* City */}
+        {state && (
+          <select
+            value={city}
+            onChange={(e) => setCity(e.target.value)}
+            disabled={!state}
+            className="border focus:border-purple-500  border-gray-300 px-2 py-3 p-2 rounded w-full text-gray-600"
+          >
+            <option value="">Select City</option>
+            {cities.map((c) => (
+              <option key={c.id} value={c.name}>
+                {c.name}
+              </option>
+            ))}
+          </select>
+        )}
+      </div>
+      {city && (
+        <div className="md:col-span-2">
+          <FormInput
+            icon={Home}
+            type="text"
+            placeholder="Residential Address"
+            name="address"
+            validation={{ required: "Required" }}
+          />
+        </div>
+      )}
       <div className="md:col-span-2 flex flex-col gap-2.5">
         <label className="block text-sm md:text-base font-medium text-gray-600 mb-2">
           Select Institute Type
@@ -245,67 +303,6 @@ const InstituteUserForm = () => {
             type="text"
             placeholder="Institute Name"
             name="institute"
-          />
-        </div>
-      )}
-
-      <div className="md:col-span-2 space-y-2">
-        {/* Country */}
-        <select
-          value={country}
-          onChange={(e) => setCountry(e.target.value)}
-          className="border focus:border-purple-500  border-gray-300 px-2 py-3 rounded w-full  text-gray-600"
-        >
-          <option value="">Select Country</option>
-          {countries.map((c) => (
-            <option key={c.iso2} value={c.iso2}>
-              {c.name}
-            </option>
-          ))}
-        </select>
-
-        {/* State */}
-        {country && (
-          <select
-            value={state}
-            onChange={(e) => setState(e.target.value)}
-            disabled={!country}
-            className="border focus:border-purple-500  border-gray-300 px-2 py-3 p-2 rounded w-full  text-gray-600"
-          >
-            <option value="">Select State</option>
-            {states.map((s) => (
-              <option key={s.iso2} value={s.iso2}>
-                {s.name}
-              </option>
-            ))}
-          </select>
-        )}
-
-        {/* City */}
-        {state && (
-          <select
-            value={city}
-            onChange={(e) => setCity(e.target.value)}
-            disabled={!state}
-            className="border focus:border-purple-500  border-gray-300 px-2 py-3 p-2 rounded w-full text-gray-600"
-          >
-            <option value="">Select City</option>
-            {cities.map((c) => (
-              <option key={c.id} value={c.name}>
-                {c.name}
-              </option>
-            ))}
-          </select>
-        )}
-      </div>
-      {city && (
-        <div className="md:col-span-2">
-          <FormInput
-            icon={Home}
-            type="text"
-            placeholder="Residential Address"
-            name="address"
-            validation={{ required: "Required" }}
           />
         </div>
       )}
