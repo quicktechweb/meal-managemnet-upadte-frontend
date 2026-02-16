@@ -1,30 +1,32 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { useGetNotices } from "../../../api/admin/admin.api";
+import { useDeleteNotice, useGetNotices } from "../../../api/admin/admin.api";
 import { MdDelete } from "react-icons/md";
+import { Link } from "react-router-dom";
+import { Plus } from "lucide-react";
 
 const Notices = () => {
   const { data: notices } = useGetNotices();
 
-  // // Delete notice
-  // const handleDelete = async (id) => {
-  //   if (!window.confirm("Are you sure you want to delete this notice?")) return;
+  const { mutateAsync, isPending } = useDeleteNotice();
 
-  //   try {
-  //     await axios.delete(`/api/notices/${id}`);
-  //     setNotices(notices.filter((n) => n._id !== id));
-  //   } catch (err) {
-  //     console.error(err);
-  //   }
-  // };
-
-  // if (loading) return <div>Loading...</div>;
+  const handleDelete = async (item) => {
+    await mutateAsync(item?._id);
+  };
 
   return (
     <div className="p-4">
-      <h2 className="text-xl font-bold mb-4">All Notices</h2>
-
-      <table className="min-w-full border border-gray-300">
+      <div className="flex items-center justify-between mb-4">
+        <h2 className="text-xl font-bold ">All Notices</h2>
+        <Link
+          to="/admin/dashboard/add-notice"
+          className="inline-flex items-center gap-2 px-6 py-2 bg-violet-600 hover:bg-violet-700  text-white rounded-xl font-semibold shadow-lg text-sm transition active:scale-95"
+        >
+          <Plus size={18} />
+          Add New Notice
+        </Link>
+      </div>
+      <table className="min-w-full  border border-gray-300">
         <thead>
           <tr className="bg-gray-100">
             <th className="px-4 py-2 border border-gray-300">Title</th>
@@ -44,8 +46,8 @@ const Notices = () => {
           )}
 
           {notices?.map((notice) => (
-            <tr key={notice._id} className="text-center">
-              <td className="px-4 py-2 border border-gray-300">
+            <tr key={notice._id}>
+              <td className="px-4 py-2  border border-gray-300">
                 {notice.title}
               </td>
               <td className="px-4 py-2 border border-gray-300">
@@ -57,8 +59,8 @@ const Notices = () => {
 
               <td className="px-4 py-2 border border-gray-300">
                 <button
-                  // onClick={() => handleDelete(item)}
-                  // disabled={isPending}
+                  onClick={() => handleDelete(notice)}
+                  disabled={isPending}
                   className="text-xl duration-300 hover:text-red-600 cursor-pointer"
                 >
                   <MdDelete />
