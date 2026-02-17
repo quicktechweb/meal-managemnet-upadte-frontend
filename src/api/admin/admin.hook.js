@@ -92,3 +92,8 @@ export const updatenoticeFunction = async ({ id, payload }) => {
   const { data } = await axiosPublic.put(`/api/notice-update/${id}`, payload);
   return data;
 };
+
+export const getAllLiveKitchen = async () => {
+  const { data } = await axiosPublic("/api/all-video");
+  return data?.data;
+};

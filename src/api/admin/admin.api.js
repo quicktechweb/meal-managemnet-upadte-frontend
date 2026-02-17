@@ -10,6 +10,7 @@ import {
   deleteutilitiesFunction,
   getallfeaturefunction,
   getAllKitchenFunction,
+  getAllLiveKitchen,
   getAllNotices,
   getallschedulefunction,
   getAllServiceFunction,
@@ -251,5 +252,13 @@ export const useUpdateNotice = () => {
         navigate("/admin/dashboard/notices");
       }
     },
+  });
+};
+
+export const useAllLiveKitchenVideo = () => {
+  return useQuery({
+    queryKey: ["get-all-Video"],
+    queryFn: getAllLiveKitchen,
+    retry: false,
   });
 };

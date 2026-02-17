@@ -13,10 +13,6 @@ import PropTypes from "prop-types";
 // import useAuth from "../../Hooks/useAuth";
 import { ChevronRight } from "lucide-react";
 
-import { IoRestaurant } from "react-icons/io5";
-import { GrRestaurant } from "react-icons/gr";
-import { FaUser } from "react-icons/fa";
-
 const AdminDashboardSidebar = ({ setIsOpenSidebar }) => {
   const [openSections, setOpenSections] = useState({});
 
@@ -104,6 +100,20 @@ const AdminDashboardSidebar = ({ setIsOpenSidebar }) => {
           title: "All Notices",
           icon: FaShoppingBag,
           path: "/admin/dashboard/notices",
+        },
+      ],
+    },
+    {
+      key: "Live Kitchen",
+      title: "Live Kitchen",
+      roles: ["admin"],
+      icon: FaClipboardList,
+      permissionKey: "Live Kitchen",
+      links: [
+        {
+          title: "Live Kitchen video lists",
+          icon: FaShoppingBag,
+          path: "/admin/dashboard/live-kitchen",
         },
       ],
     },
