@@ -93,6 +93,20 @@ const AdminDashboardSidebar = ({ setIsOpenSidebar }) => {
         },
       ],
     },
+    {
+      key: "Notices",
+      title: "Notices",
+      roles: ["admin"],
+      icon: FaClipboardList,
+      permissionKey: "notice",
+      links: [
+        {
+          title: "All Notices",
+          icon: FaShoppingBag,
+          path: "/admin/dashboard/notices",
+        },
+      ],
+    },
   ];
 
   return (

@@ -1,13 +1,16 @@
 import toast from "react-hot-toast";
 import {
   addfeatureFunction,
+  addnoticeFunction,
   addscheduleFunction,
   addutilitiesFunction,
   deletefeatureFunction,
+  deleteNoticeFunction,
   deleteScheduleFunction,
   deleteutilitiesFunction,
   getallfeaturefunction,
   getAllKitchenFunction,
+  getAllNotices,
   getallschedulefunction,
   getAllServiceFunction,
   getallutilitiesfunction,
@@ -191,6 +194,45 @@ export const useUpdateFeature = () => {
         query.invalidateQueries(["get-all-feature"]);
         navigate("/admin/dashboard/features");
       }
+    },
+  });
+};
+
+export const useGetNotices = () => {
+  return useQuery({
+    queryKey: ["get-all-notice"],
+    queryFn: getAllNotices,
+    retry: false,
+  });
+};
+
+export const useDeleteNotice = () => {
+  const query = useQueryClient();
+  return useMutation({
+    mutationKey: ["delete-notice"],
+    mutationFn: (id) => deleteNoticeFunction(id),
+    onSuccess: (data) => {
+      if (data?.success) {
+        toast.success(data?.message);
+        query.invalidateQueries(["get-all-notice"]);
+      }
+    },
+  });
+};
+
+export const useCreateNotice = () => {
+  const query = useQueryClient();
+  const navigate = useNavigate();
+  return useMutation({
+    mutationKey: ["create-notice"],
+    mutationFn: (payload) => addnoticeFunction(payload),
+    onSuccess: (data) => {
+      toast.success(data?.message);
+      query.invalidateQueries(["get-all-notice"]);
+      navigate("/admin/dashboard/notices");
+    },
+    onError: (err) => {
+      toast.error(err?.response?.data?.message);
     },
   });
 };

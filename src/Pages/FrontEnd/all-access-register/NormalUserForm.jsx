@@ -17,14 +17,19 @@ import { FaRegIdCard } from "react-icons/fa";
 import toast from "react-hot-toast";
 import { useRegister } from "../../../api/auth/auth.hook";
 import { api } from "../../../utils/countryApi";
+import { IoCloseCircle } from "react-icons/io5";
 const NormalUserForm = () => {
   const [countries, setCountries] = useState([]);
   const [states, setStates] = useState([]);
   const [cities, setCities] = useState([]);
 
-  const [country, setCountry] = useState("");
-  const [state, setState] = useState("");
-  const [city, setCity] = useState("");
+  const [country, setCountry] = useState(null);
+  const [state, setState] = useState(null);
+  const [city, setCity] = useState(null);
+
+  const [singleCountry, setsingleCountry] = useState(null);
+  const [singleState, setSingleState] = useState(null);
+  const [singleCity, setSingleCity] = useState(null);
 
   useEffect(() => {
     const loadCountries = async () => {
@@ -64,16 +69,18 @@ const NormalUserForm = () => {
 
   const [nidImage, setNidImage] = useState(null);
 
-  const [instituteImage, setInstituteImage] = useState(null);
+  const [nidImages, setNidImages] = useState(null);
 
   const handleNidImageChange = (e) => {
-    const file = e.target.files[0];
-    setNidImage(URL.createObjectURL(file));
+    const files = Array.from(e.target.files);
+    setNidImages(files);
+
+    const previewUrls = files.map((file) => URL.createObjectURL(file));
+    setNidImage(previewUrls);
   };
 
-  const handleInstituteImageChange = (e) => {
-    const file = e.target.files[0];
-    setInstituteImage(URL.createObjectURL(file));
+  const handleDelete = (index) => {
+    setNidImage((prev) => prev.filter((_, i) => i !== index));
   };
 
   const {
@@ -99,25 +106,22 @@ const NormalUserForm = () => {
     formData.append("occupation", data.occupation);
     formData.append("fatherName", data.fatherName);
     formData.append("motherName", data.motherName);
+    formData.append("country", singleCountry?.name);
+    formData.append("state", singleState?.name);
+    formData.append("city", singleCity?.name);
     formData.append("address", data.address);
     formData.append("websiteAccesstype", "all-access");
     formData.append("userType", selectedUserType);
-
     if (data.nid) {
       formData.append("nid_number", data.nid);
     }
 
-    if (data?.nid_image) {
-      formData.append("nid_image", data?.nid_image[0]);
+    if (nidImages.length > 0) {
+      nidImages.forEach((image) => {
+        formData.append("nid_image", image);
+      });
     }
 
-    if (data?.institute) {
-      formData.append("instituteName", data?.institute);
-    }
-
-    if (data?.institute_image) {
-      formData.append("institute_image", data?.institute_image[0]);
-    }
     try {
       await mutateAsync(formData);
     } catch (err) {
@@ -213,7 +217,11 @@ const NormalUserForm = () => {
         {/* Country */}
         <select
           value={country}
-          onChange={(e) => setCountry(e.target.value)}
+          onChange={(e) => {
+            const selected = countries.find((s) => s.iso2 === e.target.value);
+            setCountry(e.target.value);
+            setsingleCountry(selected);
+          }}
           className="border focus:border-purple-500  border-gray-300 px-2 py-3 rounded w-full  text-gray-600"
         >
           <option value="">Select Country</option>
@@ -228,7 +236,12 @@ const NormalUserForm = () => {
         {country && (
           <select
             value={state}
-            onChange={(e) => setState(e.target.value)}
+            onChange={(e) => {
+              const selected = states.find((s) => s.iso2 === e.target.value);
+              setState(e.target.value);
+
+              setSingleState(selected);
+            }}
             disabled={!country}
             className="border focus:border-purple-500  border-gray-300 px-2 py-3 p-2 rounded w-full  text-gray-600"
           >
@@ -245,7 +258,11 @@ const NormalUserForm = () => {
         {state && (
           <select
             value={city}
-            onChange={(e) => setCity(e.target.value)}
+            onChange={(e) => {
+              const selected = cities.find((s) => s.name === e.target.value);
+              setCity(e.target.value);
+              setSingleCity(selected);
+            }}
             disabled={!state}
             className="border focus:border-purple-500  border-gray-300 px-2 py-3 p-2 rounded w-full text-gray-600"
           >
@@ -414,7 +431,7 @@ const NormalUserForm = () => {
               <input
                 type="file"
                 id="image"
-                {...register("nid_image")}
+                multiple
                 onChange={handleNidImageChange}
                 className="absolute inset-0 opacity-0 cursor-pointer"
               />
@@ -430,9 +447,25 @@ const NormalUserForm = () => {
 
             <p className="text-xs text-gray-400 mt-1">PNG, JPG up to 5MB</p>
           </div>
-
-          {nidImage && (
-            <img src={nidImage} alt="NID Preview" className="w-40 rounded-lg" />
+          {Array.isArray(nidImage) && (
+            <div className="flex flex-wrap gap-2.5 items-center mt-2">
+              {nidImage.map((img, index) => (
+                <div className="relative w-20 h-20">
+                  <img
+                    key={index}
+                    src={img}
+                    className="w-full h-full object-cover border border-gray-300 "
+                  />
+                  <button
+                    onClick={() => handleDelete(index)}
+                    type="button"
+                    className="absolute cursor-pointer top-1 left-1 text-red-500"
+                  >
+                    <IoCloseCircle />
+                  </button>
+                </div>
+              ))}
+            </div>
           )}
         </div>
       )}
