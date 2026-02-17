@@ -14,6 +14,7 @@ import {
 import { useForm } from "react-hook-form";
 import { FaRegIdCard } from "react-icons/fa";
 import { BiSolidInstitution } from "react-icons/bi";
+import { IoCloseCircle } from "react-icons/io5";
 
 import toast from "react-hot-toast";
 import { useRegister } from "../../../api/auth/auth.hook";
@@ -27,7 +28,13 @@ const InstituteUserForm = () => {
   const [state, setState] = useState("");
   const [city, setCity] = useState("");
 
+  const [singleCountry, setSingleCountry] = useState(null);
+  const [singleState, setSingleState] = useState(null);
+  const [singleCity, setSingleCity] = useState(null);
+
   const [documentType, setdocumentType] = useState(null);
+
+  const [instituteType, setInstituteType] = useState(null);
 
   useEffect(() => {
     const loadCountries = async () => {
@@ -65,19 +72,9 @@ const InstituteUserForm = () => {
 
   const [showPassword, setShowPassword] = useState(false);
 
-  const [nidImage, setNidImage] = useState(null);
-
   const [instituteImage, setInstituteImage] = useState(null);
 
-  const handleNidImageChange = (e) => {
-    const file = e.target.files[0];
-    setNidImage(URL.createObjectURL(file));
-  };
-
-  const handleInstituteImageChange = (e) => {
-    const file = e.target.files[0];
-    setInstituteImage(URL.createObjectURL(file));
-  };
+  const [instituteImages, setInstituteImages] = useState(null);
 
   const {
     register,
@@ -100,25 +97,22 @@ const InstituteUserForm = () => {
     formData.append("occupation", data.occupation);
     formData.append("fatherName", data.fatherName);
     formData.append("motherName", data.motherName);
+    formData.append("country", singleCountry?.name);
+    formData.append("state", singleState?.name);
+    formData.append("city", singleCity?.name);
     formData.append("address", data.address);
     formData.append("websiteAccesstype", "all-access");
     formData.append("userType", selectedUserType);
 
-    if (data.nid) {
-      formData.append("nid_number", data.nid);
-    }
-
-    if (data?.nid_image) {
-      formData.append("nid_image", data?.nid_image[0]);
-    }
-
     if (data?.institute) {
       formData.append("instituteName", data?.institute);
     }
-
-    if (data?.institute_image) {
-      formData.append("institute_image", data?.institute_image[0]);
+    if (instituteImages.length > 0) {
+      instituteImages.forEach((image) => {
+        formData.append("institute_image", image);
+      });
     }
+
     try {
       await mutateAsync(formData);
     } catch (err) {
@@ -147,6 +141,17 @@ const InstituteUserForm = () => {
       )}
     </div>
   );
+  const handleInstituteImageChange = (e) => {
+    const files = Array.from(e.target.files);
+    const previewUrls = files.map((file) => URL.createObjectURL(file));
+
+    setInstituteImages(files);
+    setInstituteImage(previewUrls);
+  };
+
+  const handleDelete = (index) => {
+    setInstituteImage((prev) => prev.filter((_, i) => i !== index));
+  };
 
   return (
     <form
@@ -172,26 +177,24 @@ const InstituteUserForm = () => {
         }}
       />
 
-      <FormInput
-        icon={Phone}
-        type="tel"
-        placeholder="Phone Number"
-        name="phone"
-        validation={{ required: "Required" }}
-      />
-
-      <FormInput
-        icon={BiSolidInstitution}
-        type="text"
-        placeholder="Institute Name"
-        name="institute"
-      />
-
+      <div className="md:col-span-2 space-y-2">
+        <FormInput
+          icon={Phone}
+          type="tel"
+          placeholder="Phone Number"
+          name="phone"
+          validation={{ required: "Required" }}
+        />
+      </div>
       <div className="md:col-span-2 space-y-2">
         {/* Country */}
         <select
           value={country}
-          onChange={(e) => setCountry(e.target.value)}
+          onChange={(e) => {
+            const selected = countries.find((s) => s.iso2 === e.target.value);
+            setCountry(e.target.value);
+            setsingleCountry(selected);
+          }}
           className="border focus:border-purple-500  border-gray-300 px-2 py-3 rounded w-full  text-gray-600"
         >
           <option value="">Select Country</option>
@@ -206,7 +209,12 @@ const InstituteUserForm = () => {
         {country && (
           <select
             value={state}
-            onChange={(e) => setState(e.target.value)}
+            onChange={(e) => {
+              const selected = states.find((s) => s.iso2 === e.target.value);
+              setState(e.target.value);
+
+              setSingleState(selected);
+            }}
             disabled={!country}
             className="border focus:border-purple-500  border-gray-300 px-2 py-3 p-2 rounded w-full  text-gray-600"
           >
@@ -223,7 +231,11 @@ const InstituteUserForm = () => {
         {state && (
           <select
             value={city}
-            onChange={(e) => setCity(e.target.value)}
+            onChange={(e) => {
+              const selected = cities.find((s) => s.name === e.target.value);
+              setCity(e.target.value);
+              setSingleCity(selected);
+            }}
             disabled={!state}
             className="border focus:border-purple-500  border-gray-300 px-2 py-3 p-2 rounded w-full text-gray-600"
           >
@@ -244,6 +256,68 @@ const InstituteUserForm = () => {
             placeholder="Residential Address"
             name="address"
             validation={{ required: "Required" }}
+          />
+        </div>
+      )}
+      <div className="md:col-span-2 flex flex-col gap-2.5">
+        <label className="block text-sm md:text-base font-medium text-gray-600 mb-2">
+          Select Institute Type
+        </label>
+        <div className="flex gap-2.5 flex-wrap items-center">
+          {/* scholl */}
+          <div className="flex items-center gap-2">
+            <label className="switch !text-[10px] lg:!text-xs">
+              <input
+                type="radio"
+                value="school"
+                {...register("instituteType")}
+                className="sr-only"
+                onChange={() => setInstituteType("school")}
+              />
+              <span className="slider"></span>
+            </label>
+            <p className="text-sm lg:text-base">School</p>
+          </div>
+
+          {/* college */}
+          <div className="flex items-center gap-2">
+            <label className="switch !text-[10px] lg:!text-xs">
+              <input
+                type="radio"
+                value="college"
+                {...register("instituteType")}
+                className="sr-only"
+                onChange={() => setInstituteType("college")}
+              />
+              <span className="slider"></span>
+            </label>
+            <p className="text-sm lg:text-base">College</p>
+          </div>
+
+          {/* university */}
+          <div className="flex items-center gap-2">
+            <label className="switch !text-[10px] lg:!text-xs">
+              <input
+                type="radio"
+                value="university"
+                {...register("instituteType")}
+                className="sr-only"
+                onChange={() => setInstituteType("university")}
+              />
+              <span className="slider"></span>
+            </label>
+            <p className="text-sm lg:text-base">University</p>
+          </div>
+        </div>
+      </div>
+
+      {instituteType && (
+        <div className="md:col-span-2 space-y-2">
+          <FormInput
+            icon={BiSolidInstitution}
+            type="text"
+            placeholder="Institute Name"
+            name="institute"
           />
         </div>
       )}
@@ -366,8 +440,8 @@ const InstituteUserForm = () => {
               <input
                 type="file"
                 id="image"
+                multiple
                 onChange={handleInstituteImageChange}
-                {...register("institute_image")}
                 className="absolute inset-0 opacity-0 cursor-pointer"
               />
 
@@ -383,12 +457,25 @@ const InstituteUserForm = () => {
             <p className="text-xs text-gray-400 mt-1">PNG, JPG up to 5MB</p>
           </div>
 
-          {instituteImage && (
-            <img
-              src={instituteImage}
-              alt="institute preview"
-              className="w-40 rounded-lg"
-            />
+          {Array.isArray(instituteImage) && (
+            <div className="flex flex-wrap gap-2.5 items-center mt-2">
+              {instituteImage.map((img, index) => (
+                <div className="relative w-20 h-20">
+                  <img
+                    key={index}
+                    src={img}
+                    className="w-full h-full object-cover border border-gray-300 "
+                  />
+                  <button
+                    onClick={() => handleDelete(index)}
+                    type="button"
+                    className="absolute cursor-pointer top-1 left-1 text-red-500"
+                  >
+                    <IoCloseCircle />
+                  </button>
+                </div>
+              ))}
+            </div>
           )}
         </div>
       )}

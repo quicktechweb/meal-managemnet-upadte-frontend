@@ -72,3 +72,18 @@ export const updateFeatureFunction = async ({ id, payload }) => {
   const { data } = await axiosPublic.put(`/api/update-feature/${id}`, payload);
   return data;
 };
+
+export const getAllNotices = async () => {
+  const { data } = await axiosPublic("/api/all-notices");
+  return data?.data;
+};
+
+export const deleteNoticeFunction = async (id) => {
+  const { data } = await axiosPublic.delete(`/api/delete-notice/${id}`);
+  return data;
+};
+
+export const addnoticeFunction = async (payload) => {
+  const { data } = await axiosPublic.post("/api/create-notice", payload);
+  return data;
+};

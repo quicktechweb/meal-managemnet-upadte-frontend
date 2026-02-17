@@ -47,6 +47,9 @@ import UpdateUtilitiesService from "../Pages/FrontEnd/admin/UpdateUtilitiesServi
 import Features from "../Pages/FrontEnd/admin/Features";
 import UpdateFeature from "../Pages/FrontEnd/admin/UpdateFeature";
 import AddFeature from "../Pages/FrontEnd/admin/AddFeature";
+import Notices from "../Pages/FrontEnd/admin/Notices";
+import AddNotice from "../Pages/FrontEnd/admin/AddNotice";
+import UpdateNotice from "../Pages/FrontEnd/admin/UpdateNotice";
 
 const router = createBrowserRouter([
   {
@@ -296,6 +299,19 @@ const router = createBrowserRouter([
       {
         path: "update-feature/:id",
         element: <UpdateFeature />,
+      },
+      {
+        path: "/admin/dashboard/notices",
+        element: <Notices />,
+      },
+
+      {
+        path: "/admin/dashboard/add-notice",
+        element: <AddNotice />,
+      },
+      {
+        path: "/admin/dashboard/update-notice/:id",
+        element: <UpdateNotice />,
       },
     ],
   },

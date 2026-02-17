@@ -38,9 +38,8 @@ export const useRegister = () => {
     onSuccess: (data) => {
       if (data) {
         toast.success(data?.message);
-        setInterval(() => {
-          navigate("/#login");
-        }, 1000);
+
+        navigate("/#login");
       }
     },
     onError: (err) => {},

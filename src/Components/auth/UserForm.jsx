@@ -17,7 +17,7 @@ const InputField = ({ label, name, control, type = "text", rules = {} }) => (
           {...field}
           type={type}
           placeholder=" "
-          className={`peer w-full border rounded-md px-3 h-[50px] text-lg focus:outline-none focus:border-black transition-all ${
+          className={`peer w-full border rounded-md px-3 h-[50px] text-lg focus:outline-none text-gray-500 focus:border-black transition-all ${
             fieldState.error ? "border-red-500" : "border-gray-200"
           }`}
         />
@@ -278,12 +278,12 @@ Christianity: The fourth-largest, with Roman Catholic and Protestant denominatio
 
         {/* Occupation */}
         <div className="flex flex-col gap-1">
-          <h4>Occupation</h4>
+          <h4 className="text-gray-500">Occupation</h4>
           <div className="flex items-center gap-3">
             <button
               type="button"
               onClick={() => setValue("occupation", "job_holder")}
-              className={`px-4 py-1.5 flex-1 rounded-2xl flex items-center justify-center cursor-pointer gap-1.5 border ${
+              className={`px-4 py-1.5 flex-1 rounded-2xl flex items-center justify-center text-gray-500 cursor-pointer gap-1.5 border ${
                 occupation === "job_holder"
                   ? "border-orange-500"
                   : "border-gray-300"
@@ -297,7 +297,7 @@ Christianity: The fourth-largest, with Roman Catholic and Protestant denominatio
             <button
               type="button"
               onClick={() => setValue("occupation", "student")}
-              className={`px-4 py-1.5 flex-1 rounded-2xl flex items-center justify-center cursor-pointer gap-1.5 border ${
+              className={`px-4 py-1.5 flex-1 rounded-2xl flex items-center justify-center text-gray-500 cursor-pointer gap-1.5 border ${
                 occupation === "student"
                   ? "border-orange-500"
                   : "border-gray-300"

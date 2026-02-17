@@ -24,5 +24,5 @@ createRoot(document.getElementById("root")).render(
         </StepProvider>
       </AuthProvider>
     </QueryClientProvider>
-  </React.StrictMode>,
+  </React.StrictMode>
 );
