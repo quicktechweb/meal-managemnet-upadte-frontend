@@ -11,7 +11,7 @@ import { Plus } from "lucide-react";
 const LiveKitchenVideoTable = () => {
   const { data: liveKitchenVideo } = useAllLiveKitchenVideo();
 
-  console.log(liveKitchenVideo);
+ 
 
   const { mutateAsync, isPending } = useDeleteKitchenvideo();
 
@@ -81,7 +81,7 @@ const LiveKitchenVideoTable = () => {
                 <td className="px-6 py-4 font-medium">
                   <div className="flex items-center justify-start gap-2">
                     <Link
-                      to={`/admin/dashboard/update-notice/${stream?._id}`}
+                      to={`/admin/dashboard/update-live-kithen/${stream?._id}`}
                       className="text-lg md:text-xl hover:text-violet-700 duration-300"
                     >
                       <FiEdit />
