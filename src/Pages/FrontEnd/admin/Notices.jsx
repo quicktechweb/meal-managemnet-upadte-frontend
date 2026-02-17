@@ -4,6 +4,7 @@ import { useDeleteNotice, useGetNotices } from "../../../api/admin/admin.api";
 import { MdDelete } from "react-icons/md";
 import { Link } from "react-router-dom";
 import { Plus } from "lucide-react";
+import { FiEdit } from "react-icons/fi";
 
 const Notices = () => {
   const { data: notices } = useGetNotices();
@@ -58,13 +59,21 @@ const Notices = () => {
               </td>
 
               <td className="px-4 py-2 border border-gray-300">
-                <button
-                  onClick={() => handleDelete(notice)}
-                  disabled={isPending}
-                  className="text-xl duration-300 hover:text-red-600 cursor-pointer"
-                >
-                  <MdDelete />
-                </button>
+                <div className="flex items-center justify-center gap-2">
+                  <Link
+                    to={`/admin/dashboard/update-notice/${notice?._id}`}
+                    className="text-xl cursor-pointer hover:text-violet-700  duration-300"
+                  >
+                    <FiEdit />
+                  </Link>
+                  <button
+                    onClick={() => handleDelete(notice)}
+                    disabled={isPending}
+                    className="text-xl duration-300 hover:text-red-600 cursor-pointer"
+                  >
+                    <MdDelete />
+                  </button>
+                </div>
               </td>
             </tr>
           ))}
