@@ -1,6 +1,7 @@
 import toast from "react-hot-toast";
 import {
   addfeatureFunction,
+  addLiveKitchenVideoFunction,
   addnoticeFunction,
   addscheduleFunction,
   addutilitiesFunction,
@@ -260,5 +261,22 @@ export const useAllLiveKitchenVideo = () => {
     queryKey: ["get-all-Video"],
     queryFn: getAllLiveKitchen,
     retry: false,
+  });
+};
+
+export const useCreateKitchenvideo = () => {
+  const query = useQueryClient();
+  const navigate = useNavigate();
+  return useMutation({
+    mutationKey: ["create-live-kitchen-video"],
+    mutationFn: (payload) => addLiveKitchenVideoFunction(payload),
+    onSuccess: (data) => {
+      toast.success(data?.message);
+      query.invalidateQueries(["get-all-Video"]);
+      navigate("/admin/dashboard/live-kitchen");
+    },
+    onError: (err) => {
+      toast.error(err?.response?.data?.message);
+    },
   });
 };

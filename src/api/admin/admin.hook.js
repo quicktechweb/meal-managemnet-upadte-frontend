@@ -97,3 +97,8 @@ export const getAllLiveKitchen = async () => {
   const { data } = await axiosPublic("/api/all-video");
   return data?.data;
 };
+
+export const addLiveKitchenVideoFunction = async (payload) => {
+  const { data } = await axiosPublic.post("/api/upload-video", payload);
+  return data;
+};

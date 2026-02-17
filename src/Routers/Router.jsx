@@ -51,6 +51,7 @@ import Notices from "../Pages/FrontEnd/admin/Notices";
 import AddNotice from "../Pages/FrontEnd/admin/AddNotice";
 import UpdateNotice from "../Pages/FrontEnd/admin/UpdateNotice";
 import LiveKitchenVideo from "../Pages/FrontEnd/admin/LiveKitchenVideo";
+import AddLiveKitchenVideo from "../Pages/FrontEnd/admin/AddLiveKitchenVideo";
 
 const router = createBrowserRouter([
   {
@@ -317,6 +318,11 @@ const router = createBrowserRouter([
       {
         path: "/admin/dashboard/live-kitchen",
         element: <LiveKitchenVideo />,
+      },
+
+      {
+        path: "/admin/dashboard/add-live-kitchen",
+        element: <AddLiveKitchenVideo />,
       },
     ],
   },
