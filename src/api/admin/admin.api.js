@@ -6,6 +6,7 @@ import {
   addscheduleFunction,
   addutilitiesFunction,
   deletefeatureFunction,
+  deleteKitchenVideoFunction,
   deleteNoticeFunction,
   deleteScheduleFunction,
   deleteutilitiesFunction,
@@ -277,6 +278,20 @@ export const useCreateKitchenvideo = () => {
     },
     onError: (err) => {
       toast.error(err?.response?.data?.message);
+    },
+  });
+};
+
+export const useDeleteKitchenvideo = () => {
+  const query = useQueryClient();
+  return useMutation({
+    mutationKey: ["delete-notice"],
+    mutationFn: (id) => deleteKitchenVideoFunction(id),
+    onSuccess: (data) => {
+      if (data?.success) {
+        toast.success(data?.message);
+        query.invalidateQueries("get-all-Video");
+      }
     },
   });
 };

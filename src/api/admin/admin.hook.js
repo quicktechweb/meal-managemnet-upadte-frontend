@@ -102,3 +102,8 @@ export const addLiveKitchenVideoFunction = async (payload) => {
   const { data } = await axiosPublic.post("/api/upload-video", payload);
   return data;
 };
+
+export const deleteKitchenVideoFunction = async (id) => {
+  const { data } = await axiosPublic.delete(`/api/delete-kitchen-video/${id}`);
+  return data;
+};
