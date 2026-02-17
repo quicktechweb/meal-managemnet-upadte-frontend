@@ -15,6 +15,7 @@ import {
   getAllServiceFunction,
   getallutilitiesfunction,
   updateFeatureFunction,
+  updatenoticeFunction,
   updateScheduleFunction,
   updateUtilitiesFunction,
 } from "./admin.hook";
@@ -233,6 +234,22 @@ export const useCreateNotice = () => {
     },
     onError: (err) => {
       toast.error(err?.response?.data?.message);
+    },
+  });
+};
+
+export const useUpdateNotice = () => {
+  const query = useQueryClient();
+  const navigate = useNavigate();
+  return useMutation({
+    mutationKey: ["update-notice"],
+    mutationFn: updatenoticeFunction,
+    onSuccess: (data) => {
+      if (data?.success) {
+        toast.success(data?.message);
+        query.invalidateQueries(["get-all-notice"]);
+        navigate("/admin/dashboard/notices");
+      }
     },
   });
 };

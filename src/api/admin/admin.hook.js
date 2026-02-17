@@ -87,3 +87,8 @@ export const addnoticeFunction = async (payload) => {
   const { data } = await axiosPublic.post("/api/create-notice", payload);
   return data;
 };
+
+export const updatenoticeFunction = async ({ id, payload }) => {
+  const { data } = await axiosPublic.put(`/api/notice-update/${id}`, payload);
+  return data;
+};

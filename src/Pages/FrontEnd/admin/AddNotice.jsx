@@ -75,7 +75,7 @@ const AddNotice = () => {
 
             <div className="relative">
               <input
-                type="date"
+                type="datetime-local"
                 {...register("expire_date", {
                   required: "Expire Date is required",
                 })}
