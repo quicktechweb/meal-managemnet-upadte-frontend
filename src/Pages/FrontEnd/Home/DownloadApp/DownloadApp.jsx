@@ -8,10 +8,9 @@ const DownloadApp = () => {
         {/* Background image */}
         <div
           className="absolute inset-0 bg-cover bg-center"
-          // style={{
-          //   backgroundImage:
-          //     "url(https://appbeats.themetags.com/img/hero-bg-3.jpg)",
-          // }}
+          style={{
+            backgroundImage: "url(https://i.ibb.co.com/tT2fgXh4/hero-bg-3.jpg)",
+          }}
         />
 
         {/* Gradient overlay */}
@@ -52,8 +51,8 @@ const DownloadApp = () => {
 
           {/* Right image container */}
           <div className="relative hidden md:block">
-            {/* <img
-              src="https://appbeats.themetags.com/img/hand-with-app.png"
+            <img
+              src="https://i.ibb.co.com/GQkq02kp/hand-with-app.png"
               alt="App Preview"
               className="
                 absolute 
@@ -63,7 +62,7 @@ const DownloadApp = () => {
                 h-[370px]
                 drop-shadow-2xl
               "
-            /> */}
+            />
           </div>
         </div>
       </div>

@@ -1,20 +1,24 @@
 import toast from "react-hot-toast";
 import {
   addfeatureFunction,
+  addLiveKitchenVideoFunction,
   addnoticeFunction,
   addscheduleFunction,
   addutilitiesFunction,
   deletefeatureFunction,
+  deleteKitchenVideoFunction,
   deleteNoticeFunction,
   deleteScheduleFunction,
   deleteutilitiesFunction,
   getallfeaturefunction,
   getAllKitchenFunction,
+  getAllLiveKitchen,
   getAllNotices,
   getallschedulefunction,
   getAllServiceFunction,
   getallutilitiesfunction,
   updateFeatureFunction,
+  updatenoticeFunction,
   updateScheduleFunction,
   updateUtilitiesFunction,
 } from "./admin.hook";
@@ -233,6 +237,61 @@ export const useCreateNotice = () => {
     },
     onError: (err) => {
       toast.error(err?.response?.data?.message);
+    },
+  });
+};
+
+export const useUpdateNotice = () => {
+  const query = useQueryClient();
+  const navigate = useNavigate();
+  return useMutation({
+    mutationKey: ["update-notice"],
+    mutationFn: updatenoticeFunction,
+    onSuccess: (data) => {
+      if (data?.success) {
+        toast.success(data?.message);
+        query.invalidateQueries(["get-all-notice"]);
+        navigate("/admin/dashboard/notices");
+      }
+    },
+  });
+};
+
+export const useAllLiveKitchenVideo = () => {
+  return useQuery({
+    queryKey: ["get-all-Video"],
+    queryFn: getAllLiveKitchen,
+    retry: false,
+  });
+};
+
+export const useCreateKitchenvideo = () => {
+  const query = useQueryClient();
+  const navigate = useNavigate();
+  return useMutation({
+    mutationKey: ["create-live-kitchen-video"],
+    mutationFn: (payload) => addLiveKitchenVideoFunction(payload),
+    onSuccess: (data) => {
+      toast.success(data?.message);
+      query.invalidateQueries(["get-all-Video"]);
+      navigate("/admin/dashboard/live-kitchen");
+    },
+    onError: (err) => {
+      toast.error(err?.response?.data?.message);
+    },
+  });
+};
+
+export const useDeleteKitchenvideo = () => {
+  const query = useQueryClient();
+  return useMutation({
+    mutationKey: ["delete-notice"],
+    mutationFn: (id) => deleteKitchenVideoFunction(id),
+    onSuccess: (data) => {
+      if (data?.success) {
+        toast.success(data?.message);
+        query.invalidateQueries("get-all-Video");
+      }
     },
   });
 };
