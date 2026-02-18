@@ -87,3 +87,23 @@ export const addnoticeFunction = async (payload) => {
   const { data } = await axiosPublic.post("/api/create-notice", payload);
   return data;
 };
+
+export const updatenoticeFunction = async ({ id, payload }) => {
+  const { data } = await axiosPublic.put(`/api/notice-update/${id}`, payload);
+  return data;
+};
+
+export const getAllLiveKitchen = async () => {
+  const { data } = await axiosPublic("/api/all-video");
+  return data?.data;
+};
+
+export const addLiveKitchenVideoFunction = async (payload) => {
+  const { data } = await axiosPublic.post("/api/upload-video", payload);
+  return data;
+};
+
+export const deleteKitchenVideoFunction = async (id) => {
+  const { data } = await axiosPublic.delete(`/api/delete-kitchen-video/${id}`);
+  return data;
+};
