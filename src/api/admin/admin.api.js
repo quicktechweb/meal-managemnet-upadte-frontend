@@ -1,5 +1,6 @@
 import toast from "react-hot-toast";
 import {
+  addbannerFunction,
   addfeatureFunction,
   addLiveKitchenVideoFunction,
   addnoticeFunction,
@@ -316,6 +317,23 @@ export const useDeletebanner = () => {
         toast.success(data?.message);
         query.invalidateQueries("get-all-banner");
       }
+    },
+  });
+};
+
+export const useCreateBanner = () => {
+  const query = useQueryClient();
+  const navigate = useNavigate();
+  return useMutation({
+    mutationKey: ["create-banner"],
+    mutationFn: (payload) => addbannerFunction(payload),
+    onSuccess: (data) => {
+      toast.success(data?.message);
+      query.invalidateQueries(["get-all-banner"]);
+      navigate("/admin/dashboard/banner");
+    },
+    onError: (err) => {
+      toast.error(err?.response?.data?.message);
     },
   });
 };

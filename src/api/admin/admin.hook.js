@@ -117,3 +117,8 @@ export const deletebannerFunction = async (id) => {
   const { data } = await axiosPublic.delete(`/api/delete-banner/${id}`);
   return data;
 };
+
+export const addbannerFunction = async (payload) => {
+  const { data } = await axiosPublic.post("/api/create-banner", payload);
+  return data;
+};
