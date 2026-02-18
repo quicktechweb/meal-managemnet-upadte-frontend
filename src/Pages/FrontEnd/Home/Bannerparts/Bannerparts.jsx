@@ -7,7 +7,7 @@ const slides = [
   {
     title: "How to Deliver Digital Experiences",
     desc: "Our design projects are fresh and simple and will benefit your business greatly.",
-    bg: "",
+    bg: "https://images.unsplash.com/photo-1521737604893-d14cc237f11d",
     image: "https://i.ibb.co.com/tMSSj1JG/hero-app-image.png",
   },
   {
