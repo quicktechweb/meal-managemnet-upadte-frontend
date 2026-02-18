@@ -22,9 +22,9 @@ const Home = () => {
       <Features />
       <ProcessSection />
       <MealLanding />
-      <LearningManagement />
+      {/* <LearningManagement /> */}
       <EcommerceLanding />
-      <RideSharing />
+      {/* <RideSharing /> */}
       <DownloadApp />
       <Testimonial />
 

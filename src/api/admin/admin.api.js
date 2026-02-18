@@ -5,6 +5,7 @@ import {
   addnoticeFunction,
   addscheduleFunction,
   addutilitiesFunction,
+  bannerListFunction,
   deletefeatureFunction,
   deleteKitchenVideoFunction,
   deleteNoticeFunction,
@@ -293,5 +294,13 @@ export const useDeleteKitchenvideo = () => {
         query.invalidateQueries("get-all-Video");
       }
     },
+  });
+};
+
+export const useAllBanner = () => {
+  return useQuery({
+    queryKey: ["get-all-banner"],
+    queryFn: bannerListFunction,
+    retry: false,
   });
 };

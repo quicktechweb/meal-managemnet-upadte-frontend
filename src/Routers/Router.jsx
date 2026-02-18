@@ -53,6 +53,7 @@ import UpdateNotice from "../Pages/FrontEnd/admin/UpdateNotice";
 import LiveKitchenVideo from "../Pages/FrontEnd/admin/LiveKitchenVideo";
 import AddLiveKitchenVideo from "../Pages/FrontEnd/admin/AddLiveKitchenVideo";
 import UpdateLiveKitchenVideo from "../Pages/FrontEnd/admin/UpdateLiveKitchenVideo";
+import Banner from "../Pages/FrontEnd/admin/Banner";
 
 const router = createBrowserRouter([
   {
@@ -328,6 +329,10 @@ const router = createBrowserRouter([
       {
         path: "/admin/dashboard/update-live-kithen/:id",
         element: <UpdateLiveKitchenVideo />,
+      },
+      {
+        path: "/admin/dashboard/banner",
+        element: <Banner />,
       },
     ],
   },

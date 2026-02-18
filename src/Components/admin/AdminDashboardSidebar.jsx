@@ -117,6 +117,20 @@ const AdminDashboardSidebar = ({ setIsOpenSidebar }) => {
         },
       ],
     },
+    {
+      key: "CMS",
+      title: "CMS",
+      roles: ["admin"],
+      icon: FaClipboardList,
+      permissionKey: "admin",
+      links: [
+        {
+          title: "Banner",
+          icon: FaShoppingBag,
+          path: "/admin/dashboard/banner",
+        },
+      ],
+    },
   ];
 
   return (
