@@ -1,13 +1,18 @@
 import { Plus } from "lucide-react";
 import React from "react";
 import { Link } from "react-router-dom";
-import { useAllBanner } from "../../../api/admin/admin.api";
+import { useAllBanner, useDeletebanner } from "../../../api/admin/admin.api";
 import { FiEdit } from "react-icons/fi";
 import { MdDelete } from "react-icons/md";
 
 const Banner = () => {
   const { data } = useAllBanner();
-  console.log(data);
+
+  const { mutateAsync, isPending } = useDeletebanner();
+
+  const handleDelete = async (banner) => {
+    await mutateAsync(banner?._id);
+  };
 
   return (
     <div>
@@ -24,7 +29,7 @@ const Banner = () => {
 
       <div className="w-full overflow-x-auto">
         <table className="min-w-[800px] w-full border border-gray-300 rounded-xl ">
-          <thead className="bg-gray-100 text-gray-700 text-sm">
+          <thead className="bg-gray-100 text-gray-700 text-sm border-b border-gray-300">
             <tr>
               <th className="px-3 md:px-4 py-3 text-left">Title</th>
               <th className="px-3 md:px-4 py-3 text-left">Description</th>
@@ -36,6 +41,13 @@ const Banner = () => {
           </thead>
 
           <tbody>
+            {data?.length === 0 && (
+              <tr>
+                <td colSpan="6" className="text-center text-gray-500 py-4">
+                  No Banner found
+                </td>
+              </tr>
+            )}
             {data?.map((banner) => (
               <tr
                 key={banner._id}
@@ -84,7 +96,11 @@ const Banner = () => {
                       <FiEdit size={18} />
                     </Link>
 
-                    <button className="p-2 rounded-lg hover:bg-red-100 text-red-500 transition">
+                    <button
+                      onClick={() => handleDelete(banner)}
+                      disabled={isPending}
+                      className="p-2 rounded-lg hover:bg-red-100 text-red-500 transition cursor-pointer"
+                    >
                       <MdDelete size={18} />
                     </button>
                   </div>

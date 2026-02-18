@@ -6,6 +6,7 @@ import {
   addscheduleFunction,
   addutilitiesFunction,
   bannerListFunction,
+  deletebannerFunction,
   deletefeatureFunction,
   deleteKitchenVideoFunction,
   deleteNoticeFunction,
@@ -302,5 +303,19 @@ export const useAllBanner = () => {
     queryKey: ["get-all-banner"],
     queryFn: bannerListFunction,
     retry: false,
+  });
+};
+
+export const useDeletebanner = () => {
+  const query = useQueryClient();
+  return useMutation({
+    mutationKey: ["delete-banner"],
+    mutationFn: (id) => deletebannerFunction(id),
+    onSuccess: (data) => {
+      if (data?.success) {
+        toast.success(data?.message);
+        query.invalidateQueries("get-all-banner");
+      }
+    },
   });
 };

@@ -108,8 +108,12 @@ export const deleteKitchenVideoFunction = async (id) => {
   return data;
 };
 
-
 export const bannerListFunction = async () => {
   const { data } = await axiosPublic("/api/all-banner");
-  return data?.data
-}
+  return data?.data;
+};
+
+export const deletebannerFunction = async (id) => {
+  const { data } = await axiosPublic.delete(`/api/delete-banner/${id}`);
+  return data;
+};
