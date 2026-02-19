@@ -1,10 +1,13 @@
 import toast from "react-hot-toast";
 import {
+  addbannerFunction,
   addfeatureFunction,
   addLiveKitchenVideoFunction,
   addnoticeFunction,
   addscheduleFunction,
   addutilitiesFunction,
+  bannerListFunction,
+  deletebannerFunction,
   deletefeatureFunction,
   deleteKitchenVideoFunction,
   deleteNoticeFunction,
@@ -17,6 +20,7 @@ import {
   getallschedulefunction,
   getAllServiceFunction,
   getallutilitiesfunction,
+  updateBannerFunction,
   updateFeatureFunction,
   updatenoticeFunction,
   updateScheduleFunction,
@@ -291,6 +295,61 @@ export const useDeleteKitchenvideo = () => {
       if (data?.success) {
         toast.success(data?.message);
         query.invalidateQueries("get-all-Video");
+      }
+    },
+  });
+};
+
+export const useAllBanner = () => {
+  return useQuery({
+    queryKey: ["get-all-banner"],
+    queryFn: bannerListFunction,
+    retry: false,
+  });
+};
+
+export const useDeletebanner = () => {
+  const query = useQueryClient();
+  return useMutation({
+    mutationKey: ["delete-banner"],
+    mutationFn: (id) => deletebannerFunction(id),
+    onSuccess: (data) => {
+      if (data?.success) {
+        toast.success(data?.message);
+        query.invalidateQueries("get-all-banner");
+      }
+    },
+  });
+};
+
+export const useCreateBanner = () => {
+  const query = useQueryClient();
+  const navigate = useNavigate();
+  return useMutation({
+    mutationKey: ["create-banner"],
+    mutationFn: (payload) => addbannerFunction(payload),
+    onSuccess: (data) => {
+      toast.success(data?.message);
+      query.invalidateQueries(["get-all-banner"]);
+      navigate("/admin/dashboard/banner");
+    },
+    onError: (err) => {
+      toast.error(err?.response?.data?.message);
+    },
+  });
+};
+
+export const useUpdateBanner = () => {
+  const query = useQueryClient();
+  const navigate = useNavigate();
+  return useMutation({
+    mutationKey: ["update-banner"],
+    mutationFn: updateBannerFunction,
+    onSuccess: (data) => {
+      if (data?.success) {
+        toast.success(data?.message);
+        query.invalidateQueries(["get-all-banner"]);
+        navigate("/admin/dashboard/banner");
       }
     },
   });
