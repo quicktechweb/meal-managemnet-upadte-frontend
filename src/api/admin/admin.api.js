@@ -9,6 +9,7 @@ import {
   addutilitiesFunction,
   bannerListFunction,
   chooseusBannerFunction,
+  chooseusListsFunction,
   deletebannerFunction,
   deletefeatureFunction,
   deleteKitchenVideoFunction,
@@ -379,5 +380,13 @@ export const useAddChooseusBanner = () => {
     onError: (err) => {
       toast.error(err?.response?.data?.message);
     },
+  });
+};
+
+export const useChooseusLists = () => {
+  return useQuery({
+    queryKey: ["choose-lists"],
+    queryFn: chooseusListsFunction,
+    retry: false,
   });
 };

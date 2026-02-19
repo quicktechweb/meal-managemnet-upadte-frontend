@@ -137,3 +137,8 @@ export const addchooseusBannerFunction = async (payload) => {
   const { data } = await axiosPublic.post("/api/create-choose-banner", payload);
   return data;
 };
+
+export const chooseusListsFunction = async () => {
+  const { data } = await axiosPublic("/api/all-chooseus");
+  return data?.data;
+};
