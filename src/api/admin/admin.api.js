@@ -11,6 +11,7 @@ import {
   chooseusBannerFunction,
   chooseusListsFunction,
   deletebannerFunction,
+  deleteChooseusBannerFunction,
   deletefeatureFunction,
   deleteKitchenVideoFunction,
   deleteNoticeFunction,
@@ -388,5 +389,22 @@ export const useChooseusLists = () => {
     queryKey: ["choose-lists"],
     queryFn: chooseusListsFunction,
     retry: false,
+  });
+};
+
+export const useDeleteChooseusbanner = () => {
+  const query = useQueryClient();
+  return useMutation({
+    mutationKey: ["delete-banner"],
+    mutationFn: (id) => deleteChooseusBannerFunction(id),
+    onSuccess: (data) => {
+      if (data?.success) {
+        toast.success(data?.message);
+        query.invalidateQueries("choose-image");
+      }
+    },
+    onError: (err) => {
+      toast.error(err?.response?.data?.message);
+    },
   });
 };

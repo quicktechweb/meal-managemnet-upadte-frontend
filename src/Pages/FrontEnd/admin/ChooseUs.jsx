@@ -1,13 +1,25 @@
 import { Plus } from "lucide-react";
 import React from "react";
 import { Link } from "react-router-dom";
-import { useChooseusBanner } from "../../../api/admin/admin.api";
+import {
+  useChooseusBanner,
+  useDeletebanner,
+  useDeleteChooseusbanner,
+} from "../../../api/admin/admin.api";
 import { FiEdit } from "react-icons/fi";
 import { MdDelete } from "react-icons/md";
 import ChooseUsLists from "./ChooseUsLists";
 
 const ChooseUs = () => {
   const { data } = useChooseusBanner();
+
+  console.log(data);
+
+  const { mutateAsync, isPending } = useDeleteChooseusbanner();
+
+  const handleDelete = async (banner) => {
+    await mutateAsync(banner?._id);
+  };
 
   return (
     <div className="choose-us-container flex flex-col gap-8">
@@ -36,7 +48,7 @@ const ChooseUs = () => {
             <tbody>
               {data?.length === 0 && (
                 <tr>
-                  <td colSpan="6" className="text-center text-gray-500 py-4">
+                  <td colSpan="6" className="text-center bg-gray-50 text-gray-500 py-4">
                     No Banner found
                   </td>
                 </tr>
@@ -64,15 +76,15 @@ const ChooseUs = () => {
                   <td className="px-3 md:px-4 py-3">
                     <div className="flex items-center justify-center gap-2">
                       <Link
-                        to={`/admin/dashboard/update-banner/${banner._id}`}
+                        // to={`/admin/dashboard/update-banner/${banner._id}`}
                         className=" rounded-lg  text-violet-600 transition"
                       >
                         <FiEdit size={18} />
                       </Link>
 
                       <button
-                        // onClick={() => handleDelete(banner)}
-                        // disabled={isPending}
+                        onClick={() => handleDelete(banner)}
+                        disabled={isPending}
                         className=" rounded-lg  text-red-500 transition cursor-pointer"
                       >
                         <MdDelete size={18} />

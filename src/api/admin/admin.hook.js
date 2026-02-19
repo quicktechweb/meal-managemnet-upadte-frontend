@@ -142,3 +142,9 @@ export const chooseusListsFunction = async () => {
   const { data } = await axiosPublic("/api/all-chooseus");
   return data?.data;
 };
+
+export const deleteChooseusBannerFunction = async (id) => {
+  const { data } = await axiosPublic.delete(`/api/delete-choose-image/${id}`);
+
+  return data;
+};
