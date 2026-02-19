@@ -13,6 +13,7 @@ import {
   chooseusListsFunction,
   deletebannerFunction,
   deleteChooseusBannerFunction,
+  deleteChooseusListsFunction,
   deletefeatureFunction,
   deleteKitchenVideoFunction,
   deleteNoticeFunction,
@@ -325,6 +326,9 @@ export const useDeletebanner = () => {
         query.invalidateQueries("get-all-banner");
       }
     },
+    onError: (err) => {
+      toast.error(err?.response?.data?.message);
+    },
   });
 };
 
@@ -440,6 +444,22 @@ export const useAddChooseusLists = () => {
       toast.success(data?.message);
       query.invalidateQueries(["get-all-choose-lists"]);
       navigate("/admin/dashboard/choose-us");
+    },
+    onError: (err) => {
+      toast.error(err?.response?.data?.message);
+    },
+  });
+};
+
+export const useDeleteChooseusList = () => {
+  const query = useQueryClient();
+
+  return useMutation({
+    mutationKey: ["delete-choose-us"],
+    mutationFn: (id) => deleteChooseusListsFunction(id),
+    onSuccess: (data) => {
+      toast.success(data?.message);
+      query.invalidateQueries(["get-all-choose-lists"]);
     },
     onError: (err) => {
       toast.error(err?.response?.data?.message);

@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 import {
   useAllBanner,
   useChooseusLists,
-  useDeletebanner,
+  useDeleteChooseusList,
 } from "../../../api/admin/admin.api";
 import { FiEdit } from "react-icons/fi";
 import { MdDelete } from "react-icons/md";
@@ -12,7 +12,7 @@ import { MdDelete } from "react-icons/md";
 const ChooseUsLists = () => {
   const { data } = useChooseusLists();
 
-  const { mutateAsync, isPending } = useDeletebanner();
+  const { mutateAsync, isPending } = useDeleteChooseusList();
 
   const handleDelete = async (banner) => {
     await mutateAsync(banner?._id);

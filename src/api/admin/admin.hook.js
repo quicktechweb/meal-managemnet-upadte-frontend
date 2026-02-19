@@ -160,3 +160,8 @@ export const addChooseusListsFunction = async (payload) => {
   const { data } = await axiosPublic.post("/api/create-chooseus", payload);
   return data;
 };
+
+export const deleteChooseusListsFunction = async (id) => {
+  const { data } = await axiosPublic.delete(`/api/delete-chooseus/${id}`);
+  return data;
+};

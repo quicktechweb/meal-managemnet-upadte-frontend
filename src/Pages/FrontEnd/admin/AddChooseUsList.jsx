@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { Upload, Image as ImageIcon, Type } from "lucide-react";
-import { useCreateBanner } from "../../../api/admin/admin.api";
+import { useAddChooseusLists } from "../../../api/admin/admin.api";
 import RichTextEditor from "../../../Components/RichTextEditor";
 
 const AddChooseUsList = () => {
@@ -13,7 +13,7 @@ const AddChooseUsList = () => {
     control,
   } = useForm();
 
-  const { mutateAsync, isPending } = useCreateBanner();
+  const { mutateAsync, isPending } = useAddChooseusLists();
 
   const onSubmit = async (data) => {
     const formdata = new FormData();
