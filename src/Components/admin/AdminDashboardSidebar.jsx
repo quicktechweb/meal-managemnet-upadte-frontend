@@ -129,6 +129,11 @@ const AdminDashboardSidebar = ({ setIsOpenSidebar }) => {
           icon: FaShoppingBag,
           path: "/admin/dashboard/banner",
         },
+        {
+          title: "Choose-us",
+          icon: FaShoppingBag,
+          path: "/admin/dashboard/choose-us",
+        },
       ],
     },
   ];

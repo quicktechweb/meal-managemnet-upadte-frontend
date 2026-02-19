@@ -25,6 +25,7 @@ import {
   getAllServiceFunction,
   getallutilitiesfunction,
   updateBannerFunction,
+  updateChooseusBannerFunction,
   updateFeatureFunction,
   updatenoticeFunction,
   updateScheduleFunction,
@@ -356,6 +357,9 @@ export const useUpdateBanner = () => {
         navigate("/admin/dashboard/banner");
       }
     },
+    onError: (err) => {
+      toast.error(err?.response?.data?.message);
+    },
   });
 };
 
@@ -405,6 +409,22 @@ export const useDeleteChooseusbanner = () => {
     },
     onError: (err) => {
       toast.error(err?.response?.data?.message);
+    },
+  });
+};
+
+export const useUpdateChooseusBanner = () => {
+  const query = useQueryClient();
+  const navigate = useNavigate();
+  return useMutation({
+    mutationKey: ["update-choose-us-banner"],
+    mutationFn: updateChooseusBannerFunction,
+    onSuccess: (data) => {
+      if (data?.success) {
+        toast.success(data?.message);
+        query.invalidateQueries(["choose-image"]);
+        navigate("/admin/dashboard/choose-us");
+      }
     },
   });
 };

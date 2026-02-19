@@ -58,6 +58,7 @@ import AddBanner from "../Pages/FrontEnd/admin/AddBanner";
 import UpdateBanner from "../Pages/FrontEnd/admin/UpdateBanner";
 import ChooseUs from "../Pages/FrontEnd/admin/ChooseUs";
 import AddChooseUsBanner from "../Pages/FrontEnd/admin/AddChooseUsBanner";
+import UpdateChooseUsBanner from "../Pages/FrontEnd/admin/UpdateChooseUsBanner";
 
 const router = createBrowserRouter([
   {
@@ -354,6 +355,10 @@ const router = createBrowserRouter([
       {
         path: "/admin/dashboard/add-choose-us-banner",
         element: <AddChooseUsBanner />,
+      },
+      {
+        path: "/admin/dashboard/update-choose-us-banner/:id",
+        element: <UpdateChooseUsBanner />,
       },
     ],
   },
