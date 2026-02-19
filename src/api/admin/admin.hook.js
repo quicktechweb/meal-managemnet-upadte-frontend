@@ -122,3 +122,8 @@ export const addbannerFunction = async (payload) => {
   const { data } = await axiosPublic.post("/api/create-banner", payload);
   return data;
 };
+
+export const updateBannerFunction = async ({ id, payload }) => {
+  const { data } = await axiosPublic.put(`/api/banner-update/${id}`, payload);
+  return data;
+};

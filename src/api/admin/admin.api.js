@@ -20,6 +20,7 @@ import {
   getallschedulefunction,
   getAllServiceFunction,
   getallutilitiesfunction,
+  updateBannerFunction,
   updateFeatureFunction,
   updatenoticeFunction,
   updateScheduleFunction,
@@ -334,6 +335,22 @@ export const useCreateBanner = () => {
     },
     onError: (err) => {
       toast.error(err?.response?.data?.message);
+    },
+  });
+};
+
+export const useUpdateBanner = () => {
+  const query = useQueryClient();
+  const navigate = useNavigate();
+  return useMutation({
+    mutationKey: ["update-banner"],
+    mutationFn: updateBannerFunction,
+    onSuccess: (data) => {
+      if (data?.success) {
+        toast.success(data?.message);
+        query.invalidateQueries(["get-all-banner"]);
+        navigate("/admin/dashboard/banner");
+      }
     },
   });
 };

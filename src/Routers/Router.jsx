@@ -55,6 +55,7 @@ import AddLiveKitchenVideo from "../Pages/FrontEnd/admin/AddLiveKitchenVideo";
 import UpdateLiveKitchenVideo from "../Pages/FrontEnd/admin/UpdateLiveKitchenVideo";
 import Banner from "../Pages/FrontEnd/admin/Banner";
 import AddBanner from "../Pages/FrontEnd/admin/AddBanner";
+import UpdateBanner from "../Pages/FrontEnd/admin/UpdateBanner";
 
 const router = createBrowserRouter([
   {
@@ -338,6 +339,10 @@ const router = createBrowserRouter([
       {
         path: "/admin/dashboard/add-banner",
         element: <AddBanner />,
+      },
+      {
+        path: "/admin/dashboard/update-banner/:id",
+        element: <UpdateBanner />,
       },
     ],
   },
