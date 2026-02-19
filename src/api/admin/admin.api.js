@@ -2,6 +2,7 @@ import toast from "react-hot-toast";
 import {
   addbannerFunction,
   addchooseusBannerFunction,
+  addChooseusListsFunction,
   addfeatureFunction,
   addLiveKitchenVideoFunction,
   addnoticeFunction,
@@ -425,6 +426,23 @@ export const useUpdateChooseusBanner = () => {
         query.invalidateQueries(["choose-image"]);
         navigate("/admin/dashboard/choose-us");
       }
+    },
+  });
+};
+
+export const useAddChooseusLists = () => {
+  const query = useQueryClient();
+  const navigate = useNavigate();
+  return useMutation({
+    mutationKey: ["add-choose-us-list"],
+    mutationFn: (payload) => addChooseusListsFunction(payload),
+    onSuccess: (data) => {
+      toast.success(data?.message);
+      query.invalidateQueries(["get-all-choose-lists"]);
+      navigate("/admin/dashboard/choose-us");
+    },
+    onError: (err) => {
+      toast.error(err?.response?.data?.message);
     },
   });
 };

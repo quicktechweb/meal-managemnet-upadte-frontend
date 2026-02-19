@@ -33,6 +33,7 @@
     "react-redux": "^9.2.0",
     "react-router-dom": "^7.1.5",
     "react-slick": "^0.30.3",
+    "react-smart-editor": "^1.0.66",
     "react-toastify": "^11.0.3",
     "recharts": "^3.0.2",
     "redux-persist": "^6.0.0",

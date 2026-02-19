@@ -156,5 +156,7 @@ export const updateChooseusBannerFunction = async ({ id, payload }) => {
   return data;
 };
 
-
-
+export const addChooseusListsFunction = async (payload) => {
+  const { data } = await axiosPublic.post("/api/create-chooseus", payload);
+  return data;
+};

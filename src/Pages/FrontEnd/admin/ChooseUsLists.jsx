@@ -23,7 +23,7 @@ const ChooseUsLists = () => {
       <div className="flex items-center justify-between mb-2">
         <h4 className="text-lg md:text-xl font-bold">All Choose-us Data</h4>
         <Link
-          to="/admin/dashboard/add-banner"
+          to="/admin/dashboard/add-choose-us-list"
           className="inline-flex items-center gap-2 px-4 md:px-6 py-2 bg-violet-600 hover:bg-violet-700 text-white rounded-xl font-semibold shadow-lg text-xs md:text-sm transition active:scale-95"
         >
           <Plus size={18} />
