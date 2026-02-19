@@ -13,16 +13,14 @@ import StepProvider from "./providers/StepProvider";
 const queryClient = new QueryClient();
 
 createRoot(document.getElementById("root")).render(
-  <React.StrictMode>
-    <QueryClientProvider client={queryClient}>
-      <AuthProvider>
-        <StepProvider>
-          <Provider store={store}>
-            <RouterProvider router={router} />
-            <Toaster />
-          </Provider>
-        </StepProvider>
-      </AuthProvider>
-    </QueryClientProvider>
-  </React.StrictMode>
+  <QueryClientProvider client={queryClient}>
+    <AuthProvider>
+      <StepProvider>
+        <Provider store={store}>
+          <RouterProvider router={router} />
+          <Toaster />
+        </Provider>
+      </StepProvider>
+    </AuthProvider>
+  </QueryClientProvider>,
 );

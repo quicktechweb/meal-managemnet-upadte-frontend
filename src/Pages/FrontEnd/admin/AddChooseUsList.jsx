@@ -1,7 +1,8 @@
 import React, { useState } from "react";
-import { useForm } from "react-hook-form";
+import { Controller, useForm } from "react-hook-form";
 import { Upload, Image as ImageIcon, Type } from "lucide-react";
 import { useCreateBanner } from "../../../api/admin/admin.api";
+import RichTextEditor from "../../../Components/RichTextEditor";
 
 const AddChooseUsList = () => {
   const {
@@ -9,25 +10,10 @@ const AddChooseUsList = () => {
     handleSubmit,
     formState: { errors },
     reset,
+    control,
   } = useForm();
 
   const { mutateAsync, isPending } = useCreateBanner();
-
-  const [selectedImage, setSelectedImage] = useState(null);
-  const [selectedbannerImage, setSelectedbannerImage] = useState(null);
-  const [selectedImagefile, setSeletedImagefile] = useState(null);
-  const [selectedbannerImagefile, setSelectedbannerImagefile] = useState(null);
-  const handlebannerImageChange = (e) => {
-    setSelectedbannerImagefile(e.target.files[0]);
-
-    setSelectedbannerImage(e.target.files[0]?.name);
-  };
-
-  const handleimageChange = (e) => {
-    setSeletedImagefile(e.target.files[0]);
-
-    setSelectedImage(e.target.files[0]?.name);
-  };
 
   const onSubmit = async (data) => {
     const formdata = new FormData();
@@ -36,16 +22,10 @@ const AddChooseUsList = () => {
 
     formdata.append("description", data.description);
 
-    formdata.append("banner_bg", selectedImagefile);
-
-    formdata.append("banner_image", selectedbannerImagefile);
-
     try {
       await mutateAsync(formdata);
 
       reset();
-      setSelectedImage(null);
-      setSelectedbannerImage(null);
     } catch (error) {
       console.error(error);
     }
@@ -80,16 +60,16 @@ const AddChooseUsList = () => {
           <label className="text-sm font-semibold text-gray-700 flex items-center gap-2">
             <Type size={16} /> Description
           </label>
-          <input
-            {...register("description", {
-              required: "Description is required",
-            })}
-            type="text"
-            placeholder="e.g. Making the Perfect Sourdough"
-            className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500/20 focus:border-transparent outline-none transition-all ${
-              errors.description ? "border-red-500" : "border-gray-300"
-            }`}
+
+          <Controller
+            name="description"
+            control={control}
+            rules={{ required: "Description is required" }}
+            render={({ field }) => (
+              <RichTextEditor value={field.value} onChange={field.onChange} />
+            )}
           />
+
           {errors.description && (
             <span className="text-red-500 text-xs">
               {errors.description.message}
