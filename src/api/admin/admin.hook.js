@@ -127,3 +127,13 @@ export const updateBannerFunction = async ({ id, payload }) => {
   const { data } = await axiosPublic.put(`/api/banner-update/${id}`, payload);
   return data;
 };
+
+export const chooseusBannerFunction = async () => {
+  const { data } = await axiosPublic("/api/get-choose-image");
+  return data?.data;
+};
+
+export const addchooseusBannerFunction = async (payload) => {
+  const { data } = await axiosPublic.post("/api/create-choose-banner", payload);
+  return data;
+};

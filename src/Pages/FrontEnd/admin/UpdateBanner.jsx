@@ -58,9 +58,17 @@ const UpdateBanner = () => {
 
     formdata.append("description", data.description);
 
-    formdata.append("banner_bg", selectedImagefile);
+    formdata.append(
+      "banner_bg",
+      selectedImagefile ? selectedImagefile : singleBanner?.banner_bg,
+    );
 
-    formdata.append("banner_image", selectedbannerImagefile);
+    formdata.append(
+      "banner_image",
+      selectedbannerImagefile
+        ? selectedbannerImagefile
+        : singleBanner?.banner_image,
+    );
 
     try {
       await mutateAsync({ id: id, payload: formdata });

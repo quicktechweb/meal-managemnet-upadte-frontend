@@ -1,12 +1,14 @@
 import toast from "react-hot-toast";
 import {
   addbannerFunction,
+  addchooseusBannerFunction,
   addfeatureFunction,
   addLiveKitchenVideoFunction,
   addnoticeFunction,
   addscheduleFunction,
   addutilitiesFunction,
   bannerListFunction,
+  chooseusBannerFunction,
   deletebannerFunction,
   deletefeatureFunction,
   deleteKitchenVideoFunction,
@@ -351,6 +353,31 @@ export const useUpdateBanner = () => {
         query.invalidateQueries(["get-all-banner"]);
         navigate("/admin/dashboard/banner");
       }
+    },
+  });
+};
+
+export const useChooseusBanner = () => {
+  return useQuery({
+    queryKey: ["choose-image"],
+    queryFn: chooseusBannerFunction,
+    retry: false,
+  });
+};
+
+export const useAddChooseusBanner = () => {
+  const query = useQueryClient();
+  const navigate = useNavigate();
+  return useMutation({
+    mutationKey: ["add-choose-us-banner"],
+    mutationFn: (payload) => addchooseusBannerFunction(payload),
+    onSuccess: (data) => {
+      toast.success(data?.message);
+      query.invalidateQueries(["get-all-banner"]);
+      navigate("/admin/dashboard/choose-us");
+    },
+    onError: (err) => {
+      toast.error(err?.response?.data?.message);
     },
   });
 };
