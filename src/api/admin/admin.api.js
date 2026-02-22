@@ -23,6 +23,7 @@ import {
   getAllKitchenFunction,
   getAllLiveKitchen,
   getAllNotices,
+  getAllPageFunction,
   getallschedulefunction,
   getAllServiceFunction,
   getallutilitiesfunction,
@@ -464,5 +465,13 @@ export const useDeleteChooseusList = () => {
     onError: (err) => {
       toast.error(err?.response?.data?.message);
     },
+  });
+};
+
+export const useAllPage = () => {
+  return useQuery({
+    queryKey: ["all-page"],
+    queryFn: getAllPageFunction,
+    retry: false,
   });
 };

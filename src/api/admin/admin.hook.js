@@ -165,3 +165,8 @@ export const deleteChooseusListsFunction = async (id) => {
   const { data } = await axiosPublic.delete(`/api/delete-chooseus/${id}`);
   return data;
 };
+
+export const getAllPageFunction = async () => {
+  const { data } = await axiosPublic("/api/all-page");
+  return data?.data;
+};
