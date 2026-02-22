@@ -2,19 +2,17 @@ import { useState } from "react";
 import {
   FaHome,
   FaClipboardList,
-  FaDesktop,
   FaSellcast,
   FaSignOutAlt,
   FaShoppingBag,
 } from "react-icons/fa";
-
-import { NavLink } from "react-router-dom";
+import { NavLink, useLocation } from "react-router-dom";
 import PropTypes from "prop-types";
-// import useAuth from "../../Hooks/useAuth";
 import { ChevronRight } from "lucide-react";
 
 const AdminDashboardSidebar = ({ setIsOpenSidebar }) => {
   const [openSections, setOpenSections] = useState({});
+  const location = useLocation();
 
   const toggleSection = (key) => {
     setOpenSections((prev) => ({
@@ -23,36 +21,11 @@ const AdminDashboardSidebar = ({ setIsOpenSidebar }) => {
     }));
   };
 
-  // Sidebar configuration
   const sidebarItems = [
-    //   {
-    //   key: "CompanySettings",
-    //   title: "CompanySettings",
-    //   icon: FaCog,
-    //   permissionKey: "Settings",
-    //   links: [
-    //      { title: "Footer",icon: FaDatabase, path: "/admin/dashboard/footerdashboard" },
-    //    { title: "About",icon: FaInfoCircle, path: "/admin/dashboard/aboutadmin" },
-    //     { title: "Contact",icon: FaPhone, path: "/admin/dashboard/contactadmin" },
-    //     { title: "TermsCondition",icon: FaEnvelope, path: "/admin/dashboard/admintermcondition" },
-    //     { title: "Shippings",icon: FaShippingFast, path: "/admin/dashboard/adminshippingpolicys" },
-    //     { title: "Faq",icon: FaQuestionCircle, path: "/admin/dashboard/faqadmin" }
-    //   ],
-    // },
-
-    {
-      key: "Home",
-      title: "Home",
-      roles: ["admin"],
-      icon: FaClipboardList,
-      permissionKey: "Home",
-    },
     {
       key: "Schedule",
       title: "Schedule",
-      roles: ["admin"],
       icon: FaClipboardList,
-      permissionKey: "schedule",
       links: [
         {
           title: "All Schedule",
@@ -64,9 +37,7 @@ const AdminDashboardSidebar = ({ setIsOpenSidebar }) => {
     {
       key: "Service",
       title: "Service",
-      roles: ["admin"],
       icon: FaClipboardList,
-      permissionKey: "service",
       links: [
         {
           title: "Service",
@@ -78,9 +49,7 @@ const AdminDashboardSidebar = ({ setIsOpenSidebar }) => {
     {
       key: "Feature",
       title: "Feature",
-      roles: ["admin"],
       icon: FaClipboardList,
-      permissionKey: "feature",
       links: [
         {
           title: "Feature",
@@ -92,9 +61,7 @@ const AdminDashboardSidebar = ({ setIsOpenSidebar }) => {
     {
       key: "Notices",
       title: "Notices",
-      roles: ["admin"],
       icon: FaClipboardList,
-      permissionKey: "notice",
       links: [
         {
           title: "All Notices",
@@ -104,14 +71,12 @@ const AdminDashboardSidebar = ({ setIsOpenSidebar }) => {
       ],
     },
     {
-      key: "Live Kitchen",
+      key: "LiveKitchen",
       title: "Live Kitchen",
-      roles: ["admin"],
       icon: FaClipboardList,
-      permissionKey: "Live Kitchen",
       links: [
         {
-          title: "Live Kitchen video lists",
+          title: "Live Kitchen Video Lists",
           icon: FaShoppingBag,
           path: "/admin/dashboard/live-kitchen",
         },
@@ -120,9 +85,7 @@ const AdminDashboardSidebar = ({ setIsOpenSidebar }) => {
     {
       key: "CMS",
       title: "CMS",
-      roles: ["admin"],
       icon: FaClipboardList,
-      permissionKey: "admin",
       links: [
         {
           title: "Banner",
@@ -130,7 +93,7 @@ const AdminDashboardSidebar = ({ setIsOpenSidebar }) => {
           path: "/admin/dashboard/banner",
         },
         {
-          title: "Choose-us",
+          title: "Choose Us",
           icon: FaShoppingBag,
           path: "/admin/dashboard/choose-us",
         },
@@ -144,134 +107,94 @@ const AdminDashboardSidebar = ({ setIsOpenSidebar }) => {
   ];
 
   return (
-    <>
-      <div className="w-full overflow-hidden">
-        <section className="flex flex-col gap-2 text-black ">
-          {/* Dashboard Home */}
-          <NavLink
-            onClick={() => setIsOpenSidebar(false)}
-            to={"/dashboard/dashboard"}
-          >
-            <div className="shadow -ms-16 flex items-center justify-center gap-2 font-bold p-3 mt-4 duration-300 active:scale-75 md:pr-0">
-              <FaHome className="text-xl text-[#6C51AA]" />
-              <h2 className="font-semibold  ">Dashboard - Home</h2>
-            </div>
-          </NavLink>
+    <div className="w-full p-3">
+      <section className="flex flex-col gap-3">
+        {/* Dashboard Home */}
+        <NavLink
+          to="/admin/dashboard"
+          onClick={() => setIsOpenSidebar(false)}
+          className={({ isActive }) =>
+            `flex items-center gap-2 p-2 rounded-md transition ${
+              isActive ? "bg-[#6C51AA]/10 text-[#6C51AA]" : "hover:bg-gray-100"
+            }`
+          }
+        >
+          <FaHome />
+          <span className="font-medium">Dashboard</span>
+        </NavLink>
 
-          <div
-            className={`grid overflow-hidden transition-all duration-300 ease-in-out`}
-          >
-            <div className="overflow-hidden">
-              <NavLink onClick={() => setIsOpenSidebar(false)} to="/">
-                <div className="dashboardNavLink -[3px] flex items-center gap-2  p-2 ml-3 mt-2 hover:scale-110 duration-300 active:scale-75 pr-0">
-                  <FaSellcast className="text-sm text-[#6C51AA]" />
-                  <h2 className="font-semibold ">Home</h2>
-                </div>
-              </NavLink>
-            </div>
-          </div>
+        {/* Website Home */}
+        <NavLink
+          to="/"
+          onClick={() => setIsOpenSidebar(false)}
+          className="flex items-center gap-2 p-2 rounded-md hover:bg-gray-100 transition"
+        >
+          <FaSellcast />
+          <span>Website Home</span>
+        </NavLink>
 
-          {/* Dynamic Sidebar Items */}
-          {sidebarItems.map((item) => {
-            // if (!canSee(item)) return null;
-            return (
+        {/* Dynamic Items */}
+        {sidebarItems.map((item) => {
+          const isOpen = openSections[item.key];
+
+          return (
+            <div key={item.key}>
+              {/* Parent */}
               <div
-                key={item.key}
-                className="grid overflow-hidden transition-all duration-300 ease-in-out"
+                onClick={() => toggleSection(item.key)}
+                className="flex items-center justify-between p-2 cursor-pointer rounded-md hover:bg-gray-100 transition"
               >
-                <div className="overflow-hidden">
-                  <div
-                    onClick={() => toggleSection(item.key)}
-                    className={`cursor-pointer border-l-[3px] ${
-                      openSections[item.key]
-                        ? "border-[#007cde]"
-                        : "border-transparent"
-                    }`}
-                  >
-                    <div className="ml-2 flex  items-center justify-between bg-white hover:bg-gray-50 p-2 rounded-md transition-all duration-200 active:scale-95">
-                      {/* Left section: icon + title */}
-                      <div className="flex items-center gap-2">
-                        <item.icon
-                          className={`text-[18px] ${
-                            openSections[item.key]
-                              ? "text-[#6c51aa]/50"
-                              : "text-[#6C51AA]"
-                          } transition-colors`}
-                        />
-                        <h4
-                          className={`font-medium text-sm ${
-                            openSections[item.key]
-                              ? "text-[#6C51AA]"
-                              : "text-gray-900"
-                          }`}
-                        >
-                          {item.title}
-                        </h4>
-                      </div>
-
-                      {/* Right section: static arrow icon */}
-                      <ChevronRight
-                        size={16}
-                        className={`text-[#6C51AA] transition-transform duration-300 ${
-                          openSections[item.key]
-                            ? "rotate-90 text-[#6C51AA]"
-                            : ""
-                        }`}
-                      />
-                    </div>
-                  </div>
-
-                  <div
-                    className={`grid overflow-hidden transition-all duration-300 ease-in-out ${
-                      openSections[item.key]
-                        ? "grid-rows-[1fr] opacity-100"
-                        : "grid-rows-[0fr] opacity-0"
-                    }`}
-                  >
-                    <div className="overflow-hidden">
-                      {item?.links &&
-                        item.links.map((link) => (
-                          <NavLink
-                            key={link.path}
-                            onClick={() => setIsOpenSidebar(false)}
-                            to={link.path}
-                            className={"inline-block"}
-                          >
-                            <div className="dashboardNavLink border-l-[3px] flex items-center gap-2 bg-white p-1 ml-8 mt-2 hover:scale-110 duration-300 active:scale-75 pr-0">
-                              {/* <FaSellcast className="text-xl text-[#01c0c9]" /> */}
-                              {link.icon && (
-                                <link.icon className="text-sm text-[#6C51AA]" />
-                              )}
-                              <h2 className="font-semibold ">{link.title}</h2>
-                            </div>
-                          </NavLink>
-                        ))}
-                    </div>
-                  </div>
+                <div className="flex items-center gap-2">
+                  <item.icon />
+                  <span className="font-medium">{item.title}</span>
                 </div>
+
+                <ChevronRight
+                  size={16}
+                  className={`transition-transform ${
+                    isOpen ? "rotate-90" : ""
+                  }`}
+                />
               </div>
-            );
-          })}
 
-          {/* Logout */}
-          <button
-            onClick={async () => {
-              try {
-                // await userLogOut();
-                window.location.href = "/"; // instantly redirect to home
-              } catch (error) {
-                console.error("Logout failed:", error);
-              }
-            }}
-            className="flex ms-5 font-bold items-center gap-2 text-[20px] hover:scale-105 transition-transform duration-200"
-          >
-            <FaSignOutAlt className="mt-1" /> LogOut
-          </button>
-        </section>
-      </div>
+              {/* Children */}
+              <div
+                className={`overflow-hidden transition-all duration-300 ${
+                  isOpen ? "max-h-96 mt-1" : "max-h-0"
+                }`}
+              >
+                {item.links.map((link) => (
+                  <NavLink
+                    key={link.path}
+                    to={link.path}
+                    onClick={() => setIsOpenSidebar(false)}
+                    className={({ isActive }) =>
+                      `flex items-center gap-2 ml-6 p-2 rounded-md text-sm transition ${
+                        isActive
+                          ? "bg-[#6C51AA]/10 text-[#6C51AA]"
+                          : "hover:bg-gray-100"
+                      }`
+                    }
+                  >
+                    <link.icon />
+                    {link.title}
+                  </NavLink>
+                ))}
+              </div>
+            </div>
+          );
+        })}
 
-      <div className="w-full h-[2px] bg-white mt-5"></div>
-    </>
+        {/* Logout */}
+        <button
+          onClick={() => (window.location.href = "/")}
+          className="flex items-center gap-2 mt-4 text-red-500 hover:scale-105 transition"
+        >
+          <FaSignOutAlt />
+          Logout
+        </button>
+      </section>
+    </div>
   );
 };
 
