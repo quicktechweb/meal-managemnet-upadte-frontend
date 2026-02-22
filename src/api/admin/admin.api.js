@@ -4,6 +4,7 @@ import {
   addbannerFunction,
   addchooseusBannerFunction,
   addChooseusListsFunction,
+  AddFaqFunction,
   addfeatureFunction,
   addLiveKitchenVideoFunction,
   addnoticeFunction,
@@ -608,6 +609,23 @@ export const useDeleteFaq = () => {
     onSuccess: (data) => {
       toast.success(data?.message);
       query.invalidateQueries(["all-faq"]);
+    },
+    onError: (err) => {
+      toast.error(err?.response?.data?.message);
+    },
+  });
+};
+
+export const useCreateFaqData = () => {
+  const query = useQueryClient();
+  const navigate = useNavigate();
+  return useMutation({
+    mutationKey: ["create-faq"],
+    mutationFn: (payload) => AddFaqFunction(payload),
+    onSuccess: (data) => {
+      toast.success(data?.message);
+      query.invalidateQueries(["all-faq"]);
+      navigate("/admin/dashboard/faq");
     },
     onError: (err) => {
       toast.error(err?.response?.data?.message);

@@ -215,3 +215,8 @@ export const deleteFaqFunction = async (id) => {
   const { data } = await axiosPublic.delete(`/api/delete-faq/${id}`);
   return data;
 };
+
+export const AddFaqFunction = async (payload) => {
+  const { data } = await axiosPublic.post("/api/create-faq", payload);
+  return data;
+};

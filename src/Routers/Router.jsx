@@ -67,6 +67,7 @@ import AppSection from "../Pages/FrontEnd/admin/AppSection";
 import AddAppSection from "../Pages/FrontEnd/admin/AddAppSection";
 import UpdateAppSection from "../Pages/FrontEnd/admin/UpdateAppSection";
 import FaqAdmin from "../Pages/FrontEnd/admin/FaqAdmin";
+import AddFaq from "../Pages/FrontEnd/admin/AddFaq";
 
 const router = createBrowserRouter([
   {
@@ -399,6 +400,10 @@ const router = createBrowserRouter([
       {
         path: "/admin/dashboard/faq",
         element: <FaqAdmin />,
+      },
+      {
+        path: "/admin/dashboard/add-faq",
+        element: <AddFaq />,
       },
     ],
   },
