@@ -1,5 +1,6 @@
 import toast from "react-hot-toast";
 import {
+  addAppDataSectionFunction,
   addbannerFunction,
   addchooseusBannerFunction,
   addChooseusListsFunction,
@@ -21,6 +22,7 @@ import {
   deletePageFunction,
   deleteScheduleFunction,
   deleteutilitiesFunction,
+  getAllAppFunction,
   getallfeaturefunction,
   getAllKitchenFunction,
   getAllLiveKitchen,
@@ -524,6 +526,31 @@ export const useUpdatePage = () => {
         query.invalidateQueries(["all-pages"]);
         navigate("/admin/dashboard/pages");
       }
+    },
+  });
+};
+
+export const useAllAppData = () => {
+  return useQuery({
+    queryKey: ["all-app"],
+    queryFn: getAllAppFunction,
+    retry: false,
+  });
+};
+
+export const useCreateAppData = () => {
+  const query = useQueryClient();
+  const navigate = useNavigate();
+  return useMutation({
+    mutationKey: ["create-app"],
+    mutationFn: (payload) => addAppDataSectionFunction(payload),
+    onSuccess: (data) => {
+      toast.success(data?.message);
+      query.invalidateQueries(["all-app"]);
+      navigate("/admin/dashboard/app-section");
+    },
+    onError: (err) => {
+      toast.error(err?.response?.data?.message);
     },
   });
 };

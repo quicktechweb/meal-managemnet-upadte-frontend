@@ -39,10 +39,7 @@ const testimonials = [
 
 const Testimonial = () => {
   return (
-    <section
-      id="testimonial"
-      className="bg-white mt-7 md:-mt-24 mb-8t md:mb-16"
-    >
+    <section id="testimonial" className="bg-white mt-7  mb-8 md:mb-16">
       <div className="max-w-6xl mx-auto px-4 lg:px-6 text-center">
         {/* Heading */}
         <h2 className="text-2xl lg:text-4xl font-bold mb-2 lg:mb-4">
@@ -73,13 +70,11 @@ const Testimonial = () => {
           {testimonials.map((item, index) => (
             <SwiperSlide key={index}>
               <div className="relative">
-                {/* Card */}
                 <div className="bg-gray-50 p-6 rounded-lg shadow-sm text-left">
                   <p className="text-gray-600 text-sm mb-3 lg:mb-6 leading-tight lg:leading-relaxed">
                     {item.text}
                   </p>
 
-                  {/* Stars */}
                   <div className="flex gap-1 mb-2">
                     {[...Array(5)].map((_, i) => (
                       <FaStar key={i} className="text-orange-400 text-sm" />
@@ -91,10 +86,8 @@ const Testimonial = () => {
                   </p>
                 </div>
 
-                {/* Speech arrow */}
                 <div className="absolute left-10 -bottom-3 w-6 h-6 bg-gray-50 rotate-45"></div>
 
-                {/* User */}
                 <div className="flex items-center gap-4 mt-4 lg:mt-8 text-left">
                   <img
                     src={item.image}

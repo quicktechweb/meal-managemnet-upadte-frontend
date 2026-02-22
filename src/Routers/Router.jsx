@@ -63,6 +63,8 @@ import AddChooseUsList from "../Pages/FrontEnd/admin/AddChooseUsList";
 import Pages from "../Pages/FrontEnd/admin/Pages";
 import AddPage from "../Pages/FrontEnd/admin/AddPage";
 import UpdatePage from "../Pages/FrontEnd/admin/UpdatePage";
+import AppSection from "../Pages/FrontEnd/admin/AppSection";
+import AddAppSection from "../Pages/FrontEnd/admin/AddAppSection";
 
 const router = createBrowserRouter([
   {
@@ -376,10 +378,17 @@ const router = createBrowserRouter([
         path: "/admin/dashboard/add-page",
         element: <AddPage />,
       },
-
       {
         path: "/admin/dashboard/update-page/:id",
         element: <UpdatePage />,
+      },
+      {
+        path: "/admin/dashboard/app-section",
+        element: <AppSection />,
+      },
+      {
+        path: "/admin/dashboard/add-app-section",
+        element: <AddAppSection />,
       },
     ],
   },

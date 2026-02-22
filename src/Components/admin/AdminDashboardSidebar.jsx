@@ -98,6 +98,11 @@ const AdminDashboardSidebar = ({ setIsOpenSidebar }) => {
           path: "/admin/dashboard/choose-us",
         },
         {
+          title: "App",
+          icon: FaShoppingBag,
+          path: "/admin/dashboard/app-section",
+        },
+        {
           title: "Pages",
           icon: FaShoppingBag,
           path: "/admin/dashboard/pages",

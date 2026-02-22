@@ -18,8 +18,6 @@ const DownloadApp = () => {
           className="absolute inset-0 bg-gradient-to-l 
           from-[#3264f5e6] 
           via-[#4a54e0e0] 
-          via-[#5b42dbe0] 
-          via-[#682ccbe0] 
           to-[#7202bbe6]"
         />
 
@@ -66,9 +64,6 @@ const DownloadApp = () => {
           </div>
         </div>
       </div>
-
-      {/* Space for overlapped image */}
-      <div className="h-[140px] hidden md:block md:h-[160px]" />
     </section>
   );
 };
