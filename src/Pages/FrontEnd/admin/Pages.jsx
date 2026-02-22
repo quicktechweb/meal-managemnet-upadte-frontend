@@ -8,14 +8,12 @@ import { MdDelete } from "react-icons/md";
 const Pages = () => {
   const { data } = useAllPage();
 
-  console.log(data);
-
   return (
     <div>
       <div className="flex items-center justify-between mb-4">
         <h2 className="text-lg md:text-xl font-bold">All Page lists</h2>
         <Link
-          to="/"
+          to="/admin/dashboard/add-page"
           className="inline-flex items-center gap-2 px-4 md:px-6 py-2 bg-violet-600 hover:bg-violet-700 text-white rounded-xl font-semibold shadow-lg text-xs md:text-sm transition active:scale-95"
         >
           <Plus size={18} />
@@ -64,7 +62,20 @@ const Pages = () => {
                 </td>
 
                 <td className="px-2 md:px-4 py-2 border  border-gray-300 ">
-                  <p>{page.status}</p>
+                  <span
+                    className={`px-3 py-1 rounded-full text-xs font-semibold capitalize
+      ${
+        page.status === "published"
+          ? "bg-green-100 text-green-700"
+          : page.status === "draft"
+            ? "bg-yellow-100 text-yellow-700"
+            : page.status === "archived"
+              ? "bg-red-100 text-red-700"
+              : "bg-gray-100 text-gray-700"
+      }`}
+                  >
+                    {page.status}
+                  </span>
                 </td>
 
                 <td className="px-2 md:px-4 py-2 border  border-gray-300 ">

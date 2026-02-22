@@ -170,3 +170,8 @@ export const getAllPageFunction = async () => {
   const { data } = await axiosPublic("/api/all-page");
   return data?.data;
 };
+
+export const addPageFunction = async (payload) => {
+  const { data } = await axiosPublic.post("/api/create-page", payload);
+  return data;
+};

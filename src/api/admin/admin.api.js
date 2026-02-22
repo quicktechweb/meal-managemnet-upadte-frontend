@@ -6,6 +6,7 @@ import {
   addfeatureFunction,
   addLiveKitchenVideoFunction,
   addnoticeFunction,
+  addPageFunction,
   addscheduleFunction,
   addutilitiesFunction,
   bannerListFunction,
@@ -473,5 +474,22 @@ export const useAllPage = () => {
     queryKey: ["all-page"],
     queryFn: getAllPageFunction,
     retry: false,
+  });
+};
+
+export const useAddPage = () => {
+  const query = useQueryClient();
+  const navigate = useNavigate();
+  return useMutation({
+    mutationKey: ["add-page"],
+    mutationFn: (payload) => addPageFunction(payload),
+    onSuccess: (data) => {
+      toast.success(data?.message);
+      query.invalidateQueries(["all-page"]);
+      navigate("/admin/dashboard/pages");
+    },
+    onError: (err) => {
+      toast.error(err?.response?.data?.message);
+    },
   });
 };

@@ -61,6 +61,7 @@ import AddChooseUsBanner from "../Pages/FrontEnd/admin/AddChooseUsBanner";
 import UpdateChooseUsBanner from "../Pages/FrontEnd/admin/UpdateChooseUsBanner";
 import AddChooseUsList from "../Pages/FrontEnd/admin/AddChooseUsList";
 import Pages from "../Pages/FrontEnd/admin/Pages";
+import AddPage from "../Pages/FrontEnd/admin/AddPage";
 
 const router = createBrowserRouter([
   {
@@ -369,6 +370,10 @@ const router = createBrowserRouter([
       {
         path: "/admin/dashboard/pages",
         element: <Pages />,
+      },
+      {
+        path: "/admin/dashboard/add-page",
+        element: <AddPage />,
       },
     ],
   },
