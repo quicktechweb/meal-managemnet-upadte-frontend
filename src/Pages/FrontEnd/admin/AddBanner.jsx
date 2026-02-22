@@ -161,7 +161,7 @@ const AddBanner = () => {
           disabled={isPending}
           className="w-full mt-4 bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-lg shadow-md transform transition hover:-translate-y-0.5 active:scale-95 cursor-pointer"
         >
-          {isPending ? "uploading..." : "Upload Your bannerImage"}
+          {isPending ? "uploading..." : "Upload"}
         </button>
       </form>
     </div>
