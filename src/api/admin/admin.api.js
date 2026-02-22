@@ -17,6 +17,7 @@ import {
   deletebannerFunction,
   deleteChooseusBannerFunction,
   deleteChooseusListsFunction,
+  deleteFaqFunction,
   deletefeatureFunction,
   deleteKitchenVideoFunction,
   deleteNoticeFunction,
@@ -595,5 +596,21 @@ export const useGetAllFaq = () => {
     queryKey: ["all-faq"],
     queryFn: getAllFaqFunction,
     retry: false,
+  });
+};
+
+export const useDeleteFaq = () => {
+  const query = useQueryClient();
+
+  return useMutation({
+    mutationKey: ["delete-faq"],
+    mutationFn: (id) => deleteFaqFunction(id),
+    onSuccess: (data) => {
+      toast.success(data?.message);
+      query.invalidateQueries(["all-faq"]);
+    },
+    onError: (err) => {
+      toast.error(err?.response?.data?.message);
+    },
   });
 };

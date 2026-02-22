@@ -210,3 +210,8 @@ export const getAllFaqFunction = async () => {
   const { data } = await axiosPublic("/api/all-faq");
   return data?.data;
 };
+
+export const deleteFaqFunction = async (id) => {
+  const { data } = await axiosPublic.delete(`/api/delete-faq/${id}`);
+  return data;
+};

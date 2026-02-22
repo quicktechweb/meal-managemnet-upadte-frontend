@@ -1,24 +1,17 @@
 import { Plus } from "lucide-react";
 import React from "react";
 import { Link } from "react-router-dom";
-import {
-  useAllBanner,
-  useChooseusLists,
-  useDeleteChooseusList,
-  useGetAllFaq,
-} from "../../../api/admin/admin.api";
+import { useDeleteFaq, useGetAllFaq } from "../../../api/admin/admin.api";
 import { FiEdit } from "react-icons/fi";
 import { MdDelete } from "react-icons/md";
 
 const FaqAdmin = () => {
   const { data } = useGetAllFaq();
 
-  console.log(data);
+  const { mutateAsync, isPending } = useDeleteFaq();
 
-  const { mutateAsync, isPending } = useDeleteChooseusList();
-
-  const handleDelete = async (banner) => {
-    await mutateAsync(banner?._id);
+  const handleDelete = async (faq) => {
+    await mutateAsync(faq?._id);
   };
 
   return (
