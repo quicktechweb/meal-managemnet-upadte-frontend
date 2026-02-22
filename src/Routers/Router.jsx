@@ -56,6 +56,11 @@ import UpdateLiveKitchenVideo from "../Pages/FrontEnd/admin/UpdateLiveKitchenVid
 import Banner from "../Pages/FrontEnd/admin/Banner";
 import AddBanner from "../Pages/FrontEnd/admin/AddBanner";
 import UpdateBanner from "../Pages/FrontEnd/admin/UpdateBanner";
+import ChooseUs from "../Pages/FrontEnd/admin/ChooseUs";
+import AddChooseUsBanner from "../Pages/FrontEnd/admin/AddChooseUsBanner";
+import UpdateChooseUsBanner from "../Pages/FrontEnd/admin/UpdateChooseUsBanner";
+import AddChooseUsList from "../Pages/FrontEnd/admin/AddChooseUsList";
+import Pages from "../Pages/FrontEnd/admin/Pages";
 
 const router = createBrowserRouter([
   {
@@ -343,6 +348,27 @@ const router = createBrowserRouter([
       {
         path: "/admin/dashboard/update-banner/:id",
         element: <UpdateBanner />,
+      },
+      {
+        path: "/admin/dashboard/choose-us",
+        element: <ChooseUs />,
+      },
+
+      {
+        path: "/admin/dashboard/add-choose-us-banner",
+        element: <AddChooseUsBanner />,
+      },
+      {
+        path: "/admin/dashboard/update-choose-us-banner/:id",
+        element: <UpdateChooseUsBanner />,
+      },
+      {
+        path: "/admin/dashboard/add-choose-us-list",
+        element: <AddChooseUsList />,
+      },
+      {
+        path: "/admin/dashboard/pages",
+        element: <Pages />,
       },
     ],
   },

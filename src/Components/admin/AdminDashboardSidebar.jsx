@@ -129,6 +129,16 @@ const AdminDashboardSidebar = ({ setIsOpenSidebar }) => {
           icon: FaShoppingBag,
           path: "/admin/dashboard/banner",
         },
+        {
+          title: "Choose-us",
+          icon: FaShoppingBag,
+          path: "/admin/dashboard/choose-us",
+        },
+        {
+          title: "Pages",
+          icon: FaShoppingBag,
+          path: "/admin/dashboard/pages",
+        },
       ],
     },
   ];
@@ -178,7 +188,7 @@ const AdminDashboardSidebar = ({ setIsOpenSidebar }) => {
                         : "border-transparent"
                     }`}
                   >
-                    <div className="ml-2 flex items-center justify-between bg-white hover:bg-gray-50 p-2 rounded-md transition-all duration-200 active:scale-95">
+                    <div className="ml-2 flex  items-center justify-between bg-white hover:bg-gray-50 p-2 rounded-md transition-all duration-200 active:scale-95">
                       {/* Left section: icon + title */}
                       <div className="flex items-center gap-2">
                         <item.icon

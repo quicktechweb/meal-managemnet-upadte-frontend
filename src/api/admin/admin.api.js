@@ -1,13 +1,19 @@
 import toast from "react-hot-toast";
 import {
   addbannerFunction,
+  addchooseusBannerFunction,
+  addChooseusListsFunction,
   addfeatureFunction,
   addLiveKitchenVideoFunction,
   addnoticeFunction,
   addscheduleFunction,
   addutilitiesFunction,
   bannerListFunction,
+  chooseusBannerFunction,
+  chooseusListsFunction,
   deletebannerFunction,
+  deleteChooseusBannerFunction,
+  deleteChooseusListsFunction,
   deletefeatureFunction,
   deleteKitchenVideoFunction,
   deleteNoticeFunction,
@@ -21,6 +27,7 @@ import {
   getAllServiceFunction,
   getallutilitiesfunction,
   updateBannerFunction,
+  updateChooseusBannerFunction,
   updateFeatureFunction,
   updatenoticeFunction,
   updateScheduleFunction,
@@ -319,6 +326,9 @@ export const useDeletebanner = () => {
         query.invalidateQueries("get-all-banner");
       }
     },
+    onError: (err) => {
+      toast.error(err?.response?.data?.message);
+    },
   });
 };
 
@@ -351,6 +361,108 @@ export const useUpdateBanner = () => {
         query.invalidateQueries(["get-all-banner"]);
         navigate("/admin/dashboard/banner");
       }
+    },
+    onError: (err) => {
+      toast.error(err?.response?.data?.message);
+    },
+  });
+};
+
+export const useChooseusBanner = () => {
+  return useQuery({
+    queryKey: ["choose-image"],
+    queryFn: chooseusBannerFunction,
+    retry: false,
+  });
+};
+
+export const useAddChooseusBanner = () => {
+  const query = useQueryClient();
+  const navigate = useNavigate();
+  return useMutation({
+    mutationKey: ["add-choose-us-banner"],
+    mutationFn: (payload) => addchooseusBannerFunction(payload),
+    onSuccess: (data) => {
+      toast.success(data?.message);
+      query.invalidateQueries(["get-all-banner"]);
+      navigate("/admin/dashboard/choose-us");
+    },
+    onError: (err) => {
+      toast.error(err?.response?.data?.message);
+    },
+  });
+};
+
+export const useChooseusLists = () => {
+  return useQuery({
+    queryKey: ["choose-lists"],
+    queryFn: chooseusListsFunction,
+    retry: false,
+  });
+};
+
+export const useDeleteChooseusbanner = () => {
+  const query = useQueryClient();
+  return useMutation({
+    mutationKey: ["delete-banner"],
+    mutationFn: (id) => deleteChooseusBannerFunction(id),
+    onSuccess: (data) => {
+      if (data?.success) {
+        toast.success(data?.message);
+        query.invalidateQueries("choose-image");
+      }
+    },
+    onError: (err) => {
+      toast.error(err?.response?.data?.message);
+    },
+  });
+};
+
+export const useUpdateChooseusBanner = () => {
+  const query = useQueryClient();
+  const navigate = useNavigate();
+  return useMutation({
+    mutationKey: ["update-choose-us-banner"],
+    mutationFn: updateChooseusBannerFunction,
+    onSuccess: (data) => {
+      if (data?.success) {
+        toast.success(data?.message);
+        query.invalidateQueries(["choose-image"]);
+        navigate("/admin/dashboard/choose-us");
+      }
+    },
+  });
+};
+
+export const useAddChooseusLists = () => {
+  const query = useQueryClient();
+  const navigate = useNavigate();
+  return useMutation({
+    mutationKey: ["add-choose-us-list"],
+    mutationFn: (payload) => addChooseusListsFunction(payload),
+    onSuccess: (data) => {
+      toast.success(data?.message);
+      query.invalidateQueries(["get-all-choose-lists"]);
+      navigate("/admin/dashboard/choose-us");
+    },
+    onError: (err) => {
+      toast.error(err?.response?.data?.message);
+    },
+  });
+};
+
+export const useDeleteChooseusList = () => {
+  const query = useQueryClient();
+
+  return useMutation({
+    mutationKey: ["delete-choose-us"],
+    mutationFn: (id) => deleteChooseusListsFunction(id),
+    onSuccess: (data) => {
+      toast.success(data?.message);
+      query.invalidateQueries(["get-all-choose-lists"]);
+    },
+    onError: (err) => {
+      toast.error(err?.response?.data?.message);
     },
   });
 };
