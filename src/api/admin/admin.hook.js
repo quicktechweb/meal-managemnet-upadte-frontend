@@ -192,6 +192,11 @@ export const getAllAppFunction = async () => {
 };
 
 export const addAppDataSectionFunction = async (payload) => {
-  const { data } = await axiosPublic.post("/api/create-app",payload);
+  const { data } = await axiosPublic.post("/api/create-app", payload);
+  return data;
+};
+
+export const updateAppDataSectionFunction = async ({ id, payload }) => {
+  const { data } = await axiosPublic.put(`/api/update-app/${id}`, payload);
   return data;
 };

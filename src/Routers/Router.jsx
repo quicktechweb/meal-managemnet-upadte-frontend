@@ -65,6 +65,7 @@ import AddPage from "../Pages/FrontEnd/admin/AddPage";
 import UpdatePage from "../Pages/FrontEnd/admin/UpdatePage";
 import AppSection from "../Pages/FrontEnd/admin/AppSection";
 import AddAppSection from "../Pages/FrontEnd/admin/AddAppSection";
+import UpdateAppSection from "../Pages/FrontEnd/admin/UpdateAppSection";
 
 const router = createBrowserRouter([
   {
@@ -389,6 +390,10 @@ const router = createBrowserRouter([
       {
         path: "/admin/dashboard/add-app-section",
         element: <AddAppSection />,
+      },
+      {
+        path: "/admin/dashboard/update-app-section/:id",
+        element: <UpdateAppSection />,
       },
     ],
   },

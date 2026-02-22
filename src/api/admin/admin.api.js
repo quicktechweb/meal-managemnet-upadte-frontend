@@ -31,6 +31,7 @@ import {
   getallschedulefunction,
   getAllServiceFunction,
   getallutilitiesfunction,
+  updateAppDataSectionFunction,
   updateBannerFunction,
   updateChooseusBannerFunction,
   updateFeatureFunction,
@@ -551,6 +552,22 @@ export const useCreateAppData = () => {
     },
     onError: (err) => {
       toast.error(err?.response?.data?.message);
+    },
+  });
+};
+
+export const useUpdateAppData = () => {
+  const query = useQueryClient();
+  const navigate = useNavigate();
+  return useMutation({
+    mutationKey: ["update-app-data"],
+    mutationFn: updateAppDataSectionFunction,
+    onSuccess: (data) => {
+      if (data?.success) {
+        toast.success(data?.message);
+        query.invalidateQueries(["all-app"]);
+        navigate("/admin/dashboard/app-section");
+      }
     },
   });
 };

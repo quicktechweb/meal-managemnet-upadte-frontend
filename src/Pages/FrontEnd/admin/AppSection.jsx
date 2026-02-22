@@ -62,7 +62,10 @@ const AppSection = () => {
 
                 {/* Description */}
                 <td className="px-3 md:px-4 py-3  border-r border-gray-300 text-sm text-gray-600 max-w-[250px]">
-                  <p className="line-clamp-2">{banner.description}</p>
+                  <p
+                    dangerouslySetInnerHTML={{ __html: banner.description }}
+                    className="[&_h1]:text-xl [&_h2]:text-xl [&_h3]:text-xl [&_h1]:font-bold [&_h2]:font-bold [&_h3]:font-bold [&_ul]:list-disc [&_ul]:list-inside [&_ol]:list-decimal [&_ol]:list-inside line-clamp-2"
+                  />
                 </td>
 
                 {/* Background Image */}
@@ -92,7 +95,7 @@ const AppSection = () => {
                 <td className="px-3 md:px-4 py-3">
                   <div className="flex items-center justify-center gap-2 md:gap-3">
                     <Link
-                      to={`/admin/dashboard/update-banner/${banner._id}`}
+                      to={`/admin/dashboard/update-app-section/${banner._id}`}
                       className="p-2 rounded-lg hover:bg-violet-100 text-violet-600 transition"
                     >
                       <FiEdit size={18} />
