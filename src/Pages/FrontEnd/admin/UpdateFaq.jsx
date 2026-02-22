@@ -3,7 +3,7 @@ import { Controller, useForm } from "react-hook-form";
 import { Type } from "lucide-react";
 import { useCreateFaqData } from "../../../api/admin/admin.api";
 
-const AddFaq = () => {
+const UpdateFaq = () => {
   const {
     register,
     handleSubmit,
@@ -84,4 +84,4 @@ const AddFaq = () => {
   );
 };
 
-export default AddFaq;
+export default UpdateFaq;
