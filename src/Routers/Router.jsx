@@ -62,6 +62,7 @@ import UpdateChooseUsBanner from "../Pages/FrontEnd/admin/UpdateChooseUsBanner";
 import AddChooseUsList from "../Pages/FrontEnd/admin/AddChooseUsList";
 import Pages from "../Pages/FrontEnd/admin/Pages";
 import AddPage from "../Pages/FrontEnd/admin/AddPage";
+import UpdatePage from "../Pages/FrontEnd/admin/UpdatePage";
 
 const router = createBrowserRouter([
   {
@@ -374,6 +375,11 @@ const router = createBrowserRouter([
       {
         path: "/admin/dashboard/add-page",
         element: <AddPage />,
+      },
+
+      {
+        path: "/admin/dashboard/update-page/:id",
+        element: <UpdatePage />,
       },
     ],
   },

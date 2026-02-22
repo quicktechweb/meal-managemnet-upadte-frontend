@@ -175,3 +175,13 @@ export const addPageFunction = async (payload) => {
   const { data } = await axiosPublic.post("/api/create-page", payload);
   return data;
 };
+
+export const deletePageFunction = async (id) => {
+  const { data } = await axiosPublic.delete(`/api/single-page/${id}`);
+  return data;
+};
+
+export const updatePageFunction = async ({ id, payload }) => {
+  const { data } = await axiosPublic.put(`/api/single-page/${id}`, payload);
+  return data;
+};

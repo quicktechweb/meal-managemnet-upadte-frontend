@@ -1,12 +1,18 @@
 import { Plus } from "lucide-react";
 import React from "react";
 import { Link } from "react-router-dom";
-import { useAllPage } from "../../../api/admin/admin.api";
+import { useAllPage, useDeletePage } from "../../../api/admin/admin.api";
 import { FiEdit } from "react-icons/fi";
 import { MdDelete } from "react-icons/md";
 
 const Pages = () => {
   const { data } = useAllPage();
+
+  const { mutateAsync, isPending } = useDeletePage();
+
+  const handleDelete = async (item) => {
+    await mutateAsync(item?._id);
+  };
 
   return (
     <div>
@@ -81,16 +87,16 @@ const Pages = () => {
                 <td className="px-2 md:px-4 py-2 border  border-gray-300 ">
                   <div className="flex items-center justify-center gap-2">
                     <Link
-                      to={`/admin/dashboard/update-notice/${page?._id}`}
+                      to={`/admin/dashboard/update-page/${page?._id}`}
                       className="text-lg md:text-xl hover:text-violet-700 duration-300"
                     >
                       <FiEdit />
                     </Link>
 
                     <button
-                      // onClick={() => handleDelete(notice)}
-                      // disabled={isPending}
-                      className="text-lg md:text-xl hover:text-red-600 duration-300"
+                      onClick={() => handleDelete(page)}
+                      disabled={isPending}
+                      className="text-lg cursor-pointer md:text-xl hover:text-red-600 duration-300"
                     >
                       <MdDelete />
                     </button>

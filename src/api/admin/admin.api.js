@@ -18,6 +18,7 @@ import {
   deletefeatureFunction,
   deleteKitchenVideoFunction,
   deleteNoticeFunction,
+  deletePageFunction,
   deleteScheduleFunction,
   deleteutilitiesFunction,
   getallfeaturefunction,
@@ -32,6 +33,7 @@ import {
   updateChooseusBannerFunction,
   updateFeatureFunction,
   updatenoticeFunction,
+  updatePageFunction,
   updateScheduleFunction,
   updateUtilitiesFunction,
 } from "./admin.hook";
@@ -490,6 +492,38 @@ export const useAddPage = () => {
     },
     onError: (err) => {
       toast.error(err?.response?.data?.message);
+    },
+  });
+};
+
+export const useDeletePage = () => {
+  const query = useQueryClient();
+
+  return useMutation({
+    mutationKey: ["delete-page"],
+    mutationFn: (id) => deletePageFunction(id),
+    onSuccess: (data) => {
+      toast.success(data?.message);
+      query.invalidateQueries(["all-pages"]);
+    },
+    onError: (err) => {
+      toast.error(err?.response?.data?.message);
+    },
+  });
+};
+
+export const useUpdatePage = () => {
+  const query = useQueryClient();
+  const navigate = useNavigate();
+  return useMutation({
+    mutationKey: ["update-page"],
+    mutationFn: updatePageFunction,
+    onSuccess: (data) => {
+      if (data?.success) {
+        toast.success(data?.message);
+        query.invalidateQueries(["all-pages"]);
+        navigate("/admin/dashboard/pages");
+      }
     },
   });
 };
