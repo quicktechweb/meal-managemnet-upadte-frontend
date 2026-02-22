@@ -1,18 +1,21 @@
 import { Plus } from "lucide-react";
 import React from "react";
 import { Link } from "react-router-dom";
-import { useAllAppData, useDeletebanner } from "../../../api/admin/admin.api";
+import {
+  useAllAppData,
+  useDeleteAppSection,
+} from "../../../api/admin/admin.api";
 import { FiEdit } from "react-icons/fi";
 import { MdDelete } from "react-icons/md";
 
 const AppSection = () => {
   const { data } = useAllAppData();
 
-  console.log(data);
-
-  const { mutateAsync, isPending } = useDeletebanner();
+  const { mutateAsync, isPending } = useDeleteAppSection();
 
   const handleDelete = async (banner) => {
+    console.log(banner);
+
     await mutateAsync(banner?._id);
   };
 

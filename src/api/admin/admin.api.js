@@ -13,6 +13,7 @@ import {
   bannerListFunction,
   chooseusBannerFunction,
   chooseusListsFunction,
+  deleteAppDataSectionFunction,
   deletebannerFunction,
   deleteChooseusBannerFunction,
   deleteChooseusListsFunction,
@@ -568,6 +569,22 @@ export const useUpdateAppData = () => {
         query.invalidateQueries(["all-app"]);
         navigate("/admin/dashboard/app-section");
       }
+    },
+  });
+};
+
+export const useDeleteAppSection = () => {
+  const query = useQueryClient();
+
+  return useMutation({
+    mutationKey: ["delete-app-section"],
+    mutationFn: (id) => deleteAppDataSectionFunction(id),
+    onSuccess: (data) => {
+      toast.success(data?.message);
+      query.invalidateQueries(["all-app"]);
+    },
+    onError: (err) => {
+      toast.error(err?.response?.data?.message);
     },
   });
 };

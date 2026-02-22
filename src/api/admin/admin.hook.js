@@ -200,3 +200,8 @@ export const updateAppDataSectionFunction = async ({ id, payload }) => {
   const { data } = await axiosPublic.put(`/api/update-app/${id}`, payload);
   return data;
 };
+
+export const deleteAppDataSectionFunction = async (id) => {
+  const { data } = await axiosPublic.delete(`/api/all-app-delete/${id}`);
+  return data;
+};
