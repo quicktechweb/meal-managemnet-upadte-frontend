@@ -107,6 +107,11 @@ const AdminDashboardSidebar = ({ setIsOpenSidebar }) => {
           icon: FaShoppingBag,
           path: "/admin/dashboard/pages",
         },
+        {
+          title: "Faq",
+          icon: FaShoppingBag,
+          path: "/admin/dashboard/faq",
+        },
       ],
     },
   ];

@@ -205,3 +205,8 @@ export const deleteAppDataSectionFunction = async (id) => {
   const { data } = await axiosPublic.delete(`/api/all-app-delete/${id}`);
   return data;
 };
+
+export const getAllFaqFunction = async () => {
+  const { data } = await axiosPublic("/api/all-faq");
+  return data?.data;
+};

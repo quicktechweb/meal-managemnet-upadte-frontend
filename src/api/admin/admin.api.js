@@ -24,6 +24,7 @@ import {
   deleteScheduleFunction,
   deleteutilitiesFunction,
   getAllAppFunction,
+  getAllFaqFunction,
   getallfeaturefunction,
   getAllKitchenFunction,
   getAllLiveKitchen,
@@ -586,5 +587,13 @@ export const useDeleteAppSection = () => {
     onError: (err) => {
       toast.error(err?.response?.data?.message);
     },
+  });
+};
+
+export const useGetAllFaq = () => {
+  return useQuery({
+    queryKey: ["all-faq"],
+    queryFn: getAllFaqFunction,
+    retry: false,
   });
 };
