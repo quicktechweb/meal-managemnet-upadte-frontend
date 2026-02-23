@@ -36,6 +36,7 @@ import {
   getallschedulefunction,
   getAllServiceFunction,
   getallutilitiesfunction,
+  singlePageFunction,
   updateAppDataSectionFunction,
   updateBannerFunction,
   updateChooseusBannerFunction,
@@ -534,6 +535,15 @@ export const useUpdatePage = () => {
         navigate("/admin/dashboard/pages");
       }
     },
+  });
+};
+
+export const useSingleDynamicPage = (slug) => {
+  return useQuery({
+    queryKey: ["single-page", slug],
+    retry: false,
+    enabled: !!slug,
+    queryFn: () => singlePageFunction(slug),
   });
 };
 

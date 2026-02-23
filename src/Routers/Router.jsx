@@ -69,6 +69,7 @@ import UpdateAppSection from "../Pages/FrontEnd/admin/UpdateAppSection";
 import FaqAdmin from "../Pages/FrontEnd/admin/FaqAdmin";
 import AddFaq from "../Pages/FrontEnd/admin/AddFaq";
 import UpdateFaq from "../Pages/FrontEnd/admin/UpdateFaq";
+import DynamicPage from "../Pages/FrontEnd/dynamicpage/DynamicPage";
 
 const router = createBrowserRouter([
   {
@@ -130,6 +131,10 @@ const router = createBrowserRouter([
       {
         path: "/terms-and-conditions",
         element: <TermAndCondition />,
+      },
+      {
+        path: "/page/:slug",
+        element: <DynamicPage />,
       },
     ],
   },

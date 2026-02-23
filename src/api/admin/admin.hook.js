@@ -186,6 +186,11 @@ export const updatePageFunction = async ({ id, payload }) => {
   return data;
 };
 
+export const singlePageFunction = async (slug) => {
+  const { data } = await axiosPublic(`/api/single-page/${slug}`);
+  return data?.data;
+};
+
 export const getAllAppFunction = async () => {
   const { data } = await axiosPublic("/api/all-app");
   return data?.data;

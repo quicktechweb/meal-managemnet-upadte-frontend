@@ -47,6 +47,7 @@ export default function Navbar() {
           location?.pathname === "/menu-details" ||
           location?.pathname === "/login" ||
           location?.pathname === "/privecy-policy" ||
+          location?.pathname.startsWith("/page") ||
           location?.pathname === "/terms-and-conditions"
             ? "fixed top-0  shadow-lg backdrop-blur text-black bg-white"
             : "absolute top-0 bg-transparent text-white"

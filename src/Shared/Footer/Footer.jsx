@@ -5,8 +5,13 @@ import {
   FaLinkedinIn,
 } from "react-icons/fa";
 import { Link } from "react-router-dom";
+import { useAllPage } from "../../api/admin/admin.api";
 
 const Footer = () => {
+  const { data, isLoading } = useAllPage();
+
+  console.log(data);
+
   return (
     <footer className="bg-white text-sm text-gray-700 pt-10">
       {/* --------------------------
@@ -19,72 +24,10 @@ const Footer = () => {
             Quick Links
           </h4>
           <ul className="space-y-2 text-left text-gray-600">
-            {[
-              {
-                id: 1,
-                title: "About Us",
-                pathname: "#",
-              },
-              {
-                id: 2,
-                title: "Contact Us",
-                pathname: "/contact-us",
-              },
-              {
-                id: 3,
-                title: "Terms and conditions",
-                pathname: "/terms-and-conditions",
-              },
-
-              {
-                id: 4,
-                title: "Privecy Policy",
-                pathname: "/privecy-policy",
-              },
-              {
-                id: 5,
-                title: "Sitemap",
-                pathname: "#",
-              },
-              {
-                id: 6,
-                title: "Track Order",
-                pathname: "#",
-              },
-              {
-                id: 7,
-                title: "Customs Tariffs & Fees",
-                pathname: "#",
-              },
-              {
-                id: 8,
-                title: "Shipping Policy",
-                pathname: "#",
-              },
-              {
-                id: 9,
-                title: "Micro Influencer",
-                pathname: "#",
-              },
-              {
-                id: 10,
-                title: "Alabadan Membership",
-                pathname: "#",
-              },
-              {
-                id: 11,
-                title: "Alabadan Warranty",
-                pathname: "#",
-              },
-              {
-                id: 12,
-                title: "Healthcare Disclaimer",
-                pathname: "#",
-              },
-            ].map((link) => (
+            {data?.map((link) => (
               <Link
-                to={link?.pathname}
-                key={link?.id}
+                to={`/page/${link?.slug}`}
+                key={link?._id}
                 className="hover:text-blue-600 block cursor-pointer transition"
               >
                 {link?.title}
