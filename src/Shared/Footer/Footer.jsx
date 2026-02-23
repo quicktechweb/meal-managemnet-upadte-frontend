@@ -192,73 +192,11 @@ const Footer = () => {
               Quick Links
             </h4>
             <ul className="space-y-2 text-center text-gray-600">
-              {[
-                {
-                  id: 1,
-                  title: "About Us",
-                  pathname: "#",
-                },
-                {
-                  id: 2,
-                  title: "Contact Us",
-                  pathname: "/contact-us",
-                },
-                {
-                  id: 3,
-                  title: "Quotation Request",
-                  pathname: "#",
-                },
-
-                {
-                  id: 4,
-                  title: "Intellectual Property",
-                  pathname: "#",
-                },
-                {
-                  id: 5,
-                  title: "Sitemap",
-                  pathname: "#",
-                },
-                {
-                  id: 6,
-                  title: "Track Order",
-                  pathname: "#",
-                },
-                {
-                  id: 7,
-                  title: "Customs Tariffs & Fees",
-                  pathname: "#",
-                },
-                {
-                  id: 8,
-                  title: "Shipping Policy",
-                  pathname: "#",
-                },
-                {
-                  id: 9,
-                  title: "Micro Influencer",
-                  pathname: "#",
-                },
-                {
-                  id: 10,
-                  title: "Alabadan Membership",
-                  pathname: "#",
-                },
-                {
-                  id: 11,
-                  title: "Alabadan Warranty",
-                  pathname: "#",
-                },
-                {
-                  id: 12,
-                  title: "Healthcare Disclaimer",
-                  pathname: "#",
-                },
-              ].map((link) => (
+              {data?.map((link) => (
                 <Link
-                  to={link?.pathname}
-                  key={link?.id}
-                  className="hover:text-blue-600 cursor-pointer transition"
+                  to={`/page/${link?.slug}`}
+                  key={link?._id}
+                  className="hover:text-blue-600 block cursor-pointer transition"
                 >
                   {link?.title}
                 </Link>
@@ -438,18 +376,15 @@ const Footer = () => {
 
       <div className="max-w-7xl mx-auto px-4 mt-6 pt-4 border-t border-gray-200 flex flex-col sm:flex-row justify-between items-center text-xs text-gray-500 space-y-3 sm:space-y-0">
         <div className="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-4 text-center sm:text-left">
-          <a href="#" className="hover:underline">
-            Terms & Conditions
-          </a>
-          <a href="#" className="hover:underline">
-            Privacy Policy
-          </a>
-          <a href="#" className="hover:underline">
-            About Us
-          </a>
-          <a href="#" className="hover:underline">
-            Contact Us
-          </a>
+          {data?.map((link) => (
+            <Link
+              to={`/page/${link?.slug}`}
+              key={link?._id}
+              className="hover:text-blue-600 block cursor-pointer transition"
+            >
+              {link?.title}
+            </Link>
+          ))}
         </div>
         <div className="flex items-center space-x-4">
           <span>Follow Us:</span>
