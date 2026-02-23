@@ -8,8 +8,11 @@ import useAuth from "../../Hooks/useAuth";
 import { IoMdClose } from "react-icons/io";
 
 import { FaUtensils, FaShoppingBag } from "react-icons/fa";
+import { useGetWebsiteData } from "../../api/admin/admin.api";
 
 export default function Navbar() {
+  const { data } = useGetWebsiteData();
+
   const [scrolled, setScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
@@ -57,8 +60,8 @@ export default function Navbar() {
           {/* LOGO */}
           <Link to={"/"} className="font-semibold flex items-center">
             <img
-              src="https://i.ibb.co.com/jj22tMj/Whats-App-Image-2026-01-14-at.png"
-              alt="Appbeats Logo"
+              src={data?.logoUrl}
+              alt={data?.siteName}
               className="h-20 w-[120px] transition-transform duration-300 hover:scale-110"
             />
           </Link>

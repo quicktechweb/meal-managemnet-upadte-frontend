@@ -5,12 +5,14 @@ import {
   FaLinkedinIn,
 } from "react-icons/fa";
 import { Link } from "react-router-dom";
-import { useAllPage } from "../../api/admin/admin.api";
+import { useAllPage, useGetWebsiteData } from "../../api/admin/admin.api";
 
 const Footer = () => {
   const { data, isLoading } = useAllPage();
 
-  console.log(data);
+  const { data: siteData } = useGetWebsiteData();
+
+  console.log(siteData);
 
   return (
     <footer className="bg-white text-sm text-gray-700 pt-10">
@@ -367,7 +369,8 @@ const Footer = () => {
           </span>
         </div>
         <div className="text-gray-500 text-sm">
-          &copy; {new Date().getFullYear()} Alabadan. Designed & Developed by
+          &copy; {new Date().getFullYear()} {siteData?.siteName}. Designed &
+          Developed by
           <a href="#" className="text-blue-600 hover:underline">
             QuickTech IT
           </a>

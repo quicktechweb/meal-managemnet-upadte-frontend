@@ -123,7 +123,11 @@ const WebsiteSettings = () => {
           {/* fav preview */}
 
           {websiteData?.faviconUrl && (
-            <img src={websiteData?.faviconUrl} alt={websiteData?.siteName} />
+            <img
+              className="w-[100px] mt-2.5"
+              src={websiteData?.faviconUrl}
+              alt={websiteData?.siteName}
+            />
           )}
         </div>
 
