@@ -2,8 +2,6 @@ import React, { useRef, useState } from "react";
 import { Play, Pause } from "lucide-react";
 
 const VideoCard = ({ src }) => {
-  console.log(src);
-
   const videoRef = useRef(null);
   const [playing, setPlaying] = useState(false);
 
