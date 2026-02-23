@@ -12,19 +12,23 @@ import RideSharing from "./RideSharing/RideSharing";
 import Testimonial from "./Testimonial/Testimonial";
 
 const Home = () => {
-  const { data,isLoading } = useCmsData();
+  const { data, isLoading } = useCmsData();
 
   console.log(data);
 
   return (
     <div>
-      <Bannerparts bannerData = {data?.banner} isLoading={isLoading} />
+      <Bannerparts bannerData={data?.banner} isLoading={isLoading} />
 
       <HomeLogin />
 
       <WalletProfileCard />
 
-      <Features />
+      <Features
+        chooseusData={data?.chooseUs}
+        chooseImage={data?.chooseImage}
+        isLoading={isLoading}
+      />
       <ProcessSection />
       <MealLanding />
       {/* <LearningManagement /> */}
