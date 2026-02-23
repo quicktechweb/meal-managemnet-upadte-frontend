@@ -220,3 +220,8 @@ export const AddFaqFunction = async (payload) => {
   const { data } = await axiosPublic.post("/api/create-faq", payload);
   return data;
 };
+
+export const UpdateFaqFunction = async ({ id, payload }) => {
+  const { data } = await axiosPublic.put(`/api/update-faq/${id}`, payload);
+  return data;
+};

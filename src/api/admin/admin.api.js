@@ -38,6 +38,7 @@ import {
   updateAppDataSectionFunction,
   updateBannerFunction,
   updateChooseusBannerFunction,
+  UpdateFaqFunction,
   updateFeatureFunction,
   updatenoticeFunction,
   updatePageFunction,
@@ -629,6 +630,22 @@ export const useCreateFaqData = () => {
     },
     onError: (err) => {
       toast.error(err?.response?.data?.message);
+    },
+  });
+};
+
+export const useUpdateFaqData = () => {
+  const query = useQueryClient();
+  const navigate = useNavigate();
+  return useMutation({
+    mutationKey: ["update-faq-data"],
+    mutationFn: UpdateFaqFunction,
+    onSuccess: (data) => {
+      if (data?.success) {
+        toast.success(data?.message);
+        query.invalidateQueries(["all-faq"]);
+        navigate("/admin/dashboard/faq");
+      }
     },
   });
 };

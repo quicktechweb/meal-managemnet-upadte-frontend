@@ -1,7 +1,8 @@
-import React, { useState } from "react";
-import { Controller, useForm } from "react-hook-form";
+import React, { useEffect } from "react";
+import { useForm } from "react-hook-form";
 import { Type } from "lucide-react";
-import { useCreateFaqData } from "../../../api/admin/admin.api";
+import { useGetAllFaq, useUpdateFaqData } from "../../../api/admin/admin.api";
+import { useParams } from "react-router-dom";
 
 const UpdateFaq = () => {
   const {
@@ -9,14 +10,30 @@ const UpdateFaq = () => {
     handleSubmit,
     formState: { errors },
     reset,
-    control,
   } = useForm();
 
-  const { mutateAsync, isPending } = useCreateFaqData();
+  const { id } = useParams();
+
+  const { data } = useGetAllFaq();
+
+  const singleFaq = data?.find((item) => item?._id === id);
+
+  console.log(singleFaq);
+
+  useEffect(() => {
+    if (singleFaq) {
+      reset({
+        question: singleFaq?.question,
+        answer: singleFaq?.question,
+      });
+    }
+  }, [singleFaq]);
+
+  const { mutateAsync, isPending } = useUpdateFaqData();
 
   const onSubmit = async (data) => {
     try {
-      await mutateAsync(data);
+      await mutateAsync({ id: id, payload: data });
 
       reset();
     } catch (error) {

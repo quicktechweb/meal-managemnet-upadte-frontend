@@ -73,7 +73,7 @@ const FaqAdmin = () => {
                 <td className="px-3 md:px-4 py-3">
                   <div className="flex items-center justify-center gap-2 md:gap-3">
                     <Link
-                      to={`/admin/dashboard/update-banner/${faq._id}`}
+                      to={`/admin/dashboard/update-faq/${faq._id}`}
                       className=" text-violet-600 transition"
                     >
                       <FiEdit size={18} />
