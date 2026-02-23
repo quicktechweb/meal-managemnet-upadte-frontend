@@ -70,6 +70,7 @@ import FaqAdmin from "../Pages/FrontEnd/admin/FaqAdmin";
 import AddFaq from "../Pages/FrontEnd/admin/AddFaq";
 import UpdateFaq from "../Pages/FrontEnd/admin/UpdateFaq";
 import DynamicPage from "../Pages/FrontEnd/dynamicpage/DynamicPage";
+import WebsiteSettings from "../Pages/FrontEnd/admin/WebsiteSettings";
 
 const router = createBrowserRouter([
   {
@@ -414,6 +415,10 @@ const router = createBrowserRouter([
       {
         path: "/admin/dashboard/update-faq/:id",
         element: <UpdateFaq />,
+      },
+      {
+        path: "/admin/dashboard/website-settings",
+        element: <WebsiteSettings />,
       },
     ],
   },

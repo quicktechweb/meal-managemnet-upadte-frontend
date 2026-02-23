@@ -235,3 +235,13 @@ export const getAllCms = async () => {
   const { data } = await axiosPublic("/api/cms");
   return data?.data;
 };
+
+export const getWebsiteSetting = async () => {
+  const { data } = await axiosPublic("/api/settings");
+  return data?.data;
+};
+
+export const createWebsiteSetting = async (payload) => {
+  const { data } = await axiosPublic.post("/api/settings", payload);
+  return data;
+};

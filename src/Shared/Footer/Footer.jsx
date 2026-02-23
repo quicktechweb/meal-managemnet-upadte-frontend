@@ -375,7 +375,7 @@ const Footer = () => {
       </div>
 
       <div className="max-w-7xl mx-auto px-4 mt-6 pt-4 border-t border-gray-200 flex flex-col sm:flex-row justify-between items-center text-xs text-gray-500 space-y-3 sm:space-y-0">
-        <div className="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-4 text-center sm:text-left">
+        <div className="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-4 text-center sm:text-left pb-2">
           {data?.map((link) => (
             <Link
               to={`/page/${link?.slug}`}

@@ -114,6 +114,18 @@ const AdminDashboardSidebar = ({ setIsOpenSidebar }) => {
         },
       ],
     },
+    {
+      key: "Settings",
+      title: "Settings",
+      icon: FaClipboardList,
+      links: [
+        {
+          title: "Website Settings",
+          icon: FaShoppingBag,
+          path: "/admin/dashboard/website-settings",
+        },
+      ],
+    },
   ];
 
   return (

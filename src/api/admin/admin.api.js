@@ -14,6 +14,7 @@ import {
   bannerListFunction,
   chooseusBannerFunction,
   chooseusListsFunction,
+  createWebsiteSetting,
   deleteAppDataSectionFunction,
   deletebannerFunction,
   deleteChooseusBannerFunction,
@@ -36,6 +37,7 @@ import {
   getallschedulefunction,
   getAllServiceFunction,
   getallutilitiesfunction,
+  getWebsiteSetting,
   singlePageFunction,
   updateAppDataSectionFunction,
   updateBannerFunction,
@@ -666,5 +668,28 @@ export const useCmsData = () => {
     queryKey: ["cms"],
     queryFn: getAllCms,
     retry: false,
+  });
+};
+
+export const useGetWebsiteData = () => {
+  return useQuery({
+    queryKey: ["web-setting"],
+    queryFn: getWebsiteSetting,
+    retry: false,
+  });
+};
+
+export const useCreateWebsite = () => {
+  const query = useQueryClient();
+  return useMutation({
+    mutationKey: ["create-web-setting"],
+    mutationFn: (payload) => createWebsiteSetting(payload),
+    onSuccess: (data) => {
+      toast.success(data?.message);
+      query.invalidateQueries(["web-setting"]);
+    },
+    onError: (err) => {
+      toast.error(err?.response?.data?.message);
+    },
   });
 };
