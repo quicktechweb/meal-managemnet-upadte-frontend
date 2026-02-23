@@ -1,7 +1,9 @@
 import React, { useRef, useState } from "react";
 import { Play, Pause } from "lucide-react";
 
-const VideoCard = () => {
+const VideoCard = ({ src }) => {
+  console.log(src);
+
   const videoRef = useRef(null);
   const [playing, setPlaying] = useState(false);
 
@@ -23,12 +25,9 @@ const VideoCard = () => {
         <video
           ref={videoRef}
           className="w-full h-48 md:h-60 lg:h-80 object-cover"
-          poster="https://images.unsplash.com/photo-1504674900247-0877df9cc836"
+          poster={src?.kitchen_thumbnail[0]}
         >
-          <source
-            src="https://www.w3schools.com/html/mov_bbb.mp4"
-            type="video/mp4"
-          />
+          <source src={src?.kitchen_video} type="video/mp4" />
         </video>
 
         {/* Overlay Button */}
