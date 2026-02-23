@@ -8,7 +8,7 @@ const AddUtilitiesService = () => {
   const { data, isLoading } = useAllKitchen();
   const { mutateAsync, isPending } = useCreateUtilites();
 
-  const kitchens = data?.data || [];
+  const kitchens = data || [];
 
   const {
     register,
