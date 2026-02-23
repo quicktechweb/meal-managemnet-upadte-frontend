@@ -1,15 +1,43 @@
 import { FaApple, FaGooglePlay } from "react-icons/fa";
+import { Link } from "react-router-dom";
 
-const DownloadApp = () => {
+const DownloadApp = ({ appData, isLoading }) => {
+  if (isLoading || !appData) {
+    return (
+      <section className="relative w-full overflow-visible mt-10 lg:mt-20">
+        <div className="relative h-[200px] md:h-[420px] w-full overflow-hidden bg-gradient-to-l from-[#3264f5] via-[#4a54e0] to-[#7202bb]">
+          <div className="relative z-10 max-w-7xl mx-auto lg:px-6 px-3 h-full grid grid-cols-1 md:grid-cols-2 items-center animate-pulse">
+            {/* Left Skeleton */}
+            <div className="text-white">
+              <div className="h-8 lg:h-12 bg-white/40 rounded w-2/3 mb-4"></div>
+
+              <div className="h-4 bg-white/30 rounded w-full mb-2"></div>
+              <div className="h-4 bg-white/30 rounded w-5/6 mb-6"></div>
+
+              <div className="flex gap-4">
+                <div className="h-10 w-32 bg-white/40 rounded-full"></div>
+                <div className="h-10 w-32 bg-white/30 rounded-full"></div>
+              </div>
+            </div>
+
+            {/* Right Image Skeleton */}
+            <div className="relative hidden md:block">
+              <div className="absolute right-0 bottom-[-210px] w-[400px] h-[370px] bg-white/30 rounded-xl"></div>
+            </div>
+          </div>
+        </div>
+      </section>
+    );
+  }
+
   return (
     <section className="relative w-full overflow-visible mt-10 lg:mt-20">
-      {/* Background wrapper (SHORT HEIGHT) */}
       <div className="relative h-[200px] md:h-[420px] w-full overflow-hidden">
         {/* Background image */}
         <div
           className="absolute inset-0 bg-cover bg-center"
           style={{
-            backgroundImage: "url(https://i.ibb.co.com/tT2fgXh4/hero-bg-3.jpg)",
+            backgroundImage: `url(${appData?.bg_app})`,
           }}
         />
 
@@ -22,44 +50,47 @@ const DownloadApp = () => {
         />
 
         {/* Content */}
-        <div className="relative z-10 max-w-7xl mx-auto lg:px-6 px-3  h-full grid grid-cols-1 md:grid-cols-2 items-center">
+        <div className="relative z-10 max-w-7xl mx-auto lg:px-6 px-3 h-full grid grid-cols-1 md:grid-cols-2 items-center">
           {/* Left content */}
-          <div className="text-white md:pt-0">
-            <h2 className="text-2xl lg:text-5xl font-bold  lg:mb-4">
-              Download Our App
+          <div className="text-white">
+            <h2 className="text-2xl lg:text-5xl font-bold lg:mb-4">
+              {appData?.title}
             </h2>
 
-            <p className="text-sm md:text-base text-white/90 max-w-md mb-4 lg:mb-8">
-              Conveniently transform frictionless mindshare after orthogonal
-              manufactured products.
-            </p>
+            <p
+              dangerouslySetInnerHTML={{ __html: appData?.description }}
+              className="[&_h1]:text-xl [&_h2]:text-xl [&_h3]:text-xl [&_h1]:font-bold [&_h2]:font-bold [&_h3]:font-bold [&_ul]:list-disc [&_ul]:list-inside [&_ol]:list-decimal [&_ol]:list-inside line-clamp-2"
+            />
 
-            <div className="flex flex-wrap gap-4">
-              <button className="bg-white text-purple-700 px-6 py-1.5 lg:py-3 rounded-full font-medium cursor-pointer flex items-center gap-3 hover:scale-105 transition text-xs lg:text-base ">
-                <FaApple className="text-xs lg:text-base" />
+            <div className="flex flex-wrap gap-4 mt-4">
+              <Link
+                to={appData?.apple_store_url}
+                target="_blank"
+                rel="noreferrer"
+                className="bg-white text-purple-700 px-6 py-1.5 lg:py-3 rounded-full font-medium flex items-center gap-3 hover:scale-105 transition text-xs lg:text-base"
+              >
+                <FaApple />
                 App Store
-              </button>
+              </Link>
 
-              <button className="border border-white px-6 py-1.5 lg:py-3 rounded-full font-medium flex items-center gap-3 cursor-pointer text-xs lg:text-base hover:bg-white hover:text-purple-700 transition">
-                <FaGooglePlay className="text-xs lg:text-base" />
+              <Link
+                to={appData?.play_store_url}
+                target="_blank"
+                rel="noreferrer"
+                className="border border-white px-6 py-1.5 lg:py-3 rounded-full font-medium flex items-center gap-3 text-xs lg:text-base hover:bg-white hover:text-purple-700 transition"
+              >
+                <FaGooglePlay />
                 Play Store
-              </button>
+              </Link>
             </div>
           </div>
 
-          {/* Right image container */}
+          {/* Right image */}
           <div className="relative hidden md:block">
             <img
-              src="https://i.ibb.co.com/GQkq02kp/hand-with-app.png"
+              src={appData?.img_app}
               alt="App Preview"
-              className="
-                absolute 
-                right-0 
-                bottom-[-210px] 
-                max-w-[550px] 
-                h-[370px]
-                drop-shadow-2xl
-              "
+              className="absolute right-0 bottom-[-210px] max-w-[550px] h-[370px] drop-shadow-2xl"
             />
           </div>
         </div>

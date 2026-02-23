@@ -14,8 +14,6 @@ import Testimonial from "./Testimonial/Testimonial";
 const Home = () => {
   const { data, isLoading } = useCmsData();
 
-  console.log(data);
-
   return (
     <div>
       <Bannerparts bannerData={data?.banner} isLoading={isLoading} />
@@ -34,7 +32,7 @@ const Home = () => {
       {/* <LearningManagement /> */}
       <EcommerceLanding />
       {/* <RideSharing /> */}
-      <DownloadApp />
+      <DownloadApp appData={data?.app} isLoading={isLoading} />
       <Testimonial />
 
       {/* <HomeSlider/> */}
