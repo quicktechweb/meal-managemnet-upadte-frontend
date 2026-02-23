@@ -16,9 +16,18 @@ export const useLogin = () => {
     mutationKey: ["login"],
     mutationFn: (payload) => loginFunction(payload),
     onSuccess: (data) => {
+      console.log(data);
+
       toast.success(data?.message);
       setToken(data?.token);
-      navigate("/dashboard/dashboard");
+
+      if (data?.user?.role === "user") {
+        navigate("/dashboard/dashboard");
+      }
+
+      if (data?.user?.role === "admin") {
+        navigate("/admin/dashboard");
+      }
     },
     onError: (err) => {
       console.log(err);
