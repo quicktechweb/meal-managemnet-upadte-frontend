@@ -225,3 +225,8 @@ export const UpdateFaqFunction = async ({ id, payload }) => {
   const { data } = await axiosPublic.put(`/api/update-faq/${id}`, payload);
   return data;
 };
+
+export const getAllCms = async () => {
+  const { data } = await axiosPublic("/api/cms");
+  return data?.data;
+};

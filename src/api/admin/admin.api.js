@@ -26,6 +26,7 @@ import {
   deleteScheduleFunction,
   deleteutilitiesFunction,
   getAllAppFunction,
+  getAllCms,
   getAllFaqFunction,
   getallfeaturefunction,
   getAllKitchenFunction,
@@ -647,5 +648,13 @@ export const useUpdateFaqData = () => {
         navigate("/admin/dashboard/faq");
       }
     },
+  });
+};
+
+export const useCmsData = () => {
+  return useQuery({
+    queryKey: ["cms"],
+    queryFn: getAllCms,
+    retry: false,
   });
 };
