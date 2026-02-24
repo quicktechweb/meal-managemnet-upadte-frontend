@@ -19,6 +19,7 @@ import { useRegister } from "../../../api/auth/auth.hook";
 import { api } from "../../../utils/countryApi";
 import { IoCloseCircle } from "react-icons/io5";
 import CustomSelect from "../../../Components/CustomSelect";
+import DynamicSelect from "../../../Components/DynamicSelect";
 const NormalUserForm = () => {
   const [countries, setCountries] = useState([]);
   const [states, setStates] = useState([]);
@@ -170,8 +171,22 @@ const NormalUserForm = () => {
     </div>
   );
 
+  const [options, setOptions] = useState({
+    occupation: ["Business", "Job", "Study"],
+    institution: ["Institution", "Company"],
+    designation: ["Designation", "Department"],
+    year: ["2024", "2025", "2026"],
+  });
+
+  const [selections, setSelections] = useState({
+    occupation: "",
+    institution: "",
+    designation: "",
+    year: "",
+  });
+
   return (
-    <form className="grid grid-cols-1  gap-4" onSubmit={handleSubmit(onSubmit)}>
+    <form className="flex flex-col  gap-4" onSubmit={handleSubmit(onSubmit)}>
       <FormInput
         icon={User}
         type="text"
@@ -238,44 +253,12 @@ const NormalUserForm = () => {
           required: "Required",
         }}
       />
-      <FormInput
-        icon={Mail}
-        type="email"
-        placeholder="Email Address"
-        name="email"
-        validation={{
-          required: "Required",
-          pattern: { value: /^\S+@\S+$/i, message: "Invalid email" },
-        }}
-      />
 
-      <FormInput
-        icon={Phone}
-        type="tel"
-        placeholder="Phone Number"
-        name="phone"
-        validation={{ required: "Required" }}
-      />
-      <FormInput
-        icon={Briefcase}
-        type="text"
-        placeholder="Occupation"
-        name="occupation"
-      />
-
-      <FormInput
-        icon={Heart}
-        type="text"
-        placeholder="Father's Name"
-        name="fatherName"
-        validation={{ required: "Required" }}
-      />
-      <FormInput
-        icon={Heart}
-        type="text"
-        placeholder="Mother's Name"
-        name="motherName"
-        validation={{ required: "Required" }}
+      <DynamicSelect
+        options={options}
+        setOptions={setOptions}
+        setSelections={setSelections}
+        selections={selections}
       />
 
       <div className="md:col-span-2 space-y-2">
@@ -351,6 +334,25 @@ const NormalUserForm = () => {
           />
         </div>
       )}
+
+      <FormInput
+        icon={Mail}
+        type="email"
+        placeholder="Email Address"
+        name="email"
+        validation={{
+          required: "Required",
+          pattern: { value: /^\S+@\S+$/i, message: "Invalid email" },
+        }}
+      />
+
+      <FormInput
+        icon={Phone}
+        type="tel"
+        placeholder="Phone Number"
+        name="phone"
+        validation={{ required: "Required" }}
+      />
 
       <div className="md:col-span-2 flex flex-col gap-2.5">
         <label className="block text-sm md:text-base font-medium text-gray-600 mb-2">
