@@ -5,21 +5,34 @@ import { ChefHat, ArrowRight } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useLogin } from "../../../../../api/auth/auth.hook";
 import GoogleLoginButton from "../../../../../Components/GoogleLoginButton";
+import toast from "react-hot-toast";
 
 const HomeLogin = () => {
   const { register, handleSubmit, reset } = useForm();
 
-  const [loginType, setLoginType] = useState("email");
-
   const { mutateAsync, isPending } = useLogin();
 
   const onSubmit = async (data) => {
-    await mutateAsync(data);
-    reset();
-  };
+    const value = data.email?.trim();
 
-  const handleChange = (type) => {
-    setLoginType(type);
+    const isEmail = /\S+@\S+\.\S+/.test(value);
+    const isPhone = /^[0-9]{10,15}$/.test(value);
+
+    let payload = {
+      password: data.password,
+    };
+
+    if (isEmail) {
+      payload.email = value;
+    } else if (isPhone) {
+      payload.phone = value;
+    } else {
+      toast.error("Please enter valid email or phone number");
+      return;
+    }
+
+    await mutateAsync(payload);
+    reset();
   };
 
   return (
@@ -78,47 +91,15 @@ const HomeLogin = () => {
               <form onSubmit={handleSubmit(onSubmit)} className="">
                 <div className="space-y-2">
                   <label className="text-sm flex items-center gap-2 font-bold ml-1">
-                    <button
-                      type="button"
-                      onClick={() => handleChange("email")}
-                      className={
-                        loginType === "email"
-                          ? "text-orange-600"
-                          : "cursor-pointer"
-                      }
-                    >
-                      Email
-                    </button>
-                    /
-                    <button
-                      type="button"
-                      onClick={() => handleChange("number")}
-                      className={
-                        loginType === "number"
-                          ? "text-orange-600"
-                          : "cursor-pointer"
-                      }
-                    >
-                      Contact Number
-                    </button>
+                    Email / Contact Number
                   </label>
-                  {loginType === "email" && (
-                    <input
-                      {...register("email")}
-                      type="email"
-                      placeholder="chef@kitchen.com"
-                      className="w-full px-6 py-2 rounded-2xl bg-white/40 border border-white/50 focus:border-orange-400 focus:bg-white/80 transition-all outline-none text-slate-800 placeholder:text-slate-400 backdrop-blur-md"
-                    />
-                  )}
 
-                  {loginType === "number" && (
-                    <input
-                      {...register("number")}
-                      type="number"
-                      placeholder="01782343234"
-                      className="w-full px-6 py-2 rounded-2xl bg-white/40 border border-white/50 focus:border-orange-400 focus:bg-white/80 transition-all outline-none text-slate-800 placeholder:text-slate-400 backdrop-blur-md"
-                    />
-                  )}
+                  <input
+                    {...register("email")}
+                    type="text"
+                    placeholder="chef@kitchen.com"
+                    className="w-full px-6 py-2 rounded-2xl bg-white/40 border border-white/50 focus:border-orange-400 focus:bg-white/80 transition-all outline-none text-slate-800 placeholder:text-slate-400 backdrop-blur-md"
+                  />
                 </div>
 
                 <div className="space-y-2">
