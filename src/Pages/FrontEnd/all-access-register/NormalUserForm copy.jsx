@@ -18,7 +18,6 @@ import toast from "react-hot-toast";
 import { useRegister } from "../../../api/auth/auth.hook";
 import { api } from "../../../utils/countryApi";
 import { IoCloseCircle } from "react-icons/io5";
-import CustomSelect from "../../../Components/CustomSelect";
 const NormalUserForm = () => {
   const [countries, setCountries] = useState([]);
   const [states, setStates] = useState([]);
@@ -94,24 +93,6 @@ const NormalUserForm = () => {
 
   const [documentType, setdocumentType] = useState(null);
 
-  const [gender, setGender] = useState("");
-  const [religion, setReligion] = useState("");
-  const [genderOptions, setGenderOptions] = useState([
-    "Male",
-    "Female",
-    "Children",
-  ]);
-
-  const [religionOptions, setReligionOptions] = useState(["Islam", "Hindu"]);
-
-  const handleCreateGender = (newItem) => {
-    setGenderOptions((prev) => [...prev, newItem]);
-  };
-
-  const handleCreateReligion = (newItem) => {
-    setReligionOptions((prev) => [...prev, newItem]);
-  };
-
   const selectedUserType = watch("userType");
 
   const onSubmit = async (data) => {
@@ -171,7 +152,10 @@ const NormalUserForm = () => {
   );
 
   return (
-    <form className="grid grid-cols-1  gap-4" onSubmit={handleSubmit(onSubmit)}>
+    <form
+      className="grid grid-cols-1 md:grid-cols-2 gap-4"
+      onSubmit={handleSubmit(onSubmit)}
+    >
       <FormInput
         icon={User}
         type="text"
@@ -182,72 +166,23 @@ const NormalUserForm = () => {
       <FormInput
         icon={User}
         type="text"
-        placeholder="Nick Name"
-        name="username"
-        validation={{ required: "Required" }}
-      />
-      <FormInput
-        icon={User}
-        type="text"
         placeholder="Username"
         name="username"
         validation={{ required: "Required" }}
       />
 
-      <FormInput
-        icon={User}
-        type="text"
-        placeholder="Father Name"
-        name="username"
-        validation={{ required: "Required" }}
-      />
-
-      <FormInput
-        icon={User}
-        type="text"
-        placeholder="Mother Name"
-        name="username"
-        validation={{ required: "Required" }}
-      />
-
-      <CustomSelect
-        label="Gender"
-        options={genderOptions}
-        value={gender}
-        onChange={setGender}
-        onCreate={handleCreateGender}
-        allowCreate
-        showOther
-      />
-
-      <CustomSelect
-        label="Religion"
-        options={religionOptions}
-        value={religion}
-        onChange={setReligion}
-        onCreate={handleCreateReligion}
-        allowCreate
-        showOther
-      />
-      <FormInput
-        icon={Mail}
-        type="date"
-        placeholder="Date of birth"
-        name="date"
-        validation={{
-          required: "Required",
-        }}
-      />
-      <FormInput
-        icon={Mail}
-        type="email"
-        placeholder="Email Address"
-        name="email"
-        validation={{
-          required: "Required",
-          pattern: { value: /^\S+@\S+$/i, message: "Invalid email" },
-        }}
-      />
+      <div className="md:col-span-2">
+        <FormInput
+          icon={Mail}
+          type="email"
+          placeholder="Email Address"
+          name="email"
+          validation={{
+            required: "Required",
+            pattern: { value: /^\S+@\S+$/i, message: "Invalid email" },
+          }}
+        />
+      </div>
 
       <FormInput
         icon={Phone}
