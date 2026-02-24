@@ -326,15 +326,24 @@ const NormalUserForm = () => {
         )}
 
         {district && (
-          <CustomSelect
-            label="Village"
-            options={villageOptions}
-            value={village}
-            onChange={setVillage}
-            onCreate={handleCreateVillage}
-            allowCreate
-            showOther
-          />
+          <div className="flex flex-col gap-2">
+            <CustomSelect
+              label="Village"
+              options={villageOptions}
+              value={village}
+              onChange={setVillage}
+              onCreate={handleCreateVillage}
+              allowCreate
+              showOther
+            />
+
+            <FormInput
+              icon={Home}
+              type="text"
+              placeholder="Location"
+              name="address"
+            />
+          </div>
         )}
       </div>
 
