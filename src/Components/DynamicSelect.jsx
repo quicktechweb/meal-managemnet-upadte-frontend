@@ -162,13 +162,13 @@ const CustomStepDropdown = ({
           <div className="flex justify-between px-3 py-2">
             <button
               onClick={handleOtherClick}
-              className="px-3 py-1 text-sm cursor-pointer text-black hover:bg-gray-100 border border-gray-200 rounded-xl"
+              className="px-3 py-1 border border-[#3170A6] rounded-lg text-sm text-black"
             >
               Other
             </button>
             <button
               onClick={handleItemCreate}
-              className="border border-gray-200 rounded-xl px-3 py-1 text-sm hover:bg-gray-100 cursor-pointer text-black"
+              className="border border-[#3170A6] rounded-lg px-3 py-1 text-sm bg-[#3170A6] text-white"
             >
               Create +
             </button>
