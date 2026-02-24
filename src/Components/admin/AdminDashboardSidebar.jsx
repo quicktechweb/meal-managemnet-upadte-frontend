@@ -6,11 +6,16 @@ import {
   FaSignOutAlt,
   FaShoppingBag,
 } from "react-icons/fa";
-import { NavLink, useLocation } from "react-router-dom";
+import { NavLink, useLocation, useNavigate } from "react-router-dom";
 import PropTypes from "prop-types";
 import { ChevronRight } from "lucide-react";
+import useAuth from "../../Hooks/useAuth";
 
 const AdminDashboardSidebar = ({ setIsOpenSidebar }) => {
+  const { clearToken } = useAuth();
+
+  const navigate = useNavigate();
+
   const [openSections, setOpenSections] = useState({});
   const location = useLocation();
 
@@ -209,7 +214,10 @@ const AdminDashboardSidebar = ({ setIsOpenSidebar }) => {
 
         {/* Logout */}
         <button
-          onClick={() => (window.location.href = "/")}
+          onClick={() => {
+            clearToken();
+            navigate("/");
+          }}
           className="flex items-center gap-2 mt-4 text-red-500 hover:scale-105 transition"
         >
           <FaSignOutAlt />

@@ -85,3 +85,8 @@ export const useGetUserData = (token) => {
     },
   });
 };
+
+
+export const useLogout = (token) => {
+  
+}

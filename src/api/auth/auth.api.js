@@ -17,7 +17,11 @@ export const getUserDataFunction = async () => {
 };
 export const googleLoginFunction = async (payload) => {
   const { data } = await axiosPublic.post("/api/firebaseAuth/google", payload);
+  return data;
+};
 
+export const logoutFunction = async () => {
+  const { data } = await axiosSecure.post("/api/log-out");
   return data;
 };
 

@@ -88,7 +88,7 @@ export default function Navbar() {
             )}
 
             {user ? (
-              <div className="flex items-center gap-3 text-white px-4 py-2 rounded-xl shadow-sm hover:shadow-md transition">
+              <div className="flex items-center gap-3  px-4 py-2 rounded-xl shadow-sm hover:shadow-md transition">
                 {/* Avatar */}
                 <img
                   src={
@@ -101,10 +101,8 @@ export default function Navbar() {
 
                 {/* User Info */}
                 <div className="leading-tight">
-                  <h4 className="text-sm font-semibold text-white">
-                    {user?.user?.name}
-                  </h4>
-                  <p className="text-xs text-white">@{user?.user?.username}</p>
+                  <h4 className="text-sm font-semibold ">{user?.user?.name}</h4>
+                  <p className="text-xs ">@{user?.user?.username}</p>
                 </div>
               </div>
             ) : (
