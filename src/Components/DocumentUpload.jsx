@@ -109,6 +109,10 @@ const DocumentUpload = () => {
         </button>
       </div>
 
+      <p className="text-sm text-red-500 font-semibold">
+        **Minimum one document must be upload
+      </p>
+
       {/* Show Uploaded Data */}
       {uploadedData.length > 0 && (
         <div className="mt-6 space-y-3">

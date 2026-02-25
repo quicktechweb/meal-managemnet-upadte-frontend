@@ -26,22 +26,29 @@ const NormalUserForm = () => {
   const [districts, setDistricts] = useState([]);
   const [country, setCountry] = useState(null);
   const [state, setState] = useState(null);
+  const [divisionLoading, setDivisionLoading] = useState(false);
+  const [districtLoading, setDistrictLoading] = useState(false);
 
   const [division, setDivision] = useState(null);
   const [district, setDistrict] = useState(null);
 
-  const [village, setVillage] = useState("");
-
-  const [villageOptions, setVillageOptions] = useState(["Ramdashdhi"]);
-
   useEffect(() => {
     if (!state) return;
 
-    const loaddivisions = async () => {
-      const res = await api.get("/divisions");
-      setDivisions(res?.data?.data);
+    const loadDivisions = async () => {
+      try {
+        setDivisionLoading(true);
+        const res = await api.get("/divisions");
+        setDivisions(res?.data?.data || []);
+      } catch (err) {
+        console.log("Failed to load divisions:", err);
+        setDivisions([]);
+      } finally {
+        setDivisionLoading(false);
+      }
     };
-    loaddivisions();
+
+    loadDivisions();
   }, [state]);
 
   useEffect(() => {
@@ -49,18 +56,23 @@ const NormalUserForm = () => {
 
     const loadDistricts = async () => {
       try {
+        setDistrictLoading(true);
         const res = await api.get(`/division/${division}`);
-        console.log(res?.data);
-
-        setDistricts(res?.data?.data);
+        setDistricts(res?.data?.data || []);
       } catch (err) {
         console.log("Failed to load districts:", err);
         setDistricts([]);
+      } finally {
+        setDistrictLoading(false);
       }
     };
 
     loadDistricts();
   }, [division]);
+
+  const [village, setVillage] = useState("");
+
+  const [villageOptions, setVillageOptions] = useState(["Ramdashdhi"]);
 
   const [showPassword, setShowPassword] = useState(false);
 
@@ -270,28 +282,38 @@ const NormalUserForm = () => {
         {state && (
           <select
             onChange={(e) => setDivision(e.target.value)}
-            className="border focus:border-purple-500  border-gray-300 px-2 py-3 p-2 rounded w-full text-gray-600"
+            className="border focus:border-purple-500 border-gray-300 px-2 py-3 rounded w-full text-gray-600"
+            disabled={divisionLoading}
           >
-            <option value="">Select Divisions</option>
-            {divisions?.map((c) => (
-              <option key={c.division} value={c.division}>
-                {c.division}
-              </option>
-            ))}
+            <option value="">
+              {divisionLoading ? "Loading divisions..." : "Select Divisions"}
+            </option>
+
+            {!divisionLoading &&
+              divisions?.map((c) => (
+                <option key={c.division} value={c.division}>
+                  {c.division}
+                </option>
+              ))}
           </select>
         )}
 
         {division && (
           <select
             onChange={(e) => setDistrict(e.target.value)}
-            className="border focus:border-purple-500  border-gray-300 px-2 py-3 p-2 rounded w-full text-gray-600"
+            className="border focus:border-purple-500 border-gray-300 px-2 py-3 rounded w-full text-gray-600"
+            disabled={districtLoading}
           >
-            <option value="">Select Districts</option>
-            {districts.map((c) => (
-              <option key={c.district} value={c.district}>
-                {c.district}
-              </option>
-            ))}
+            <option value="">
+              {districtLoading ? "Loading districts..." : "Select Districts"}
+            </option>
+
+            {!districtLoading &&
+              districts.map((c) => (
+                <option key={c.district} value={c.district}>
+                  {c.district}
+                </option>
+              ))}
           </select>
         )}
 

@@ -123,10 +123,10 @@ const HomeLogin = () => {
                 >
                   {isPending ? "loading...." : "Login"}
                 </button>
-                <div className="flex  justify-end mt-3">
+                <div className="flex  justify-center mt-3">
                   <Link
                     to={"/auth/forget-password"}
-                    className="text-xs  font-bold text-orange-600"
+                    className="text-lg  font-bold text-orange-600"
                   >
                     Forgot password?
                   </Link>
@@ -144,14 +144,22 @@ const HomeLogin = () => {
               <div className="mt-2 flex items-center justify-center">
                 <GoogleLoginButton />
               </div>
-              <div className="flex items-center justify-center gap-1 font-semibold mt-3 text-sm">
-                <p className="text-gray-600">Don't have any account?</p>
-                <Link
-                  to="/auth/all-access-register/normal-user"
-                  className="text-amber-600 underline-offset-4 hover:underline duration-300"
-                >
-                  Create account
-                </Link>
+              <div className="flex flex-col gap-0">
+                <div className="flex items-center justify-center gap-1 font-semibold mt-3 text-sm">
+                  <p className="text-gray-600">Don't have any account?</p>
+                  <div className="text-amber-600 underline-offset-4 hover:underline duration-300">
+                    Create account
+                  </div>
+                </div>
+
+                <div className="flex items-center justify-center mt-3">
+                  <Link
+                    to="/auth/all-access-register/normal-user"
+                    className=" w-auto text-center bg-amber-600 px-4 text-white py-1 rounded-2xl font-bold transition-all active:scale-[0.98] cursor-pointer"
+                  >
+                    Create Account
+                  </Link>
+                </div>
               </div>
             </div>
           </div>

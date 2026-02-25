@@ -6,7 +6,6 @@ import Stepper from "./Stepper";
 import MealScheduleTable from "../MealTable";
 import useStep from "../../Hooks/useStep";
 import { api } from "../../utils/countryApi";
-import CustomSelect from "../CustomSelect";
 
 const utilitybillalabadanservice = [
   {
@@ -59,61 +58,47 @@ const utilitybilluserservice = [
 ];
 
 const MessForm = () => {
-  const [divisions, setDivisions] = useState([]);
-  const [districts, setDistricts] = useState([]);
-  const [country, setCountry] = useState(null);
-  const [state, setState] = useState(null);
-  const [divisionLoading, setDivisionLoading] = useState(false);
-  const [districtLoading, setDistrictLoading] = useState(false);
+  const [countries, setCountries] = useState([]);
+  const [states, setStates] = useState([]);
+  const [cities, setCities] = useState([]);
 
-  const [division, setDivision] = useState(null);
-  const [district, setDistrict] = useState(null);
-
-  const [village, setVillage] = useState("");
-
-  const [villageOptions, setVillageOptions] = useState(["Ramdashdhi"]);
-
-   const handleCreateVillage = (newItem) => {
-     setVillageOptions((prev) => [...prev, newItem]);
-   };
+  const [country, setCountry] = useState("");
+  const [state, setState] = useState("");
+  const [city, setCity] = useState("");
 
   useEffect(() => {
-    if (!state) return;
-
-    const loadDivisions = async () => {
-      try {
-        setDivisionLoading(true);
-        const res = await api.get("/divisions");
-        setDivisions(res?.data?.data || []);
-      } catch (err) {
-        console.log("Failed to load divisions:", err);
-        setDivisions([]);
-      } finally {
-        setDivisionLoading(false);
-      }
+    const loadCountries = async () => {
+      const res = await api.get("/countries");
+      setCountries(res.data);
     };
-
-    loadDivisions();
-  }, [state]);
+    loadCountries();
+  }, []);
 
   useEffect(() => {
-    if (!division) return;
+    if (!country) return;
 
-    const loadDistricts = async () => {
-      try {
-        setDistrictLoading(true);
-        const res = await api.get(`/division/${division}`);
-        setDistricts(res?.data?.data || []);
-      } catch (err) {
-        console.log("Failed to load districts:", err);
-        setDistricts([]);
-      } finally {
-        setDistrictLoading(false);
-      }
+    const loadStates = async () => {
+      const res = await api.get(`/countries/${country}/states`);
+      setStates(res.data);
+      setCities([]);
+      setState("");
     };
 
-    loadDistricts();
-  }, [division]);
+    loadStates();
+  }, [country]);
+
+  // Load Cities
+  useEffect(() => {
+    if (!country || !state) return;
+
+    const loadCities = async () => {
+      const res = await api.get(`/countries/${country}/states/${state}/cities`);
+      setCities(res.data);
+      setCity("");
+    };
+
+    loadCities();
+  }, [state, country]);
 
   const { step, setStep } = useStep();
   const [passwordShow, setPasswordShow] = useState(false);
@@ -240,96 +225,58 @@ const MessForm = () => {
             error={errors.phone}
           />
 
-          <div className="w-full flex flex-col gap-2">
-            <h4 className="text-[18px] font-semibold text-gray-500">Address</h4>
-
+          <div className="md:col-span-2 space-y-2">
             {/* Country */}
             <select
+              value={country}
               onChange={(e) => setCountry(e.target.value)}
               className="border focus:border-purple-500  border-gray-300 px-2 py-3 rounded w-full  text-gray-600"
             >
               <option value="">Select Country</option>
-
-              <option key={"bangladesh"} value={"bangladesh"}>
-                Bangladesh
-              </option>
+              {countries.map((c) => (
+                <option key={c.iso2} value={c.iso2}>
+                  {c.name}
+                </option>
+              ))}
             </select>
 
+            {/* State */}
             {country && (
               <select
+                value={state}
                 onChange={(e) => setState(e.target.value)}
-                className="border focus:border-purple-500  border-gray-300 px-2 py-3 rounded w-full  text-gray-600"
+                disabled={!country}
+                className="border focus:border-purple-500  border-gray-300 px-2 py-3 p-2 rounded w-full  text-gray-600"
               >
                 <option value="">Select State</option>
-
-                <option key={"bangladesh"} value={"bangladesh"}>
-                  Bangladesh
-                </option>
+                {states.map((s) => (
+                  <option key={s.iso2} value={s.iso2}>
+                    {s.name}
+                  </option>
+                ))}
               </select>
             )}
 
+            {/* City */}
             {state && (
               <select
-                onChange={(e) => setDivision(e.target.value)}
-                className="border focus:border-purple-500 border-gray-300 px-2 py-3 rounded w-full text-gray-600"
-                disabled={divisionLoading}
+                value={city}
+                onChange={(e) => setCity(e.target.value)}
+                disabled={!state}
+                className="border focus:border-purple-500  border-gray-300 px-2 py-3 p-2 rounded w-full text-gray-600"
               >
-                <option value="">
-                  {divisionLoading
-                    ? "Loading divisions..."
-                    : "Select Divisions"}
-                </option>
-
-                {!divisionLoading &&
-                  divisions?.map((c) => (
-                    <option key={c.division} value={c.division}>
-                      {c.division}
-                    </option>
-                  ))}
+                <option value="">Select City</option>
+                {cities.map((c) => (
+                  <option key={c.id} value={c.name}>
+                    {c.name}
+                  </option>
+                ))}
               </select>
-            )}
-
-            {division && (
-              <select
-                onChange={(e) => setDistrict(e.target.value)}
-                className="border focus:border-purple-500 border-gray-300 px-2 py-3 rounded w-full text-gray-600"
-                disabled={districtLoading}
-              >
-                <option value="">
-                  {districtLoading
-                    ? "Loading districts..."
-                    : "Select Districts"}
-                </option>
-
-                {!districtLoading &&
-                  districts.map((c) => (
-                    <option key={c.district} value={c.district}>
-                      {c.district}
-                    </option>
-                  ))}
-              </select>
-            )}
-
-            {district && (
-              <div className="flex flex-col gap-2">
-                <CustomSelect
-                  label="Village"
-                  options={villageOptions}
-                  value={village}
-                  onChange={setVillage}
-                  onCreate={handleCreateVillage}
-                  allowCreate
-                  showOther
-                />
-
-                <InputField
-                  label="Location"
-                  name="location"
-                  control={control}
-                />
-              </div>
             )}
           </div>
+          {country && state && city && (
+            <FloatingInput label="Address" {...register("address")} />
+          )}
 
           <FloatingInput
             label="Name of the Institute"
