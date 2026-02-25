@@ -460,6 +460,12 @@ const UserForm = () => {
           )}
         />
 
+        <div className="flex items-center  gap-2">
+          <input type="checkbox" />
+          <p className="text-black font-semibold">
+            I confirm that the above information is correct.
+          </p>
+        </div>
         <button
           type="submit"
           className="w-full cursor-pointer py-3 bg-black text-white rounded-lg"

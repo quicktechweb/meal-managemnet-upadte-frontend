@@ -1,10 +1,35 @@
 import { TiTick } from "react-icons/ti";
-import { NavLink, Outlet, useLocation } from "react-router-dom";
+import { NavLink, Outlet, useLocation, useNavigate } from "react-router-dom";
 import useStep from "../../../Hooks/useStep";
+import { useState } from "react";
+import { ChevronDown } from "lucide-react";
 
 const Registration = () => {
   const location = useLocation();
   const { step } = useStep();
+
+  const navigate = useNavigate();
+
+  const [open, setOpen] = useState(false);
+
+  const options = [
+    {
+      label: "As User",
+      path: "/register/user",
+    },
+    {
+      label: "As Institute",
+      path: "/register/mess",
+    },
+  ];
+
+  const activeOption =
+    options.find((opt) => location.pathname.includes(opt.path)) || options[0];
+
+  const handleSelect = (option) => {
+    navigate(option.path);
+    setOpen(false);
+  };
   return (
     <div className="min-h-screen bg-[#FFFBF7] p-4 md:p-10 flex items-center justify-center w-full mt-14 md:mt-20 font-sans">
       <div className="absolute top-20 left-20 w-72 h-72 bg-orange-200 rounded-full mix-blend-multiply filter blur-3xl opacity-40 animate-pulse"></div>
@@ -98,27 +123,42 @@ const Registration = () => {
               </p>
             </div>
 
-            {/* Food-Themed Toggle Switch */}
-            <div className="flex w-full bg-slate-100 rounded-2xl p-1.5 mb-5 border border-slate-200">
-              <NavLink
-                to="/register/user"
-                className={({ isActive }) =>
-                  `w-1/2 py-3.5 rounded-xl text-sm font-bold transition-all duration-300 text-center
-                ${isActive ? "bg-orange-500 text-white shadow-lg shadow-orange-200" : "text-slate-500 hover:bg-slate-200/50"}`
-                }
+            <div className="relative flex items-center justify-center  mb-4">
+              {/* Selected */}
+              <div
+                onClick={() => setOpen(!open)}
+                className="flex items-center justify-between bg-slate-100 border border-slate-200 rounded-xl px-4 py-3 cursor-pointer hover:bg-slate-200 transition w-[200px]"
               >
-                As User
-              </NavLink>
+                <span className="font-semibold text-slate-700">
+                  {activeOption.label}
+                </span>
+                <ChevronDown
+                  className={`transition-transform duration-300 ${
+                    open ? "rotate-180" : ""
+                  }`}
+                  size={18}
+                />
+              </div>
 
-              <NavLink
-                to="/register/mess"
-                className={({ isActive }) =>
-                  `w-1/2 py-3.5 rounded-xl text-sm font-bold transition-all duration-300 text-center
-                ${isActive ? "bg-orange-500 text-white shadow-lg shadow-orange-200" : "text-slate-500 hover:bg-slate-200/50"}`
-                }
-              >
-                As Institute
-              </NavLink>
+              {/* Dropdown */}
+              {open && (
+                <div className="absolute w-[200px]  bg-white border border-slate-200 top-0 rounded-xl shadow-lg overflow-hidden z-50">
+                  {options.map((option) => (
+                    <div
+                      key={option.path}
+                      onClick={() => handleSelect(option)}
+                      className={`px-4 py-3 cursor-pointer text-sm font-medium transition 
+              ${
+                location.pathname === option.path
+                  ? "bg-orange-500 text-white"
+                  : "hover:bg-slate-100 text-slate-600"
+              }`}
+                    >
+                      {option.label}
+                    </div>
+                  ))}
+                </div>
+              )}
             </div>
           </div>
 

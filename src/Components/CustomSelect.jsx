@@ -74,13 +74,15 @@ const CustomSelect = ({
               setOtherValue(e.target.value);
               onChange && onChange(e.target.value);
             }}
-            placeholder={`${label} here...`}
+            placeholder={
+              isOtherSelected ? `${label} here...` : `Select ${label} here...`
+            }
             className="w-full outline-none text-gray-600 bg-transparent"
           />
         ) : (
           <>
             <span className={`${!value ? "text-gray-500" : "text-gray-600"}`}>
-              {value || label}
+              {value || (!isOtherSelected && `Select ${label}`)}
             </span>
             <ChevronDown size={18} />
           </>
