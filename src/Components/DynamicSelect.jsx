@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from "react";
 import { ChevronDown } from "lucide-react";
 
-const StepwiseDropdown = () => {
+const DynamicDropdown = () => {
   const [options, setOptions] = useState({
     occupation: ["Business", "Job", "Study"],
     institution: ["Institution", "Company"],
@@ -123,7 +123,7 @@ const CustomStepDropdown = ({
       {/* Header */}
       <div
         onClick={() => setIsOpen(!isOpen)}
-        className="border border-gray-200 rounded-xl px-3 py-2 flex justify-between items-center cursor-pointer bg-gray-50/50 text-gray-400"
+        className="border border-gray-200 rounded-xl px-3 py-2 flex justify-between items-center cursor-pointer bg-gray-50/50 text-gray-500"
       >
         <span className="whitespace-nowrap">{value || label}</span>
         <ChevronDown size={18} />
@@ -140,7 +140,9 @@ const CustomStepDropdown = ({
                 setIsOpen(false);
               }}
               className={`px-3 py-2 hover:bg-gray-100 cursor-pointer ${
-                item === value ? "bg-gray-200 font-semibold" : ""
+                item === value
+                  ? "bg-gray-100 text-black font-semibold"
+                  : "text-gray-600"
               }`}
             >
               {item}
@@ -179,4 +181,4 @@ const CustomStepDropdown = ({
   );
 };
 
-export default StepwiseDropdown;
+export default DynamicDropdown;

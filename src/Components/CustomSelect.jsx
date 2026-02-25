@@ -56,7 +56,7 @@ const CustomSelect = ({
         onClick={() => setIsOpen(!isOpen)}
         className="border border-gray-200 rounded-xl px-3 py-2 flex justify-between items-center cursor-pointer bg-white"
       >
-        <span className={`${!value ? "text-gray-400" : "text-gray-600"}`}>
+        <span className={`${!value ? "text-gray-500" : "text-gray-600"}`}>
           {value || label}
         </span>
         <ChevronDown size={18} />

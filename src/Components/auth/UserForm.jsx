@@ -1,10 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { useForm, Controller } from "react-hook-form";
 import { IoMdEye, IoMdEyeOff } from "react-icons/io";
-import { X } from "lucide-react";
+
 import { Link, useNavigate } from "react-router-dom";
-import { FaCheckCircle } from "react-icons/fa";
+
 import { api } from "../../utils/countryApi";
+import CustomSelect from "../CustomSelect";
+import DynamicDropdown from "../DynamicSelect";
+import DocumentUpload from "../DocumentUpload";
 
 const InputField = ({ label, name, control, type = "text", rules = {} }) => (
   <Controller
@@ -17,13 +20,13 @@ const InputField = ({ label, name, control, type = "text", rules = {} }) => (
           {...field}
           type={type}
           placeholder=" "
-          className={`peer w-full border rounded-md px-3 h-[50px] text-lg focus:outline-none text-gray-500 focus:border-black transition-all ${
+          className={`peer w-full border rounded-md px-3 h-[50px] text-sm focus:outline-none text-gray-500 focus:border-black transition-all ${
             fieldState.error ? "border-red-500" : "border-gray-200"
           }`}
         />
         <label
           className="absolute left-3 bg-white px-1 text-gray-500 transition-all
-          top-1/2 -translate-y-1/2 text-sm md:text-lg
+          top-1/2 -translate-y-1/2 text-sm md:text-base
           peer-focus:top-1 peer-focus:text-xs peer-focus:text-black
           peer-not-placeholder-shown:top-1 peer-not-placeholder-shown:text-xs
           pointer-events-none"
@@ -41,55 +44,51 @@ const InputField = ({ label, name, control, type = "text", rules = {} }) => (
 );
 
 const UserForm = () => {
-  const [countries, setCountries] = useState([]);
-  const [states, setStates] = useState([]);
-  const [cities, setCities] = useState([]);
+  const [divisions, setDivisions] = useState([]);
+  const [districts, setDistricts] = useState([]);
+  const [country, setCountry] = useState(null);
+  const [state, setState] = useState(null);
 
-  const [country, setCountry] = useState("");
-  const [state, setState] = useState("");
-  const [city, setCity] = useState("");
-
-  useEffect(() => {
-    const loadCountries = async () => {
-      const res = await api.get("/countries");
-      setCountries(res.data);
-    };
-    loadCountries();
-  }, []);
+  const [division, setDivision] = useState(null);
+  const [district, setDistrict] = useState(null);
 
   useEffect(() => {
-    if (!country) return;
+    if (!state) return;
 
-    const loadStates = async () => {
-      const res = await api.get(`/countries/${country}/states`);
-      setStates(res.data);
-      setCities([]);
-      setState("");
+    const loaddivisions = async () => {
+      const res = await api.get("/divisions");
+      setDivisions(res?.data?.data);
     };
+    loaddivisions();
+  }, [state]);
 
-    loadStates();
-  }, [country]);
-
-  // Load Cities
   useEffect(() => {
-    if (!country || !state) return;
+    if (!division) return;
 
-    const loadCities = async () => {
-      const res = await api.get(`/countries/${country}/states/${state}/cities`);
-      setCities(res.data);
-      setCity("");
+    const loadDistricts = async () => {
+      try {
+        const res = await api.get(`/division/${division}`);
+        console.log(res?.data);
+
+        setDistricts(res?.data?.data);
+      } catch (err) {
+        console.log("Failed to load districts:", err);
+        setDistricts([]);
+      }
     };
 
-    loadCities();
-  }, [state, country]);
+    loadDistricts();
+  }, [division]);
 
-  const { handleSubmit, control, watch, setValue } = useForm();
-  const navigate = useNavigate();
+  const { handleSubmit, control, watch } = useForm();
+
   const [passwordShow, setPasswordShow] = useState(false);
+  const [confirmPasswordShow, setConfirmPasswordShow] = useState(false);
+
+  const passwordValue = watch("password");
+  const navigate = useNavigate();
 
   const [hallSelect, setHallSelect] = useState(false);
-
-  const occupation = watch("occupation");
 
   const onSubmit = (data) => {
     if (data) {
@@ -97,69 +96,70 @@ const UserForm = () => {
     }
   };
 
+  // custom select
+  const [options, setOptions] = useState({
+    occupation: ["Business", "Job", "Study"],
+    institution: ["Institution", "Company"],
+    designation: ["Designation", "Department"],
+    year: ["2024", "2025", "2026"],
+  });
+
+  const [selections, setSelections] = useState({
+    occupation: "",
+    institution: "",
+    designation: "",
+    year: "",
+  });
+  const [gurdian, setGurdian] = useState("");
+  const [gender, setGender] = useState("");
+  const [religion, setReligion] = useState("");
+
+  const [village, setVillage] = useState("");
+
+  const [villageOptions, setVillageOptions] = useState(["Ramdashdhi"]);
+  const [genderOptions, setGenderOptions] = useState([
+    "Male",
+    "Female",
+    "Children",
+  ]);
+
+  const [gurdianOptions, setGurdianOptions] = useState([
+    "father",
+    "mother",
+    "brother",
+    "sister",
+  ]);
+
+  const [religionOptions, setReligionOptions] = useState(["Islam", "Hindu"]);
+
+  const handleCreateGurdian = (newItem) => {
+    setGurdianOptions((prev) => [...prev, newItem]);
+  };
+
+  const handleCreateGender = (newItem) => {
+    setGenderOptions((prev) => [...prev, newItem]);
+  };
+
+  const handleCreateReligion = (newItem) => {
+    setReligionOptions((prev) => [...prev, newItem]);
+  };
+  const handleCreateVillage = (newItem) => {
+    setVillageOptions((prev) => [...prev, newItem]);
+  };
   return (
     <>
-      <form
-        onSubmit={handleSubmit(onSubmit)}
-        className="space-y-3 md:space-y-6"
-      >
+      <form onSubmit={handleSubmit(onSubmit)} className="space-y-3 ">
         <InputField
-          label="Name"
-          name="name"
+          label="Full name"
+          name="full-name"
           control={control}
-          rules={{ required: "Name is required" }}
+          rules={{ required: "Full Name is required" }}
         />
         <InputField
-          label="Email"
-          name="email"
-          type="email"
+          label="Nick name"
+          name="nick-name"
           control={control}
-          rules={{
-            required: "Email is required",
-            pattern: {
-              value: /\S+@\S+\.\S+/,
-              message: "Invalid email address",
-            },
-          }}
-        />
-
-        {/* Password */}
-        <Controller
-          name="password"
-          control={control}
-          rules={{ required: "Password is required" }}
-          render={({ field, fieldState }) => (
-            <div className="relative">
-              <input
-                {...field}
-                type={passwordShow ? "text" : "password"}
-                placeholder=" "
-                className={`peer w-full border rounded-md px-3 h-[50px] text-lg focus:outline-none focus:border-black transition-all ${
-                  fieldState.error ? "border-red-500" : "border-gray-200"
-                }`}
-              />
-              <label
-                className="absolute left-3 bg-white px-1 text-gray-500 transition-all
-              top-1/2 -translate-y-1/2 text-sm md:text-lg
-              peer-focus:top-1 peer-focus:text-xs peer-focus:text-black
-              peer-not-placeholder-shown:top-1 peer-not-placeholder-shown:text-xs
-              pointer-events-none"
-              >
-                Password
-              </label>
-              <div
-                onClick={() => setPasswordShow(!passwordShow)}
-                className="absolute top-1/2 -translate-y-1/2 right-4 text-2xl text-gray-500 cursor-pointer"
-              >
-                {passwordShow ? <IoMdEyeOff /> : <IoMdEye />}
-              </div>
-              {fieldState.error && (
-                <span className="text-red-500 text-sm mt-1 absolute left-0 -bottom-5">
-                  {fieldState.error.message}
-                </span>
-              )}
-            </div>
-          )}
+          rules={{ required: "Nick Name is required" }}
         />
 
         <InputField
@@ -168,6 +168,7 @@ const UserForm = () => {
           control={control}
           rules={{ required: "Username required" }}
         />
+
         <InputField label="Father Name" name="fatherName" control={control} />
         <InputField label="Mother Name" name="motherName" control={control} />
         <InputField
@@ -175,162 +176,144 @@ const UserForm = () => {
           name="guardianName"
           control={control}
         />
+
+        <CustomSelect
+          label="Relation with Gurdian"
+          options={gurdianOptions}
+          value={gurdian}
+          onChange={setGurdian}
+          onCreate={handleCreateGurdian}
+          allowCreate
+          showOther
+        />
+
+        <InputField
+          label="Guardian Contact Number"
+          name="guardian-number"
+          control={control}
+        />
+
+        <CustomSelect
+          label="Gender"
+          options={genderOptions}
+          value={gender}
+          onChange={setGender}
+          onCreate={handleCreateGender}
+          allowCreate
+          showOther
+        />
+
+        <CustomSelect
+          label="Religion"
+          options={religionOptions}
+          value={religion}
+          onChange={setReligion}
+          onCreate={handleCreateReligion}
+          allowCreate
+          showOther
+        />
+
         <InputField
           label="Date of Birth"
           name="dob"
           control={control}
           type="date"
         />
-        <InputField label="Nationality" name="nationality" control={control} />
-        {/* <InputField label="Religion" name="religion" control={control} /> */}
 
-        <select
-          value={""}
-          className="border focus:border-orange-500  border-gray-300 px-2 py-3 rounded w-full  text-gray-600"
-        >
-          {/* Islam: The state religion and largest faith (approx. 91.04%), with the majority being Sunni.
-Hinduism: The second-largest religion (approx. 7.95%).
-Buddhism: The third-largest, with over 1 million adherents, mostly in the Chittagong Hill Tracts (approx. 0.61%).
-Christianity: The fourth-largest, with Roman Catholic and Protestant denominations (ap */}
-          <option value="">Select Religion</option>
-          <option value="islam">Islam</option>
-          <option value="hindu">Hindu</option>
-          <option value="buddhism">Buddhism</option>
-          <option value="christianity">Christianity</option>
-          <option value="other">Other</option>
-        </select>
+        <DynamicDropdown />
 
-        <select
-          value={""}
-          className="border focus:border-orange-500  border-gray-300 px-2 py-3 rounded w-full  text-gray-600"
-        >
-          <option value="">Select Gender</option>
-          <option value="male">Male</option>
-          <option value="female">Female</option>
-        </select>
+        <div className="w-full flex flex-col gap-2">
+          <h4 className="text-[18px] font-semibold text-gray-500">Address</h4>
 
-        <div className="md:col-span-2 space-y-2">
           {/* Country */}
           <select
-            value={country}
             onChange={(e) => setCountry(e.target.value)}
-            className="border focus:border-orange-500  border-gray-300 px-2 py-3 rounded w-full  text-gray-600"
+            className="border focus:border-purple-500  border-gray-300 px-2 py-3 rounded w-full  text-gray-600"
           >
             <option value="">Select Country</option>
-            {countries.map((c) => (
-              <option key={c.iso2} value={c.iso2}>
-                {c.name}
-              </option>
-            ))}
+
+            <option key={"bangladesh"} value={"bangladesh"}>
+              Bangladesh
+            </option>
           </select>
 
-          {/* State */}
           {country && (
             <select
-              value={state}
               onChange={(e) => setState(e.target.value)}
-              disabled={!country}
-              className="border focus:border-purple-500  border-gray-300 px-2 py-3 p-2 rounded w-full  text-gray-600"
+              className="border focus:border-purple-500  border-gray-300 px-2 py-3 rounded w-full  text-gray-600"
             >
               <option value="">Select State</option>
-              {states.map((s) => (
-                <option key={s.iso2} value={s.iso2}>
-                  {s.name}
-                </option>
-              ))}
+
+              <option key={"bangladesh"} value={"bangladesh"}>
+                Bangladesh
+              </option>
             </select>
           )}
 
-          {/* City */}
           {state && (
             <select
-              value={city}
-              onChange={(e) => setCity(e.target.value)}
-              disabled={!state}
+              onChange={(e) => setDivision(e.target.value)}
               className="border focus:border-purple-500  border-gray-300 px-2 py-3 p-2 rounded w-full text-gray-600"
             >
-              <option value="">Select City</option>
-              {cities.map((c) => (
-                <option key={c.id} value={c.name}>
-                  {c.name}
+              <option value="">Select Divisions</option>
+              {divisions?.map((c) => (
+                <option key={c.division} value={c.division}>
+                  {c.division}
                 </option>
               ))}
             </select>
           )}
-        </div>
 
-        {country && state && city && (
-          <>
-            <InputField
-              label="Present Address"
-              name="presentAddress"
-              control={control}
-            />
-            <InputField
-              label="Permanent Address"
-              name="permanentAddress"
-              control={control}
-            />
-          </>
-        )}
-
-        <InputField label="Phone Number" name="phone" control={control} />
-
-        {/* Occupation */}
-        <div className="flex flex-col gap-1">
-          <h4 className="text-gray-500">Occupation</h4>
-          <div className="flex items-center gap-3">
-            <button
-              type="button"
-              onClick={() => setValue("occupation", "job_holder")}
-              className={`px-4 py-1.5 flex-1 rounded-2xl flex items-center justify-center text-gray-500 cursor-pointer gap-1.5 border ${
-                occupation === "job_holder"
-                  ? "border-orange-500"
-                  : "border-gray-300"
-              }`}
+          {division && (
+            <select
+              onChange={(e) => setDistrict(e.target.value)}
+              className="border focus:border-purple-500  border-gray-300 px-2 py-3 p-2 rounded w-full text-gray-600"
             >
-              {occupation === "job_holder" && (
-                <FaCheckCircle className="text-green-600 text-sm" />
-              )}
-              Job Holder
-            </button>
-            <button
-              type="button"
-              onClick={() => setValue("occupation", "student")}
-              className={`px-4 py-1.5 flex-1 rounded-2xl flex items-center justify-center text-gray-500 cursor-pointer gap-1.5 border ${
-                occupation === "student"
-                  ? "border-orange-500"
-                  : "border-gray-300"
-              }`}
-            >
-              {occupation === "student" && (
-                <FaCheckCircle className="text-green-600 text-sm" />
-              )}
-              Student
-            </button>
-          </div>
-
-          {occupation === "job_holder" && (
-            <div className="mt-2 flex flex-col gap-3 md:gap-6">
-              <InputField label="Post Name" name="postName" control={control} />
-              <InputField
-                label="Company Name"
-                name="companyName"
-                control={control}
-              />
-            </div>
+              <option value="">Select Districts</option>
+              {districts.map((c) => (
+                <option key={c.district} value={c.district}>
+                  {c.district}
+                </option>
+              ))}
+            </select>
           )}
-          {occupation === "student" && (
-            <div className="mt-2 flex flex-col gap-3 md:gap-6">
-              <InputField
-                label="Department Name"
-                name="departmentName"
-                control={control}
+
+          {district && (
+            <div className="flex flex-col gap-2">
+              <CustomSelect
+                label="Village"
+                options={villageOptions}
+                value={village}
+                onChange={setVillage}
+                onCreate={handleCreateVillage}
+                allowCreate
+                showOther
               />
-              <InputField label="Year" name="year" control={control} />
+
+              <InputField label="Location" name="location" control={control} />
             </div>
           )}
         </div>
+
+        <div className="flex flex-col gap-2">
+          <h4 className="text-[18px] font-semibold text-gray-500">Contact</h4>
+          <InputField
+            label="Email"
+            name="email"
+            type="email"
+            control={control}
+            rules={{
+              required: "Email is required",
+              pattern: {
+                value: /\S+@\S+\.\S+/,
+                message: "Invalid email address",
+              },
+            }}
+          />
+          <InputField label="Phone Number" name="phone" control={control} />
+        </div>
+
+        {/* Password */}
 
         {/* Hostel */}
         <Controller
@@ -339,11 +322,9 @@ Christianity: The fourth-largest, with Roman Catholic and Protestant denominatio
           render={({ field }) => (
             <select
               {...field}
-              className="w-full border border-gray-200 rounded-md px-3 h-[50px] text-lg text-gray-500"
+              className="w-full border border-gray-200 rounded-md px-3 h-[50px] text-base text-gray-500"
             >
-              <option value="" disabled>
-                Name Of the Institute
-              </option>
+              <option value="">Name Of the Institute</option>
               <option value="institute 1">Institute 1</option>
               <option value="institute 2">Institute 2</option>
               <option value="institute 3">Institute 3</option>
@@ -359,11 +340,9 @@ Christianity: The fourth-largest, with Roman Catholic and Protestant denominatio
             <select
               {...field}
               onChange={() => setHallSelect(true)}
-              className="w-full border border-gray-200 rounded-md px-3 h-[50px] text-lg text-gray-500"
+              className="w-full border border-gray-200 rounded-md px-3 h-[50px] text-base text-gray-500"
             >
-              <option value="" disabled>
-                Name Of the Hall / Hostel
-              </option>
+              <option value="">Name Of the Hall</option>
               <option value="Hall 1">Hall 1</option>
               <option value="Hall 2">Hall 2</option>
               <option value="Hall 3">Hall 3</option>
@@ -371,47 +350,112 @@ Christianity: The fourth-largest, with Roman Catholic and Protestant denominatio
           )}
         />
 
-        {hallSelect && (
-          <div className="w-full ">
-            <label className="block text-sm md:text-base font-medium text-gray-600 mb-2">
-              Upload Your Hall Admission Form Image
-            </label>
-
-            <div className="relative flex items-center justify-between gap-3 px-4 py-3 border-2 border-dashed border-gray-300 rounded-xl bg-white hover:border-orange-500 transition">
-              <input
-                type="file"
-                id="image"
-                className="absolute inset-0 opacity-0 cursor-pointer"
-              />
-
-              <span className="text-gray-400 text-sm truncate">
-                Choose an image…
-              </span>
-
-              <span className="shrink-0 bg-orange-600 text-white text-sm px-4 py-1.5 rounded-lg hover:bg-orange-700 transition">
-                Browse
-              </span>
-            </div>
-
-            <p className="text-xs text-gray-400 mt-1">PNG, JPG up to 5MB</p>
-          </div>
-        )}
-
         <Controller
           name="mess"
           control={control}
           render={({ field }) => (
             <select
               {...field}
-              className="w-full border border-gray-200 rounded-md px-3 h-[50px] text-lg text-gray-500"
+              className="w-full border border-gray-200 rounded-md px-3 h-[50px] text-base text-gray-500"
             >
-              <option value="" disabled>
-                Name Of the Mess
-              </option>
+              <option value="">Name Of the Mess</option>
               <option value="mess 1">Mess 1</option>
               <option value="mess 2">Mess 2</option>
               <option value="mess 3">Mess 3</option>
             </select>
+          )}
+        />
+
+        <div className="flex flex-col gap-1">
+          <h4 className="text-[18px] font-semibold text-gray-500">Document</h4>
+          <DocumentUpload />
+        </div>
+
+        {/* PASSWORD FIELD */}
+        <Controller
+          name="password"
+          control={control}
+          rules={{ required: "Password is required" }}
+          render={({ field, fieldState }) => (
+            <div className="relative ">
+              <input
+                {...field}
+                type={passwordShow ? "text" : "password"}
+                placeholder=" "
+                className={`peer w-full border rounded-md px-3 h-[50px] text-base focus:outline-none focus:border-black transition-all ${
+                  fieldState.error ? "border-red-500" : "border-gray-200"
+                }`}
+              />
+
+              <label
+                className="absolute left-3 bg-white px-1 text-gray-500 transition-all
+        top-1/2 -translate-y-1/2 text-sm md:text-base
+        peer-focus:top-1 peer-focus:text-xs peer-focus:text-black
+        peer-not-placeholder-shown:top-1 peer-not-placeholder-shown:text-xs
+        pointer-events-none"
+              >
+                Password
+              </label>
+
+              <div
+                onClick={() => setPasswordShow(!passwordShow)}
+                className="absolute top-1/2 -translate-y-1/2 right-4 text-2xl text-gray-500 cursor-pointer"
+              >
+                {passwordShow ? <IoMdEyeOff /> : <IoMdEye />}
+              </div>
+
+              {fieldState.error && (
+                <span className="text-red-500 text-sm absolute left-0 -bottom-5">
+                  {fieldState.error.message}
+                </span>
+              )}
+            </div>
+          )}
+        />
+
+        {/* CONFIRM PASSWORD FIELD */}
+        <Controller
+          name="confirmpassword"
+          control={control}
+          rules={{
+            required: "Confirm password is required",
+            validate: (value) =>
+              value === passwordValue || "Passwords do not match",
+          }}
+          render={({ field, fieldState }) => (
+            <div className="relative ">
+              <input
+                {...field}
+                type={confirmPasswordShow ? "text" : "password"}
+                placeholder=" "
+                className={`peer w-full border rounded-md px-3 h-[50px] text-base focus:outline-none focus:border-black transition-all ${
+                  fieldState.error ? "border-red-500" : "border-gray-200"
+                }`}
+              />
+
+              <label
+                className="absolute left-3 bg-white px-1 text-gray-500 transition-all
+        top-1/2 -translate-y-1/2 text-sm md:text-base
+        peer-focus:top-1 peer-focus:text-xs peer-focus:text-black
+        peer-not-placeholder-shown:top-1 peer-not-placeholder-shown:text-xs
+        pointer-events-none"
+              >
+                Confirm Password
+              </label>
+
+              <div
+                onClick={() => setConfirmPasswordShow(!confirmPasswordShow)}
+                className="absolute top-1/2 -translate-y-1/2 right-4 text-2xl text-gray-500 cursor-pointer"
+              >
+                {confirmPasswordShow ? <IoMdEyeOff /> : <IoMdEye />}
+              </div>
+
+              {fieldState.error && (
+                <span className="text-red-500 text-sm absolute left-0 -bottom-5">
+                  {fieldState.error.message}
+                </span>
+              )}
+            </div>
           )}
         />
 

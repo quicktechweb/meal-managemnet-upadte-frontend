@@ -17,10 +17,10 @@ import { FaRegIdCard } from "react-icons/fa";
 import toast from "react-hot-toast";
 import { useRegister } from "../../../api/auth/auth.hook";
 import { api } from "../../../utils/countryApi";
-import { IoCloseCircle } from "react-icons/io5";
 import CustomSelect from "../../../Components/CustomSelect";
 import DynamicSelect from "../../../Components/DynamicSelect";
 import DocumentUpload from "../../../Components/DocumentUpload";
+import DynamicDropdown from "../../../Components/DynamicSelect";
 const NormalUserForm = () => {
   const [divisions, setDivisions] = useState([]);
   const [districts, setDistricts] = useState([]);
@@ -64,21 +64,7 @@ const NormalUserForm = () => {
 
   const [showPassword, setShowPassword] = useState(false);
 
-  const [nidImage, setNidImage] = useState(null);
-
   const [nidImages, setNidImages] = useState(null);
-
-  const handleNidImageChange = (e) => {
-    const files = Array.from(e.target.files);
-    setNidImages(files);
-
-    const previewUrls = files.map((file) => URL.createObjectURL(file));
-    setNidImage(previewUrls);
-  };
-
-  const handleDelete = (index) => {
-    setNidImage((prev) => prev.filter((_, i) => i !== index));
-  };
 
   const {
     register,
@@ -87,13 +73,6 @@ const NormalUserForm = () => {
     formState: { errors },
   } = useForm();
   const { mutateAsync, isPending } = useRegister();
-
-  const [documentType, setDocumentType] = useState("");
-
-  const [documentTypeOptions, setDocumentOptions] = useState([
-    "NID",
-    "BirthCertificate",
-  ]);
 
   const [gender, setGender] = useState("");
   const [religion, setReligion] = useState("");
@@ -115,10 +94,6 @@ const NormalUserForm = () => {
 
   const handleCreateVillage = (newItem) => {
     setVillageOptions((prev) => [...prev, newItem]);
-  };
-
-  const handleCreateDocumentType = () => {
-    setDocumentOptions((prev) => [...prev, newItem]);
   };
 
   const selectedUserType = watch("userType");
@@ -262,12 +237,7 @@ const NormalUserForm = () => {
         }}
       />
 
-      <DynamicSelect
-        options={options}
-        setOptions={setOptions}
-        setSelections={setSelections}
-        selections={selections}
-      />
+      <DynamicDropdown />
 
       <div className="w-full flex flex-col gap-2">
         <h4 className="text-[18px] font-semibold text-gray-500">Address</h4>
