@@ -18,7 +18,6 @@ import toast from "react-hot-toast";
 import { useRegister } from "../../../api/auth/auth.hook";
 import { api } from "../../../utils/countryApi";
 import CustomSelect from "../../../Components/CustomSelect";
-import DynamicSelect from "../../../Components/DynamicSelect";
 import DocumentUpload from "../../../Components/DocumentUpload";
 import DynamicDropdown from "../../../Components/DynamicSelect";
 const NormalUserForm = () => {
@@ -165,20 +164,6 @@ const NormalUserForm = () => {
       )}
     </div>
   );
-
-  const [options, setOptions] = useState({
-    occupation: ["Business", "Job", "Study"],
-    institution: ["Institution", "Company"],
-    designation: ["Designation", "Department"],
-    year: ["2024", "2025", "2026"],
-  });
-
-  const [selections, setSelections] = useState({
-    occupation: "",
-    institution: "",
-    designation: "",
-    year: "",
-  });
 
   return (
     <form className="flex flex-col  gap-4" onSubmit={handleSubmit(onSubmit)}>
@@ -420,6 +405,15 @@ const NormalUserForm = () => {
             {errors.confirmPassword.message}
           </p>
         )}
+      </div>
+
+      {/* checkbox */}
+
+      <div className="flex items-center  gap-2">
+        <input type="checkbox" />
+        <p className="text-black font-semibold">
+          I confirm that the above information is correct.
+        </p>
       </div>
 
       {/* Submit Button */}

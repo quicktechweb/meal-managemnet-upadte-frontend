@@ -15,8 +15,12 @@ const CustomSelect = ({
   const [isOpen, setIsOpen] = useState(false);
   const [newItem, setNewItem] = useState("");
   const [searchTerm, setSearchTerm] = useState("");
+  const [isOtherSelected, setIsOtherSelected] = useState(false);
+  const [otherValue, setOtherValue] = useState("");
+
   const dropdownRef = useRef(null);
 
+  // Close dropdown outside click
   useEffect(() => {
     const handleClickOutside = (e) => {
       if (dropdownRef.current && !dropdownRef.current.contains(e.target)) {
@@ -27,25 +31,30 @@ const CustomSelect = ({
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  // 🔎 Filtered options
+  // Filter options
   const filteredOptions = useMemo(() => {
     return options.filter((item) =>
       item.toLowerCase().includes(searchTerm.toLowerCase()),
     );
   }, [options, searchTerm]);
 
+  // Create new option
   const handleCreate = () => {
     if (!newItem.trim()) return;
 
     onCreate && onCreate(newItem);
     onChange && onChange(newItem);
+
     setNewItem("");
     setSearchTerm("");
     setIsOpen(false);
+    setIsOtherSelected(false);
   };
 
+  // When Other clicked
   const handleOther = () => {
-    onChange && onChange(otherLabel);
+    setIsOtherSelected(true);
+    setOtherValue("");
     setIsOpen(false);
   };
 
@@ -53,20 +62,36 @@ const CustomSelect = ({
     <div className="relative w-full" ref={dropdownRef}>
       {/* Header */}
       <div
-        onClick={() => setIsOpen(!isOpen)}
+        onClick={() => !isOtherSelected && setIsOpen(!isOpen)}
         className="border border-gray-200 rounded-xl px-3 py-2 flex justify-between items-center cursor-pointer bg-white"
       >
-        <span className={`${!value ? "text-gray-500" : "text-gray-600"}`}>
-          {value || label}
-        </span>
-        <ChevronDown size={18} />
+        {isOtherSelected ? (
+          <input
+            type="text"
+            value={otherValue}
+            autoFocus
+            onChange={(e) => {
+              setOtherValue(e.target.value);
+              onChange && onChange(e.target.value);
+            }}
+            placeholder={`${label} here...`}
+            className="w-full outline-none text-gray-600 bg-transparent"
+          />
+        ) : (
+          <>
+            <span className={`${!value ? "text-gray-500" : "text-gray-600"}`}>
+              {value || label}
+            </span>
+            <ChevronDown size={18} />
+          </>
+        )}
       </div>
 
       {/* Dropdown */}
       {isOpen && (
         <div className="border absolute z-40 border-gray-200 border-t-0 bg-white w-full rounded-b-xl shadow-md">
-          {/*  Search Input */}
-          <div className="p-3 border-b  border-gray-200">
+          {/* Search */}
+          <div className="p-3 border-b border-gray-200">
             <input
               type="text"
               value={searchTerm}
@@ -83,11 +108,13 @@ const CustomSelect = ({
                 <div
                   key={index}
                   onClick={() => {
+                    setIsOtherSelected(false);
+                    setOtherValue("");
                     onChange && onChange(item);
                     setIsOpen(false);
                     setSearchTerm("");
                   }}
-                  className="px-3 py-2  hover:bg-gray-100 cursor-pointer"
+                  className="px-3 py-2 hover:bg-gray-100 cursor-pointer"
                 >
                   {item}
                 </div>

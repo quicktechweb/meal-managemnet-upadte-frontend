@@ -96,15 +96,17 @@ const FullAccessRegistration = () => {
           {/* Form */}
           <Outlet />
 
-          <p className="text-center mt-4 text-gray-600 font-medium">
-            Already have an account?{" "}
+          <div className="flex flex-col gap-2 items-center justify-center">
+            <p className="text-center mt-4 text-gray-600 font-medium">
+              Already have an account?{" "}
+            </p>
             <Link
-              className="text-purple-600 hover:text-purple-700 font-bold underline decoration-2 underline-offset-4"
+              className=" w-[150px] inline-block text-center bg-[#3170A6] px-4 text-white py-1 rounded-2xl font-bold transition-all active:scale-[0.98] cursor-pointer"
               to="/#login"
             >
               Sign In
             </Link>
-          </p>
+          </div>
         </div>
       </div>
     </div>

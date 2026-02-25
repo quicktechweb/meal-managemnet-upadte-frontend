@@ -16,6 +16,13 @@ const DynamicDropdown = () => {
     year: "",
   });
 
+  const [isOther, setIsOther] = useState({
+    occupation: false,
+    institution: false,
+    designation: false,
+    year: false,
+  });
+
   const [activeStep, setActiveStep] = useState("occupation");
 
   const steps = ["occupation", "institution", "designation", "year"];
@@ -38,14 +45,15 @@ const DynamicDropdown = () => {
   };
 
   const handleOther = (category) => {
-    const otherLabel = "Other";
-    setSelections((prev) => ({ ...prev, [category]: otherLabel }));
-    moveToNextStep(category);
+    setIsOther((prev) => ({ ...prev, [category]: true }));
+    setSelections((prev) => ({ ...prev, [category]: "" }));
   };
 
   const moveToNextStep = (current) => {
     const index = steps.indexOf(current);
-    if (index < steps.length - 1) setActiveStep(steps[index + 1]);
+    if (index < steps.length - 1) {
+      setActiveStep(steps[index + 1]);
+    }
   };
 
   const renderDropdown = (category, label) => {
@@ -67,13 +75,17 @@ const DynamicDropdown = () => {
         onChange={(val) => handleSelect(category, val)}
         onCreate={(val) => handleCreate(category, val)}
         onOther={() => handleOther(category)}
-        isActive={activeStep === category}
+        isOther={isOther[category]}
+        setIsOther={(val) =>
+          setIsOther((prev) => ({ ...prev, [category]: val }))
+        }
+        moveToNextStep={() => moveToNextStep(category)}
       />
     );
   };
 
   return (
-    <div className="flex flex-col items-center gap-4 ">
+    <div className="flex flex-col items-center gap-4 w-full ">
       {renderDropdown("occupation", "Select Occupation")}
       {renderDropdown("institution", "Select Institution/Company")}
       {renderDropdown("designation", "Select Designation/Dept")}
@@ -90,7 +102,9 @@ const CustomStepDropdown = ({
   onChange,
   onCreate,
   onOther,
-  isActive,
+  isOther,
+  setIsOther,
+  moveToNextStep,
 }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [newItem, setNewItem] = useState("");
@@ -119,19 +133,42 @@ const CustomStepDropdown = ({
   };
 
   return (
-    <div className="relative w-full " ref={dropdownRef}>
+    <div className="relative w-full" ref={dropdownRef}>
       {/* Header */}
-      <div
-        onClick={() => setIsOpen(!isOpen)}
-        className="border border-gray-200 rounded-xl px-3 py-2 flex justify-between items-center cursor-pointer bg-gray-50/50 text-gray-500"
-      >
-        <span className="whitespace-nowrap">{value || label}</span>
-        <ChevronDown size={18} />
-      </div>
+      {isOther ? (
+        <input
+          type="text"
+          value={value}
+          autoFocus
+          placeholder={`Enter ${category}`}
+          onChange={(e) => onChange(e.target.value)}
+          onBlur={() => {
+            if (value.trim() !== "") {
+              setIsOther(false);
+              moveToNextStep();
+            }
+          }}
+          onKeyDown={(e) => {
+            if (e.key === "Enter" && value.trim() !== "") {
+              setIsOther(false);
+              moveToNextStep();
+            }
+          }}
+          className="w-full border border-[#3170A6] rounded-xl px-3 py-2 focus:outline-none focus:ring-2 focus:ring-purple-500/20"
+        />
+      ) : (
+        <div
+          onClick={() => setIsOpen(!isOpen)}
+          className="border border-gray-200 rounded-xl px-3 py-2 flex justify-between items-center cursor-pointer bg-gray-50/50 text-gray-500"
+        >
+          <span className="whitespace-nowrap">{value || label}</span>
+          <ChevronDown size={18} />
+        </div>
+      )}
 
       {/* Dropdown */}
-      {isOpen && (
-        <div className="border absolute z-40 border-gray-200 border-t-0 bg-gray-50 text-gray-400 w-full">
+      {isOpen && !isOther && (
+        <div className="border absolute z-40 border-gray-200 border-t-0 bg-white w-full shadow-lg rounded-b-xl">
           {options.map((item, index) => (
             <div
               key={index}
@@ -153,18 +190,18 @@ const CustomStepDropdown = ({
           <div className="px-3 py-2 border-t">
             <input
               type="text"
-              value={isActive ? newItem : ""}
+              value={newItem}
               onChange={(e) => setNewItem(e.target.value)}
               placeholder="Type new item..."
-              className="w-full px-4 py-2 bg-gray-50/50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500/20 focus:border-purple-500 transition-all placeholder:text-gray-400"
+              className="w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500/20"
             />
           </div>
 
-          {/* Bottom Buttons: Other + Create */}
+          {/* Bottom Buttons */}
           <div className="flex justify-between px-3 py-2">
             <button
               onClick={handleOtherClick}
-              className="px-3 py-1 border border-[#3170A6] rounded-lg text-sm text-black"
+              className="px-3 py-1 border border-[#3170A6] rounded-lg text-sm"
             >
               Other
             </button>
