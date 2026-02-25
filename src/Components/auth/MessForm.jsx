@@ -69,14 +69,6 @@ const MessForm = () => {
   const [division, setDivision] = useState(null);
   const [district, setDistrict] = useState(null);
 
-  const [village, setVillage] = useState("");
-
-  const [villageOptions, setVillageOptions] = useState(["Ramdashdhi"]);
-
-   const handleCreateVillage = (newItem) => {
-     setVillageOptions((prev) => [...prev, newItem]);
-   };
-
   useEffect(() => {
     if (!state) return;
 
@@ -312,20 +304,15 @@ const MessForm = () => {
 
             {district && (
               <div className="flex flex-col gap-2">
-                <CustomSelect
+                <FloatingInput
                   label="Village"
-                  options={villageOptions}
-                  value={village}
-                  onChange={setVillage}
-                  onCreate={handleCreateVillage}
-                  allowCreate
-                  showOther
+                  {...register("village", { required: "Village required" })}
+                  error={errors.phone}
                 />
-
-                <InputField
+                <FloatingInput
                   label="Location"
-                  name="location"
-                  control={control}
+                  {...register("location", { required: "location required" })}
+                  error={errors.phone}
                 />
               </div>
             )}

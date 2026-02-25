@@ -86,12 +86,15 @@ const NormalUserForm = () => {
   const { mutateAsync, isPending } = useRegister();
 
   const [gender, setGender] = useState("");
+ 
   const [religion, setReligion] = useState("");
   const [genderOptions, setGenderOptions] = useState([
     "Male",
     "Female",
     "Children",
   ]);
+
+ 
 
   const [religionOptions, setReligionOptions] = useState(["Islam", "Hindu"]);
 
@@ -103,9 +106,6 @@ const NormalUserForm = () => {
     setReligionOptions((prev) => [...prev, newItem]);
   };
 
-  const handleCreateVillage = (newItem) => {
-    setVillageOptions((prev) => [...prev, newItem]);
-  };
 
   const selectedUserType = watch("userType");
 
@@ -167,6 +167,8 @@ const NormalUserForm = () => {
 
   return (
     <form className="flex flex-col  gap-4" onSubmit={handleSubmit(onSubmit)}>
+     
+
       <FormInput
         icon={User}
         type="text"
@@ -304,14 +306,11 @@ const NormalUserForm = () => {
 
         {district && (
           <div className="flex flex-col gap-2">
-            <CustomSelect
-              label="Village"
-              options={villageOptions}
-              value={village}
-              onChange={setVillage}
-              onCreate={handleCreateVillage}
-              allowCreate
-              showOther
+            <FormInput
+              icon={Home}
+              type="text"
+              placeholder="Village"
+              name="village"
             />
 
             <FormInput

@@ -147,9 +147,7 @@ const HomeLogin = () => {
               <div className="flex flex-col gap-0">
                 <div className="flex items-center justify-center gap-1 font-semibold mt-3 text-sm">
                   <p className="text-gray-600">Don't have any account?</p>
-                  <div className="text-amber-600 underline-offset-4 hover:underline duration-300">
-                    Create account
-                  </div>
+                
                 </div>
 
                 <div className="flex items-center justify-center mt-3">

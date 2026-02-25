@@ -19,68 +19,56 @@ import { IoCloseCircle } from "react-icons/io5";
 import toast from "react-hot-toast";
 import { useRegister } from "../../../api/auth/auth.hook";
 import { api } from "../../../utils/countryApi";
-import CustomSelect from "../../../Components/CustomSelect";
 const InstituteUserForm = () => {
-  const [divisions, setDivisions] = useState([]);
-  const [districts, setDistricts] = useState([]);
-  const [country, setCountry] = useState(null);
-  const [state, setState] = useState(null);
-  const [divisionLoading, setDivisionLoading] = useState(false);
-  const [districtLoading, setDistrictLoading] = useState(false);
+  const [countries, setCountries] = useState([]);
+  const [states, setStates] = useState([]);
+  const [cities, setCities] = useState([]);
 
-  const [division, setDivision] = useState(null);
-  const [district, setDistrict] = useState(null);
+  const [country, setCountry] = useState("");
+  const [state, setState] = useState("");
+  const [city, setCity] = useState("");
 
-  useEffect(() => {
-    if (!state) return;
-
-    const loadDivisions = async () => {
-      try {
-        setDivisionLoading(true);
-        const res = await api.get("/divisions");
-        setDivisions(res?.data?.data || []);
-      } catch (err) {
-        console.log("Failed to load divisions:", err);
-        setDivisions([]);
-      } finally {
-        setDivisionLoading(false);
-      }
-    };
-
-    loadDivisions();
-  }, [state]);
-
-  useEffect(() => {
-    if (!division) return;
-
-    const loadDistricts = async () => {
-      try {
-        setDistrictLoading(true);
-        const res = await api.get(`/division/${division}`);
-        setDistricts(res?.data?.data || []);
-      } catch (err) {
-        console.log("Failed to load districts:", err);
-        setDistricts([]);
-      } finally {
-        setDistrictLoading(false);
-      }
-    };
-
-    loadDistricts();
-  }, [division]);
+  const [singleCountry, setSingleCountry] = useState(null);
+  const [singleState, setSingleState] = useState(null);
+  const [singleCity, setSingleCity] = useState(null);
 
   const [documentType, setdocumentType] = useState(null);
 
-  const [institute, setInstitute] = useState("");
-  const [instituteOptions, setInstituteOptions] = useState([
-    "School",
-    "Office",
-    "Collage",
-  ]);
+  const [instituteType, setInstituteType] = useState(null);
 
-  const handleCreateInstituteType = (newItem) => {
-    setInstituteOptions((prev) => [...prev, newItem]);
-  };
+  useEffect(() => {
+    const loadCountries = async () => {
+      const res = await api.get("/countries");
+      setCountries(res.data);
+    };
+    loadCountries();
+  }, []);
+
+  useEffect(() => {
+    if (!country) return;
+
+    const loadStates = async () => {
+      const res = await api.get(`/countries/${country}/states`);
+      setStates(res.data);
+      setCities([]);
+      setState("");
+    };
+
+    loadStates();
+  }, [country]);
+
+  // Load Cities
+  useEffect(() => {
+    if (!country || !state) return;
+
+    const loadCities = async () => {
+      const res = await api.get(`/countries/${country}/states/${state}/cities`);
+      setCities(res.data);
+      setCity("");
+    };
+
+    loadCities();
+  }, [state, country]);
 
   const [showPassword, setShowPassword] = useState(false);
 
@@ -166,56 +154,16 @@ const InstituteUserForm = () => {
   };
 
   return (
-    <form className="flex flex-col  gap-4" onSubmit={handleSubmit(onSubmit)}>
-      <CustomSelect
-        label="Institute Type"
-        options={instituteOptions}
-        value={institute}
-        onChange={setInstitute}
-        onCreate={handleCreateInstituteType}
-        allowCreate
-        showOther
-      />
-      <FormInput
-        icon={User}
-        type="text"
-        placeholder="Name of the Institute"
-        name="institute"
-        validation={{ required: "Required" }}
-      />
-
+    <form
+      className="grid grid-cols-1 md:grid-cols-2 gap-4"
+      onSubmit={handleSubmit(onSubmit)}
+    >
       <FormInput
         icon={User}
         type="text"
         placeholder="Username"
         name="username"
         validation={{ required: "Required" }}
-      />
-
-      <FormInput
-        icon={User}
-        type="number"
-        placeholder="Number of member"
-        name="number-of-member"
-        validation={{ required: "Required" }}
-      />
-
-      <FormInput
-        icon={User}
-        type="date"
-        placeholder="Date of Birth"
-        name="number-of-member"
-        validation={{ required: "Required" }}
-      />
-
-      <CustomSelect
-        label="Institute Type"
-        options={instituteOptions}
-        value={institute}
-        onChange={setInstitute}
-        onCreate={handleCreateInstituteType}
-        allowCreate
-        showOther
       />
 
       <FormInput
@@ -238,90 +186,200 @@ const InstituteUserForm = () => {
           validation={{ required: "Required" }}
         />
       </div>
-      <div className="w-full flex flex-col gap-2">
-        <h4 className="text-[18px] font-semibold text-gray-500">Address</h4>
-
+      <div className="md:col-span-2 space-y-2">
         {/* Country */}
         <select
-          onChange={(e) => setCountry(e.target.value)}
+          value={country}
+          onChange={(e) => {
+            const selected = countries.find((s) => s.iso2 === e.target.value);
+            setCountry(e.target.value);
+            setsingleCountry(selected);
+          }}
           className="border focus:border-purple-500  border-gray-300 px-2 py-3 rounded w-full  text-gray-600"
         >
           <option value="">Select Country</option>
-
-          <option key={"bangladesh"} value={"bangladesh"}>
-            Bangladesh
-          </option>
+          {countries.map((c) => (
+            <option key={c.iso2} value={c.iso2}>
+              {c.name}
+            </option>
+          ))}
         </select>
 
+        {/* State */}
         {country && (
           <select
-            onChange={(e) => setState(e.target.value)}
-            className="border focus:border-purple-500  border-gray-300 px-2 py-3 rounded w-full  text-gray-600"
+            value={state}
+            onChange={(e) => {
+              const selected = states.find((s) => s.iso2 === e.target.value);
+              setState(e.target.value);
+
+              setSingleState(selected);
+            }}
+            disabled={!country}
+            className="border focus:border-purple-500  border-gray-300 px-2 py-3 p-2 rounded w-full  text-gray-600"
           >
             <option value="">Select State</option>
-
-            <option key={"bangladesh"} value={"bangladesh"}>
-              Bangladesh
-            </option>
+            {states.map((s) => (
+              <option key={s.iso2} value={s.iso2}>
+                {s.name}
+              </option>
+            ))}
           </select>
         )}
 
+        {/* City */}
         {state && (
           <select
-            onChange={(e) => setDivision(e.target.value)}
-            className="border focus:border-purple-500 border-gray-300 px-2 py-3 rounded w-full text-gray-600"
-            disabled={divisionLoading}
+            value={city}
+            onChange={(e) => {
+              const selected = cities.find((s) => s.name === e.target.value);
+              setCity(e.target.value);
+              setSingleCity(selected);
+            }}
+            disabled={!state}
+            className="border focus:border-purple-500  border-gray-300 px-2 py-3 p-2 rounded w-full text-gray-600"
           >
-            <option value="">
-              {divisionLoading ? "Loading divisions..." : "Select Divisions"}
-            </option>
-
-            {!divisionLoading &&
-              divisions?.map((c) => (
-                <option key={c.division} value={c.division}>
-                  {c.division}
-                </option>
-              ))}
+            <option value="">Select City</option>
+            {cities.map((c) => (
+              <option key={c.id} value={c.name}>
+                {c.name}
+              </option>
+            ))}
           </select>
-        )}
-
-        {division && (
-          <select
-            onChange={(e) => setDistrict(e.target.value)}
-            className="border focus:border-purple-500 border-gray-300 px-2 py-3 rounded w-full text-gray-600"
-            disabled={districtLoading}
-          >
-            <option value="">
-              {districtLoading ? "Loading districts..." : "Select Districts"}
-            </option>
-
-            {!districtLoading &&
-              districts.map((c) => (
-                <option key={c.district} value={c.district}>
-                  {c.district}
-                </option>
-              ))}
-          </select>
-        )}
-
-        {district && (
-          <div className="flex flex-col gap-2">
-            <FormInput
-              icon={Home}
-              type="text"
-              placeholder="Village"
-              name="village"
-            />
-
-            <FormInput
-              icon={Home}
-              type="text"
-              placeholder="Location"
-              name="address"
-            />
-          </div>
         )}
       </div>
+      {city && (
+        <div className="md:col-span-2">
+          <FormInput
+            icon={Home}
+            type="text"
+            placeholder="Residential Address"
+            name="address"
+            validation={{ required: "Required" }}
+          />
+        </div>
+      )}
+      <div className="md:col-span-2 flex flex-col gap-2.5">
+        <label className="block text-sm md:text-base font-medium text-gray-600 mb-2">
+          Select Institute Type
+        </label>
+        <div className="flex gap-2.5 flex-wrap items-center">
+          {/* scholl */}
+          <div className="flex items-center gap-2">
+            <label className="switch !text-[10px] lg:!text-xs">
+              <input
+                type="radio"
+                value="school"
+                {...register("instituteType")}
+                className="sr-only"
+                onChange={() => setInstituteType("school")}
+              />
+              <span className="slider"></span>
+            </label>
+            <p className="text-sm lg:text-base">School</p>
+          </div>
+
+          {/* college */}
+          <div className="flex items-center gap-2">
+            <label className="switch !text-[10px] lg:!text-xs">
+              <input
+                type="radio"
+                value="college"
+                {...register("instituteType")}
+                className="sr-only"
+                onChange={() => setInstituteType("college")}
+              />
+              <span className="slider"></span>
+            </label>
+            <p className="text-sm lg:text-base">College</p>
+          </div>
+
+          {/* university */}
+          <div className="flex items-center gap-2">
+            <label className="switch !text-[10px] lg:!text-xs">
+              <input
+                type="radio"
+                value="university"
+                {...register("instituteType")}
+                className="sr-only"
+                onChange={() => setInstituteType("university")}
+              />
+              <span className="slider"></span>
+            </label>
+            <p className="text-sm lg:text-base">University</p>
+          </div>
+        </div>
+      </div>
+
+      {instituteType && (
+        <div className="md:col-span-2 space-y-2">
+          <FormInput
+            icon={BiSolidInstitution}
+            type="text"
+            placeholder="Institute Name"
+            name="institute"
+          />
+        </div>
+      )}
+
+      <div className="md:col-span-2 flex flex-col gap-2.5">
+        <label className="block text-sm md:text-base font-medium text-gray-600 mb-2">
+          Select Document Type
+        </label>
+        <div className="flex gap-2.5 flex-wrap items-center">
+          {/* tin */}
+          <div className="flex items-center gap-2">
+            <label className="switch !text-[10px] lg:!text-xs">
+              <input
+                type="radio"
+                value="tin"
+                {...register("documentType")}
+                className="sr-only"
+                onChange={() => setdocumentType("tin")}
+              />
+              <span className="slider"></span>
+            </label>
+            <p className="text-sm lg:text-base">TIN</p>
+          </div>
+
+          {/* others */}
+          <div className="flex items-center gap-2">
+            <label className="switch !text-[10px] lg:!text-xs">
+              <input
+                type="radio"
+                value="others"
+                {...register("documentType")}
+                className="sr-only"
+                onChange={() => setdocumentType("others")}
+              />
+              <span className="slider"></span>
+            </label>
+            <p className="text-sm lg:text-base">Others</p>
+          </div>
+        </div>
+      </div>
+
+      {documentType === "tin" && (
+        <div className="md:col-span-2 ">
+          <FormInput
+            icon={FaRegIdCard}
+            type="number"
+            placeholder="Tin Number"
+            name="tin"
+          />
+        </div>
+      )}
+
+      {documentType === "others" && (
+        <div className="md:col-span-2 ">
+          <FormInput
+            icon={FaRegIdCard}
+            type="number"
+            placeholder="Others.."
+            name="other"
+          />
+        </div>
+      )}
 
       {/* Password Fields */}
       <div className="relative group">

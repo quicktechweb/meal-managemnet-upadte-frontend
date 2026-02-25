@@ -290,16 +290,7 @@ const UserForm = () => {
 
           {district && (
             <div className="flex flex-col gap-2">
-              <CustomSelect
-                label="Village"
-                options={villageOptions}
-                value={village}
-                onChange={setVillage}
-                onCreate={handleCreateVillage}
-                allowCreate
-                showOther
-              />
-
+              <InputField label="Village" name="village" control={control} />
               <InputField label="Location" name="location" control={control} />
             </div>
           )}

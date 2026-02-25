@@ -55,11 +55,11 @@ const FullAccessRegistration = () => {
             </p>
           </div>
 
-          <div className="relative w-full mb-4">
+          <div className="relative flex items-center justify-center  mb-4">
             {/* Selected */}
             <div
               onClick={() => setOpen(!open)}
-              className="flex items-center justify-between bg-slate-100 border border-slate-200 rounded-xl px-4 py-3 cursor-pointer hover:bg-slate-200 transition"
+              className="flex items-center justify-between bg-slate-100 border border-slate-200 rounded-xl px-4 py-3 cursor-pointer hover:bg-slate-200 transition w-[200px]"
             >
               <span className="font-semibold text-slate-700">
                 {activeOption.label}
@@ -74,7 +74,7 @@ const FullAccessRegistration = () => {
 
             {/* Dropdown */}
             {open && (
-              <div className="absolute w-full mt-2 bg-white border border-slate-200 rounded-xl shadow-lg overflow-hidden z-50">
+              <div className="absolute w-[200px]  bg-white border border-slate-200 top-0 rounded-xl shadow-lg overflow-hidden z-50">
                 {options.map((option) => (
                   <div
                     key={option.path}
