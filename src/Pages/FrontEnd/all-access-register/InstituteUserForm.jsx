@@ -69,8 +69,6 @@ const InstituteUserForm = () => {
     loadDistricts();
   }, [division]);
 
-  const [documentType, setdocumentType] = useState(null);
-
   const [institute, setInstitute] = useState("");
   const [instituteOptions, setInstituteOptions] = useState([
     "School",
@@ -115,9 +113,6 @@ const InstituteUserForm = () => {
 
   const [showPassword, setShowPassword] = useState(false);
 
-  const [instituteImage, setInstituteImage] = useState(null);
-  const [instituteImages, setInstituteImages] = useState(null);
-
   const {
     register,
     handleSubmit,
@@ -161,18 +156,6 @@ const InstituteUserForm = () => {
   };
 
   const password = watch("password");
-
-  const handleInstituteImageChange = (e) => {
-    const files = Array.from(e.target.files);
-    const previewUrls = files.map((file) => URL.createObjectURL(file));
-
-    setInstituteImages(files);
-    setInstituteImage(previewUrls);
-  };
-
-  const handleDelete = (index) => {
-    setInstituteImage((prev) => prev.filter((_, i) => i !== index));
-  };
 
   const FormInput = ({ icon: Icon, type, placeholder, name, validation }) => (
     <div className="space-y-1">
