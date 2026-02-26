@@ -19,62 +19,99 @@ import { IoCloseCircle } from "react-icons/io5";
 import toast from "react-hot-toast";
 import { useRegister } from "../../../api/auth/auth.hook";
 import { api } from "../../../utils/countryApi";
+import CustomSelect from "../../../Components/CustomSelect";
+import DocumentUpload from "../../../Components/DocumentUpload";
 const InstituteUserForm = () => {
-  const [countries, setCountries] = useState([]);
-  const [states, setStates] = useState([]);
-  const [cities, setCities] = useState([]);
-
-  const [country, setCountry] = useState("");
-  const [state, setState] = useState("");
-  const [city, setCity] = useState("");
-
-  const [singleCountry, setSingleCountry] = useState(null);
-  const [singleState, setSingleState] = useState(null);
-  const [singleCity, setSingleCity] = useState(null);
-
-  const [documentType, setdocumentType] = useState(null);
-
-  const [instituteType, setInstituteType] = useState(null);
+  const [divisions, setDivisions] = useState([]);
+  const [districts, setDistricts] = useState([]);
+  const [country, setCountry] = useState(null);
+  const [state, setState] = useState(null);
+  const [divisionLoading, setDivisionLoading] = useState(false);
+  const [districtLoading, setDistrictLoading] = useState(false);
+  const [division, setDivision] = useState(null);
+  const [district, setDistrict] = useState(null);
 
   useEffect(() => {
-    const loadCountries = async () => {
-      const res = await api.get("/countries");
-      setCountries(res.data);
+    if (!state) return;
+
+    const loadDivisions = async () => {
+      try {
+        setDivisionLoading(true);
+        const res = await api.get("/divisions");
+        setDivisions(res?.data?.data || []);
+      } catch (err) {
+        console.log("Failed to load divisions:", err);
+        setDivisions([]);
+      } finally {
+        setDivisionLoading(false);
+      }
     };
-    loadCountries();
-  }, []);
+
+    loadDivisions();
+  }, [state]);
 
   useEffect(() => {
-    if (!country) return;
+    if (!division) return;
 
-    const loadStates = async () => {
-      const res = await api.get(`/countries/${country}/states`);
-      setStates(res.data);
-      setCities([]);
-      setState("");
+    const loadDistricts = async () => {
+      try {
+        setDistrictLoading(true);
+        const res = await api.get(`/division/${division}`);
+        setDistricts(res?.data?.data || []);
+      } catch (err) {
+        console.log("Failed to load districts:", err);
+        setDistricts([]);
+      } finally {
+        setDistrictLoading(false);
+      }
     };
 
-    loadStates();
-  }, [country]);
+    loadDistricts();
+  }, [division]);
 
-  // Load Cities
-  useEffect(() => {
-    if (!country || !state) return;
+  const [institute, setInstitute] = useState("");
+  const [instituteOptions, setInstituteOptions] = useState([
+    "School",
+    "Office",
+    "Collage",
+  ]);
 
-    const loadCities = async () => {
-      const res = await api.get(`/countries/${country}/states/${state}/cities`);
-      setCities(res.data);
-      setCity("");
-    };
+  const handleCreateInstituteType = (newItem) => {
+    setInstituteOptions((prev) => [...prev, newItem]);
+  };
 
-    loadCities();
-  }, [state, country]);
+  const [hall, setHall] = useState("");
+  const [hallOptions, setHallOptions] = useState([
+    "hall 1",
+    "hall 2",
+    "hall 3",
+  ]);
+
+  const [mess, setMess] = useState("");
+  const [messOptions, setMessOptions] = useState([
+    "mess 1",
+    "mess 2",
+    "mess 3",
+  ]);
+
+  const [adminType, setAdminType] = useState("");
+  const [adminTypeOptions, setAdminTypeOptions] = useState([
+    "admin",
+    "authority",
+  ]);
+
+  const handleCreateHall = (newItem) => {
+    setHallOptions((prev) => [...prev, newItem]);
+  };
+  const handleCreateMess = (newItem) => {
+    setMessOptions((prev) => [...prev, newItem]);
+  };
+
+  const handleCreateAdminType = (newItem) => {
+    setAdminTypeOptions((prev) => [...prev, newItem]);
+  };
 
   const [showPassword, setShowPassword] = useState(false);
-
-  const [instituteImage, setInstituteImage] = useState(null);
-
-  const [instituteImages, setInstituteImages] = useState(null);
 
   const {
     register,
@@ -97,9 +134,6 @@ const InstituteUserForm = () => {
     formData.append("occupation", data.occupation);
     formData.append("fatherName", data.fatherName);
     formData.append("motherName", data.motherName);
-    formData.append("country", singleCountry?.name);
-    formData.append("state", singleState?.name);
-    formData.append("city", singleCity?.name);
     formData.append("address", data.address);
     formData.append("websiteAccesstype", "all-access");
     formData.append("userType", selectedUserType);
@@ -141,23 +175,26 @@ const InstituteUserForm = () => {
       )}
     </div>
   );
-  const handleInstituteImageChange = (e) => {
-    const files = Array.from(e.target.files);
-    const previewUrls = files.map((file) => URL.createObjectURL(file));
-
-    setInstituteImages(files);
-    setInstituteImage(previewUrls);
-  };
-
-  const handleDelete = (index) => {
-    setInstituteImage((prev) => prev.filter((_, i) => i !== index));
-  };
 
   return (
-    <form
-      className="grid grid-cols-1 md:grid-cols-2 gap-4"
-      onSubmit={handleSubmit(onSubmit)}
-    >
+    <form className="flex flex-col  gap-4" onSubmit={handleSubmit(onSubmit)}>
+      <CustomSelect
+        label="Institute Type"
+        options={instituteOptions}
+        value={institute}
+        onChange={setInstitute}
+        onCreate={handleCreateInstituteType}
+        allowCreate
+        showOther
+      />
+      <FormInput
+        icon={User}
+        type="text"
+        placeholder="Name of the Institute"
+        name="institute"
+        validation={{ required: "Required" }}
+      />
+
       <FormInput
         icon={User}
         type="text"
@@ -167,17 +204,170 @@ const InstituteUserForm = () => {
       />
 
       <FormInput
-        icon={Mail}
-        type="email"
-        placeholder="Email Address"
-        name="email"
-        validation={{
-          required: "Required",
-          pattern: { value: /^\S+@\S+$/i, message: "Invalid email" },
-        }}
+        icon={User}
+        type="number"
+        placeholder="Number of member"
+        name="number-of-member"
+        validation={{ required: "Required" }}
       />
 
-      <div className="md:col-span-2 space-y-2">
+      <FormInput
+        icon={User}
+        type="date"
+        placeholder="Date of Birth"
+        name="number-of-member"
+        validation={{ required: "Required" }}
+      />
+
+      <CustomSelect
+        label="Name of Hall"
+        options={hallOptions}
+        value={hall}
+        onChange={setHall}
+        onCreate={handleCreateHall}
+        allowCreate
+        showOther
+      />
+
+      <CustomSelect
+        label="Name of Mess"
+        options={messOptions}
+        value={mess}
+        onChange={setMess}
+        onCreate={handleCreateMess}
+        allowCreate
+        showOther
+      />
+
+      <div className="w-full flex flex-col gap-2">
+        <h4 className="text-[18px] font-semibold text-gray-500">
+          Admin / Authority
+        </h4>
+        <CustomSelect
+          label="Type of Admin"
+          options={adminTypeOptions}
+          value={adminType}
+          onChange={setAdminType}
+          onCreate={handleCreateAdminType}
+          allowCreate
+          showOther
+        />
+        <FormInput
+          icon={User}
+          type="text"
+          placeholder="Name of Admin / Authority"
+          name="admin"
+          validation={{
+            required: "Required",
+          }}
+        />
+        <FormInput
+          icon={Phone}
+          type="tel"
+          placeholder="Phone Number"
+          name="institutephone"
+          validation={{ required: "Required" }}
+        />
+      </div>
+
+      <div className="w-full flex flex-col gap-2">
+        <h4 className="text-[18px] font-semibold text-gray-500">Address</h4>
+
+        {/* Country */}
+        <select
+          onChange={(e) => setCountry(e.target.value)}
+          className="border focus:border-purple-500  border-gray-300 px-2 py-3 rounded w-full  text-gray-600"
+        >
+          <option value="">Select Country</option>
+
+          <option key={"bangladesh"} value={"bangladesh"}>
+            Bangladesh
+          </option>
+        </select>
+
+        {country && (
+          <select
+            onChange={(e) => setState(e.target.value)}
+            className="border focus:border-purple-500  border-gray-300 px-2 py-3 rounded w-full  text-gray-600"
+          >
+            <option value="">Select State</option>
+
+            <option key={"bangladesh"} value={"bangladesh"}>
+              Bangladesh
+            </option>
+          </select>
+        )}
+
+        {state && (
+          <select
+            onChange={(e) => setDivision(e.target.value)}
+            className="border focus:border-purple-500 border-gray-300 px-2 py-3 rounded w-full text-gray-600"
+            disabled={divisionLoading}
+          >
+            <option value="">
+              {divisionLoading ? "Loading divisions..." : "Select Divisions"}
+            </option>
+
+            {!divisionLoading &&
+              divisions?.map((c) => (
+                <option key={c.division} value={c.division}>
+                  {c.division}
+                </option>
+              ))}
+          </select>
+        )}
+
+        {division && (
+          <select
+            onChange={(e) => setDistrict(e.target.value)}
+            className="border focus:border-purple-500 border-gray-300 px-2 py-3 rounded w-full text-gray-600"
+            disabled={districtLoading}
+          >
+            <option value="">
+              {districtLoading ? "Loading districts..." : "Select Districts"}
+            </option>
+
+            {!districtLoading &&
+              districts.map((c) => (
+                <option key={c.district} value={c.district}>
+                  {c.district}
+                </option>
+              ))}
+          </select>
+        )}
+
+        {district && (
+          <div className="flex flex-col gap-2">
+            <FormInput
+              icon={Home}
+              type="text"
+              placeholder="Village"
+              name="village"
+            />
+
+            <FormInput
+              icon={Home}
+              type="text"
+              placeholder="Location"
+              name="address"
+            />
+          </div>
+        )}
+      </div>
+
+      <div className="flex flex-col gap-2">
+        <h4 className="text-[18px] font-semibold text-gray-500">Contact</h4>
+        <FormInput
+          icon={Mail}
+          type="email"
+          placeholder="Email Address"
+          name="email"
+          validation={{
+            required: "Required",
+            pattern: { value: /^\S+@\S+$/i, message: "Invalid email" },
+          }}
+        />
+
         <FormInput
           icon={Phone}
           type="tel"
@@ -186,200 +376,11 @@ const InstituteUserForm = () => {
           validation={{ required: "Required" }}
         />
       </div>
-      <div className="md:col-span-2 space-y-2">
-        {/* Country */}
-        <select
-          value={country}
-          onChange={(e) => {
-            const selected = countries.find((s) => s.iso2 === e.target.value);
-            setCountry(e.target.value);
-            setsingleCountry(selected);
-          }}
-          className="border focus:border-purple-500  border-gray-300 px-2 py-3 rounded w-full  text-gray-600"
-        >
-          <option value="">Select Country</option>
-          {countries.map((c) => (
-            <option key={c.iso2} value={c.iso2}>
-              {c.name}
-            </option>
-          ))}
-        </select>
 
-        {/* State */}
-        {country && (
-          <select
-            value={state}
-            onChange={(e) => {
-              const selected = states.find((s) => s.iso2 === e.target.value);
-              setState(e.target.value);
-
-              setSingleState(selected);
-            }}
-            disabled={!country}
-            className="border focus:border-purple-500  border-gray-300 px-2 py-3 p-2 rounded w-full  text-gray-600"
-          >
-            <option value="">Select State</option>
-            {states.map((s) => (
-              <option key={s.iso2} value={s.iso2}>
-                {s.name}
-              </option>
-            ))}
-          </select>
-        )}
-
-        {/* City */}
-        {state && (
-          <select
-            value={city}
-            onChange={(e) => {
-              const selected = cities.find((s) => s.name === e.target.value);
-              setCity(e.target.value);
-              setSingleCity(selected);
-            }}
-            disabled={!state}
-            className="border focus:border-purple-500  border-gray-300 px-2 py-3 p-2 rounded w-full text-gray-600"
-          >
-            <option value="">Select City</option>
-            {cities.map((c) => (
-              <option key={c.id} value={c.name}>
-                {c.name}
-              </option>
-            ))}
-          </select>
-        )}
+      <div className="flex flex-col gap-1">
+        <h4 className="text-[18px] font-semibold text-gray-500">Document</h4>
+        <DocumentUpload />
       </div>
-      {city && (
-        <div className="md:col-span-2">
-          <FormInput
-            icon={Home}
-            type="text"
-            placeholder="Residential Address"
-            name="address"
-            validation={{ required: "Required" }}
-          />
-        </div>
-      )}
-      <div className="md:col-span-2 flex flex-col gap-2.5">
-        <label className="block text-sm md:text-base font-medium text-gray-600 mb-2">
-          Select Institute Type
-        </label>
-        <div className="flex gap-2.5 flex-wrap items-center">
-          {/* scholl */}
-          <div className="flex items-center gap-2">
-            <label className="switch !text-[10px] lg:!text-xs">
-              <input
-                type="radio"
-                value="school"
-                {...register("instituteType")}
-                className="sr-only"
-                onChange={() => setInstituteType("school")}
-              />
-              <span className="slider"></span>
-            </label>
-            <p className="text-sm lg:text-base">School</p>
-          </div>
-
-          {/* college */}
-          <div className="flex items-center gap-2">
-            <label className="switch !text-[10px] lg:!text-xs">
-              <input
-                type="radio"
-                value="college"
-                {...register("instituteType")}
-                className="sr-only"
-                onChange={() => setInstituteType("college")}
-              />
-              <span className="slider"></span>
-            </label>
-            <p className="text-sm lg:text-base">College</p>
-          </div>
-
-          {/* university */}
-          <div className="flex items-center gap-2">
-            <label className="switch !text-[10px] lg:!text-xs">
-              <input
-                type="radio"
-                value="university"
-                {...register("instituteType")}
-                className="sr-only"
-                onChange={() => setInstituteType("university")}
-              />
-              <span className="slider"></span>
-            </label>
-            <p className="text-sm lg:text-base">University</p>
-          </div>
-        </div>
-      </div>
-
-      {instituteType && (
-        <div className="md:col-span-2 space-y-2">
-          <FormInput
-            icon={BiSolidInstitution}
-            type="text"
-            placeholder="Institute Name"
-            name="institute"
-          />
-        </div>
-      )}
-
-      <div className="md:col-span-2 flex flex-col gap-2.5">
-        <label className="block text-sm md:text-base font-medium text-gray-600 mb-2">
-          Select Document Type
-        </label>
-        <div className="flex gap-2.5 flex-wrap items-center">
-          {/* tin */}
-          <div className="flex items-center gap-2">
-            <label className="switch !text-[10px] lg:!text-xs">
-              <input
-                type="radio"
-                value="tin"
-                {...register("documentType")}
-                className="sr-only"
-                onChange={() => setdocumentType("tin")}
-              />
-              <span className="slider"></span>
-            </label>
-            <p className="text-sm lg:text-base">TIN</p>
-          </div>
-
-          {/* others */}
-          <div className="flex items-center gap-2">
-            <label className="switch !text-[10px] lg:!text-xs">
-              <input
-                type="radio"
-                value="others"
-                {...register("documentType")}
-                className="sr-only"
-                onChange={() => setdocumentType("others")}
-              />
-              <span className="slider"></span>
-            </label>
-            <p className="text-sm lg:text-base">Others</p>
-          </div>
-        </div>
-      </div>
-
-      {documentType === "tin" && (
-        <div className="md:col-span-2 ">
-          <FormInput
-            icon={FaRegIdCard}
-            type="number"
-            placeholder="Tin Number"
-            name="tin"
-          />
-        </div>
-      )}
-
-      {documentType === "others" && (
-        <div className="md:col-span-2 ">
-          <FormInput
-            icon={FaRegIdCard}
-            type="number"
-            placeholder="Others.."
-            name="other"
-          />
-        </div>
-      )}
 
       {/* Password Fields */}
       <div className="relative group">
@@ -426,60 +427,12 @@ const InstituteUserForm = () => {
           </p>
         )}
       </div>
-
-      {(documentType === "nid" ||
-        documentType === "tin" ||
-        documentType === "others") && (
-        <div className="lg:col-span-2">
-          <div className="w-full max-w-xl">
-            <label className="block text-sm md:text-base font-medium text-gray-600 mb-2">
-              Upload Your Document
-            </label>
-
-            <div className="relative flex items-center justify-between gap-3 px-4 py-3 border-2 border-dashed border-gray-300 rounded-xl bg-white hover:border-purple-600  transition">
-              <input
-                type="file"
-                id="image"
-                multiple
-                onChange={handleInstituteImageChange}
-                className="absolute inset-0 opacity-0 cursor-pointer"
-              />
-
-              <span className="text-gray-400 text-sm truncate">
-                Choose an image…
-              </span>
-
-              <span className="shrink-0 bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white text-sm px-4 py-1.5 rounded-lg  transition">
-                Browse
-              </span>
-            </div>
-
-            <p className="text-xs text-gray-400 mt-1">PNG, JPG up to 5MB</p>
-          </div>
-
-          {Array.isArray(instituteImage) && (
-            <div className="flex flex-wrap gap-2.5 items-center mt-2">
-              {instituteImage.map((img, index) => (
-                <div className="relative w-20 h-20">
-                  <img
-                    key={index}
-                    src={img}
-                    className="w-full h-full object-cover border border-gray-300 "
-                  />
-                  <button
-                    onClick={() => handleDelete(index)}
-                    type="button"
-                    className="absolute cursor-pointer top-1 left-1 text-red-500"
-                  >
-                    <IoCloseCircle />
-                  </button>
-                </div>
-              ))}
-            </div>
-          )}
-        </div>
-      )}
-
+      <div className="flex items-center  gap-2">
+        <input type="checkbox" />
+        <p className="text-black font-semibold">
+          I confirm that the above information is correct.
+        </p>
+      </div>
       {/* Submit Button */}
       <button
         type="submit"

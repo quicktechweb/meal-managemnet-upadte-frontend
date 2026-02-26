@@ -1,3 +1,4 @@
+import { useCmsData } from "../../../../api/admin/admin.api";
 import WalletProfileCard from "../../../../Components/WaletProfileCard";
 import Bannerparts from "../Bannerparts/Bannerparts";
 import DownloadApp from "../DownloadApp/DownloadApp";
@@ -11,21 +12,27 @@ import RideSharing from "./RideSharing/RideSharing";
 import Testimonial from "./Testimonial/Testimonial";
 
 const Home = () => {
+  const { data, isLoading } = useCmsData();
+
   return (
     <div>
-      <Bannerparts />
+      <Bannerparts bannerData={data?.banner} isLoading={isLoading} />
 
       <HomeLogin />
 
       <WalletProfileCard />
 
-      <Features />
+      <Features
+        chooseusData={data?.chooseUs}
+        chooseImage={data?.chooseImage}
+        isLoading={isLoading}
+      />
       <ProcessSection />
       <MealLanding />
       {/* <LearningManagement /> */}
       <EcommerceLanding />
       {/* <RideSharing /> */}
-      <DownloadApp />
+      <DownloadApp appData={data?.app} isLoading={isLoading} />
       <Testimonial />
 
       {/* <HomeSlider/> */}

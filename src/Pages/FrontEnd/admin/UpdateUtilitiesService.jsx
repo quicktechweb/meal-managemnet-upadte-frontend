@@ -23,6 +23,8 @@ const UpdateUtilitiesService = () => {
 
   const kitchens = data?.data || [];
 
+  console.log(kitchens);
+
   const {
     register,
     handleSubmit,

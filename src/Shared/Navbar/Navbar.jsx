@@ -8,8 +8,11 @@ import useAuth from "../../Hooks/useAuth";
 import { IoMdClose } from "react-icons/io";
 
 import { FaUtensils, FaShoppingBag } from "react-icons/fa";
+import { useGetWebsiteData } from "../../api/admin/admin.api";
 
 export default function Navbar() {
+  const { data } = useGetWebsiteData();
+
   const [scrolled, setScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
@@ -47,6 +50,7 @@ export default function Navbar() {
           location?.pathname === "/menu-details" ||
           location?.pathname === "/login" ||
           location?.pathname === "/privecy-policy" ||
+          location?.pathname.startsWith("/page") ||
           location?.pathname === "/terms-and-conditions"
             ? "fixed top-0  shadow-lg backdrop-blur text-black bg-white"
             : "absolute top-0 bg-transparent text-white"
@@ -56,8 +60,8 @@ export default function Navbar() {
           {/* LOGO */}
           <Link to={"/"} className="font-semibold flex items-center">
             <img
-              src="https://i.ibb.co.com/jj22tMj/Whats-App-Image-2026-01-14-at.png"
-              alt="Appbeats Logo"
+              src={data?.logoUrl}
+              alt={data?.siteName}
               className="h-20 w-[120px] transition-transform duration-300 hover:scale-110"
             />
           </Link>
@@ -84,7 +88,7 @@ export default function Navbar() {
             )}
 
             {user ? (
-              <div className="flex items-center gap-3 text-white px-4 py-2 rounded-xl shadow-sm hover:shadow-md transition">
+              <div className="flex items-center gap-3  px-4 py-2 rounded-xl shadow-sm hover:shadow-md transition">
                 {/* Avatar */}
                 <img
                   src={
@@ -97,10 +101,8 @@ export default function Navbar() {
 
                 {/* User Info */}
                 <div className="leading-tight">
-                  <h4 className="text-sm font-semibold text-white">
-                    {user?.user?.name}
-                  </h4>
-                  <p className="text-xs text-white">@{user?.user?.username}</p>
+                  <h4 className="text-sm font-semibold ">{user?.user?.name}</h4>
+                  <p className="text-xs ">@{user?.user?.username}</p>
                 </div>
               </div>
             ) : (

@@ -6,8 +6,6 @@ import Stepper from "./Stepper";
 import MealScheduleTable from "../MealTable";
 import useStep from "../../Hooks/useStep";
 import { api } from "../../utils/countryApi";
-import CustomSelect from "../CustomSelect";
-import DocumentUpload from "../DocumentUpload";
 
 const utilitybillalabadanservice = [
   {
@@ -60,66 +58,51 @@ const utilitybilluserservice = [
 ];
 
 const MessForm = () => {
-  const [divisions, setDivisions] = useState([]);
-  const [districts, setDistricts] = useState([]);
-  const [country, setCountry] = useState(null);
-  const [state, setState] = useState(null);
-  const [divisionLoading, setDivisionLoading] = useState(false);
-  const [districtLoading, setDistrictLoading] = useState(false);
+  const [countries, setCountries] = useState([]);
+  const [states, setStates] = useState([]);
+  const [cities, setCities] = useState([]);
 
-  const [division, setDivision] = useState(null);
-  const [district, setDistrict] = useState(null);
+  const [country, setCountry] = useState("");
+  const [state, setState] = useState("");
+  const [city, setCity] = useState("");
 
   useEffect(() => {
-    if (!state) return;
-
-    const loadDivisions = async () => {
-      try {
-        setDivisionLoading(true);
-        const res = await api.get("/divisions");
-        setDivisions(res?.data?.data || []);
-      } catch (err) {
-        console.log("Failed to load divisions:", err);
-        setDivisions([]);
-      } finally {
-        setDivisionLoading(false);
-      }
+    const loadCountries = async () => {
+      const res = await api.get("/countries");
+      setCountries(res.data);
     };
-
-    loadDivisions();
-  }, [state]);
+    loadCountries();
+  }, []);
 
   useEffect(() => {
-    if (!division) return;
+    if (!country) return;
 
-    const loadDistricts = async () => {
-      try {
-        setDistrictLoading(true);
-        const res = await api.get(`/division/${division}`);
-        setDistricts(res?.data?.data || []);
-      } catch (err) {
-        console.log("Failed to load districts:", err);
-        setDistricts([]);
-      } finally {
-        setDistrictLoading(false);
-      }
+    const loadStates = async () => {
+      const res = await api.get(`/countries/${country}/states`);
+      setStates(res.data);
+      setCities([]);
+      setState("");
     };
 
-    loadDistricts();
-  }, [division]);
+    loadStates();
+  }, [country]);
+
+  // Load Cities
+  useEffect(() => {
+    if (!country || !state) return;
+
+    const loadCities = async () => {
+      const res = await api.get(`/countries/${country}/states/${state}/cities`);
+      setCities(res.data);
+      setCity("");
+    };
+
+    loadCities();
+  }, [state, country]);
 
   const { step, setStep } = useStep();
-  const {
-    register,
-    handleSubmit,
-    trigger,
-    watch,
-    formState: { errors },
-  } = useForm();
   const [passwordShow, setPasswordShow] = useState(false);
-  const [confirmPasswordShow, setConfirmPasswordShow] = useState(false);
 
-  const passwordValue = watch("password");
   const [utilityElectricityBill, setUtilityElectricityBill] = useState(null);
   const [utilityStaffBill, setUtilityStaffBill] = useState(null);
   const [utilityGasBill, setUtilityGassBill] = useState(null);
@@ -133,6 +116,13 @@ const MessForm = () => {
 
   const [studentService, setStudentService] = useState(false);
 
+  const {
+    register,
+    handleSubmit,
+    trigger,
+    watch,
+    formState: { errors },
+  } = useForm();
   const navigate = useNavigate();
 
   const nextStep = async () => {
@@ -147,6 +137,10 @@ const MessForm = () => {
       navigate("/dashboard/mealmanagement");
     }
     console.log("FORM DATA", data);
+  };
+
+  const handleStudent = () => {
+    setStudentService(true);
   };
 
   const handleUtilityBill = (bill) => {
@@ -177,38 +171,6 @@ const MessForm = () => {
     }
   };
 
-  const [institute, setInstitute] = useState("");
-  const [instituteOptions, setInstituteOptions] = useState([
-    "School",
-    "Office",
-    "Collage",
-  ]);
-
-  const handleCreateInstituteType = (newItem) => {
-    setInstituteOptions((prev) => [...prev, newItem]);
-  };
-
-  const [hall, setHall] = useState("");
-  const [hallOptions, setHallOptions] = useState([
-    "hall 1",
-    "hall 2",
-    "hall 3",
-  ]);
-
-  const [mess, setMess] = useState("");
-  const [messOptions, setMessOptions] = useState([
-    "mess 1",
-    "mess 2",
-    "mess 3",
-  ]);
-
-  const handleCreateHall = (newItem) => {
-    setHallOptions((prev) => [...prev, newItem]);
-  };
-  const handleCreateMess = (newItem) => {
-    setMessOptions((prev) => [...prev, newItem]);
-  };
-
   return (
     <form
       onSubmit={handleSubmit(onSubmit)}
@@ -219,24 +181,6 @@ const MessForm = () => {
       {/* ================= STEP 1 ================= */}
       {step === 1 && (
         <>
-          <CustomSelect
-            label="Institute Type"
-            options={instituteOptions}
-            value={institute}
-            onChange={setInstitute}
-            onCreate={handleCreateInstituteType}
-            allowCreate
-            showOther
-          />
-
-          <FloatingInput
-            label="Name Of the Institute"
-            error={errors.institute_name}
-            {...register("institute_name", {
-              required: "Institute Name required",
-            })}
-          />
-
           <FloatingInput
             label="Username"
             error={errors.username}
@@ -244,195 +188,143 @@ const MessForm = () => {
           />
 
           <FloatingInput
-            label="Number of Member"
-            error={errors.number_of_member}
-            {...register("number_of_member", {
-              required: "Number Of Member required",
-            })}
+            label="Email"
+            type="email"
+            error={errors.email}
+            {...register("email", { required: "Email required" })}
           />
-          <CustomSelect
-            label="Name of Hall"
-            options={hallOptions}
-            value={hall}
-            onChange={setHall}
-            onCreate={handleCreateHall}
-            allowCreate
-            showOther
-          />
-
-          <CustomSelect
-            label="Name of Mess"
-            options={messOptions}
-            value={mess}
-            onChange={setMess}
-            onCreate={handleCreateMess}
-            allowCreate
-            showOther
-          />
-
-          <div className="w-full flex flex-col gap-2">
-            <h4 className="text-[18px] font-semibold text-gray-500">Address</h4>
-
-            {/* Country */}
-            <select
-              onChange={(e) => setCountry(e.target.value)}
-              className="border focus:border-purple-500  border-gray-300 px-2 py-2 rounded w-full  text-gray-600"
-            >
-              <option value="">Select Country</option>
-
-              <option key={"bangladesh"} value={"bangladesh"}>
-                Bangladesh
-              </option>
-            </select>
-
-            {country && (
-              <select
-                onChange={(e) => setState(e.target.value)}
-                className="border focus:border-purple-500  border-gray-300 px-2 py-3 rounded w-full  text-gray-600"
-              >
-                <option value="">Select State</option>
-
-                <option key={"bangladesh"} value={"bangladesh"}>
-                  Bangladesh
-                </option>
-              </select>
-            )}
-
-            {state && (
-              <select
-                onChange={(e) => setDivision(e.target.value)}
-                className="border focus:border-purple-500 border-gray-300 px-2 py-3 rounded w-full text-gray-600"
-                disabled={divisionLoading}
-              >
-                <option value="">
-                  {divisionLoading
-                    ? "Loading divisions..."
-                    : "Select Divisions"}
-                </option>
-
-                {!divisionLoading &&
-                  divisions?.map((c) => (
-                    <option key={c.division} value={c.division}>
-                      {c.division}
-                    </option>
-                  ))}
-              </select>
-            )}
-
-            {division && (
-              <select
-                onChange={(e) => setDistrict(e.target.value)}
-                className="border focus:border-purple-500 border-gray-300 px-2 py-3 rounded w-full text-gray-600"
-                disabled={districtLoading}
-              >
-                <option value="">
-                  {districtLoading
-                    ? "Loading districts..."
-                    : "Select Districts"}
-                </option>
-
-                {!districtLoading &&
-                  districts.map((c) => (
-                    <option key={c.district} value={c.district}>
-                      {c.district}
-                    </option>
-                  ))}
-              </select>
-            )}
-
-            {district && (
-              <div className="flex flex-col gap-2">
-                <FloatingInput
-                  label="Village"
-                  {...register("village", { required: "Village required" })}
-                  error={errors.phone}
-                />
-                <FloatingInput
-                  label="Location"
-                  {...register("location", { required: "location required" })}
-                  error={errors.phone}
-                />
-              </div>
-            )}
-          </div>
-
-          <div className="w-full flex flex-col gap-2">
-            <h4 className="text-[18px] font-semibold text-gray-500">Contact</h4>
-            <FloatingInput
-              label="Email"
-              type="email"
-              error={errors.email}
-              {...register("email", { required: "Email required" })}
-            />
-
-            <FloatingInput
-              label="Phone Number"
-              {...register("phone", { required: "Phone required" })}
-              error={errors.phone}
-            />
-          </div>
-
-          <div className="flex flex-col gap-1">
-            <h4 className="text-[18px] font-semibold text-gray-500">
-              Document
-            </h4>
-            <DocumentUpload />
-          </div>
 
           {/* Password */}
-          <div className="flex flex-col gap-2">
-            <div className="relative w-full ">
-              <input
-                type={passwordShow ? "text" : "password"}
-                placeholder=" "
-                {...register("password", {
-                  required: "Password required",
-                  minLength: { value: 6, message: "Minimum 6 characters" },
-                })}
-                className="peer w-full border border-gray-300 rounded-md px-3 h-[40px]"
-              />
-              <FloatingLabel text="Password" />
-              <div
-                onClick={() => setPasswordShow(!passwordShow)}
-                className="absolute right-3 top-1/2 -translate-y-1/2 cursor-pointer text-gray-600"
-              >
-                {passwordShow ? <IoMdEyeOff /> : <IoMdEye />}
-              </div>
-              {errors.password && (
-                <p className="text-red-500 text-sm mt-1">
-                  {errors.password.message}
-                </p>
-              )}
+          <div className="relative w-full">
+            <input
+              type={passwordShow ? "text" : "password"}
+              placeholder=" "
+              {...register("password", {
+                required: "Password required",
+                minLength: 6,
+              })}
+              className="peer w-full border border-gray-300 rounded-md px-3 h-[50px]"
+            />
+            <FloatingLabel text="Password" />
+            <div
+              onClick={() => setPasswordShow(!passwordShow)}
+              className="absolute right-4 top-1/2 -translate-y-1/2 cursor-pointer"
+            >
+              {passwordShow ? <IoMdEyeOff /> : <IoMdEye />}
             </div>
-
-            {/* Confirm Password */}
-            <div className="relative w-full">
-              <input
-                type={confirmPasswordShow ? "text" : "password"}
-                placeholder=" "
-                {...register("confirm_password", {
-                  required: "Confirm Password required",
-                  minLength: { value: 6, message: "Minimum 6 characters" },
-                  validate: (value) =>
-                    value === passwordValue || "Passwords do not match",
-                })}
-                className="peer w-full border border-gray-300 rounded-md px-3 h-[40px]"
-              />
-              <FloatingLabel text="Confirm Password" />
-              <div
-                onClick={() => setConfirmPasswordShow(!confirmPasswordShow)}
-                className="absolute right-3 top-1/2 -translate-y-1/2 cursor-pointer text-gray-600"
-              >
-                {confirmPasswordShow ? <IoMdEyeOff /> : <IoMdEye />}
-              </div>
-              {errors.confirm_password && (
-                <p className="text-red-500 text-sm mt-1">
-                  {errors.confirm_password.message}
-                </p>
-              )}
-            </div>
+            {errors.password && (
+              <p className="text-red-500 text-sm mt-1">
+                {errors.password.message}
+              </p>
+            )}
           </div>
 
+          <FloatingInput
+            label="Phone Number"
+            {...register("phone", { required: "Phone required" })}
+            error={errors.phone}
+          />
+
+          <div className="md:col-span-2 space-y-2">
+            {/* Country */}
+            <select
+              value={country}
+              onChange={(e) => setCountry(e.target.value)}
+              className="border focus:border-purple-500  border-gray-300 px-2 py-3 rounded w-full  text-gray-600"
+            >
+              <option value="">Select Country</option>
+              {countries.map((c) => (
+                <option key={c.iso2} value={c.iso2}>
+                  {c.name}
+                </option>
+              ))}
+            </select>
+
+            {/* State */}
+            {country && (
+              <select
+                value={state}
+                onChange={(e) => setState(e.target.value)}
+                disabled={!country}
+                className="border focus:border-purple-500  border-gray-300 px-2 py-3 p-2 rounded w-full  text-gray-600"
+              >
+                <option value="">Select State</option>
+                {states.map((s) => (
+                  <option key={s.iso2} value={s.iso2}>
+                    {s.name}
+                  </option>
+                ))}
+              </select>
+            )}
+
+            {/* City */}
+            {state && (
+              <select
+                value={city}
+                onChange={(e) => setCity(e.target.value)}
+                disabled={!state}
+                className="border focus:border-purple-500  border-gray-300 px-2 py-3 p-2 rounded w-full text-gray-600"
+              >
+                <option value="">Select City</option>
+                {cities.map((c) => (
+                  <option key={c.id} value={c.name}>
+                    {c.name}
+                  </option>
+                ))}
+              </select>
+            )}
+          </div>
+          {country && state && city && (
+            <FloatingInput label="Address" {...register("address")} />
+          )}
+
+          <FloatingInput
+            label="Name of the Institute"
+            {...register("institute", { required: "Institute required" })}
+            error={errors.phone}
+          />
+          <FloatingInput
+            label="Total Number of Member In Your Institute"
+            {...register("institute_member", {
+              required: "Institute Member required",
+            })}
+            error={errors.institute_member}
+          />
+          <FloatingInput
+            label="Name of the Hall / Hostel"
+            {...register("hall", { required: "hall / hostel   required" })}
+            error={errors.hall}
+          />
+
+          <FloatingInput
+            label="Name of the Mess"
+            {...register("hall", { required: "mess  required" })}
+            error={errors.mess}
+          />
+
+          <div className="w-full max-w-xl">
+            <label className="block text-sm md:text-base font-medium text-gray-600 mb-2">
+              Upload Institute Documents
+            </label>
+
+            <div className="relative flex items-center justify-between gap-3 px-4 py-3 border-2 border-dashed border-gray-300 rounded-xl bg-white hover:border-orange-500 transition">
+              <input
+                type="file"
+                id="image"
+                className="absolute inset-0 opacity-0 cursor-pointer"
+              />
+
+              <span className="text-gray-400 text-sm truncate">
+                Choose an image…
+              </span>
+
+              <span className="shrink-0 bg-orange-600 text-white text-sm px-4 py-1.5 rounded-lg hover:bg-orange-700 transition">
+                Browse
+              </span>
+            </div>
+
+            <p className="text-xs text-gray-400 mt-1">PNG, JPG up to 5MB</p>
+          </div>
           <button
             type="button"
             onClick={nextStep}
@@ -662,15 +554,11 @@ const MessForm = () => {
           </div>
         </>
       )}
-      <div className="flex flex-col mb-4 gap-2 items-center justify-center">
-        <p className="text-center  text-gray-600 font-medium">
-          Already have an account?{" "}
-        </p>
-        <Link
-          className=" w-[150px] inline-block text-center bg-orange-500 px-4 text-white py-1 rounded-2xl font-bold transition-all active:scale-[0.98] cursor-pointer"
-          to="/#login"
-        >
-          Sign In
+
+      <div className="text-sm flex gap-2 pb-3">
+        <p>Already have an account?</p>
+        <Link to="/auth/login" className="text-blue-600 font-semibold">
+          Login
         </Link>
       </div>
     </form>
@@ -686,7 +574,7 @@ const FloatingInput = React.forwardRef(
         type={type}
         placeholder=" "
         {...rest}
-        className="peer w-full border border-gray-300 rounded-md px-3 h-[40px]"
+        className="peer w-full border border-gray-300 rounded-md px-3 h-[50px]"
       />
       <FloatingLabel text={label} />
       {error && <p className="text-red-500 text-sm mt-1">{error.message}</p>}
@@ -696,7 +584,7 @@ const FloatingInput = React.forwardRef(
 const FloatingLabel = ({ text }) => (
   <label
     className="absolute left-3 bg-white px-1 text-gray-500 transition-all
-      top-1/2 -translate-y-1/2 text-sm md:text-base
+      top-1/2 -translate-y-1/2 text-sm md:text-lg
       peer-focus:top-1 peer-focus:text-xs peer-focus:text-black
       peer-not-placeholder-shown:top-1 peer-not-placeholder-shown:text-xs
       pointer-events-none"

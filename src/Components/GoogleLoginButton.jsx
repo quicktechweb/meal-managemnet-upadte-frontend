@@ -36,7 +36,7 @@ const GoogleLoginButton = () => {
   return (
     <button
       onClick={handleGoogleLogin}
-      className="bg-white text-black flex items-center justify-center gap-2 rounded-2xl shadow px-4 py-2 font-semibold cursor-pointer"
+      className=" text-black flex items-center justify-center gap-1 font-semibold cursor-pointer"
     >
       <FcGoogle /> Login with Google
     </button>

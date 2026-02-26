@@ -24,3 +24,29 @@ createRoot(document.getElementById("root")).render(
     </AuthProvider>
   </QueryClientProvider>,
 );
+
+const fetchSiteSettings = async () => {
+  try {
+    const res = await fetch(`${import.meta.env.VITE_SITE_URL}/api/settings`);
+    const formattedData = await res.json();
+
+    if (formattedData?.data) {
+      const { faviconUrl, siteName } = formattedData.data;
+
+      // Update favicon
+      const link =
+        document.querySelector("link[rel~='icon']") ||
+        document.createElement("link");
+      link.rel = "icon";
+      link.href = faviconUrl;
+      document.head.appendChild(link);
+
+      // Update title
+      document.title = siteName;
+    }
+  } catch (err) {
+    console.error("Error fetching site settings:", err);
+  }
+};
+
+fetchSiteSettings();
