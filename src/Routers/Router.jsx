@@ -61,6 +61,18 @@ import AddChooseUsBanner from "../Pages/FrontEnd/admin/AddChooseUsBanner";
 import UpdateChooseUsBanner from "../Pages/FrontEnd/admin/UpdateChooseUsBanner";
 import AddChooseUsList from "../Pages/FrontEnd/admin/AddChooseUsList";
 import Pages from "../Pages/FrontEnd/admin/Pages";
+import AddPage from "../Pages/FrontEnd/admin/AddPage";
+import UpdatePage from "../Pages/FrontEnd/admin/UpdatePage";
+import AppSection from "../Pages/FrontEnd/admin/AppSection";
+import AddAppSection from "../Pages/FrontEnd/admin/AddAppSection";
+import UpdateAppSection from "../Pages/FrontEnd/admin/UpdateAppSection";
+import FaqAdmin from "../Pages/FrontEnd/admin/FaqAdmin";
+import AddFaq from "../Pages/FrontEnd/admin/AddFaq";
+import UpdateFaq from "../Pages/FrontEnd/admin/UpdateFaq";
+import DynamicPage from "../Pages/FrontEnd/dynamicpage/DynamicPage";
+import WebsiteSettings from "../Pages/FrontEnd/admin/WebsiteSettings";
+import SelectRecovery from "../Auth/ForgotPassword/SelectRecovery";
+import NewPassword from "../Auth/ForgotPassword/NewPassword";
 
 const router = createBrowserRouter([
   {
@@ -123,6 +135,10 @@ const router = createBrowserRouter([
         path: "/terms-and-conditions",
         element: <TermAndCondition />,
       },
+      {
+        path: "/page/:slug",
+        element: <DynamicPage />,
+      },
     ],
   },
   {
@@ -150,6 +166,14 @@ const router = createBrowserRouter([
       {
         path: "forget-password",
         element: <ForgotPassword />,
+      },
+      {
+        path: "select-recovery",
+        element: <SelectRecovery />,
+      },
+      {
+        path: "new-password",
+        element: <NewPassword />,
       },
       {
         path: "register",
@@ -369,6 +393,42 @@ const router = createBrowserRouter([
       {
         path: "/admin/dashboard/pages",
         element: <Pages />,
+      },
+      {
+        path: "/admin/dashboard/add-page",
+        element: <AddPage />,
+      },
+      {
+        path: "/admin/dashboard/update-page/:id",
+        element: <UpdatePage />,
+      },
+      {
+        path: "/admin/dashboard/app-section",
+        element: <AppSection />,
+      },
+      {
+        path: "/admin/dashboard/add-app-section",
+        element: <AddAppSection />,
+      },
+      {
+        path: "/admin/dashboard/update-app-section/:id",
+        element: <UpdateAppSection />,
+      },
+      {
+        path: "/admin/dashboard/faq",
+        element: <FaqAdmin />,
+      },
+      {
+        path: "/admin/dashboard/add-faq",
+        element: <AddFaq />,
+      },
+      {
+        path: "/admin/dashboard/update-faq/:id",
+        element: <UpdateFaq />,
+      },
+      {
+        path: "/admin/dashboard/website-settings",
+        element: <WebsiteSettings />,
       },
     ],
   },

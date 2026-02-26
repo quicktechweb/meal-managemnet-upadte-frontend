@@ -1,8 +1,37 @@
-import React from "react";
+import { ChevronDown } from "lucide-react";
+import React, { useState } from "react";
 
-import { Link, NavLink, Outlet } from "react-router-dom";
+import {
+  Link,
+  NavLink,
+  Outlet,
+  useLocation,
+  useNavigate,
+} from "react-router-dom";
 
 const FullAccessRegistration = () => {
+  const navigate = useNavigate();
+  const location = useLocation();
+  const [open, setOpen] = useState(false);
+
+  const options = [
+    {
+      label: "As User",
+      path: "/auth/all-access-register/normal-user",
+    },
+    {
+      label: "As Institute",
+      path: "/auth/all-access-register/institute",
+    },
+  ];
+
+  const activeOption =
+    options.find((opt) => location.pathname.includes(opt.path)) || options[0];
+
+  const handleSelect = (option) => {
+    navigate(option.path);
+    setOpen(false);
+  };
   return (
     <div className="min-h-screen bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-purple-100 via-slate-50 to-blue-100 flex items-center justify-center p-6">
       <div className="bg-white/80 backdrop-blur-xl rounded-[2.5rem] shadow-[0_20px_50px_rgba(0,0,0,0.1)] flex flex-col max-w-2xl w-full overflow-hidden border border-white">
@@ -26,40 +55,58 @@ const FullAccessRegistration = () => {
             </p>
           </div>
 
-          <div className="flex w-full bg-slate-100 rounded-2xl p-1.5 mb-5 border border-slate-200">
-            <NavLink
-              to="/auth/all-access-register/normal-user"
-              className={({ isActive }) =>
-                `w-1/2 py-3.5 rounded-xl text-sm font-bold transition-all duration-300 text-center
-                ${isActive ? "bg-gradient-to-r from-purple-600 to-blue-600 text-white shadow-lg shadow-orange-200" : "text-slate-500 hover:bg-slate-200/50"}`
-              }
+          <div className="relative flex items-center justify-center  mb-4">
+            {/* Selected */}
+            <div
+              onClick={() => setOpen(!open)}
+              className="flex items-center justify-between bg-slate-100 border border-slate-200 rounded-xl px-4 py-3 cursor-pointer hover:bg-slate-200 transition w-[200px]"
             >
-              As User
-            </NavLink>
+              <span className="font-semibold text-slate-700">
+                {activeOption.label}
+              </span>
+              <ChevronDown
+                className={`transition-transform duration-300 ${
+                  open ? "rotate-180" : ""
+                }`}
+                size={18}
+              />
+            </div>
 
-            <NavLink
-              to="/auth/all-access-register/institute"
-              className={({ isActive }) =>
-                `w-1/2 py-3.5 rounded-xl text-sm font-bold transition-all duration-300 text-center
-                ${isActive ? "bg-gradient-to-r from-purple-600 to-blue-600 text-white shadow-lg shadow-orange-200" : "text-slate-500 hover:bg-slate-200/50"}`
-              }
-            >
-              As Institute
-            </NavLink>
+            {/* Dropdown */}
+            {open && (
+              <div className="absolute w-[200px]  bg-white border border-slate-200 top-0 rounded-xl shadow-lg overflow-hidden z-50">
+                {options.map((option) => (
+                  <div
+                    key={option.path}
+                    onClick={() => handleSelect(option)}
+                    className={`px-4 py-3 cursor-pointer text-sm font-medium transition 
+              ${
+                location.pathname === option.path
+                  ? "bg-gradient-to-r from-purple-600 to-blue-600 text-white"
+                  : "hover:bg-slate-100 text-slate-600"
+              }`}
+                  >
+                    {option.label}
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
 
           {/* Form */}
           <Outlet />
 
-          <p className="text-center mt-4 text-gray-600 font-medium">
-            Already have an account?{" "}
+          <div className="flex flex-col gap-2 items-center justify-center">
+            <p className="text-center mt-4 text-gray-600 font-medium">
+              Already have an account?{" "}
+            </p>
             <Link
-              className="text-purple-600 hover:text-purple-700 font-bold underline decoration-2 underline-offset-4"
+              className=" w-[150px] inline-block text-center bg-[#3170A6] px-4 text-white py-1 rounded-2xl font-bold transition-all active:scale-[0.98] cursor-pointer"
               to="/#login"
             >
               Sign In
             </Link>
-          </p>
+          </div>
         </div>
       </div>
     </div>

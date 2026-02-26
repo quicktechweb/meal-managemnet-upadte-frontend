@@ -1,35 +1,51 @@
 import toast from "react-hot-toast";
 import {
+  addAppDataSectionFunction,
   addbannerFunction,
   addchooseusBannerFunction,
   addChooseusListsFunction,
+  AddFaqFunction,
   addfeatureFunction,
   addLiveKitchenVideoFunction,
   addnoticeFunction,
+  addPageFunction,
   addscheduleFunction,
   addutilitiesFunction,
   bannerListFunction,
   chooseusBannerFunction,
   chooseusListsFunction,
+  createWebsiteSetting,
+  deleteAppDataSectionFunction,
   deletebannerFunction,
   deleteChooseusBannerFunction,
   deleteChooseusListsFunction,
+  deleteFaqFunction,
   deletefeatureFunction,
   deleteKitchenVideoFunction,
   deleteNoticeFunction,
+  deletePageFunction,
   deleteScheduleFunction,
   deleteutilitiesFunction,
+  getAllAppFunction,
+  getAllCms,
+  getAllFaqFunction,
   getallfeaturefunction,
   getAllKitchenFunction,
   getAllLiveKitchen,
   getAllNotices,
+  getAllPageFunction,
   getallschedulefunction,
   getAllServiceFunction,
   getallutilitiesfunction,
+  getWebsiteSetting,
+  singlePageFunction,
+  updateAppDataSectionFunction,
   updateBannerFunction,
   updateChooseusBannerFunction,
+  UpdateFaqFunction,
   updateFeatureFunction,
   updatenoticeFunction,
+  updatePageFunction,
   updateScheduleFunction,
   updateUtilitiesFunction,
 } from "./admin.hook";
@@ -460,6 +476,217 @@ export const useDeleteChooseusList = () => {
     onSuccess: (data) => {
       toast.success(data?.message);
       query.invalidateQueries(["get-all-choose-lists"]);
+    },
+    onError: (err) => {
+      toast.error(err?.response?.data?.message);
+    },
+  });
+};
+
+export const useAllPage = () => {
+  return useQuery({
+    queryKey: ["all-page"],
+    queryFn: getAllPageFunction,
+    retry: false,
+  });
+};
+
+export const useAddPage = () => {
+  const query = useQueryClient();
+  const navigate = useNavigate();
+  return useMutation({
+    mutationKey: ["add-page"],
+    mutationFn: (payload) => addPageFunction(payload),
+    onSuccess: (data) => {
+      toast.success(data?.message);
+      query.invalidateQueries(["all-page"]);
+      navigate("/admin/dashboard/pages");
+    },
+    onError: (err) => {
+      toast.error(err?.response?.data?.message);
+    },
+  });
+};
+
+export const useDeletePage = () => {
+  const query = useQueryClient();
+
+  return useMutation({
+    mutationKey: ["delete-page"],
+    mutationFn: (id) => deletePageFunction(id),
+    onSuccess: (data) => {
+      toast.success(data?.message);
+      query.invalidateQueries(["all-pages"]);
+    },
+    onError: (err) => {
+      toast.error(err?.response?.data?.message);
+    },
+  });
+};
+
+export const useUpdatePage = () => {
+  const query = useQueryClient();
+  const navigate = useNavigate();
+  return useMutation({
+    mutationKey: ["update-page"],
+    mutationFn: updatePageFunction,
+    onSuccess: (data) => {
+      if (data?.success) {
+        toast.success(data?.message);
+        query.invalidateQueries(["all-pages"]);
+        navigate("/admin/dashboard/pages");
+      }
+    },
+  });
+};
+
+export const useSingleDynamicPage = (slug) => {
+  return useQuery({
+    queryKey: ["single-page", slug],
+    retry: false,
+    enabled: !!slug,
+    queryFn: () => singlePageFunction(slug),
+  });
+};
+
+export const useAllAppData = () => {
+  return useQuery({
+    queryKey: ["all-app"],
+    queryFn: getAllAppFunction,
+    retry: false,
+  });
+};
+
+export const useCreateAppData = () => {
+  const query = useQueryClient();
+  const navigate = useNavigate();
+  return useMutation({
+    mutationKey: ["create-app"],
+    mutationFn: (payload) => addAppDataSectionFunction(payload),
+    onSuccess: (data) => {
+      toast.success(data?.message);
+      query.invalidateQueries(["all-app"]);
+      navigate("/admin/dashboard/app-section");
+    },
+    onError: (err) => {
+      toast.error(err?.response?.data?.message);
+    },
+  });
+};
+
+export const useUpdateAppData = () => {
+  const query = useQueryClient();
+  const navigate = useNavigate();
+  return useMutation({
+    mutationKey: ["update-app-data"],
+    mutationFn: updateAppDataSectionFunction,
+    onSuccess: (data) => {
+      if (data?.success) {
+        toast.success(data?.message);
+        query.invalidateQueries(["all-app"]);
+        navigate("/admin/dashboard/app-section");
+      }
+    },
+  });
+};
+
+export const useDeleteAppSection = () => {
+  const query = useQueryClient();
+
+  return useMutation({
+    mutationKey: ["delete-app-section"],
+    mutationFn: (id) => deleteAppDataSectionFunction(id),
+    onSuccess: (data) => {
+      toast.success(data?.message);
+      query.invalidateQueries(["all-app"]);
+    },
+    onError: (err) => {
+      toast.error(err?.response?.data?.message);
+    },
+  });
+};
+
+export const useGetAllFaq = () => {
+  return useQuery({
+    queryKey: ["all-faq"],
+    queryFn: getAllFaqFunction,
+    retry: false,
+  });
+};
+
+export const useDeleteFaq = () => {
+  const query = useQueryClient();
+
+  return useMutation({
+    mutationKey: ["delete-faq"],
+    mutationFn: (id) => deleteFaqFunction(id),
+    onSuccess: (data) => {
+      toast.success(data?.message);
+      query.invalidateQueries(["all-faq"]);
+    },
+    onError: (err) => {
+      toast.error(err?.response?.data?.message);
+    },
+  });
+};
+
+export const useCreateFaqData = () => {
+  const query = useQueryClient();
+  const navigate = useNavigate();
+  return useMutation({
+    mutationKey: ["create-faq"],
+    mutationFn: (payload) => AddFaqFunction(payload),
+    onSuccess: (data) => {
+      toast.success(data?.message);
+      query.invalidateQueries(["all-faq"]);
+      navigate("/admin/dashboard/faq");
+    },
+    onError: (err) => {
+      toast.error(err?.response?.data?.message);
+    },
+  });
+};
+
+export const useUpdateFaqData = () => {
+  const query = useQueryClient();
+  const navigate = useNavigate();
+  return useMutation({
+    mutationKey: ["update-faq-data"],
+    mutationFn: UpdateFaqFunction,
+    onSuccess: (data) => {
+      if (data?.success) {
+        toast.success(data?.message);
+        query.invalidateQueries(["all-faq"]);
+        navigate("/admin/dashboard/faq");
+      }
+    },
+  });
+};
+
+export const useCmsData = () => {
+  return useQuery({
+    queryKey: ["cms"],
+    queryFn: getAllCms,
+    retry: false,
+  });
+};
+
+export const useGetWebsiteData = () => {
+  return useQuery({
+    queryKey: ["web-setting"],
+    queryFn: getWebsiteSetting,
+    retry: false,
+  });
+};
+
+export const useCreateWebsite = () => {
+  const query = useQueryClient();
+  return useMutation({
+    mutationKey: ["create-web-setting"],
+    mutationFn: (payload) => createWebsiteSetting(payload),
+    onSuccess: (data) => {
+      toast.success(data?.message);
+      query.invalidateQueries(["web-setting"]);
     },
     onError: (err) => {
       toast.error(err?.response?.data?.message);

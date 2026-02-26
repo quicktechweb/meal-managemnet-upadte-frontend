@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useGetAllFaq } from "../../../api/admin/admin.api";
 
 const FaqItem = ({ question, answer }) => {
   const [isOpen, setIsOpen] = useState(false);
@@ -12,8 +13,11 @@ const FaqItem = ({ question, answer }) => {
         <span className="text-sm lg:text-lg font-medium text-slate-800">
           {question}
         </span>
+
         <span
-          className={`ml-6 flex-shrink-0 transition-transform duration-300 ${isOpen ? "rotate-180" : ""}`}
+          className={`ml-6 flex-shrink-0 transition-transform duration-300 ${
+            isOpen ? "rotate-180" : ""
+          }`}
         >
           {isOpen ? (
             <span className="text-2xl font-light text-blue-600">−</span>
@@ -22,6 +26,7 @@ const FaqItem = ({ question, answer }) => {
           )}
         </span>
       </button>
+
       <div
         className={`overflow-hidden transition-all duration-300 ease-in-out ${
           isOpen
@@ -38,43 +43,30 @@ const FaqItem = ({ question, answer }) => {
 };
 
 export default function Faq() {
-  const faqs = [
-    {
-      question: "How do I place an order?",
-      answer:
-        "Simply browse our products, add items to your cart, and proceed to checkout. Fill in your delivery details, choose a payment method, and confirm your order.",
-    },
-    {
-      question: "What areas do you deliver to?",
-      answer:
-        "We currently deliver both inside Dhaka and outside Dhaka. Delivery charges may vary based on your location.",
-    },
-    {
-      question: "How much is the delivery charge?",
-      answer:
-        "Delivery charges are ৳60 for inside Dhaka and ৳120 for outside Dhaka.",
-    },
-    {
-      question: "What payment methods do you accept?",
-      answer:
-        "We accept bKash and Cash on Delivery (COD) for your convenience.",
-    },
-    {
-      question: "How long does delivery take?",
-      answer:
-        "Inside Dhaka deliveries usually take 1–3 hours. Outside Dhaka deliveries may take 24–72 hours.",
-    },
-    {
-      question: "Can I cancel or change my order?",
-      answer:
-        "Yes, you can cancel or modify your order before it is dispatched. Please contact our support team as soon as possible.",
-    },
-    {
-      question: "What if I receive a damaged or wrong product?",
-      answer:
-        "If you receive a damaged or incorrect item, contact us within 24 hours of delivery and we’ll arrange a replacement or refund.",
-    },
-  ];
+  const { data: faqs = [], isLoading } = useGetAllFaq();
+
+  // ✅ Skeleton Loader
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-slate-50 px-6 py-6 lg:py-12 mt-20">
+        <div className="mx-auto max-w-3xl animate-pulse">
+          {/* Heading Skeleton */}
+          <div className="h-8 bg-slate-200 rounded w-2/3 mx-auto mb-8"></div>
+
+          <div className="rounded-2xl bg-white p-4 lg:p-8 shadow-sm ring-1 ring-slate-200 space-y-6">
+            {[1, 2, 3, 4].map((_, i) => (
+              <div key={i} className="border-b border-slate-200 pb-4">
+                <div className="flex justify-between items-center">
+                  <div className="h-4 bg-slate-200 rounded w-3/4"></div>
+                  <div className="h-6 w-6 bg-slate-200 rounded-full"></div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-slate-50 px-6 py-6 lg:py-12 mt-20">
@@ -82,7 +74,14 @@ export default function Faq() {
         <h2 className="mb-4 lg:mb-8 text-center text-2xl md:text-3xl font-bold tracking-tight text-slate-900 lg:text-4xl">
           Frequently Asked Questions
         </h2>
+
         <div className="rounded-2xl bg-white p-4 lg:p-8 shadow-sm ring-1 ring-slate-200">
+          {faqs.length === 0 && (
+            <p className="flex items-center justify-center text-gray-500">
+              No Faq Added
+            </p>
+          )}
+
           {faqs.map((faq, index) => (
             <FaqItem key={index} question={faq.question} answer={faq.answer} />
           ))}

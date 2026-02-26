@@ -5,7 +5,6 @@ import { ChefHat, ArrowRight } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useLogin } from "../../../../../api/auth/auth.hook";
 import GoogleLoginButton from "../../../../../Components/GoogleLoginButton";
-import toast from "react-hot-toast";
 
 const HomeLogin = () => {
   const { register, handleSubmit, reset } = useForm();
@@ -13,27 +12,10 @@ const HomeLogin = () => {
   const { mutateAsync, isPending } = useLogin();
 
   const onSubmit = async (data) => {
-    const value = data.email?.trim();
-
-    const isEmail = /\S+@\S+\.\S+/.test(value);
-    const isPhone = /^[0-9]{10,15}$/.test(value);
-
-    let payload = {
-      password: data.password,
-    };
-
-    if (isEmail) {
-      payload.email = value;
-    } else if (isPhone) {
-      payload.phone = value;
-    } else {
-      toast.error("Please enter valid email or phone number");
-      return;
-    }
-
-    await mutateAsync(payload);
+    await mutateAsync(data);
     reset();
   };
+  const [navbarModalOpen, setNavbarModalOpen] = useState(false);
 
   return (
     <div
@@ -60,6 +42,16 @@ const HomeLogin = () => {
             Experience the future of food delivery with our premium chef-to-door
             service.
           </p>
+
+          <div className="flex">
+            <Link
+              to={"/auth/all-access-register/normal-user"}
+              className="group bg-orange-500 text-white px-6 py-2 rounded-2xl font-bold transition-all hover:bg-orange-600 flex items-center gap-3 shadow-xl shadow-orange-200 cursor-pointer"
+            >
+              Registration
+              <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+            </Link>
+          </div>
         </motion.div>
 
         <motion.div
@@ -79,7 +71,7 @@ const HomeLogin = () => {
               {/* Glass Glint Effect (The "Shine") */}
               <div className="absolute -top-full -left-full w-[200%] h-[200%] bg-gradient-to-br from-white/40 via-transparent to-transparent rotate-45 pointer-events-none"></div>
 
-              <div className="mb-3">
+              <div className="mb-5 md:mb-10">
                 <h2 className="text-3xl font-bold text-slate-800 tracking-tight">
                   Sign In
                 </h2>
@@ -88,15 +80,17 @@ const HomeLogin = () => {
                 </p>
               </div>
 
-              <form onSubmit={handleSubmit(onSubmit)} className="">
+              <form
+                onSubmit={handleSubmit(onSubmit)}
+                className="space-y-3 md:space-y-6"
+              >
                 <div className="space-y-2">
-                  <label className="text-sm flex items-center gap-2 font-bold ml-1">
-                    Email / Contact Number
+                  <label className="text-sm font-bold text-slate-700 ml-1">
+                    Email
                   </label>
-
                   <input
                     {...register("email")}
-                    type="text"
+                    type="email"
                     placeholder="chef@kitchen.com"
                     className="w-full px-6 py-2 rounded-2xl bg-white/40 border border-white/50 focus:border-orange-400 focus:bg-white/80 transition-all outline-none text-slate-800 placeholder:text-slate-400 backdrop-blur-md"
                   />
@@ -107,6 +101,12 @@ const HomeLogin = () => {
                     <label className="text-sm font-bold text-slate-700">
                       Password
                     </label>
+                    <Link
+                      to={"/auth/forget-password"}
+                      className="text-xs font-bold text-orange-600"
+                    >
+                      Forgot password?
+                    </Link>
                   </div>
                   <input
                     {...register("password")}
@@ -119,45 +119,13 @@ const HomeLogin = () => {
                 <button
                   type="submit"
                   disabled={isPending}
-                  className="w-full bg-slate-900 text-white py-2 rounded-2xl font-bold transition-all hover:bg-black shadow-2xl active:scale-[0.98] cursor-pointer"
+                  className="w-full bg-slate-900 text-white py-2 rounded-2xl font-bold transition-all hover:bg-black shadow-2xl active:scale-[0.98]"
                 >
                   {isPending ? "loading...." : "Login"}
                 </button>
-                <div className="flex  justify-center mt-3">
-                  <Link
-                    to={"/auth/forget-password"}
-                    className="text-lg  font-bold text-orange-600"
-                  >
-                    Forgot password?
-                  </Link>
-                </div>
               </form>
-
-              <div className="flex items-center justify-center gap-2 mt-6">
-                <div className="flex-1 h-[1px] bg-slate-300"></div>
-                <p className="text-gray-600 font-semibold text-sm whitespace-nowrap">
-                  Or continue with
-                </p>
-                <div className="flex-1 h-[1px] bg-slate-300"></div>
-              </div>
-
-              <div className="mt-2 flex items-center justify-center">
+              <div className="flex items-center justify-center mt-5">
                 <GoogleLoginButton />
-              </div>
-              <div className="flex flex-col gap-0">
-                <div className="flex items-center justify-center gap-1 font-semibold mt-3 text-sm">
-                  <p className="text-gray-600">Don't have any account?</p>
-                
-                </div>
-
-                <div className="flex items-center justify-center mt-3">
-                  <Link
-                    to="/auth/all-access-register/normal-user"
-                    className=" w-auto text-center bg-amber-600 px-4 text-white py-1 rounded-2xl font-bold transition-all active:scale-[0.98] cursor-pointer"
-                  >
-                    Create Account
-                  </Link>
-                </div>
               </div>
             </div>
           </div>
@@ -180,3 +148,59 @@ const HomeLogin = () => {
 };
 
 export default HomeLogin;
+
+// const NavbarModal = ({ handleClose }) => {
+//   return (
+//     <div className="fixed inset-0 z-50 flex items-center justify-center">
+//       {/* Overlay */}
+//       <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" />
+
+//       {/* Modal */}
+//       <div className="relative w-full max-w-md mx-4 rounded-2xl bg-white shadow-2xl p-6 animate-scaleIn">
+//         {/* Header */}
+//         <div className="flex items-center justify-between mb-4">
+//           <h2></h2>
+//           <button
+//             onClick={handleClose}
+//             className="text-gray-400 hover:text-gray-700 transition"
+//           >
+//             <IoMdClose size={22} />
+//           </button>
+//         </div>
+
+//         {/* Content */}
+//         <div className="text-center space-y-2 mb-6">
+//           <h4 className="text-2xl font-bold text-gray-900">
+//             Get Started With Us
+//           </h4>
+//           <p className="text-sm text-gray-500">
+//             Choose a service and begin your journey
+//           </p>
+//         </div>
+
+//         {/* Actions */}
+//         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+//           <button onClick={handleClose}>
+//             <Link
+//               to="/register/user"
+//               className="group flex items-center justify-center gap-2 rounded-xl border border-gray-200 px-4 py-3 font-medium text-gray-800 hover:bg-black hover:text-white transition-all shadow-sm"
+//             >
+//               <FaUtensils className="text-lg group-hover:scale-110 transition" />
+//               Meal Service
+//             </Link>
+//           </button>
+
+//           <button onClick={handleClose}>
+//             <Link
+//               to="/auth/all-access-register"
+//               className="group flex items-center justify-center gap-2 rounded-xl border border-gray-200 px-4 py-3 font-medium text-gray-800 hover:bg-black hover:text-white transition-all shadow-sm"
+//             >
+//               <FaShoppingBag className="text-lg group-hover:scale-110 transition" />
+//               Ecommerce
+//             </Link>
+//           </button>
+//         </div>
+//       </div>
+//     </div>
+//   );
+// };

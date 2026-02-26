@@ -14,13 +14,8 @@ const AddNotice = () => {
   const { mutateAsync, isPending } = useCreateNotice();
 
   const onSubmit = async (formData) => {
-    const formdata = new FormData();
-
-    formdata.append("title", formData.notice_title);
-    formdata.append("notice_expire_date", formData.expire_date);
-
     try {
-      await mutateAsync(formdata);
+      await mutateAsync(formData);
 
       reset();
     } catch (error) {
@@ -54,16 +49,14 @@ const AddNotice = () => {
             <input
               type="text"
               placeholder="Notice title given here..."
-              {...register("notice_title", {
+              {...register("title", {
                 required: "Notice Title is required",
               })}
               className="w-full bg-slate-50 border border-slate-200 text-slate-900 rounded-xl p-3 outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500"
             />
 
-            {errors.notice_title && (
-              <p className="text-red-500 text-sm">
-                {errors.notice_title.message}
-              </p>
+            {errors.title && (
+              <p className="text-red-500 text-sm">{errors.title.message}</p>
             )}
           </div>
 
@@ -76,16 +69,16 @@ const AddNotice = () => {
             <div className="relative">
               <input
                 type="datetime-local"
-                {...register("expire_date", {
+                {...register("notice_expire_date", {
                   required: "Expire Date is required",
                 })}
                 className="w-full bg-slate-50 border border-slate-200 text-slate-900 rounded-xl p-3  outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500"
               />
             </div>
 
-            {errors.expire_date && (
+            {errors.notice_expire_date && (
               <p className="text-red-500 text-sm">
-                {errors.expire_date.message}
+                {errors.notice_expire_date.message}
               </p>
             )}
           </div>

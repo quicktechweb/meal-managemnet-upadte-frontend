@@ -41,7 +41,7 @@ const AdminDashboard = () => {
       {/* ===== Sidebar (Drawer) ===== */}
       <aside
         className={`
-          fixed top-0 left-0 z-50 h-screen w-[260px] bg-white
+          fixed top-0 left-0 z-50 h-screen overflow-y-auto w-[260px] bg-white
           transform transition-transform duration-300 ease-in-out
           ${isOpenSidebar ? "translate-x-0" : "-translate-x-full"}
           lg:translate-x-0 

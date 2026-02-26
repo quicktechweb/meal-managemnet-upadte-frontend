@@ -165,3 +165,83 @@ export const deleteChooseusListsFunction = async (id) => {
   const { data } = await axiosPublic.delete(`/api/delete-chooseus/${id}`);
   return data;
 };
+
+export const getAllPageFunction = async () => {
+  const { data } = await axiosPublic("/api/all-page");
+  return data?.data;
+};
+
+export const addPageFunction = async (payload) => {
+  const { data } = await axiosPublic.post("/api/create-page", payload);
+  return data;
+};
+
+export const deletePageFunction = async (id) => {
+  const { data } = await axiosPublic.delete(`/api/single-page/${id}`);
+  return data;
+};
+
+export const updatePageFunction = async ({ id, payload }) => {
+  const { data } = await axiosPublic.put(`/api/single-page/${id}`, payload);
+  return data;
+};
+
+export const singlePageFunction = async (slug) => {
+  const { data } = await axiosPublic(`/api/single-page/${slug}`);
+  return data?.data;
+};
+
+export const getAllAppFunction = async () => {
+  const { data } = await axiosPublic("/api/all-app");
+  return data?.data;
+};
+
+export const addAppDataSectionFunction = async (payload) => {
+  const { data } = await axiosPublic.post("/api/create-app", payload);
+  return data;
+};
+
+export const updateAppDataSectionFunction = async ({ id, payload }) => {
+  const { data } = await axiosPublic.put(`/api/update-app/${id}`, payload);
+  return data;
+};
+
+export const deleteAppDataSectionFunction = async (id) => {
+  const { data } = await axiosPublic.delete(`/api/all-app-delete/${id}`);
+  return data;
+};
+
+export const getAllFaqFunction = async () => {
+  const { data } = await axiosPublic("/api/all-faq");
+  return data?.data;
+};
+
+export const deleteFaqFunction = async (id) => {
+  const { data } = await axiosPublic.delete(`/api/delete-faq/${id}`);
+  return data;
+};
+
+export const AddFaqFunction = async (payload) => {
+  const { data } = await axiosPublic.post("/api/create-faq", payload);
+  return data;
+};
+
+export const UpdateFaqFunction = async ({ id, payload }) => {
+  const { data } = await axiosPublic.put(`/api/update-faq/${id}`, payload);
+  return data;
+};
+
+export const getAllCms = async () => {
+  const { data } = await axiosPublic("/api/cms");
+  return data?.data;
+};
+
+export const getWebsiteSetting = async () => {
+  const { data } = await axiosPublic("/api/settings");
+  return data?.data;
+};
+
+export const createWebsiteSetting = async (payload) => {
+  const { data } = await axiosPublic.post("/api/settings", payload);
+  return data;
+};

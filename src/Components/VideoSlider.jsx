@@ -1,18 +1,13 @@
 import { Swiper, SwiperSlide } from "swiper/react";
-
 import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
 import { Navigation, Pagination } from "swiper/modules";
 import VideoCard from "./VideoCard";
 
-const VideoSlider = () => {
-  const images = [
-    "https://images.deliveryhero.io/image/adtech-display/campaigns/fp_bd/ec957268-ec8b-11f0-8136-0a03d4ad1092.jpeg?height=205&dpi=1",
-    "https://images.deliveryhero.io/image/adtech-display/campaigns/fp_bd/df6eeb8e-eac7-11f0-8d1c-fe9992ee48d4.jpeg?height=205&dpi=1",
-    "https://images.deliveryhero.io/image/adtech-display/campaigns/fp_bd/ec957268-ec8b-11f0-8136-0a03d4ad1092.jpeg?height=205&dpi=1",
-    "https://images.deliveryhero.io/image/adtech-display/campaigns/fp_bd/ec957268-ec8b-11f0-8136-0a03d4ad1092.jpeg?height=205&dpi=1",
-  ];
+const VideoSlider = ({ data, isLoading }) => {
+  const skeletonArray = Array(3).fill(0);
+
   return (
     <Swiper
       slidesPerView={1}
@@ -21,11 +16,17 @@ const VideoSlider = () => {
       pagination={{ clickable: true }}
       modules={[Navigation, Pagination]}
     >
-      {images.map((src, index) => (
-        <SwiperSlide key={index}>
-          <VideoCard />
-        </SwiperSlide>
-      ))}
+      {isLoading
+        ? skeletonArray.map((_, index) => (
+            <SwiperSlide key={index}>
+              <div className="h-48 bg-slate-200 animate-pulse rounded-lg" />
+            </SwiperSlide>
+          ))
+        : data?.map((src, index) => (
+            <SwiperSlide key={index}>
+              <VideoCard src={src} />
+            </SwiperSlide>
+          ))}
     </Swiper>
   );
 };
