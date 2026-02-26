@@ -15,8 +15,6 @@ const ForgotPassword = () => {
     if (data) {
       navigate("/auth/select-recovery");
     }
-
-    console.log("Form Data:", data);
   };
 
   return (
