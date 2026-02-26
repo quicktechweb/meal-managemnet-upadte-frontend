@@ -1,10 +1,12 @@
 import { FaUser, FaUtensils, FaConciergeBell } from "react-icons/fa";
+import { RiAdminFill } from "react-icons/ri";
 
 const Stepper = ({ step }) => {
   const steps = [
     { id: 1, label: "Information", icon: <FaUser /> },
     { id: 2, label: "Service", icon: <FaUtensils /> },
     { id: 3, label: "Routine", icon: <FaConciergeBell /> },
+    // { id: 4, label: "Admin / Authority", icon: <RiAdminFill /> },
   ];
 
   return (

@@ -71,6 +71,8 @@ import AddFaq from "../Pages/FrontEnd/admin/AddFaq";
 import UpdateFaq from "../Pages/FrontEnd/admin/UpdateFaq";
 import DynamicPage from "../Pages/FrontEnd/dynamicpage/DynamicPage";
 import WebsiteSettings from "../Pages/FrontEnd/admin/WebsiteSettings";
+import SelectRecovery from "../Auth/ForgotPassword/SelectRecovery";
+import NewPassword from "../Auth/ForgotPassword/NewPassword";
 
 const router = createBrowserRouter([
   {
@@ -164,6 +166,14 @@ const router = createBrowserRouter([
       {
         path: "forget-password",
         element: <ForgotPassword />,
+      },
+      {
+        path: "select-recovery",
+        element: <SelectRecovery />,
+      },
+      {
+        path: "new-password",
+        element: <NewPassword />,
       },
       {
         path: "register",
