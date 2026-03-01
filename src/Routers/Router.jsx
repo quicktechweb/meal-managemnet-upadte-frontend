@@ -73,6 +73,7 @@ import DynamicPage from "../Pages/FrontEnd/dynamicpage/DynamicPage";
 import WebsiteSettings from "../Pages/FrontEnd/admin/WebsiteSettings";
 import SelectRecovery from "../Auth/ForgotPassword/SelectRecovery";
 import NewPassword from "../Auth/ForgotPassword/NewPassword";
+import EnterCode from "../Auth/ForgotPassword/EnterCode";
 
 const router = createBrowserRouter([
   {
@@ -170,6 +171,10 @@ const router = createBrowserRouter([
       {
         path: "select-recovery",
         element: <SelectRecovery />,
+      },
+      {
+        path: "code-verify",
+        element: <EnterCode />,
       },
       {
         path: "new-password",

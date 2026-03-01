@@ -1,6 +1,7 @@
 import React, { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import {
+  useAllKitchen,
   useAllService,
   useCreateFeature,
   useGetFeature,
@@ -14,9 +15,11 @@ const UpdateFeature = () => {
 
   const { data: allFeature, isLoading: featureLoading } = useGetFeature();
 
-  const singleFeature = allFeature?.data?.find((item) => item?._id === id);
+  const singleFeature = allFeature?.find((item) => item?._id === id);
 
-  const { data: services, isLoading } = useAllService();
+  console.log(singleFeature);
+
+  const { data: kitchen, isLoading } = useAllKitchen();
 
   const { mutateAsync, isPending } = useUpdateFeature();
 
@@ -28,14 +31,14 @@ const UpdateFeature = () => {
   } = useForm();
 
   useEffect(() => {
-    if (singleFeature && services.length > 0) {
+    if (singleFeature && kitchen.length > 0) {
       reset({
         name: singleFeature.name,
         price: singleFeature.price,
-        service: singleFeature?.service?._id || "",
+        kitchen: singleFeature?.kitchen?._id || "",
       });
     }
-  }, [singleFeature, services, reset]);
+  }, [singleFeature, kitchen, reset]);
 
   const onSubmit = async (formData) => {
     try {
@@ -77,19 +80,19 @@ const UpdateFeature = () => {
             </label>
 
             <select
-              {...register("service", { required: "service is required" })}
+              {...register("kitchen", { required: "kitchen is required" })}
               className="w-full bg-slate-50 border border-slate-200 text-slate-900 rounded-xl p-3 outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500"
             >
-              <option value="">Choose a services...</option>
-              {services?.map((item) => (
+              <option value="">Choose a kitchen...</option>
+              {kitchen?.map((item) => (
                 <option key={item._id} value={item._id}>
                   {item.title}
                 </option>
               ))}
             </select>
 
-            {errors.services && (
-              <p className="text-red-500 text-sm">{errors.services.message}</p>
+            {errors.kitchen && (
+              <p className="text-red-500 text-sm">{errors.kitchen.message}</p>
             )}
           </div>
 

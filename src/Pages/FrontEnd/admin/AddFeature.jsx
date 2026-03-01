@@ -1,10 +1,10 @@
 import React from "react";
 import { useForm } from "react-hook-form";
-import { useAllService, useCreateFeature } from "../../../api/admin/admin.api";
+import { useAllKitchen, useCreateFeature } from "../../../api/admin/admin.api";
 import { PlusCircle, Utensils, Tag } from "lucide-react";
 
 const AddFeature = () => {
-  const { data: services, isLoading } = useAllService();
+  const { data: kitchen, isLoading } = useAllKitchen();
   const { mutateAsync, isPending } = useCreateFeature();
 
   const {
@@ -47,15 +47,15 @@ const AddFeature = () => {
           <div className="space-y-2">
             <label className="text-sm font-semibold text-slate-700 flex items-center gap-2">
               <Utensils size={16} className="text-slate-400" />
-              Service Type
+              Kitchen Type
             </label>
 
             <select
-              {...register("service", { required: "service is required" })}
+              {...register("kitchen", { required: "kitchen is required" })}
               className="w-full bg-slate-50 border border-slate-200 text-slate-900 rounded-xl p-3 outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500"
             >
-              <option value="">Choose a services...</option>
-              {services?.map((item) => (
+              <option value="">Choose a kitchen...</option>
+              {kitchen?.map((item) => (
                 <option key={item._id} value={item._id}>
                   {item.title}
                 </option>
@@ -63,7 +63,7 @@ const AddFeature = () => {
             </select>
 
             {errors.services && (
-              <p className="text-red-500 text-sm">{errors.services.message}</p>
+              <p className="text-red-500 text-sm">{errors.kitchen.message}</p>
             )}
           </div>
 

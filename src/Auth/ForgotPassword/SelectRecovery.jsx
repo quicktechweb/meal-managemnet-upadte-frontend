@@ -21,10 +21,8 @@ const SelectRecovery = () => {
   const selectedMethod = watch("method");
 
   const onSubmit = (data) => {
-    console.log("Form Data:", data);
-
     if (data) {
-      navigate("/auth/new-password")
+      navigate("/auth/code-verify", { state: { formData: data } });
     }
   };
 
