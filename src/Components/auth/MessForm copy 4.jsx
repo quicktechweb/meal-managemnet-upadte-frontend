@@ -9,7 +9,55 @@ import { api } from "../../utils/countryApi";
 import CustomSelect from "../CustomSelect";
 import DocumentUpload from "../DocumentUpload";
 
-import StepTwo from "./StepTwo";
+const utilitybillalabadanservice = [
+  {
+    id: 1,
+    title: "Electricity Bill",
+    percentage: 0,
+  },
+
+  {
+    id: 2,
+    title: "Staff Bill",
+    percentage: 10,
+  },
+
+  {
+    id: 3,
+    title: "Gas Bill",
+    percentage: 0,
+  },
+  {
+    id: 4,
+    title: "Transport Bill",
+    percentage: 0,
+  },
+];
+
+const utilitybilluserservice = [
+  {
+    id: 1,
+    title: "Electricity Bill",
+    percentage: 0,
+  },
+
+  {
+    id: 2,
+    title: "Staff Bill",
+    percentage: 20,
+  },
+
+  {
+    id: 3,
+    title: "Gas Bill",
+    percentage: 0,
+  },
+  {
+    id: 4,
+    title: "Transport Bill",
+    percentage: 0,
+  },
+];
 
 const MessForm = () => {
   const [divisions, setDivisions] = useState([]);
@@ -72,6 +120,18 @@ const MessForm = () => {
   const [confirmPasswordShow, setConfirmPasswordShow] = useState(false);
 
   const passwordValue = watch("password");
+  const [utilityElectricityBill, setUtilityElectricityBill] = useState(null);
+  const [utilityStaffBill, setUtilityStaffBill] = useState(null);
+  const [utilityGasBill, setUtilityGassBill] = useState(null);
+
+  const [utilityUserElectricityBill, setUtilityUserElectricityBill] =
+    useState(null);
+  const [utilityUserStaffBill, setUserUtilityStaffBill] = useState(null);
+  const [utilityUserGasBill, setUserUtilityGassBill] = useState(null);
+
+  const [kitchenType, setKitchenType] = useState(null);
+
+  const [studentService, setStudentService] = useState(false);
 
   const navigate = useNavigate();
 
@@ -87,6 +147,34 @@ const MessForm = () => {
       navigate("/dashboard/mealmanagement");
     }
     console.log("FORM DATA", data);
+  };
+
+  const handleUtilityBill = (bill) => {
+    if (bill?.title === "Electricity Bill") {
+      setUtilityElectricityBill(bill);
+    }
+
+    if (bill?.title === "Staff Bill") {
+      setUtilityStaffBill(bill);
+    }
+
+    if (bill?.title === "Gas Bill") {
+      setUtilityGassBill(bill);
+    }
+  };
+
+  const handleUserUtilityBill = () => {
+    if (bill?.title === "Electricity Bill") {
+      setUtilityUserElectricityBill(bill);
+    }
+
+    if (bill?.title === "Staff Bill") {
+      setUserUtilityStaffBill(bill);
+    }
+
+    if (bill?.title === "Gas Bill") {
+      setUserUtilityGassBill(bill);
+    }
   };
 
   const [institute, setInstitute] = useState("");
@@ -358,7 +446,177 @@ const MessForm = () => {
       {/* ================= STEP 2 ================= */}
       {step === 2 && (
         <>
-          <StepTwo />
+          <p className="font-semibold">Select Kitchen Type</p>
+          <div className="flex items-center">
+            <div className="flex items-center gap-2 w-full">
+              <label className="switch !text-[10px] lg:!text-xs">
+                <input
+                  type="radio"
+                  value="al-abadin"
+                  {...register("kitchen", { required: "Select kitchen" })}
+                  className="sr-only"
+                  onChange={() => {
+                    setKitchenType("al-abadan-kitchen");
+                  }}
+                />
+                <span className="slider"></span>
+              </label>
+              <p className="text-sm lg:text-base">Al Abadin Kitchen</p>
+            </div>
+            <div className="flex items-center gap-2 w-full">
+              <label className="switch !text-[10px] lg:!text-xs">
+                <input
+                  type="radio"
+                  value="user"
+                  {...register("kitchen", { required: "Select kitchen" })}
+                  onChange={() => {
+                    setKitchenType("user-kitchen");
+                  }}
+                  className="sr-only"
+                />
+                <span className="slider"></span>
+              </label>
+              <p className="text-sm lg:text-base">User Kitchen</p>
+            </div>
+          </div>
+
+          {errors.kitchen && (
+            <p className="text-red-500 text-sm">{errors.kitchen.message}</p>
+          )}
+
+          {kitchenType === "al-abadan-kitchen" && (
+            <div className="flex flex-col gap-3">
+              <h6 className="font-semibold">Utility Service</h6>
+              <div className="flex flex-wrap items-center gap-3 lg:gap-6">
+                {utilitybillalabadanservice.map((bill) => (
+                  <div key={bill.id} className="flex items-center gap-2">
+                    <label className="switch !text-[10px] lg:!text-xs">
+                      <input
+                        type="checkbox"
+                        value={bill.id}
+                        {...register("bill", { required: "Select Bill" })}
+                        onChange={() => handleUtilityBill(bill)}
+                        className="sr-only"
+                      />
+                      <span className="slider"></span>
+                    </label>
+                    <p className="text-sm lg:text-base">{bill.title}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {kitchenType === "user-kitchen" && (
+            <div className="flex flex-col gap-3">
+              <h6 className="font-semibold">Utility Service</h6>
+              <div className="flex flex-wrap items-center gap-6">
+                {utilitybilluserservice.map((bill) => (
+                  <div key={bill.id} className="flex items-center gap-2">
+                    <label className="switch !text-[10px] lg:!text-xs">
+                      <input
+                        type="checkbox"
+                        value={bill.id}
+                        {...register("bill", { required: "Select Bill" })}
+                        onChange={() => handleUserUtilityBill(bill)}
+                        className="sr-only"
+                      />
+                      <span className="slider"></span>
+                    </label>
+                    <p className="text-sm lg:text-base">{bill.title}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          <>
+            <h6 className="font-semibold">Select Service</h6>
+
+            {/* MAIN SERVICE */}
+            <div className="flex items-center gap-6">
+              {/* Per Meal */}
+              <div className="flex items-center gap-2">
+                <label className="switch !text-[10px] lg:!text-xs">
+                  <input
+                    type="radio"
+                    value="meal"
+                    {...register("service", { required: "Select Service" })}
+                    onChange={() => setStudentService(true)}
+                    className="sr-only"
+                  />
+                  <span className="slider"></span>
+                </label>
+                <p className="text-sm lg:text-base">Per Meal</p>
+              </div>
+
+              {/* Per Student */}
+              <div className="flex items-center gap-2">
+                <label className="switch !text-[10px] lg:!text-xs">
+                  <input
+                    type="radio"
+                    value="student"
+                    {...register("service", { required: "Select Service" })}
+                    onChange={() => setStudentService(true)}
+                    className="sr-only"
+                  />
+                  <span className="slider"></span>
+                </label>
+                <p className="text-sm lg:text-base">Per Student</p>
+              </div>
+            </div>
+
+            {errors.service && (
+              <p className="text-red-500 text-sm">{errors.service.message}</p>
+            )}
+
+            {/*  */}
+            {studentService && (
+              <div className="mt-4 space-y-3">
+                <p className="font-medium text-sm">Student Features</p>
+
+                <div className="flex items-center gap-2">
+                  <label className="switch !text-[10px] lg:!text-xs">
+                    <input
+                      type="checkbox"
+                      value="balance"
+                      {...register("studentOptions")}
+                      className="sr-only"
+                    />
+                    <span className="slider"></span>
+                  </label>
+                  <p className="text-sm lg:text-base">Balance</p>
+                </div>
+
+                <div className="flex items-center gap-2">
+                  <label className="switch !text-[10px] lg:!text-xs">
+                    <input
+                      type="checkbox"
+                      value="fingerprint"
+                      {...register("studentOptions")}
+                      className="sr-only"
+                    />
+                    <span className="slider"></span>
+                  </label>
+                  <p className="text-sm lg:text-base">Fingerprint</p>
+                </div>
+
+                <div className="flex items-center gap-2">
+                  <label className="switch !text-[10px] lg:!text-xs">
+                    <input
+                      type="checkbox"
+                      value="mealadd"
+                      {...register("studentOptions")}
+                      className="sr-only"
+                    />
+                    <span className="slider"></span>
+                  </label>
+                  <p className="text-sm lg:text-base">Meal Add</p>
+                </div>
+              </div>
+            )}
+          </>
+
           <div className="flex gap-2">
             <button
               type="button"
@@ -446,3 +704,33 @@ const FloatingLabel = ({ text }) => (
     {text}
   </label>
 );
+
+{
+  /* <div className="flex items-center gap-2">
+  <label className="switch !text-xs">
+    <input
+      type="radio"
+      value="staff"
+      {...register("bill", { required: "Select Bill" })}
+      onChange={() => setStudentService(true)}
+      className="sr-only"
+    />
+    <span className="slider"></span>
+  </label>
+  <p>Per Student</p>
+</div>;
+
+<div className="flex items-center gap-2">
+  <label className="switch !text-xs">
+    <input
+      type="radio"
+      value="student"
+      {...register("service", { required: "Select Service" })}
+      onChange={() => setStudentService(true)}
+      className="sr-only"
+    />
+    <span className="slider"></span>
+  </label>
+  <p>Gas Bill</p>
+</div>; */
+}
