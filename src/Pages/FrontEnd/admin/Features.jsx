@@ -9,6 +9,8 @@ const Features = () => {
   const { data: features, isLoading } = useGetFeature();
   const { mutateAsync, isPending } = useDeleteFeature();
 
+  console.log(features);
+
   const handleDelete = async (item) => {
     await mutateAsync(item?._id);
   };
@@ -42,7 +44,7 @@ const Features = () => {
           <thead className="bg-slate-50">
             <tr className="text-left text-sm text-slate-600">
               <th className="px-6 py-4 font-semibold">Feature Name</th>
-              <th className="px-6 py-4 font-semibold">Service</th>
+              <th className="px-6 py-4 font-semibold">Kitchen</th>
               <th className="px-6 py-4 font-semibold">Price</th>
               <th className="px-6 py-4 font-semibold text-right">Action</th>
             </tr>
@@ -60,7 +62,7 @@ const Features = () => {
 
                 <td className="px-6 py-4">
                   <span className="text-xs font-semibold bg-violet-100 text-violet-700 px-3 py-1 rounded-full">
-                    {item?.service?.title}
+                    {item?.kitchen?.title}
                   </span>
                 </td>
 

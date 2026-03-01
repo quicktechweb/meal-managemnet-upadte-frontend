@@ -90,24 +90,23 @@ const HomeLogin = () => {
 
               <form onSubmit={handleSubmit(onSubmit)} className="">
                 <div className="space-y-2">
-                  <label className="text-sm flex items-center gap-2 font-bold ml-1">
+                  <label className="text-sm font-bold text-slate-700 mb-2 inline-block">
                     Email / Contact Number
                   </label>
 
                   <input
                     {...register("email")}
                     type="text"
-                    placeholder="chef@kitchen.com"
+                    placeholder="email or phonenumber"
                     className="w-full px-6 py-2 rounded-2xl bg-white/40 border border-white/50 focus:border-orange-400 focus:bg-white/80 transition-all outline-none text-slate-800 placeholder:text-slate-400 backdrop-blur-md"
                   />
                 </div>
 
-                <div className="space-y-2">
-                  <div className="flex justify-between px-1">
-                    <label className="text-sm font-bold text-slate-700">
-                      Password
-                    </label>
-                  </div>
+                <div className="space-y-2 mt-2 mb-2">
+                  <label className="text-sm font-bold text-slate-700">
+                    Password
+                  </label>
+
                   <input
                     {...register("password")}
                     type="password"
@@ -147,7 +146,6 @@ const HomeLogin = () => {
               <div className="flex flex-col gap-0">
                 <div className="flex items-center justify-center gap-1 font-semibold mt-3 text-sm">
                   <p className="text-gray-600">Don't have any account?</p>
-                
                 </div>
 
                 <div className="flex items-center justify-center mt-3">
