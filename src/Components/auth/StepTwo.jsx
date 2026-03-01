@@ -33,6 +33,9 @@ const StepTwo = ({
   totalPrice,
   utilityBills,
   setUtilityBills,
+  prevStep,
+  nextStep,
+  form,
 }) => {
   // const [activeDropdown, setActiveDropdown] = useState(null);
 
@@ -117,7 +120,7 @@ const StepTwo = ({
             />
           </div>
           {activeDropdown === "option" && (
-            <div className="absolute top-full left-0 w-full bg-white border rounded-xl mt-1 shadow-lg z-50">
+            <div className="absolute top-full left-0 w-full bg-white border border-gray-200   rounded-xl mt-1 shadow-lg z-50">
               {options.map((opt) => (
                 <div
                   key={opt.label}
@@ -153,7 +156,7 @@ const StepTwo = ({
                 />
               </div>
               {activeDropdown === "kitchen" && (
-                <div className="absolute top-full left-0 w-full bg-white border rounded-xl mt-1 shadow-lg z-50 max-h-60 overflow-auto">
+                <div className="absolute top-full left-0 w-full bg-white border border-gray-200 rounded-xl mt-1 shadow-lg z-50 max-h-60 overflow-auto">
                   {kitchenData?.map((kitchen) => (
                     <div
                       key={kitchen._id}
@@ -189,7 +192,7 @@ const StepTwo = ({
                   />
                 </div>
                 {activeDropdown === "utility" && (
-                  <div className="absolute top-full left-0 w-full bg-white border rounded-xl mt-1 shadow-lg z-50 max-h-48 overflow-auto">
+                  <div className="absolute top-full left-0 w-full bg-white border border-gray-200 rounded-xl mt-1 shadow-lg z-50 max-h-48 overflow-auto">
                     {singleUtilities?.map((bill) => (
                       <div
                         key={bill._id}
@@ -235,7 +238,7 @@ const StepTwo = ({
                   />
                 </div>
                 {activeDropdown === "feature" && (
-                  <div className="absolute top-full left-0 w-full bg-white border rounded-xl mt-1 shadow-lg z-50 max-h-48 overflow-auto">
+                  <div className="absolute top-full left-0 w-full bg-white border  border-gray-200 rounded-xl mt-1 shadow-lg z-50 max-h-48 overflow-auto">
                     {singleFeature?.map((feature) => (
                       <div
                         key={feature._id}
@@ -283,7 +286,7 @@ const StepTwo = ({
                   />
                 </div>
                 {activeDropdown === "service" && (
-                  <div className="absolute top-full left-0 w-full bg-white border rounded-xl mt-1 shadow-lg z-50 overflow-auto">
+                  <div className="absolute top-full left-0 w-full bg-white border border-gray-200 rounded-xl mt-1 shadow-lg z-50 overflow-auto">
                     {services?.map((service) => (
                       <div
                         key={service._id}
@@ -342,7 +345,7 @@ const StepTwo = ({
                 />
               </div>
               {activeDropdown === "kitchen" && (
-                <div className="absolute top-full left-0 w-full bg-white border rounded-xl mt-1 shadow-lg z-50 max-h-60 overflow-auto">
+                <div className="absolute top-full left-0 w-full bg-white border rounded-xl mt-1 shadow-lg z-50 max-h-60 overflow-auto border-gray-200">
                   {kitchenData?.map((kitchen) => (
                     <div
                       key={kitchen._id}
@@ -378,7 +381,7 @@ const StepTwo = ({
                   />
                 </div>
                 {activeDropdown === "utility" && (
-                  <div className="absolute top-full left-0 w-full bg-white border rounded-xl mt-1 shadow-lg z-50 max-h-48 overflow-auto">
+                  <div className="absolute top-full left-0 w-full bg-white border rounded-xl mt-1 shadow-lg z-50 max-h-48 overflow-auto border-gray-200">
                     {singleUtilities?.map((bill) => (
                       <div
                         key={bill._id}
@@ -424,7 +427,7 @@ const StepTwo = ({
                   />
                 </div>
                 {activeDropdown === "feature" && (
-                  <div className="absolute top-full left-0 w-full bg-white border rounded-xl mt-1 shadow-lg z-50 max-h-48 overflow-auto">
+                  <div className="absolute top-full left-0 w-full bg-white border rounded-xl mt-1 shadow-lg z-50 max-h-48 overflow-auto border-gray-200">
                     {singleFeature?.map((feature) => (
                       <div
                         key={feature._id}
@@ -472,7 +475,7 @@ const StepTwo = ({
                   />
                 </div>
                 {activeDropdown === "service" && (
-                  <div className="absolute top-full left-0 w-full bg-white border rounded-xl mt-1 shadow-lg z-50 overflow-auto">
+                  <div className="absolute top-full left-0 w-full bg-white border rounded-xl mt-1 shadow-lg z-50 overflow-auto border-gray-200">
                     {services?.map((service) => (
                       <div
                         key={service._id}
@@ -512,6 +515,23 @@ const StepTwo = ({
           )}
         </div>
       )}
+
+      <div className="flex gap-2">
+        <button
+          type="button"
+          onClick={prevStep}
+          className="w-full border border-gray-200 cursor-pointer py-1.5 lg:py-3 rounded-lg"
+        >
+          Back
+        </button>
+        <button
+          type="button"
+          onClick={nextStep}
+          className="w-full bg-black cursor-pointer text-white py-1.5 lg:py-3 rounded-lg"
+        >
+          Next
+        </button>
+      </div>
     </div>
   );
 };

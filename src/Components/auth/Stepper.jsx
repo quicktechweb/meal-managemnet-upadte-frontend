@@ -6,7 +6,7 @@ const Stepper = ({ step }) => {
     { id: 1, label: "Information", icon: <FaUser /> },
     { id: 2, label: "Service", icon: <FaUtensils /> },
     { id: 3, label: "Routine", icon: <FaConciergeBell /> },
-    { id: 4, label: "Admin / Authority", icon: <RiAdminFill /> },
+    // { id: 4, label: "Admin / Authority", icon: <RiAdminFill /> },
   ];
 
   return (
