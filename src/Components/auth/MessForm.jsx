@@ -3,13 +3,20 @@ import { useForm } from "react-hook-form";
 import { IoMdEye, IoMdEyeOff } from "react-icons/io";
 import { Link, useNavigate } from "react-router-dom";
 import Stepper from "./Stepper";
-import MealScheduleTable from "../MealTable";
+
 import useStep from "../../Hooks/useStep";
 import { api } from "../../utils/countryApi";
 import CustomSelect from "../CustomSelect";
 import DocumentUpload from "../DocumentUpload";
 
 import StepTwo from "./StepTwo";
+import MealScheduleTable from "../MealTable";
+import {
+  useAllKitchen,
+  useAllService,
+  useGetFeature,
+  useUtilitiesService,
+} from "../../api/admin/admin.api";
 
 const MessForm = () => {
   const [divisions, setDivisions] = useState([]);
@@ -120,6 +127,64 @@ const MessForm = () => {
   const handleCreateMess = (newItem) => {
     setMessOptions((prev) => [...prev, newItem]);
   };
+
+  // step 2
+  const options = [
+    { label: "User", path: true },
+    { label: "Client", path: false },
+  ];
+  const [activeDropdown, setActiveDropdown] = useState(null);
+  const [selectedOption, setSelectedOption] = useState(options[0]);
+
+  const [kitchenType, setKitchenType] = useState(null);
+
+  const [studentService, setStudentService] = useState(null);
+  const [utilityBills, setUtilityBills] = useState([]);
+  const [serviceFeatures, setServiceFeatures] = useState([]);
+
+  const { data: kitchenData } = useAllKitchen();
+  const { data: services } = useAllService();
+  const { data: allUtilities } = useUtilitiesService();
+  const { data: getFeature } = useGetFeature();
+
+  const singleUtilities = allUtilities?.filter(
+    (u) => u?.kitchen?.title === kitchenType?.title,
+  );
+  const singleFeature = getFeature?.filter(
+    (f) => f?.kitchen?.title === kitchenType?.title,
+  );
+
+  const toggleDropdown = (name) => {
+    setActiveDropdown(activeDropdown === name ? null : name);
+  };
+
+  const handleUtilityBill = (bill) => {
+    setUtilityBills((prev) =>
+      prev.find((b) => b._id === bill._id)
+        ? prev.filter((b) => b._id !== bill._id)
+        : [...prev, bill],
+    );
+  };
+
+  const handleFeature = (feature) => {
+    setServiceFeatures((prev) =>
+      prev.find((f) => f._id === feature._id)
+        ? prev.filter((f) => f._id !== feature._id)
+        : [...prev, feature],
+    );
+  };
+
+  const totalUtilityPrice = utilityBills?.reduce(
+    (total, bill) => total + +bill.price,
+    0,
+  );
+
+  const totalServiceFeaturePrice = serviceFeatures?.reduce(
+    (total, feature) => total + +feature?.price,
+    0,
+  );
+
+  const totalPrice = totalUtilityPrice + totalServiceFeaturePrice;
 
   return (
     <form
@@ -358,7 +423,32 @@ const MessForm = () => {
       {/* ================= STEP 2 ================= */}
       {step === 2 && (
         <>
-          <StepTwo />
+          <StepTwo
+            selectedOption={selectedOption}
+            setSelectedOption={setSelectedOption}
+            kitchenType={kitchenType}
+            setKitchenType={setKitchenType}
+            studentService={studentService}
+            utilityBills={utilityBills}
+            setUtilityBills={setUtilityBills}
+            setStudentService={setStudentService}
+            kitchenData={kitchenData}
+            services={services}
+            allUtilities={allUtilities}
+            getFeature={getFeature}
+            singleUtilities={singleUtilities}
+            singleFeature={singleFeature}
+            toggleDropdown={toggleDropdown}
+            handleUtilityBill={handleUtilityBill}
+            handleFeature={handleFeature}
+            totalUtilityPrice={totalUtilityPrice}
+            totalServiceFeaturePrice={totalServiceFeaturePrice}
+            totalPrice={totalPrice}
+            serviceFeatures={serviceFeatures}
+            setServiceFeatures={setServiceFeatures}
+            activeDropdown={activeDropdown}
+            setActiveDropdown={setActiveDropdown}
+          />
           <div className="flex gap-2">
             <button
               type="button"
@@ -383,10 +473,30 @@ const MessForm = () => {
         <>
           <div className=" space-y-3">
             <p className="font-semibold">Select the Meals</p>
-
-            <MealScheduleTable />
+            <MealScheduleTable totalPrice={totalPrice} />
           </div>
 
+          <div className="flex gap-2">
+            <button
+              type="button"
+              onClick={prevStep}
+              className="w-full border cursor-pointer py-1.5 lg:py-3 rounded-lg"
+            >
+              Back
+            </button>
+            <button
+              type="button"
+              onClick={nextStep}
+              className="w-full bg-black cursor-pointer text-white py-1.5 lg:py-3 rounded-lg"
+            >
+              Next
+            </button>
+          </div>
+        </>
+      )}
+
+      {step === 4 && (
+        <>
           <div className="flex gap-2 mt-4">
             <button
               type="button"

@@ -12,62 +12,77 @@ const options = [
   { label: "Client", path: false },
 ];
 
-const StepTwo = () => {
-  const [activeDropdown, setActiveDropdown] = useState(null);
+const StepTwo = ({
+  selectedOption,
+  setSelectedOption,
+  kitchenType,
+  setKitchenType,
+  studentService,
+  setStudentService,
+  kitchenData,
+  services,
+  serviceFeatures,
+  setServiceFeatures,
+  singleUtilities,
+  singleFeature,
+  toggleDropdown,
+  handleUtilityBill,
+  handleFeature,
+  activeDropdown,
+  setActiveDropdown,
+  totalPrice,
+  utilityBills,
+  setUtilityBills,
+}) => {
+  // const [activeDropdown, setActiveDropdown] = useState(null);
 
-  const [selectedOption, setSelectedOption] = useState(options[0]);
+  // const [selectedOption, setSelectedOption] = useState(options[0]);
 
-  console.log(selectedOption);
+  // const [kitchenType, setKitchenType] = useState(null);
 
-  const [kitchenType, setKitchenType] = useState(null);
+  // const [studentService, setStudentService] = useState(null);
+  // const [utilityBills, setUtilityBills] = useState([]);
+  // const [serviceFeatures, setServiceFeatures] = useState([]);
 
-  const [studentService, setStudentService] = useState(null);
-  const [utilityBills, setUtilityBills] = useState([]);
-  const [serviceFeatures, setServiceFeatures] = useState([]);
+  // const { data: kitchenData } = useAllKitchen();
+  // const { data: services } = useAllService();
+  // const { data: allUtilities } = useUtilitiesService();
+  // const { data: getFeature } = useGetFeature();
 
-  const { data: kitchenData } = useAllKitchen();
-  const { data: services } = useAllService();
-  const { data: allUtilities } = useUtilitiesService();
-  const { data: getFeature } = useGetFeature();
+  // const singleUtilities = allUtilities?.filter(
+  //   (u) => u?.kitchen?.title === kitchenType?.title,
+  // );
+  // const singleFeature = getFeature?.filter(
+  //   (f) => f?.kitchen?.title === kitchenType?.title,
+  // );
 
-  const singleUtilities = allUtilities?.filter(
-    (u) => u?.kitchen?.title === kitchenType?.title,
-  );
-  const singleFeature = getFeature?.filter(
-    (f) => f?.kitchen?.title === kitchenType?.title,
-  );
+  // const handleUtilityBill = (bill) => {
+  //   setUtilityBills((prev) =>
+  //     prev.find((b) => b._id === bill._id)
+  //       ? prev.filter((b) => b._id !== bill._id)
+  //       : [...prev, bill],
+  //   );
+  // };
 
-  const toggleDropdown = (name) => {
-    setActiveDropdown(activeDropdown === name ? null : name);
-  };
+  // const handleFeature = (feature) => {
+  //   setServiceFeatures((prev) =>
+  //     prev.find((f) => f._id === feature._id)
+  //       ? prev.filter((f) => f._id !== feature._id)
+  //       : [...prev, feature],
+  //   );
+  // };
 
-  const handleUtilityBill = (bill) => {
-    setUtilityBills((prev) =>
-      prev.find((b) => b._id === bill._id)
-        ? prev.filter((b) => b._id !== bill._id)
-        : [...prev, bill],
-    );
-  };
+  // const totalUtilityPrice = utilityBills?.reduce(
+  //   (total, bill) => total + +bill.price,
+  //   0,
+  // );
 
-  const handleFeature = (feature) => {
-    setServiceFeatures((prev) =>
-      prev.find((f) => f._id === feature._id)
-        ? prev.filter((f) => f._id !== feature._id)
-        : [...prev, feature],
-    );
-  };
+  // const totalServiceFeaturePrice = serviceFeatures?.reduce(
+  //   (total, feature) => total + +feature?.price,
+  //   0,
+  // );
 
-  const totalUtilityPrice = utilityBills?.reduce(
-    (total, bill) => total + +bill.price,
-    0,
-  );
-
-  const totalServiceFeaturePrice = serviceFeatures?.reduce(
-    (total, feature) => total + +feature?.price,
-    0,
-  );
-
-  const totalPrice = totalUtilityPrice + totalServiceFeaturePrice;
+  // const totalPrice = totalUtilityPrice + totalServiceFeaturePrice;
 
   const SelectedBadge = ({ item, onRemove }) => (
     <span className="flex items-center gap-1 bg-orange-100 text-orange-700 px-3 py-1 rounded-full text-sm font-medium border border-orange-200">
