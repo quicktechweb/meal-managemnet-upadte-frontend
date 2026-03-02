@@ -37,6 +37,7 @@ import {
   getallschedulefunction,
   getAllServiceFunction,
   getallutilitiesfunction,
+  getItemsFunction,
   getWebsiteSetting,
   singlePageFunction,
   updateAppDataSectionFunction,
@@ -691,5 +692,13 @@ export const useCreateWebsite = () => {
     onError: (err) => {
       toast.error(err?.response?.data?.message);
     },
+  });
+};
+
+export const useGetItems = () => {
+  return useQuery({
+    queryKey: "get-items",
+    queryFn: getItemsFunction,
+    retry: false,
   });
 };

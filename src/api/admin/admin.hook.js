@@ -245,3 +245,8 @@ export const createWebsiteSetting = async (payload) => {
   const { data } = await axiosPublic.post("/api/settings", payload);
   return data;
 };
+
+export const getItemsFunction = async () => {
+  const { data } = await axiosPublic.get("/api/items");
+  return data?.data;
+};

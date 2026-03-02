@@ -1,870 +1,285 @@
-import { useState, useEffect, useMemo } from "react";
-import { FaCheckCircle, FaChevronDown, FaTimes } from "react-icons/fa";
+import { useState } from "react";
+import Select from "react-select";
+import { useGetItems } from "../api/admin/admin.api";
 
-/* ===============================
-   CONFIG
-================================ */
-
-const dynamicTableBaseData = [
-  "breakfast",
-  "tiffin",
-  "lunch",
-  "snack",
-  "dinner",
-];
-
-export const schedule2 = [
-  {
-    day: "Sat",
-    breakfast: {
-      mealType: "breakfast",
-      time: "8:00-10:00",
-      items: [
-        {
-          meal_id: 1,
-          title: "Alu Vorta",
-          price: 125,
-        },
-        {
-          meal_id: 2,
-          title: "Egg",
-          price: 110,
-        },
-        {
-          meal_id: 3,
-          title: "Vat",
-          price: 110,
-        },
-        {
-          meal_id: 4,
-          title: "Dal",
-          price: 110,
-        },
-      ],
-    },
-    lunch: {
-      mealType: "lunch",
-      time: "1:30-2:30",
-      items: [
-        {
-          meal_id: 1,
-          title: "Murgi",
-          price: 200,
-        },
-        {
-          meal_id: 2,
-          title: "Mach",
-          price: 500,
-        },
-        {
-          meal_id: 3,
-          title: "goru",
-          price: 500,
-        },
-        {
-          meal_id: 4,
-          title: "Vat",
-          price: 500,
-        },
-        {
-          meal_id: 5,
-          title: "dal",
-          price: 500,
-        },
-      ],
-    },
-    dinner: {
-      mealType: "dinner",
-      time: "9:00 - 11:00",
-      items: [
-        {
-          meal_id: 1,
-          title: "Murgi",
-          price: 900,
-        },
-        {
-          meal_id: 2,
-          title: "Mach",
-          price: 600,
-        },
-        {
-          meal_id: 3,
-          title: "dud",
-          price: 100,
-        },
-        {
-          meal_id: 4,
-          title: "vat",
-          price: 10,
-        },
-      ],
-    },
-  },
-  {
-    day: "Sun",
-    breakfast: {
-      mealType: "breakfast",
-      time: "8:00-10:00",
-      items: [
-        {
-          meal_id: 1,
-          title: "Ruti",
-          price: 125,
-        },
-        {
-          meal_id: 2,
-          title: "Dim baji",
-          price: 110,
-        },
-        {
-          meal_id: 3,
-          title: "Alu baji",
-          price: 110,
-        },
-        {
-          meal_id: 4,
-          title: "Vat",
-          price: 110,
-        },
-      ],
-    },
-    lunch: {
-      mealType: "lunch",
-      time: "1:30-2:30",
-      items: [
-        {
-          meal_id: 1,
-          title: "Murgi",
-          price: 200,
-        },
-        {
-          meal_id: 2,
-          title: "Mach",
-          price: 500,
-        },
-        {
-          meal_id: 3,
-          title: "goru",
-          price: 500,
-        },
-        {
-          meal_id: 4,
-          title: "Polao",
-          price: 500,
-        },
-        {
-          meal_id: 5,
-          title: "dal",
-          price: 500,
-        },
-      ],
-    },
-    dinner: {
-      mealType: "dinner",
-      time: "9:00 - 11:00",
-      items: [
-        {
-          meal_id: 1,
-          title: "Roast",
-          price: 900,
-        },
-        {
-          meal_id: 2,
-          title: "polao",
-          price: 600,
-        },
-        {
-          meal_id: 3,
-          title: "jorda",
-          price: 100,
-        },
-        {
-          meal_id: 4,
-          title: "Dal",
-          price: 10,
-        },
-      ],
-    },
-  },
-  {
-    day: "Mon",
-    breakfast: {
-      mealType: "breakfast",
-      time: "8:00-10:00",
-      items: [
-        {
-          meal_id: 1,
-          title: "biriyani",
-          price: 125,
-        },
-        {
-          meal_id: 2,
-          title: "Polao",
-          price: 110,
-        },
-        {
-          meal_id: 3,
-          title: "Roast",
-          price: 110,
-        },
-      ],
-    },
-    lunch: {
-      mealType: "lunch",
-      time: "1:30-2:30",
-      items: [
-        {
-          meal_id: 1,
-          title: "Murgi",
-          price: 200,
-        },
-        {
-          meal_id: 2,
-          title: "Dal",
-          price: 500,
-        },
-        {
-          meal_id: 3,
-          title: "Vat",
-          price: 200,
-        },
-      ],
-    },
-    dinner: {
-      mealType: "dinner",
-      time: "9:00 - 11:00",
-      items: [
-        {
-          meal_id: 1,
-          title: "Murgi",
-          price: 900,
-        },
-        {
-          meal_id: 2,
-          title: "Mach",
-          price: 600,
-        },
-        {
-          meal_id: 3,
-          title: "Vat",
-          price: 100,
-        },
-      ],
-    },
-  },
-  {
-    day: "Tue",
-    breakfast: {
-      mealType: "breakfast",
-      time: "8:00-10:00",
-      items: [
-        {
-          meal_id: 1,
-          title: "biriyani",
-          price: 125,
-        },
-        {
-          meal_id: 1,
-          title: "Polao",
-          price: 110,
-        },
-        {
-          meal_id: 2,
-          title: "Roast",
-          price: 110,
-        },
-        {
-          meal_id: 3,
-          title: "Murgi",
-          price: 200,
-        },
-        {
-          meal_id: 4,
-          title: "Dal",
-          price: 500,
-        },
-        {
-          meal_id: 5,
-          title: "Vat",
-          price: 200,
-        },
-      ],
-    },
-    lunch: {
-      mealType: "lunch",
-      time: "1:30-2:30",
-      items: [
-        {
-          meal_id: 1,
-          title: "biriyani",
-          price: 125,
-        },
-        {
-          meal_id: 2,
-          title: "Polao",
-          price: 110,
-        },
-        {
-          meal_id: 3,
-          title: "Roast",
-          price: 110,
-        },
-      ],
-    },
-    dinner: {
-      mealType: "dinner",
-      time: "9:00 - 11:00",
-      items: [
-        {
-          meal_id: 1,
-          title: "Murgi",
-          price: 900,
-        },
-        {
-          meal_id: 2,
-          title: "Mach",
-          price: 600,
-        },
-        {
-          meal_id: 3,
-          title: "Dal",
-          price: 200,
-        },
-        {
-          meal_id: 4,
-          title: "Vat",
-          price: 100,
-        },
-      ],
-    },
-  },
-  {
-    day: "Wed",
-    breakfast: {
-      mealType: "breakfast",
-      time: "8:00-10:00",
-      items: [
-        {
-          meal_id: 1,
-          title: "biriyani",
-          price: 125,
-        },
-        {
-          meal_id: 2,
-          title: "Polao",
-          price: 110,
-        },
-        {
-          meal_id: 3,
-          title: "Roast",
-          price: 110,
-        },
-        {
-          meal_id: 4,
-          title: "Murgi",
-          price: 200,
-        },
-        {
-          meal_id: 5,
-          title: "Dal",
-          price: 500,
-        },
-        {
-          meal_id: 6,
-          title: "Vat",
-          price: 200,
-        },
-      ],
-    },
-    lunch: {
-      mealType: "lunch",
-      time: "1:30-2:30",
-      items: [
-        {
-          meal_id: 1,
-          title: "biriyani",
-          price: 125,
-        },
-        {
-          meal_id: 2,
-          title: "Polao",
-          price: 110,
-        },
-        {
-          meal_id: 3,
-          title: "Roast",
-          price: 110,
-        },
-      ],
-    },
-    dinner: {
-      mealType: "dinner",
-      time: "9:00 - 11:00",
-      items: [
-        {
-          meal_id: 1,
-          title: "Murgi",
-          price: 900,
-        },
-        {
-          meal_id: 2,
-          title: "Mach",
-          price: 600,
-        },
-        {
-          meal_id: 3,
-          title: "Dal",
-          price: 200,
-        },
-        {
-          meal_id: 4,
-          title: "Vat",
-          price: 100,
-        },
-      ],
-    },
-  },
-
-  {
-    day: "Thu",
-    breakfast: {
-      mealType: "breakfast",
-      time: "8:00-10:00",
-      items: [
-        {
-          meal_id: 1,
-          title: "Alu Vorta",
-          price: 125,
-        },
-        {
-          meal_id: 2,
-          title: "Egg",
-          price: 110,
-        },
-        {
-          meal_id: 3,
-          title: "Vat",
-          price: 110,
-        },
-        {
-          meal_id: 4,
-          title: "Dal",
-          price: 110,
-        },
-      ],
-    },
-    lunch: {
-      mealType: "lunch",
-      time: "1:30-2:30",
-      items: [
-        {
-          meal_id: 1,
-          title: "Murgi",
-          price: 200,
-        },
-        {
-          meal_id: 2,
-          title: "Mach",
-          price: 500,
-        },
-        {
-          meal_id: 3,
-          title: "goru",
-          price: 500,
-        },
-        {
-          meal_id: 4,
-          title: "Vat",
-          price: 500,
-        },
-        {
-          meal_id: 5,
-          title: "dal",
-          price: 500,
-        },
-      ],
-    },
-    dinner: {
-      mealType: "dinner",
-      time: "9:00 - 11:00",
-      items: [
-        {
-          meal_id: 1,
-          title: "Murgi",
-          price: 900,
-        },
-        {
-          meal_id: 2,
-          title: "Mach",
-          price: 600,
-        },
-        {
-          meal_id: 3,
-          title: "dud",
-          price: 100,
-        },
-        {
-          meal_id: 4,
-          title: "vat",
-          price: 10,
-        },
-      ],
-    },
-  },
-  {
-    day: "Fri",
-    breakfast: {
-      mealType: "breakfast",
-      time: "8:00-10:00",
-      items: [
-        {
-          meal_id: 1,
-          title: "biriyani",
-          price: 125,
-        },
-        {
-          meal_id: 2,
-          title: "Polao",
-          price: 110,
-        },
-        {
-          meal_id: 3,
-          title: "Roast",
-          price: 110,
-        },
-      ],
-    },
-    lunch: {
-      mealType: "lunch",
-      time: "1:30-2:30",
-      items: [
-        {
-          meal_id: 1,
-          title: "Murgi",
-          price: 200,
-        },
-        {
-          meal_id: 2,
-          title: "Dal",
-          price: 500,
-        },
-        {
-          meal_id: 3,
-          title: "Vat",
-          price: 200,
-        },
-      ],
-    },
-    dinner: {
-      mealType: "dinner",
-      time: "9:00 - 11:00",
-      items: [
-        {
-          meal_id: 1,
-          title: "Murgi",
-          price: 900,
-        },
-        {
-          meal_id: 2,
-          title: "Mach",
-          price: 600,
-        },
-        {
-          meal_id: 3,
-          title: "Vat",
-          price: 100,
-        },
-      ],
-    },
-  },
-];
-
-/* ===============================
-   COMPONENT
-================================ */
-
-const MealScheduleTable = () => {
+const MealScheduleTable = ({ totalPrice }) => {
+  const { data: items = [] } = useGetItems();
   const days = ["Sat", "Sun", "Mon", "Tue", "Wed", "Thu", "Fri"];
 
-  /* -------- Active Column Selection -------- */
-  const [activeMeals, setActiveMeals] = useState([
-    "breakfast",
-    "lunch",
-    "dinner",
-  ]);
+  const [meals, setMeals] = useState([]);
+  const [activeMeals, setActiveMeals] = useState(meals);
 
-  /* -------- Toggle Column -------- */
-  const toggleMealColumn = (meal) => {
-    setActiveMeals((prev) =>
-      prev.includes(meal)
-        ? prev.length === 1
-          ? prev
-          : prev.filter((m) => m !== meal)
-        : [...prev, meal],
-    );
-  };
+  const [selectedDay, setSelectedDay] = useState("");
+  const [selectedMeal, setSelectedMeal] = useState("");
+  const [selectedOptions, setSelectedOptions] = useState([]);
+  const [startTime, setStartTime] = useState("");
+  const [endTime, setEndTime] = useState("");
+  const [newMealInput, setNewMealInput] = useState("");
 
-  /* -------- Schedule Fast Map -------- */
-  const scheduleMap = useMemo(() => {
-    return Object.fromEntries(schedule2.map((d) => [d.day, d]));
-  }, []);
+  const [scheduleMap, setScheduleMap] = useState({});
+  const [mealTimes, setMealTimes] = useState({});
 
-  /* -------- Selected Meal Items -------- */
-  const [selectedMeals, setSelectedMeals] = useState(() =>
-    days.reduce((acc, day) => {
-      acc[day] = dynamicTableBaseData.reduce((mAcc, meal) => {
-        mAcc[meal] = [];
-        return mAcc;
-      }, {});
-      return acc;
-    }, {}),
-  );
+  const itemOptions = items.map((item) => ({
+    value: item,
+    label: `${item.title} - ${+item.price + +totalPrice} TK`,
+    title: item.title,
+  }));
 
-  /* -------- Dropdown Open State -------- */
-  const [openDropdown, setOpenDropdown] = useState({});
+  const handleCreate = () => {
+    const finalMealName =
+      selectedMeal === "Other" ? newMealInput.trim() : selectedMeal;
+    if (
+      !selectedDay ||
+      !finalMealName ||
+      selectedOptions.length === 0 ||
+      !startTime ||
+      !endTime
+    ) {
+      alert("Please fill all fields properly");
+      return;
+    }
 
-  useEffect(() => {
-    const close = () => setOpenDropdown({});
-    window.addEventListener("click", close);
-    return () => window.removeEventListener("click", close);
-  }, []);
+    if (selectedMeal === "Other" && !meals.includes(finalMealName)) {
+      setMeals((prev) => [...prev, finalMealName]);
+      setActiveMeals((prev) => [...prev, finalMealName]);
+    }
 
-  /* -------- Dropdown Toggle -------- */
-  const toggleDropdown = (e, day, mealType) => {
-    e.stopPropagation();
-    const key = `${day}-${mealType}`;
-    setOpenDropdown((prev) => ({
-      [key]: !prev[key],
-    }));
-  };
+    const selectedItemsList = selectedOptions.map((opt) => opt.title);
 
-  /* -------- Item Select Toggle -------- */
-  const handleMealToggle = (day, mealType, mealId) => {
-    setSelectedMeals((prev) => {
-      const current = prev[day][mealType];
-      const isSelected = current.includes(mealId);
-
-      return {
-        ...prev,
-        [day]: {
-          ...prev[day],
-          [mealType]: isSelected
-            ? current.filter((id) => id !== mealId)
-            : [...current, mealId],
-        },
-      };
-    });
-  };
-
-  /* -------- Remove Tag -------- */
-  const removeTag = (e, day, mealType, mealId) => {
-    e.stopPropagation();
-    setSelectedMeals((prev) => ({
+    setScheduleMap((prev) => ({
       ...prev,
-      [day]: {
-        ...prev[day],
-        [mealType]: prev[day][mealType].filter((id) => id !== mealId),
+      [selectedDay]: {
+        ...(prev[selectedDay] || {}),
+        [finalMealName]: { items: selectedItemsList, startTime, endTime },
       },
     }));
+
+    setMealTimes((prev) => ({
+      ...prev,
+      [finalMealName]: { startTime, endTime },
+    }));
+
+    setSelectedOptions([]);
+    setStartTime("");
+    setEndTime("");
+    setNewMealInput("");
   };
 
-  /* ===============================
-     DROPDOWN CELL
-  ================================ */
-
-  const renderDropdown = (day, mealType, mealData) => {
-    const key = `${day}-${mealType}`;
-    const isOpen = openDropdown[key];
-    const items = mealData?.items || [];
-
-    return (
-      <td key={mealType} className="px-3 py-2 align-top relative">
-        {/* Selected Tags */}
-        <div className="flex flex-wrap gap-2 mb-1">
-          {selectedMeals[day][mealType].map((id) => {
-            const meal = items.find((m) => m.meal_id === id);
-            if (!meal) return null;
-
-            return (
-              <div
-                key={id}
-                className="flex items-center gap-1 text-gray-700 text-xs"
-              >
-                <FaCheckCircle className="text-green-600 text-[10px]" />
-                {meal.title} ({meal.price})
-                <FaTimes
-                  className="cursor-pointer hover:text-red-500"
-                  onClick={(e) => removeTag(e, day, mealType, id)}
-                />
-              </div>
-            );
-          })}
-        </div>
-
-        {/* Toggle */}
-        <div
-          className="border border-gray-300 rounded-md p-2 flex justify-between cursor-pointer bg-white"
-          onClick={(e) => toggleDropdown(e, day, mealType)}
-        >
-          <span className="text-gray-400 text-xs">
-            {selectedMeals[day][mealType].length > 0
-              ? `${selectedMeals[day][mealType].length} selected`
-              : `Select ${mealType}`}
-          </span>
-          <FaChevronDown className="text-xs" />
-        </div>
-
-        {/* Dropdown */}
-        {isOpen && (
-          <div
-            onClick={(e) => e.stopPropagation()}
-            className="absolute z-20 mt-1 w-full bg-white border rounded-md shadow-lg max-h-40 overflow-y-auto"
-          >
-            {items.length === 0 ? (
-              <div className="p-2 text-gray-400 text-sm">
-                No {mealType} available
-              </div>
-            ) : (
-              items.map((item) => {
-                const isSelected = selectedMeals[day][mealType].includes(
-                  item.meal_id,
-                );
-
-                return (
-                  <label
-                    key={item.meal_id}
-                    className="flex justify-between px-3 py-2 hover:bg-orange-50 cursor-pointer text-sm"
-                  >
-                    <span>
-                      {item.title} ({item.price}৳)
-                    </span>
-
-                    <input
-                      type="checkbox"
-                      checked={isSelected}
-                      onChange={() =>
-                        handleMealToggle(day, mealType, item.meal_id)
-                      }
-                    />
-                  </label>
-                );
-              })
-            )}
-          </div>
-        )}
-      </td>
+  const toggleMealColumn = (mealName) => {
+    setActiveMeals((prev) =>
+      prev.includes(mealName)
+        ? prev.filter((m) => m !== mealName)
+        : [...prev, mealName],
     );
+  };
+
+  const formatTime12 = (time24) => {
+    if (!time24) return "";
+    const [hourStr, min] = time24.split(":");
+    let hour = parseInt(hourStr, 10);
+    const ampm = hour >= 12 ? "PM" : "AM";
+    hour = hour % 12 || 12;
+    return `${hour}:${min} ${ampm}`;
   };
 
   return (
-    <>
-      <div className="flex flex-wrap gap-2 mb-4">
-        {dynamicTableBaseData.map((meal) => {
-          const active = activeMeals.includes(meal);
+    <div className="p-8 bg-gray-50">
+      {/* CREATE FORM */}
+      <div className="max-w-4xl mx-auto bg-white p-8 rounded-xl shadow-lg border border-gray-200 mb-10">
+        <h2 className="text-2xl font-bold text-center mb-6 text-gray-800 uppercase tracking-wide">
+          Create Meal & Time
+        </h2>
 
-          return (
-            <div className="bg-white rounded-2xl p-4 shadow-lg w-full  md:w-[200px]">
-              {/* HEADER */}
-              <div
-                className={`flex flex-col items-center gap-3 px-4 py-3 rounded-xl `}
-              >
-                <h3 className="font-semibold capitalize">{meal}</h3>
-                <div className="flex justify-center ">
-                  <label className="switch !text-[10px]">
-                    <input
-                      type="checkbox"
-                      checked={!!active}
-                      onClick={() => toggleMealColumn(meal)}
-                    />
-                    <span className="slider"></span>
-                  </label>
-                </div>
-              </div>
-
-              {/* ACTION BUTTON */}
-              <button
-                key={meal}
-                type="button"
-                onClick={() => toggleMealColumn(meal)}
-                className={` w-full py-2 text-sm cursor-pointer rounded-xl font-semibold
-                      ${
-                        active
-                          ? "bg-green-500 text-white"
-                          : "bg-gradient-to-r from-orange-400 to-pink-500 text-white"
-                      }`}
-              >
-                {active ? "Selected" : "Select Meal"}
-              </button>
-            </div>
-          );
-        })}
-      </div>
-
-      {/* Desktop Table */}
-      <div className="hidden lg:block overflow-x-auto border border-gray-300 rounded-lg shadow-sm">
-        <table className="min-w-full text-sm border-collapse">
-          <thead className="bg-orange-500 text-white">
-            <tr>
-              <th className="px-4 py-3 text-left">Day</th>
-
-              {activeMeals.map((meal) => (
-                <th key={meal} className="px-4 py-3 text-left capitalize">
-                  {meal}
-                </th>
-              ))}
-            </tr>
-          </thead>
-
-          <tbody>
-            {days.map((day) => {
-              const dayMeals = scheduleMap[day] || {};
-
-              return (
-                <tr
-                  key={day}
-                  className="border-b border-gray-300 hover:bg-gray-50"
-                >
-                  <td className="px-4 py-2 font-bold text-gray-700">{day}</td>
-
-                  {activeMeals.map((mealType) =>
-                    renderDropdown(day, mealType, dayMeals?.[mealType]),
-                  )}
-                </tr>
-              );
-            })}
-          </tbody>
-        </table>
-      </div>
-
-      {/* Mobile View */}
-      <div className="lg:hidden space-y-3">
-        {days.map((day) => {
-          const dayMeals = scheduleMap[day] || {};
-
-          return (
-            <div
-              key={day}
-              className="border border-gray-300 rounded-xl p-3 shadow-sm bg-white"
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          {/* Day */}
+          <div>
+            <label className="block text-sm font-semibold text-gray-700 mb-2">
+              Day
+            </label>
+            <select
+              value={selectedDay}
+              onChange={(e) => setSelectedDay(e.target.value)}
+              className="w-full border-gray-300 rounded-lg p-2 shadow-sm focus:ring-2 focus:ring-orange-400"
             >
-              <h3 className="text-center font-bold text-orange-500">{day}</h3>
-
-              {activeMeals.map((mealType) => (
-                <div key={mealType}>
-                  <p className="text-sm font-semibold capitalize">{mealType}</p>
-                  <table className="w-full">
-                    <tbody>
-                      <tr>
-                        {renderDropdown(day, mealType, dayMeals?.[mealType])}
-                      </tr>
-                    </tbody>
-                  </table>
-                </div>
+              <option value="">Select Day</option>
+              {days.map((d) => (
+                <option key={d}>{d}</option>
               ))}
-            </div>
-          );
-        })}
+            </select>
+          </div>
+
+          {/* Meal */}
+          <div>
+            <label className="block text-sm font-semibold text-gray-700 mb-2">
+              Meal Type
+            </label>
+            <select
+              value={selectedMeal}
+              onChange={(e) => setSelectedMeal(e.target.value)}
+              className="w-full border-gray-300 rounded-lg p-2 shadow-sm focus:ring-2 focus:ring-orange-400"
+            >
+              <option value="">Select Meal</option>
+              {meals.map((meal) => (
+                <option key={meal} value={meal}>
+                  {meal}
+                </option>
+              ))}
+              <option value="Other">+ Create New</option>
+            </select>
+          </div>
+        </div>
+
+        {selectedMeal === "Other" && (
+          <input
+            type="text"
+            placeholder="Enter new meal name"
+            className="mt-4 w-full border-gray-300 rounded-lg p-2 shadow-sm focus:ring-2 focus:ring-orange-400"
+            value={newMealInput}
+            onChange={(e) => setNewMealInput(e.target.value)}
+          />
+        )}
+
+        <div className="mt-4">
+          <label className="block text-sm font-semibold text-gray-700 mb-2">
+            Select Items
+          </label>
+          <Select
+            isMulti
+            options={itemOptions}
+            value={selectedOptions}
+            onChange={setSelectedOptions}
+            className="shadow-sm"
+          />
+        </div>
+
+        <div className="grid grid-cols-2 gap-6 mt-4">
+          <div>
+            <label className="block text-sm font-semibold text-gray-700 mb-2">
+              Start Time
+            </label>
+            <input
+              type="time"
+              value={startTime}
+              onChange={(e) => setStartTime(e.target.value)}
+              className="w-full border-gray-300 rounded-lg p-2 shadow-sm focus:ring-2 focus:ring-orange-400"
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-semibold text-gray-700 mb-2">
+              End Time
+            </label>
+            <input
+              type="time"
+              value={endTime}
+              onChange={(e) => setEndTime(e.target.value)}
+              className="w-full border-gray-300 rounded-lg p-2 shadow-sm focus:ring-2 focus:ring-orange-400"
+            />
+          </div>
+        </div>
+
+        <button
+          type="button"
+          onClick={handleCreate}
+          className="w-full mt-6 cursor-pointer bg-orange-600 text-white py-3 font-bold rounded-lg hover:bg-orange-700 transition"
+        >
+          Create Schedule
+        </button>
       </div>
-    </>
+
+      {/* MEAL TOGGLE */}
+      {meals?.length > 0 && (
+        <div className="flex flex-wrap justify-center gap-4 mb-10">
+          {meals.map((meal) => (
+            <div
+              key={meal}
+              className="bg-white border flex flex-col items-center border-gray-200 rounded-xl p-5 w-48 shadow hover:shadow-lg transition"
+            >
+              <h3 className="font-semibold text-gray-800 uppercase text-sm mb-2">
+                {meal}
+              </h3>
+
+              {mealTimes[meal] && (
+                <p className="text-xs text-orange-600 font-bold mb-3">
+                  {formatTime12(mealTimes[meal].startTime)} -{" "}
+                  {formatTime12(mealTimes[meal].endTime)}
+                </p>
+              )}
+
+              <label className="relative inline-flex items-center cursor-pointer">
+                <input
+                  type="checkbox"
+                  className="sr-only peer"
+                  checked={activeMeals.includes(meal)}
+                  onChange={() => toggleMealColumn(meal)}
+                />
+                <div className="w-11 h-6 bg-gray-200 rounded-full peer peer-checked:bg-orange-500 relative after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:after:translate-x-5"></div>
+              </label>
+            </div>
+          ))}
+        </div>
+      )}
+
+      {/* DYNAMIC TABLE */}
+      {meals?.length > 0 && (
+        <div className="max-w-7xl mx-auto overflow-x-auto border border-gray-200 rounded-xl shadow-lg">
+          <table className="w-full text-left border-collapse bg-white">
+            <thead className="bg-orange-600 text-white sticky top-0">
+              <tr>
+                <th className="p-4 border border-orange-700 text-center w-32">
+                  Day
+                </th>
+                {activeMeals.map((meal) => (
+                  <th
+                    key={meal}
+                    className="p-4 border border-orange-700 text-center"
+                  >
+                    {meal}
+                  </th>
+                ))}
+              </tr>
+            </thead>
+
+            <tbody>
+              {days.map((day) => (
+                <tr key={day} className="hover:bg-gray-50 transition">
+                  <td className="p-4 font-bold border border-gray-200 text-center bg-gray-100">
+                    {day}
+                  </td>
+                  {activeMeals.map((meal) => {
+                    const data = scheduleMap[day]?.[meal];
+                    return (
+                      <td
+                        key={meal}
+                        className="p-4 border border-gray-200 align-top max-w-[200px]"
+                      >
+                        {data ? (
+                          <div>
+                            <ul className="flex flex-wrap gap-2">
+                              {data.items.map((item, i) => (
+                                <li
+                                  key={i}
+                                  className="text-xs bg-orange-50 p-1 border border-gray-200 rounded font-semibold"
+                                >
+                                  {item}
+                                </li>
+                              ))}
+                            </ul>
+                          </div>
+                        ) : (
+                          <p className="text-xs text-gray-400 italic text-center py-4">
+                            Empty
+                          </p>
+                        )}
+                      </td>
+                    );
+                  })}
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
+    </div>
   );
 };
 
