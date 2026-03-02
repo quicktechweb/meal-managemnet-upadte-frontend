@@ -14,16 +14,14 @@ const UpdateUtilitiesService = () => {
 
   const { data: allUtilitiesServices } = useUtilitiesService();
 
-  const singleUtilities = allUtilitiesServices?.data?.find(
+  const singleUtilities = allUtilitiesServices?.find(
     (item) => item?._id === id,
   );
 
+
+
   const { data } = useAllKitchen();
   const { mutateAsync, isPending } = useUpdateUtilities();
-
-  const kitchens = data?.data || [];
-
-  console.log(kitchens);
 
   const {
     register,
@@ -39,7 +37,7 @@ const UpdateUtilitiesService = () => {
   });
 
   useEffect(() => {
-    if (singleUtilities && kitchens.length > 0) {
+    if (singleUtilities && data?.length > 0) {
       reset({
         name: singleUtilities.name,
         price: singleUtilities.price,
@@ -47,7 +45,7 @@ const UpdateUtilitiesService = () => {
         ranges: singleUtilities?.ranges || [],
       });
     }
-  }, [singleUtilities, kitchens, reset]);
+  }, [singleUtilities, data, reset]);
 
   const onSubmit = async (formData) => {
     try {
@@ -88,7 +86,7 @@ const UpdateUtilitiesService = () => {
               className="w-full bg-slate-50 border border-gray-300 rounded-xl p-3"
             >
               <option value="">Choose a kitchen...</option>
-              {kitchens.map((item) => (
+              {data?.map((item) => (
                 <option key={item._id} value={item._id}>
                   {item.title}
                 </option>

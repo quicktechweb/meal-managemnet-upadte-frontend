@@ -12,62 +12,80 @@ const options = [
   { label: "Client", path: false },
 ];
 
-const StepTwo = () => {
-  const [activeDropdown, setActiveDropdown] = useState(null);
+const StepTwo = ({
+  selectedOption,
+  setSelectedOption,
+  kitchenType,
+  setKitchenType,
+  studentService,
+  setStudentService,
+  kitchenData,
+  services,
+  serviceFeatures,
+  setServiceFeatures,
+  singleUtilities,
+  singleFeature,
+  toggleDropdown,
+  handleUtilityBill,
+  handleFeature,
+  activeDropdown,
+  setActiveDropdown,
+  totalPrice,
+  utilityBills,
+  setUtilityBills,
+  prevStep,
+  nextStep,
+  form,
+}) => {
+  // const [activeDropdown, setActiveDropdown] = useState(null);
 
-  const [selectedOption, setSelectedOption] = useState(options[0]);
+  // const [selectedOption, setSelectedOption] = useState(options[0]);
 
-  console.log(selectedOption);
+  // const [kitchenType, setKitchenType] = useState(null);
 
-  const [kitchenType, setKitchenType] = useState(null);
+  // const [studentService, setStudentService] = useState(null);
+  // const [utilityBills, setUtilityBills] = useState([]);
+  // const [serviceFeatures, setServiceFeatures] = useState([]);
 
-  const [studentService, setStudentService] = useState(null);
-  const [utilityBills, setUtilityBills] = useState([]);
-  const [serviceFeatures, setServiceFeatures] = useState([]);
+  // const { data: kitchenData } = useAllKitchen();
+  // const { data: services } = useAllService();
+  // const { data: allUtilities } = useUtilitiesService();
+  // const { data: getFeature } = useGetFeature();
 
-  const { data: kitchenData } = useAllKitchen();
-  const { data: services } = useAllService();
-  const { data: allUtilities } = useUtilitiesService();
-  const { data: getFeature } = useGetFeature();
+  // const singleUtilities = allUtilities?.filter(
+  //   (u) => u?.kitchen?.title === kitchenType?.title,
+  // );
+  // const singleFeature = getFeature?.filter(
+  //   (f) => f?.kitchen?.title === kitchenType?.title,
+  // );
 
-  const singleUtilities = allUtilities?.filter(
-    (u) => u?.kitchen?.title === kitchenType?.title,
-  );
-  const singleFeature = getFeature?.filter(
-    (f) => f?.kitchen?.title === kitchenType?.title,
-  );
+  // const handleUtilityBill = (bill) => {
+  //   setUtilityBills((prev) =>
+  //     prev.find((b) => b._id === bill._id)
+  //       ? prev.filter((b) => b._id !== bill._id)
+  //       : [...prev, bill],
+  //   );
+  // };
 
-  const toggleDropdown = (name) => {
-    setActiveDropdown(activeDropdown === name ? null : name);
-  };
+  // const handleFeature = (feature) => {
+  //   setServiceFeatures((prev) =>
+  //     prev.find((f) => f._id === feature._id)
+  //       ? prev.filter((f) => f._id !== feature._id)
+  //       : [...prev, feature],
+  //   );
+  // };
 
-  const handleUtilityBill = (bill) => {
-    setUtilityBills((prev) =>
-      prev.find((b) => b._id === bill._id)
-        ? prev.filter((b) => b._id !== bill._id)
-        : [...prev, bill],
-    );
-  };
+  // const totalUtilityPrice = utilityBills?.reduce(
+  //   (total, bill) => total + +bill.price,
+  //   0,
+  // );
 
-  const handleFeature = (feature) => {
-    setServiceFeatures((prev) =>
-      prev.find((f) => f._id === feature._id)
-        ? prev.filter((f) => f._id !== feature._id)
-        : [...prev, feature],
-    );
-  };
+  // const totalServiceFeaturePrice = serviceFeatures?.reduce(
+  //   (total, feature) => total + +feature?.price,
+  //   0,
+  // );
 
-  const totalUtilityPrice = utilityBills?.reduce(
-    (total, bill) => total + +bill.price,
-    0,
-  );
-
-  const totalServiceFeaturePrice = serviceFeatures?.reduce(
-    (total, feature) => total + +feature?.price,
-    0,
-  );
-
-  const totalPrice = totalUtilityPrice + totalServiceFeaturePrice;
+  // const totalPrice = totalUtilityPrice + totalServiceFeaturePrice;
 
   const SelectedBadge = ({ item, onRemove }) => (
     <span className="flex items-center gap-1 bg-orange-100 text-orange-700 px-3 py-1 rounded-full text-sm font-medium border border-orange-200">
@@ -102,7 +120,7 @@ const StepTwo = () => {
             />
           </div>
           {activeDropdown === "option" && (
-            <div className="absolute top-full left-0 w-full bg-white border rounded-xl mt-1 shadow-lg z-50">
+            <div className="absolute top-full left-0 w-full bg-white border border-gray-200   rounded-xl mt-1 shadow-lg z-50">
               {options.map((opt) => (
                 <div
                   key={opt.label}
@@ -138,7 +156,7 @@ const StepTwo = () => {
                 />
               </div>
               {activeDropdown === "kitchen" && (
-                <div className="absolute top-full left-0 w-full bg-white border rounded-xl mt-1 shadow-lg z-50 max-h-60 overflow-auto">
+                <div className="absolute top-full left-0 w-full bg-white border border-gray-200 rounded-xl mt-1 shadow-lg z-50 max-h-60 overflow-auto">
                   {kitchenData?.map((kitchen) => (
                     <div
                       key={kitchen._id}
@@ -174,7 +192,7 @@ const StepTwo = () => {
                   />
                 </div>
                 {activeDropdown === "utility" && (
-                  <div className="absolute top-full left-0 w-full bg-white border rounded-xl mt-1 shadow-lg z-50 max-h-48 overflow-auto">
+                  <div className="absolute top-full left-0 w-full bg-white border border-gray-200 rounded-xl mt-1 shadow-lg z-50 max-h-48 overflow-auto">
                     {singleUtilities?.map((bill) => (
                       <div
                         key={bill._id}
@@ -220,7 +238,7 @@ const StepTwo = () => {
                   />
                 </div>
                 {activeDropdown === "feature" && (
-                  <div className="absolute top-full left-0 w-full bg-white border rounded-xl mt-1 shadow-lg z-50 max-h-48 overflow-auto">
+                  <div className="absolute top-full left-0 w-full bg-white border  border-gray-200 rounded-xl mt-1 shadow-lg z-50 max-h-48 overflow-auto">
                     {singleFeature?.map((feature) => (
                       <div
                         key={feature._id}
@@ -268,7 +286,7 @@ const StepTwo = () => {
                   />
                 </div>
                 {activeDropdown === "service" && (
-                  <div className="absolute top-full left-0 w-full bg-white border rounded-xl mt-1 shadow-lg z-50 overflow-auto">
+                  <div className="absolute top-full left-0 w-full bg-white border border-gray-200 rounded-xl mt-1 shadow-lg z-50 overflow-auto">
                     {services?.map((service) => (
                       <div
                         key={service._id}
@@ -327,7 +345,7 @@ const StepTwo = () => {
                 />
               </div>
               {activeDropdown === "kitchen" && (
-                <div className="absolute top-full left-0 w-full bg-white border rounded-xl mt-1 shadow-lg z-50 max-h-60 overflow-auto">
+                <div className="absolute top-full left-0 w-full bg-white border rounded-xl mt-1 shadow-lg z-50 max-h-60 overflow-auto border-gray-200">
                   {kitchenData?.map((kitchen) => (
                     <div
                       key={kitchen._id}
@@ -363,7 +381,7 @@ const StepTwo = () => {
                   />
                 </div>
                 {activeDropdown === "utility" && (
-                  <div className="absolute top-full left-0 w-full bg-white border rounded-xl mt-1 shadow-lg z-50 max-h-48 overflow-auto">
+                  <div className="absolute top-full left-0 w-full bg-white border rounded-xl mt-1 shadow-lg z-50 max-h-48 overflow-auto border-gray-200">
                     {singleUtilities?.map((bill) => (
                       <div
                         key={bill._id}
@@ -409,7 +427,7 @@ const StepTwo = () => {
                   />
                 </div>
                 {activeDropdown === "feature" && (
-                  <div className="absolute top-full left-0 w-full bg-white border rounded-xl mt-1 shadow-lg z-50 max-h-48 overflow-auto">
+                  <div className="absolute top-full left-0 w-full bg-white border rounded-xl mt-1 shadow-lg z-50 max-h-48 overflow-auto border-gray-200">
                     {singleFeature?.map((feature) => (
                       <div
                         key={feature._id}
@@ -457,7 +475,7 @@ const StepTwo = () => {
                   />
                 </div>
                 {activeDropdown === "service" && (
-                  <div className="absolute top-full left-0 w-full bg-white border rounded-xl mt-1 shadow-lg z-50 overflow-auto">
+                  <div className="absolute top-full left-0 w-full bg-white border rounded-xl mt-1 shadow-lg z-50 overflow-auto border-gray-200">
                     {services?.map((service) => (
                       <div
                         key={service._id}
@@ -497,6 +515,23 @@ const StepTwo = () => {
           )}
         </div>
       )}
+
+      <div className="flex gap-2">
+        <button
+          type="button"
+          onClick={prevStep}
+          className="w-full border border-gray-200 cursor-pointer py-1.5 lg:py-3 rounded-lg"
+        >
+          Back
+        </button>
+        <button
+          type="button"
+          onClick={nextStep}
+          className="w-full bg-black cursor-pointer text-white py-1.5 lg:py-3 rounded-lg"
+        >
+          Next
+        </button>
+      </div>
     </div>
   );
 };
