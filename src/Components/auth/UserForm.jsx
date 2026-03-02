@@ -55,9 +55,13 @@ const UserForm = () => {
 
   const [division, setDivision] = useState(null);
   const [district, setDistrict] = useState(null);
+  const { handleSubmit, control, watch, setValue } = useForm();
+  const selectedCountry = watch("country");
+  const selectedState = watch("state");
+  const selectedDivision = watch("division");
 
   useEffect(() => {
-    if (!state) return;
+    if (!selectedState) return;
 
     const loadDivisions = async () => {
       try {
@@ -65,7 +69,6 @@ const UserForm = () => {
         const res = await api.get("/divisions");
         setDivisions(res?.data?.data || []);
       } catch (err) {
-        console.log("Failed to load divisions:", err);
         setDivisions([]);
       } finally {
         setDivisionLoading(false);
@@ -73,18 +76,17 @@ const UserForm = () => {
     };
 
     loadDivisions();
-  }, [state]);
+  }, [selectedState]);
 
   useEffect(() => {
-    if (!division) return;
+    if (!selectedDivision) return;
 
     const loadDistricts = async () => {
       try {
         setDistrictLoading(true);
-        const res = await api.get(`/division/${division}`);
+        const res = await api.get(`/division/${selectedDivision}`);
         setDistricts(res?.data?.data || []);
       } catch (err) {
-        console.log("Failed to load districts:", err);
         setDistricts([]);
       } finally {
         setDistrictLoading(false);
@@ -92,9 +94,7 @@ const UserForm = () => {
     };
 
     loadDistricts();
-  }, [division]);
-
-  const { handleSubmit, control, watch } = useForm();
+  }, [selectedDivision]);
 
   const uploadedDocs = watch("documents") || [];
 
@@ -289,73 +289,97 @@ const UserForm = () => {
           <h4 className="text-[18px] font-semibold text-gray-500">Address</h4>
 
           {/* Country */}
-          <select
-            onChange={(e) => setCountry(e.target.value)}
-            className="border focus:border-purple-500  border-gray-300 px-2 py-3 rounded w-full  text-gray-600"
-          >
-            <option value="">Select Country</option>
+          <Controller
+            name="country"
+            control={control}
+            rules={{ required: "Country is required" }}
+            render={({ field }) => (
+              <select
+                {...field}
+                className="border border-gray-300 px-2 py-3 rounded w-full text-gray-600"
+              >
+                <option value="">Select Country</option>
+                <option value="bangladesh">Bangladesh</option>
+              </select>
+            )}
+          />
 
-            <option key={"bangladesh"} value={"bangladesh"}>
-              Bangladesh
-            </option>
-          </select>
-
-          {country && (
-            <select
-              onChange={(e) => setState(e.target.value)}
-              className="border focus:border-purple-500  border-gray-300 px-2 py-3 rounded w-full  text-gray-600"
-            >
-              <option value="">Select State</option>
-
-              <option key={"bangladesh"} value={"bangladesh"}>
-                Bangladesh
-              </option>
-            </select>
+          {/* State */}
+          {selectedCountry && (
+            <Controller
+              name="state"
+              control={control}
+              rules={{ required: "State is required" }}
+              render={({ field }) => (
+                <select
+                  {...field}
+                  className="border border-gray-300 px-2 py-3 rounded w-full text-gray-600"
+                >
+                  <option value="">Select State</option>
+                  <option value="bangladesh">Bangladesh</option>
+                </select>
+              )}
+            />
           )}
 
-          {state && (
-            <select
-              onChange={(e) => setDivision(e.target.value)}
-              className="border focus:border-purple-500 border-gray-300 px-2 py-3 rounded w-full text-gray-600"
-              disabled={divisionLoading}
-            >
-              <option value="">
-                {divisionLoading ? "Loading divisions..." : "Select Divisions"}
-              </option>
-
-              {!divisionLoading &&
-                divisions?.map((c) => (
-                  <option key={c.division} value={c.division}>
-                    {c.division}
+          {/* Division */}
+          {selectedState && (
+            <Controller
+              name="division"
+              control={control}
+              rules={{ required: "Division is required" }}
+              render={({ field }) => (
+                <select
+                  {...field}
+                  disabled={divisionLoading}
+                  className="border border-gray-300 px-2 py-3 rounded w-full text-gray-600"
+                >
+                  <option value="">
+                    {divisionLoading ? "Loading..." : "Select Division"}
                   </option>
-                ))}
-            </select>
+
+                  {divisions?.map((item) => (
+                    <option key={item.division} value={item.division}>
+                      {item.division}
+                    </option>
+                  ))}
+                </select>
+              )}
+            />
           )}
 
-          {division && (
-            <select
-              onChange={(e) => setDistrict(e.target.value)}
-              className="border focus:border-purple-500 border-gray-300 px-2 py-3 rounded w-full text-gray-600"
-              disabled={districtLoading}
-            >
-              <option value="">
-                {districtLoading ? "Loading districts..." : "Select Districts"}
-              </option>
-
-              {!districtLoading &&
-                districts.map((c) => (
-                  <option key={c.district} value={c.district}>
-                    {c.district}
+          {/* District */}
+          {selectedDivision && (
+            <Controller
+              name="district"
+              control={control}
+              rules={{ required: "District is required" }}
+              render={({ field }) => (
+                <select
+                  {...field}
+                  disabled={districtLoading}
+                  className="border border-gray-300 px-2 py-3 rounded w-full text-gray-600"
+                >
+                  <option value="">
+                    {districtLoading ? "Loading..." : "Select District"}
                   </option>
-                ))}
-            </select>
+
+                  {districts?.map((item) => (
+                    <option key={item.district} value={item.district}>
+                      {item.district}
+                    </option>
+                  ))}
+                </select>
+              )}
+            />
           )}
 
-          {district && (
-            <div className="flex flex-col gap-2">
+          {/* Village + Location */}
+          {watch("district") && (
+            <>
               <InputField label="Village" name="village" control={control} />
               <InputField label="Location" name="location" control={control} />
-            </div>
+            </>
           )}
         </div>
 
