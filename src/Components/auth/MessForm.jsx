@@ -5,7 +5,7 @@ import Stepper from "./Stepper";
 import useStep from "../../Hooks/useStep";
 
 import StepOne from "./StepOne";
-import StepTwo from "./StepTwo"; 
+import StepTwo from "./StepTwo";
 import StepThree from "./StepThree";
 import {
   useAllKitchen,
@@ -27,7 +27,12 @@ const MessForm = () => {
 
   const nextStep = async () => {
     const isValid = await form.trigger();
-    if (isValid) setStep(step + 1);
+
+    if (isValid) {
+      const currentData = form.getValues();
+      console.log("Current Step Data:", currentData);
+      setStep(step + 1);
+    }
   };
 
   const prevStep = () => setStep(step - 1);

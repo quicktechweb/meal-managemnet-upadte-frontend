@@ -48,14 +48,11 @@ const InputField = ({ label, name, control, type = "text", rules = {} }) => (
 const UserForm = () => {
   const [divisions, setDivisions] = useState([]);
   const [districts, setDistricts] = useState([]);
-  const [country, setCountry] = useState(null);
-  const [state, setState] = useState(null);
+
   const [divisionLoading, setDivisionLoading] = useState(false);
   const [districtLoading, setDistrictLoading] = useState(false);
 
-  const [division, setDivision] = useState(null);
-  const [district, setDistrict] = useState(null);
-  const { handleSubmit, control, watch, setValue } = useForm();
+  const { handleSubmit, control, watch } = useForm();
   const selectedCountry = watch("country");
   const selectedState = watch("state");
   const selectedDivision = watch("division");
