@@ -5,7 +5,7 @@ import Stepper from "./Stepper";
 import useStep from "../../Hooks/useStep";
 
 import StepOne from "./StepOne";
-import StepTwo from "./StepTwo"; // your existing component
+import StepTwo from "./StepTwo"; 
 import StepThree from "./StepThree";
 import {
   useAllKitchen,

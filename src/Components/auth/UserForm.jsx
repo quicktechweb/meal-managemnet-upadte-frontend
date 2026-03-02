@@ -15,30 +15,32 @@ const InputField = ({ label, name, control, type = "text", rules = {} }) => (
     control={control}
     rules={rules}
     render={({ field, fieldState }) => (
-      <div className="relative">
-        <input
-          {...field}
-          type={type}
-          placeholder=" "
-          className={`peer w-full border rounded-md px-3 h-[50px] text-sm focus:outline-none text-gray-500 focus:border-black transition-all ${
-            fieldState.error ? "border-red-500" : "border-gray-200"
-          }`}
-        />
-        <label
-          className="absolute left-3 bg-white px-1 text-gray-500 transition-all
+      <>
+        <div className="relative">
+          <input
+            {...field}
+            type={type}
+            placeholder=" "
+            className={`peer w-full border rounded-md px-3 h-[50px] text-sm focus:outline-none text-gray-500 focus:border-black transition-all ${
+              fieldState.error ? "border-red-500" : "border-gray-200"
+            }`}
+          />
+          <label
+            className="absolute left-3 bg-white px-1 text-gray-500 transition-all
           top-1/2 -translate-y-1/2 text-sm md:text-base
           peer-focus:top-1 peer-focus:text-xs peer-focus:text-black
           peer-not-placeholder-shown:top-1 peer-not-placeholder-shown:text-xs
           pointer-events-none"
-        >
-          {label}
-        </label>
+          >
+            {label}
+          </label>
+        </div>
         {fieldState.error && (
-          <span className="text-red-500 text-sm mt-1 absolute left-0 -bottom-5">
+          <span className="text-red-500 text-sm  ">
             {fieldState.error.message}
           </span>
         )}
-      </div>
+      </>
     )}
   />
 );
@@ -94,6 +96,8 @@ const UserForm = () => {
 
   const { handleSubmit, control, watch } = useForm();
 
+  const uploadedDocs = watch("documents") || [];
+
   const [passwordShow, setPasswordShow] = useState(false);
   const [confirmPasswordShow, setConfirmPasswordShow] = useState(false);
 
@@ -103,9 +107,11 @@ const UserForm = () => {
   const [hallSelect, setHallSelect] = useState(false);
 
   const onSubmit = (data) => {
-    if (data) {
-      navigate("/dashboard/mealmanagement");
-    }
+    console.log(data);
+
+    // if (data) {
+    //   navigate("/dashboard/mealmanagement");
+    // }
   };
 
   // custom select
@@ -143,9 +149,7 @@ const UserForm = () => {
   const handleCreateReligion = (newItem) => {
     setReligionOptions((prev) => [...prev, newItem]);
   };
-  const handleCreateVillage = (newItem) => {
-    setVillageOptions((prev) => [...prev, newItem]);
-  };
+
   return (
     <>
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-3 ">
@@ -169,12 +173,23 @@ const UserForm = () => {
           rules={{ required: "Username required" }}
         />
 
-        <InputField label="Father Name" name="fatherName" control={control} />
-        <InputField label="Mother Name" name="motherName" control={control} />
+        <InputField
+          label="Father Name"
+          name="fatherName"
+          control={control}
+          rules={{ required: "Father name required" }}
+        />
+        <InputField
+          label="Mother Name"
+          name="motherName"
+          control={control}
+          rules={{ required: "Mother name required" }}
+        />
         <InputField
           label="Guardian Name"
           name="guardianName"
           control={control}
+          rules={{ required: "Guardian name required" }}
         />
 
         <CustomSelect
@@ -191,36 +206,84 @@ const UserForm = () => {
           label="Guardian Contact Number"
           name="guardian-number"
           control={control}
+          rules={{ required: "Guardian Contact Number required" }}
         />
 
-        <CustomSelect
-          label="Gender"
-          options={genderOptions}
-          value={gender}
-          onChange={setGender}
-          onCreate={handleCreateGender}
-          allowCreate
-          showOther
-        />
-
-        <CustomSelect
-          label="Religion"
-          options={religionOptions}
-          value={religion}
-          onChange={setReligion}
-          onCreate={handleCreateReligion}
-          allowCreate
-          showOther
-        />
-
-        <InputField
-          label="Date of Birth"
-          name="dob"
+        <Controller
+          name="gender"
           control={control}
-          type="date"
+          rules={{
+            required: "Gender is required",
+          }}
+          render={({ field: { onChange, value }, fieldState: { error } }) => (
+            <div className="space-y-1">
+              <label className="block text-sm font-medium text-gray-700">
+                Gender
+              </label>
+
+              <CustomSelect
+                label="Gender"
+                options={genderOptions}
+                value={value ?? ""}
+                onChange={(newValue) => {
+                  onChange(newValue);
+                  setGender(newValue);
+                }}
+                onCreate={handleCreateGender}
+                allowCreate
+                showOther
+              />
+
+              {error && (
+                <p className="text-red-500 text-sm mt-1">{error.message}</p>
+              )}
+            </div>
+          )}
         />
 
-        <DynamicDropdown />
+        <Controller
+          name="religion"
+          control={control}
+          rules={{
+            required: "Religion is required",
+          }}
+          render={({ field: { onChange, value }, fieldState: { error } }) => (
+            <div className="space-y-1">
+              <label className="block text-sm font-medium text-gray-700">
+                Religion
+              </label>
+
+              <CustomSelect
+                label="Religion"
+                options={religionOptions}
+                value={value ?? ""}
+                onChange={(newValue) => {
+                  onChange(newValue);
+                  setReligion(newValue);
+                }}
+                onCreate={handleCreateReligion}
+                allowCreate
+                showOther
+              />
+
+              {error && (
+                <p className="text-red-500 text-sm mt-1">{error.message}</p>
+              )}
+            </div>
+          )}
+        />
+
+        <div className="mt-2">
+          <InputField
+            label="Date of Birth"
+            name="dob"
+            control={control}
+            type="date"
+            rules={{ required: "Date of Birth required" }}
+          />
+        </div>
+
+        <DynamicDropdown control={control} />
 
         <div className="w-full flex flex-col gap-2">
           <h4 className="text-[18px] font-semibold text-gray-500">Address</h4>
@@ -311,15 +374,25 @@ const UserForm = () => {
               },
             }}
           />
-          <InputField label="Phone Number" name="phone" control={control} />
+          <InputField
+            label="Phone Number"
+            name="phone"
+            control={control}
+            rules={{
+              required: "Phone Number is required",
+            }}
+          />
         </div>
 
         {/* Password */}
 
         {/* Hostel */}
         <Controller
-          name="hostel"
+          name="institute"
           control={control}
+          rules={{
+            required: "Institute is required",
+          }}
           render={({ field }) => (
             <select
               {...field}
@@ -335,7 +408,7 @@ const UserForm = () => {
 
         {/* Hostel */}
         <Controller
-          name="hostel"
+          name="hall"
           control={control}
           render={({ field }) => (
             <select
@@ -369,7 +442,26 @@ const UserForm = () => {
 
         <div className="flex flex-col gap-1">
           <h4 className="text-[18px] font-semibold text-gray-500">Document</h4>
-          <DocumentUpload />
+          <Controller
+            name="documents"
+            control={control}
+            rules={{
+              validate: (value) =>
+                (value && value.length > 0) ||
+                "At least one document is required",
+            }}
+            render={({ field: { onChange }, fieldState: { error } }) => (
+              <>
+                <DocumentUpload
+                  onDocumentsChange={onChange}
+                  initialDocuments={uploadedDocs}
+                />
+                {error && (
+                  <p className="text-red-500 text-sm mt-1">* {error.message}</p>
+                )}
+              </>
+            )}
+          />
         </div>
 
         {/* PASSWORD FIELD */}
@@ -483,52 +575,8 @@ const UserForm = () => {
           </Link>
         </div>
       </form>
-
-      {/* {showHostelModal && (
-        <AddHostelModal
-          onClose={() => setShowHostelModal(false)}
-          onAdd={(name) => console.log("Add Hostel:", name)}
-        />
-      )} */}
     </>
   );
 };
-
-// const AddHostelModal = ({ onClose, onAdd }) => {
-//   const [hostelName, setHostelName] = useState("");
-
-//   const handleAdd = () => {
-//     if (!hostelName.trim()) return;
-//     onAdd(hostelName);
-//     setHostelName("");
-//     onClose();
-//   };
-
-//   return (
-//     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4">
-//       <div className="bg-white rounded-2xl w-full max-w-md p-6 relative space-y-4">
-//         <button
-//           onClick={onClose}
-//           className="absolute cursor-pointer right-4 top-4 p-1 border rounded-full"
-//         >
-//           <X size={18} />
-//         </button>
-//         <h2 className="text-xl font-semibold">Add Hostel Branch</h2>
-//         <input
-//           value={hostelName}
-//           onChange={(e) => setHostelName(e.target.value)}
-//           placeholder="Enter hostel name"
-//           className="w-full border rounded-md px-3 h-[45px]"
-//         />
-//         <button
-//           onClick={handleAdd}
-//           className="w-full cursor-pointer bg-orange-500 text-white py-2 rounded-md"
-//         >
-//           Add Hostel
-//         </button>
-//       </div>
-//     </div>
-//   );
-// };
 
 export default UserForm;

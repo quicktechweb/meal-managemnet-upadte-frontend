@@ -1,19 +1,15 @@
 import React, { useState, useRef, useEffect } from "react";
+import { Controller, useWatch } from "react-hook-form";
 import { ChevronDown } from "lucide-react";
 
-const DynamicDropdown = () => {
+const DynamicDropdown = ({ control }) => {
+  const watchedValues = useWatch({ control });
+
   const [options, setOptions] = useState({
     occupation: ["Business", "Job", "Study"],
     institution: ["Institution", "Company"],
     designation: ["Designation", "Department"],
     year: ["2024", "2025", "2026"],
-  });
-
-  const [selections, setSelections] = useState({
-    occupation: "",
-    institution: "",
-    designation: "",
-    year: "",
   });
 
   const [isOther, setIsOther] = useState({
@@ -23,15 +19,6 @@ const DynamicDropdown = () => {
     year: false,
   });
 
-  const [activeStep, setActiveStep] = useState("occupation");
-
-  const steps = ["occupation", "institution", "designation", "year"];
-
-  const handleSelect = (category, value) => {
-    setSelections((prev) => ({ ...prev, [category]: value }));
-    moveToNextStep(category);
-  };
-
   const handleCreate = (category, value) => {
     if (!value.trim()) return;
 
@@ -39,56 +26,56 @@ const DynamicDropdown = () => {
       ...prev,
       [category]: [...prev[category], value],
     }));
-
-    setSelections((prev) => ({ ...prev, [category]: value }));
-    moveToNextStep(category);
-  };
-
-  const handleOther = (category) => {
-    setIsOther((prev) => ({ ...prev, [category]: true }));
-    setSelections((prev) => ({ ...prev, [category]: "" }));
-  };
-
-  const moveToNextStep = (current) => {
-    const index = steps.indexOf(current);
-    if (index < steps.length - 1) {
-      setActiveStep(steps[index + 1]);
-    }
   };
 
   const renderDropdown = (category, label) => {
-    const isVisible =
+    const visible =
       category === "occupation" ||
-      (category === "institution" && selections.occupation) ||
-      (category === "designation" && selections.institution) ||
-      (category === "year" && selections.designation);
+      (category === "institution" && watchedValues?.occupation) ||
+      (category === "designation" && watchedValues?.institution) ||
+      (category === "year" && watchedValues?.designation);
 
-    if (!isVisible) return null;
+    if (!visible) return null;
 
     return (
-      <CustomStepDropdown
-        key={category}
-        category={category}
-        label={label}
-        options={options[category]}
-        value={selections[category]}
-        onChange={(val) => handleSelect(category, val)}
-        onCreate={(val) => handleCreate(category, val)}
-        onOther={() => handleOther(category)}
-        isOther={isOther[category]}
-        setIsOther={(val) =>
-          setIsOther((prev) => ({ ...prev, [category]: val }))
-        }
-        moveToNextStep={() => moveToNextStep(category)}
+      <Controller
+        name={category}
+        control={control}
+        rules={{ required: `${label} is required` }}
+        render={({ field, fieldState }) => (
+          <div className="w-full">
+            <CustomStepDropdown
+              category={category}
+              label={label}
+              options={options[category]}
+              value={field.value || ""}
+              onChange={field.onChange}
+              onCreate={(val) => {
+                handleCreate(category, val);
+                field.onChange(val);
+              }}
+              isOther={isOther[category]}
+              setIsOther={(val) =>
+                setIsOther((prev) => ({ ...prev, [category]: val }))
+              }
+            />
+
+            {fieldState.error && (
+              <p className="text-red-500 text-sm mt-1">
+                {fieldState.error.message}
+              </p>
+            )}
+          </div>
+        )}
       />
     );
   };
 
   return (
-    <div className="flex flex-col items-center gap-4 w-full ">
+    <div className="flex flex-col gap-4 w-full">
       {renderDropdown("occupation", "Select Occupation")}
       {renderDropdown("institution", "Select Institution/Company")}
-      {renderDropdown("designation", "Select Designation/Dept")}
+      {renderDropdown("designation", "Select Designation/Department")}
       {renderDropdown("year", "Select Year")}
     </div>
   );
@@ -101,10 +88,8 @@ const CustomStepDropdown = ({
   value,
   onChange,
   onCreate,
-  onOther,
   isOther,
   setIsOther,
-  moveToNextStep,
 }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [newItem, setNewItem] = useState("");
@@ -122,19 +107,13 @@ const CustomStepDropdown = ({
 
   const handleItemCreate = () => {
     if (!newItem.trim()) return;
-    onCreate && onCreate(newItem);
+    onCreate(newItem);
     setNewItem("");
-    setIsOpen(false);
-  };
-
-  const handleOtherClick = () => {
-    onOther && onOther();
     setIsOpen(false);
   };
 
   return (
     <div className="relative w-full" ref={dropdownRef}>
-      {/* Header */}
       {isOther ? (
         <input
           type="text"
@@ -142,72 +121,63 @@ const CustomStepDropdown = ({
           autoFocus
           placeholder={`Enter ${category}`}
           onChange={(e) => onChange(e.target.value)}
-          onBlur={() => {
-            if (value.trim() !== "") {
-              setIsOther(false);
-              moveToNextStep();
-            }
-          }}
+          onBlur={() => value && setIsOther(false)}
           onKeyDown={(e) => {
-            if (e.key === "Enter" && value.trim() !== "") {
+            if (e.key === "Enter" && value) {
               setIsOther(false);
-              moveToNextStep();
             }
           }}
-          className="w-full border border-[#3170A6] rounded-xl px-3 py-2 focus:outline-none focus:ring-2 focus:ring-purple-500/20"
+          className="w-full border border-[#3170A6] rounded-xl px-3 py-2 focus:outline-none"
         />
       ) : (
         <div
           onClick={() => setIsOpen(!isOpen)}
-          className="border border-gray-200 rounded-xl px-3 py-2 flex justify-between items-center cursor-pointer bg-gray-50/50 text-gray-500"
+          className="border border-gray-200 rounded-xl px-3 py-2 flex justify-between items-center cursor-pointer bg-gray-50 text-gray-500"
         >
-          <span className="whitespace-nowrap">{value || label}</span>
+          <span>{value || label}</span>
           <ChevronDown size={18} />
         </div>
       )}
 
-      {/* Dropdown */}
       {isOpen && !isOther && (
-        <div className="border absolute z-40 border-gray-200 border-t-0 bg-white w-full shadow-lg rounded-b-xl">
+        <div className="absolute z-40 bg-white w-full shadow-lg rounded-b-xl border border-gray-200">
           {options.map((item, index) => (
             <div
               key={index}
               onClick={() => {
-                onChange && onChange(item);
+                onChange(item);
                 setIsOpen(false);
               }}
-              className={`px-3 py-2 hover:bg-gray-100 cursor-pointer ${
-                item === value
-                  ? "bg-gray-100 text-black font-semibold"
-                  : "text-gray-600"
-              }`}
+              className="px-3 py-2 hover:bg-gray-100 cursor-pointer"
             >
               {item}
             </div>
           ))}
 
-          {/* Input for new item */}
           <div className="px-3 py-2 border-t">
             <input
               type="text"
               value={newItem}
               onChange={(e) => setNewItem(e.target.value)}
               placeholder="Type new item..."
-              className="w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500/20"
+              className="w-full px-3 py-2 border rounded-lg"
             />
           </div>
 
-          {/* Bottom Buttons */}
           <div className="flex justify-between px-3 py-2">
             <button
-              onClick={handleOtherClick}
-              className="px-3 py-1 border border-[#3170A6] rounded-lg text-sm"
+              onClick={() => {
+                setIsOther(true);
+                setIsOpen(false);
+              }}
+              className="px-3 py-1 border rounded-lg text-sm"
             >
               Other
             </button>
+
             <button
               onClick={handleItemCreate}
-              className="border border-[#3170A6] rounded-lg px-3 py-1 text-sm bg-[#3170A6] text-white"
+              className="px-3 py-1 bg-[#3170A6] text-white rounded-lg text-sm"
             >
               Create +
             </button>
