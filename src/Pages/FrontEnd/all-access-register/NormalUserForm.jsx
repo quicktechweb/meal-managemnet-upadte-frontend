@@ -11,7 +11,7 @@ import {
   Briefcase,
   Heart,
 } from "lucide-react";
-import { useForm } from "react-hook-form";
+import { Controller, useForm } from "react-hook-form";
 import { FaRegIdCard } from "react-icons/fa";
 
 import toast from "react-hot-toast";
@@ -21,6 +21,14 @@ import CustomSelect from "../../../Components/CustomSelect";
 import DocumentUpload from "../../../Components/DocumentUpload";
 import DynamicDropdown from "../../../Components/DynamicSelect";
 const NormalUserForm = () => {
+  const {
+    register,
+    handleSubmit,
+    watch,
+    control,
+    formState: { errors },
+  } = useForm();
+
   const [divisions, setDivisions] = useState([]);
   const [districts, setDistricts] = useState([]);
   const [country, setCountry] = useState(null);
@@ -31,8 +39,12 @@ const NormalUserForm = () => {
   const [division, setDivision] = useState(null);
   const [district, setDistrict] = useState(null);
 
+  const selectedCountry = watch("country");
+  const selectedState = watch("state");
+  const selectedDivision = watch("division");
+
   useEffect(() => {
-    if (!state) return;
+    if (!selectedState) return;
 
     const loadDivisions = async () => {
       try {
@@ -40,7 +52,6 @@ const NormalUserForm = () => {
         const res = await api.get("/divisions");
         setDivisions(res?.data?.data || []);
       } catch (err) {
-        console.log("Failed to load divisions:", err);
         setDivisions([]);
       } finally {
         setDivisionLoading(false);
@@ -48,18 +59,17 @@ const NormalUserForm = () => {
     };
 
     loadDivisions();
-  }, [state]);
+  }, [selectedState]);
 
   useEffect(() => {
-    if (!division) return;
+    if (!selectedDivision) return;
 
     const loadDistricts = async () => {
       try {
         setDistrictLoading(true);
-        const res = await api.get(`/division/${division}`);
+        const res = await api.get(`/division/${selectedDivision}`);
         setDistricts(res?.data?.data || []);
       } catch (err) {
-        console.log("Failed to load districts:", err);
         setDistricts([]);
       } finally {
         setDistrictLoading(false);
@@ -67,7 +77,7 @@ const NormalUserForm = () => {
     };
 
     loadDistricts();
-  }, [division]);
+  }, [selectedDivision]);
 
   const [village, setVillage] = useState("");
 
@@ -77,24 +87,16 @@ const NormalUserForm = () => {
 
   const [nidImages, setNidImages] = useState(null);
 
-  const {
-    register,
-    handleSubmit,
-    watch,
-    formState: { errors },
-  } = useForm();
   const { mutateAsync, isPending } = useRegister();
 
   const [gender, setGender] = useState("");
- 
+
   const [religion, setReligion] = useState("");
   const [genderOptions, setGenderOptions] = useState([
     "Male",
     "Female",
     "Children",
   ]);
-
- 
 
   const [religionOptions, setReligionOptions] = useState(["Islam", "Hindu"]);
 
@@ -105,7 +107,6 @@ const NormalUserForm = () => {
   const handleCreateReligion = (newItem) => {
     setReligionOptions((prev) => [...prev, newItem]);
   };
-
 
   const selectedUserType = watch("userType");
 
@@ -167,28 +168,25 @@ const NormalUserForm = () => {
 
   return (
     <form className="flex flex-col  gap-4" onSubmit={handleSubmit(onSubmit)}>
-     
-
       <FormInput
         icon={User}
         type="text"
         placeholder="Full Name"
         name="fullName"
-        validation={{ required: "Required" }}
+        validation={{ required: "Full name  Required" }}
       />
       <FormInput
         icon={User}
         type="text"
         placeholder="Nick Name"
         name="username"
-        validation={{ required: "Required" }}
       />
       <FormInput
         icon={User}
         type="text"
         placeholder="Username"
         name="username"
-        validation={{ required: "Required" }}
+        validation={{ required: "User Name Required" }}
       />
 
       <FormInput
@@ -196,7 +194,7 @@ const NormalUserForm = () => {
         type="text"
         placeholder="Father Name"
         name="username"
-        validation={{ required: "Required" }}
+        validation={{ required: "Father Name Required" }}
       />
 
       <FormInput
@@ -204,122 +202,185 @@ const NormalUserForm = () => {
         type="text"
         placeholder="Mother Name"
         name="username"
-        validation={{ required: "Required" }}
+        validation={{ required: "Mother Name Required" }}
       />
 
-      <CustomSelect
-        label="Gender"
-        options={genderOptions}
-        value={gender}
-        onChange={setGender}
-        onCreate={handleCreateGender}
-        allowCreate
-        showOther
+      <Controller
+        name="gender"
+        control={control}
+        rules={{
+          required: "Gender is required",
+        }}
+        render={({ field: { onChange, value }, fieldState: { error } }) => (
+          <div className="space-y-1">
+            <CustomSelect
+              label="Gender"
+              options={genderOptions}
+              value={value ?? ""}
+              onChange={(newValue) => {
+                onChange(newValue);
+                setGender(newValue);
+              }}
+              onCreate={handleCreateGender}
+              allowCreate
+              showOther
+            />
+
+            {error && (
+              <p className="text-red-500 text-sm mt-1">{error.message}</p>
+            )}
+          </div>
+        )}
       />
 
-      <CustomSelect
-        label="Religion"
-        options={religionOptions}
-        value={religion}
-        onChange={setReligion}
-        onCreate={handleCreateReligion}
-        allowCreate
-        showOther
+      <Controller
+        name="religion"
+        control={control}
+        rules={{
+          required: "Religion is required",
+        }}
+        render={({ field: { onChange, value }, fieldState: { error } }) => (
+          <div className="space-y-1">
+            <CustomSelect
+              label="Religion"
+              options={religionOptions}
+              value={value ?? ""}
+              onChange={(newValue) => {
+                onChange(newValue);
+                setReligion(newValue);
+              }}
+              onCreate={handleCreateReligion}
+              allowCreate
+              showOther
+            />
+
+            {error && (
+              <p className="text-red-500 text-sm mt-1">{error.message}</p>
+            )}
+          </div>
+        )}
       />
+
       <FormInput
         icon={Mail}
         type="date"
         placeholder="Date of birth"
         name="date"
         validation={{
-          required: "Required",
+          required: "Date of birth Required",
         }}
       />
 
-      <DynamicDropdown />
+      <DynamicDropdown control={control} />
 
       <div className="w-full flex flex-col gap-2">
         <h4 className="text-[18px] font-semibold text-gray-500">Address</h4>
 
         {/* Country */}
-        <select
-          onChange={(e) => setCountry(e.target.value)}
-          className="border focus:border-purple-500  border-gray-300 px-2 py-3 rounded w-full  text-gray-600"
-        >
-          <option value="">Select Country</option>
+        <Controller
+          name="country"
+          control={control}
+          rules={{ required: "Country is required" }}
+          render={({ field }) => (
+            <select
+              {...field}
+              className="border border-gray-300 px-2 py-3 rounded w-full text-gray-600"
+            >
+              <option value="">Select Country</option>
+              <option value="bangladesh">Bangladesh</option>
+            </select>
+          )}
+        />
 
-          <option key={"bangladesh"} value={"bangladesh"}>
-            Bangladesh
-          </option>
-        </select>
-
-        {country && (
-          <select
-            onChange={(e) => setState(e.target.value)}
-            className="border focus:border-purple-500  border-gray-300 px-2 py-3 rounded w-full  text-gray-600"
-          >
-            <option value="">Select State</option>
-
-            <option key={"bangladesh"} value={"bangladesh"}>
-              Bangladesh
-            </option>
-          </select>
+        {/* State */}
+        {selectedCountry && (
+          <Controller
+            name="state"
+            control={control}
+            rules={{ required: "State is required" }}
+            render={({ field }) => (
+              <select
+                {...field}
+                className="border border-gray-300 px-2 py-3 rounded w-full text-gray-600"
+              >
+                <option value="">Select State</option>
+                <option value="bangladesh">Bangladesh</option>
+              </select>
+            )}
+          />
         )}
 
-        {state && (
-          <select
-            onChange={(e) => setDivision(e.target.value)}
-            className="border focus:border-purple-500 border-gray-300 px-2 py-3 rounded w-full text-gray-600"
-            disabled={divisionLoading}
-          >
-            <option value="">
-              {divisionLoading ? "Loading divisions..." : "Select Divisions"}
-            </option>
-
-            {!divisionLoading &&
-              divisions?.map((c) => (
-                <option key={c.division} value={c.division}>
-                  {c.division}
+        {/* Division */}
+        {selectedState && (
+          <Controller
+            name="division"
+            control={control}
+            rules={{ required: "Division is required" }}
+            render={({ field }) => (
+              <select
+                {...field}
+                disabled={divisionLoading}
+                className="border border-gray-300 px-2 py-3 rounded w-full text-gray-600"
+              >
+                <option value="">
+                  {divisionLoading ? "Loading..." : "Select Division"}
                 </option>
-              ))}
-          </select>
+
+                {divisions?.map((item) => (
+                  <option key={item.division} value={item.division}>
+                    {item.division}
+                  </option>
+                ))}
+              </select>
+            )}
+          />
         )}
 
-        {division && (
-          <select
-            onChange={(e) => setDistrict(e.target.value)}
-            className="border focus:border-purple-500 border-gray-300 px-2 py-3 rounded w-full text-gray-600"
-            disabled={districtLoading}
-          >
-            <option value="">
-              {districtLoading ? "Loading districts..." : "Select Districts"}
-            </option>
-
-            {!districtLoading &&
-              districts.map((c) => (
-                <option key={c.district} value={c.district}>
-                  {c.district}
+        {/* District */}
+        {selectedDivision && (
+          <Controller
+            name="district"
+            control={control}
+            rules={{ required: "District is required" }}
+            render={({ field }) => (
+              <select
+                {...field}
+                disabled={districtLoading}
+                className="border border-gray-300 px-2 py-3 rounded w-full text-gray-600"
+              >
+                <option value="">
+                  {districtLoading ? "Loading..." : "Select District"}
                 </option>
-              ))}
-          </select>
+
+                {districts?.map((item) => (
+                  <option key={item.district} value={item.district}>
+                    {item.district}
+                  </option>
+                ))}
+              </select>
+            )}
+          />
         )}
 
-        {district && (
-          <div className="flex flex-col gap-2">
+        {/* Village + Location */}
+        {watch("district") && (
+          <>
             <FormInput
               icon={Home}
               type="text"
               placeholder="Village"
               name="village"
+              validation={{ required: "Village  Required" }}
             />
 
             <FormInput
               icon={Home}
               type="text"
               placeholder="Location"
-              name="address"
+              validation={{ required: "Location Required" }}
+              name="location"
             />
-          </div>
+          </>
         )}
       </div>
 

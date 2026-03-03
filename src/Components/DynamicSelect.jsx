@@ -3,7 +3,9 @@ import { Controller, useWatch } from "react-hook-form";
 import { ChevronDown } from "lucide-react";
 
 const DynamicDropdown = ({ control }) => {
-  const watchedValues = useWatch({ control });
+  const occupation = useWatch({ control, name: "occupation" });
+  const institution = useWatch({ control, name: "institution" });
+  const designation = useWatch({ control, name: "designation" });
 
   const [options, setOptions] = useState({
     occupation: ["Business", "Job", "Study"],
@@ -31,9 +33,9 @@ const DynamicDropdown = ({ control }) => {
   const renderDropdown = (category, label) => {
     const visible =
       category === "occupation" ||
-      (category === "institution" && watchedValues?.occupation) ||
-      (category === "designation" && watchedValues?.institution) ||
-      (category === "year" && watchedValues?.designation);
+      (category === "institution" && occupation) ||
+      (category === "designation" && institution) ||
+      (category === "year" && designation);
 
     if (!visible) return null;
 
@@ -101,6 +103,7 @@ const CustomStepDropdown = ({
         setIsOpen(false);
       }
     };
+
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
@@ -166,6 +169,7 @@ const CustomStepDropdown = ({
 
           <div className="flex justify-between px-3 py-2">
             <button
+              type="button"
               onClick={() => {
                 setIsOther(true);
                 setIsOpen(false);
@@ -176,6 +180,7 @@ const CustomStepDropdown = ({
             </button>
 
             <button
+              type="button"
               onClick={handleItemCreate}
               className="px-3 py-1 bg-[#3170A6] text-white rounded-lg text-sm"
             >

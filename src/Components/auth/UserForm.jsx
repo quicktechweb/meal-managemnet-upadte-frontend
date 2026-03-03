@@ -105,10 +105,6 @@ const UserForm = () => {
 
   const onSubmit = (data) => {
     console.log(data);
-
-    // if (data) {
-    //   navigate("/dashboard/mealmanagement");
-    // }
   };
 
   // custom select
@@ -117,9 +113,6 @@ const UserForm = () => {
   const [gender, setGender] = useState("");
   const [religion, setReligion] = useState("");
 
-  const [village, setVillage] = useState("");
-
-  const [villageOptions, setVillageOptions] = useState(["Ramdashdhi"]);
   const [genderOptions, setGenderOptions] = useState([
     "Male",
     "Female",
