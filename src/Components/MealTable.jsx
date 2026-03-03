@@ -125,26 +125,6 @@ const MealScheduleTable = ({ totalPrice }) => {
     return `${hour}:${min} ${ampm}`;
   };
 
-  // Save to backend
-  const saveToBackend = async () => {
-    try {
-      const response = await fetch("/api/schedule/create", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          mealTypes: mealTypeLists,
-          schedules: scheduleList,
-        }),
-      });
-      const data = await response.json();
-      if (response.ok) alert("Saved successfully!");
-      else alert(data.message);
-    } catch (err) {
-      console.error(err);
-      alert("Error saving data!");
-    }
-  };
-
   return (
     <div className="p-8 bg-gray-50">
       {/* CREATE FORM */}
@@ -248,13 +228,6 @@ const MealScheduleTable = ({ totalPrice }) => {
           >
             Create Schedule
           </button>
-          {/* <button
-            type="button"
-            onClick={saveToBackend}
-            className="flex-1 cursor-pointer bg-green-600 text-white py-3 font-bold rounded-lg hover:bg-green-700 transition"
-          >
-            Save All
-          </button> */}
         </div>
       </div>
 
@@ -295,61 +268,39 @@ const MealScheduleTable = ({ totalPrice }) => {
           <table className="w-full text-left border-collapse bg-white">
             <thead className="bg-orange-600 text-white sticky top-0">
               <tr>
-                <th className="p-4 border border-orange-700 text-center w-32">
-                  Day
-                </th>
-                {activeMeals.map((meal) => {
-                  const mealData = mealTypeLists.find(
-                    (m) => m.mealType === meal,
-                  );
-                  return (
-                    <th
-                      key={meal}
-                      className="p-4 border border-orange-700 text-center"
-                    >
-                      <div className="font-bold">{meal}</div>
-                      {mealData && (
-                        <div className="text-xs mt-1">
-                          {formatTime12(mealData.start_time)} -{" "}
-                          {formatTime12(mealData.end_time)}
-                        </div>
-                      )}
-                    </th>
-                  );
-                })}
+                <th className="p-4 border border-orange-700 w-32">Day</th>
+                {activeMeals.map((meal) => (
+                  <th key={meal} className="p-4 border border-orange-700 w-32">
+                    {meal}
+                  </th>
+                ))}
               </tr>
             </thead>
 
             <tbody>
               {days.map((day) => (
-                <tr key={day} className="hover:bg-gray-50 transition">
-                  <td className="p-4 font-bold border border-gray-200 text-center bg-gray-100">
-                    {day}
-                  </td>
+                <tr key={day} className="hover:bg-slate-50">
+                  <td className="py-6 px-6 font-bold">{day}</td>
                   {activeMeals.map((meal) => {
-                    const data = scheduleMap[day]?.[meal];
+                    const schedule = scheduleList.find(
+                      (s) => s.day === day && s.mealType === meal,
+                    );
                     return (
-                      <td
-                        key={meal}
-                        className="p-4 border border-gray-200 align-top max-w-[200px]"
-                      >
-                        {data ? (
-                          <div>
-                            <ul className="flex flex-wrap gap-2">
-                              {data.items.map((item, i) => (
-                                <li
-                                  key={i}
-                                  className="text-xs bg-orange-50 p-1 border border-gray-200 rounded font-semibold"
-                                >
-                                  {item}
-                                </li>
-                              ))}
-                            </ul>
+                      <td key={meal} className="py-6 px-6">
+                        {schedule ? (
+                          <div className="flex flex-col gap-1">
+                            {schedule.items.map((item) => (
+                              <p key={item.title}>
+                                {item.title} (৳{item.price})
+                              </p>
+                            ))}
+                            <span className="text-xs text-gray-500">
+                              {formatTime12(schedule.start_time)} -{" "}
+                              {formatTime12(schedule.end_time)}
+                            </span>
                           </div>
                         ) : (
-                          <p className="text-xs text-gray-400 italic text-center py-4">
-                            Empty
-                          </p>
+                          <span className="text-gray-400">-</span>
                         )}
                       </td>
                     );
