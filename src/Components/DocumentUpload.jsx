@@ -86,7 +86,7 @@ const DocumentUpload = ({ onDocumentsChange, initialDocuments = [] }) => {
 
       {/* File Input + Upload Button */}
       <div className="flex items-center gap-2 flex-wrap sm:flex-nowrap">
-        <div className="relative flex-1 items-center justify-between gap-3 px-4 py-3 border-2 border-dashed border-gray-300 rounded-xl bg-white hover:border-[#3170A6] transition flex items-center justify-between">
+        <div className="relative flex-1 items-center justify-between gap-3 px-4 py-3 border-2 border-dashed border-gray-300 rounded-xl bg-white hover:border-[#3170A6] transition flex ">
           <input
             type="file"
             multiple

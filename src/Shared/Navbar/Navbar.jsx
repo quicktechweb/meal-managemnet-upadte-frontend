@@ -56,13 +56,13 @@ export default function Navbar() {
             : "absolute top-0 bg-transparent text-white"
         }`}
       >
-        <div className="max-w-7xl mx-auto px-6 py-3 flex justify-between items-center ">
+        <div className="max-w-7xl mx-auto px-6 py-2 flex justify-between items-center ">
           {/* LOGO */}
           <Link to={"/"} className="font-semibold flex items-center">
             <img
               src={data?.logoUrl}
               alt={data?.siteName}
-              className="h-20 w-[120px] transition-transform duration-300 hover:scale-110"
+              className="h-16 w-[100px] transition-transform duration-300 hover:scale-110"
             />
           </Link>
 
