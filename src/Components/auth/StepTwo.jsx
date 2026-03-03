@@ -1,11 +1,6 @@
 import React, { useState } from "react";
 import { ChevronDown, Check, X } from "lucide-react";
-import {
-  useAllKitchen,
-  useAllService,
-  useGetFeature,
-  useUtilitiesService,
-} from "../../api/admin/admin.api";
+
 
 const options = [
   { label: "User", path: true },

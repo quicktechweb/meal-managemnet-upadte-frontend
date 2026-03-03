@@ -18,11 +18,11 @@ const StepThree = ({ prevStep, nextStep, totalPrice, form }) => {
           Back
         </button>
         <button
-          type="submit"
-          onClick={form.handleSubmit}
+          type="button"
+          onClick={nextStep}
           className="w-full bg-black cursor-pointer text-white py-1.5 lg:py-3 rounded-lg"
         >
-          Signup
+          Next
         </button>
       </div>
     </>

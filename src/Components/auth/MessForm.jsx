@@ -13,6 +13,7 @@ import {
   useGetFeature,
   useUtilitiesService,
 } from "../../api/admin/admin.api";
+import StepFour from "./StepFour";
 
 const MessForm = () => {
   const { step, setStep } = useStep();
@@ -40,6 +41,18 @@ const MessForm = () => {
   const onSubmit = (data) => {
     console.log("Final form data:", data);
     navigate("/dashboard/mealmanagement");
+  };
+
+  // step 1
+
+  const [instituteOptions, setInstituteOptions] = useState([
+    "School",
+    "Office",
+    "Collage",
+  ]);
+
+  const handleCreateInstituteType = (newItem) => {
+    setInstituteOptions((prev) => [...prev, newItem]);
   };
 
   // step 2
@@ -120,7 +133,14 @@ const MessForm = () => {
     >
       <Stepper step={step} />
 
-      {step === 1 && <StepOne form={form} nextStep={nextStep} />}
+      {step === 1 && (
+        <StepOne
+          instituteOptions={instituteOptions}
+          handleCreateInstituteType={handleCreateInstituteType}
+          form={form}
+          nextStep={nextStep}
+        />
+      )}
       {step === 2 && (
         <StepTwo
           form={form}
@@ -155,6 +175,16 @@ const MessForm = () => {
       {step === 3 && (
         <StepThree
           totalPrice={totalPrice}
+          form={form}
+          nextStep={nextStep}
+          prevStep={prevStep}
+        />
+      )}
+
+      {step === 4 && (
+        <StepFour
+          instituteOptions={instituteOptions}
+          handleCreateInstituteType={handleCreateInstituteType}
           form={form}
           nextStep={nextStep}
           prevStep={prevStep}
