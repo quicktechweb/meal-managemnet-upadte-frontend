@@ -5,7 +5,6 @@ const StepThree = ({ prevStep, nextStep, totalPrice, form }) => {
   return (
     <>
       <div className="space-y-3">
-        <p className="font-semibold">Select the Meals</p>
         <MealScheduleTable totalPrice={totalPrice} />
       </div>
 
