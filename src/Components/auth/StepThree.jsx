@@ -1,12 +1,10 @@
 import React from "react";
 import MealScheduleTable from "../MealTable";
 
-const StepThree = ({ prevStep, nextStep, totalPrice, form }) => {
+const StepThree = ({ prevStep, form, nextStep, totalPrice }) => {
   return (
-    <>
-      <div className="space-y-3">
-        <MealScheduleTable totalPrice={totalPrice} />
-      </div>
+    <div className="space-y-3">
+      <MealScheduleTable totalPrice={totalPrice} />
 
       <div className="flex gap-2">
         <button
@@ -24,7 +22,7 @@ const StepThree = ({ prevStep, nextStep, totalPrice, form }) => {
           Next
         </button>
       </div>
-    </>
+    </div>
   );
 };
 

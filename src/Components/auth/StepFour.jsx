@@ -20,6 +20,7 @@ const StepFour = ({ prevStep, form }) => {
     trigger,
     control,
     instituteOptions,
+    handleSubmit,
     handleCreateInstituteType,
   } = form;
 
@@ -78,8 +79,15 @@ const StepFour = ({ prevStep, form }) => {
     );
   };
 
+  const onSubmit = (data) => {
+    const payload = {
+      ...data,
+      permissions: selected,
+    };
+  };
+
   return (
-    <div>
+    <form onSubmit={handleSubmit(onSubmit)}>
       <div className="grid grid-cols-2 gap-5">
         <div className="flex flex-col gap-2.5 mb-3">
           <div className="w-full bg-white rounded-2xl shadow-sm border border-slate-200 p-3">
@@ -356,7 +364,7 @@ const StepFour = ({ prevStep, form }) => {
           Signup
         </button>
       </div>
-    </div>
+    </form>
   );
 };
 
