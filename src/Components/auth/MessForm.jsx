@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { Link, useNavigate } from "react-router-dom";
 import Stepper from "./Stepper";
@@ -61,9 +61,22 @@ const MessForm = () => {
   const { data: allUtilities } = useUtilitiesService();
   const { data: getFeature } = useGetFeature();
 
+  useEffect(() => {
+    if (kitchenData?.length > 0 && !kitchenType) {
+      setKitchenType(kitchenData[0]);
+    }
+  }, [kitchenData]);
+
+  useEffect(() => {
+    setUtilityBills([]);
+    setServiceFeatures([]);
+    setStudentService(null);
+  }, [kitchenType]);
+
   const singleUtilities = allUtilities?.filter(
     (u) => u?.kitchen?.title === kitchenType?.title,
   );
+
   const singleFeature = getFeature?.filter(
     (f) => f?.kitchen?.title === kitchenType?.title,
   );
