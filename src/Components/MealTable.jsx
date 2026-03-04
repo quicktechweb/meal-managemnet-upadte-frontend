@@ -288,19 +288,15 @@ const MealScheduleTable = ({ totalPrice }) => {
                     return (
                       <td key={meal} className="py-6 px-6">
                         {schedule ? (
-                          <div className="flex flex-col gap-1">
+                          <div className="flex items-center flex-wrap max-w-[350px] gap-1">
                             {schedule.items.map((item) => (
                               <p key={item.title}>
                                 {item.title} (৳{item.price})
                               </p>
                             ))}
-                            <span className="text-xs text-gray-500">
-                              {formatTime12(schedule.start_time)} -{" "}
-                              {formatTime12(schedule.end_time)}
-                            </span>
                           </div>
                         ) : (
-                          <span className="text-gray-400">-</span>
+                          <span className="text-gray-400">No Schedule yet</span>
                         )}
                       </td>
                     );

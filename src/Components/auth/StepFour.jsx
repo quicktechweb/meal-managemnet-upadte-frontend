@@ -31,9 +31,9 @@ const StepFour = ({ prevStep, form }) => {
   const [divisionLoading, setDivisionLoading] = useState(false);
   const [districtLoading, setDistrictLoading] = useState(false);
 
-  const selectedCountry = watch("country");
-  const selectedState = watch("state");
-  const selectedDivision = watch("division");
+  const selectedCountry = watch("country_admin");
+  const selectedState = watch("state_admin");
+  const selectedDivision = watch("division_admin");
 
   useEffect(() => {
     if (!selectedState) return;
@@ -163,7 +163,7 @@ const StepFour = ({ prevStep, form }) => {
 
               {/* Country */}
               <Controller
-                name="country"
+                name="country_admin"
                 control={control}
                 rules={{ required: "Country is required" }}
                 render={({ field }) => (
@@ -180,7 +180,7 @@ const StepFour = ({ prevStep, form }) => {
               {/* State */}
               {selectedCountry && (
                 <Controller
-                  name="state"
+                  name="state_admin"
                   control={control}
                   rules={{ required: "State is required" }}
                   render={({ field }) => (
@@ -198,7 +198,7 @@ const StepFour = ({ prevStep, form }) => {
               {/* Division */}
               {selectedState && (
                 <Controller
-                  name="division"
+                  name="division_admin"
                   control={control}
                   rules={{ required: "Division is required" }}
                   render={({ field }) => (
@@ -224,7 +224,7 @@ const StepFour = ({ prevStep, form }) => {
               {/* District */}
               {selectedDivision && (
                 <Controller
-                  name="district"
+                  name="district_admin"
                   control={control}
                   rules={{ required: "District is required" }}
                   render={({ field }) => (
@@ -248,21 +248,25 @@ const StepFour = ({ prevStep, form }) => {
               )}
 
               {/* Village + Location */}
-              {watch("district") && (
+              {watch("district_admin") && (
                 <>
                   <FloatingInput
                     label="Village"
                     type={"text"}
-                    name="village"
-                    error={errors.village}
-                    {...register("village", { required: "Village required" })}
+                    name="village_admin"
+                    error={errors.village_admin}
+                    {...register("village_admin", {
+                      required: "Village required",
+                    })}
                   />
                   <FloatingInput
                     label="Location"
                     type={"text"}
-                    name="location"
-                    error={errors.location}
-                    {...register("location", { required: "Location required" })}
+                    name="location_admin"
+                    error={errors.location_admin}
+                    {...register("location_admin", {
+                      required: "Location required",
+                    })}
                   />
                 </>
               )}
@@ -275,13 +279,13 @@ const StepFour = ({ prevStep, form }) => {
               <FloatingInput
                 label="Email"
                 type="email"
-                error={errors.email}
-                {...register("email", { required: "Email required" })}
+                error={errors.email_admin}
+                {...register("email_admin", { required: "Email required" })}
               />
               <FloatingInput
                 label="Phone Number"
-                error={errors.phone}
-                {...register("phone", { required: "Phone required" })}
+                error={errors.phone_admin}
+                {...register("phone_admin", { required: "Phone required" })}
               />
             </div>
 

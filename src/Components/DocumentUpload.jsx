@@ -89,7 +89,6 @@ const DocumentUpload = ({ onDocumentsChange, initialDocuments = [] }) => {
         <div className="relative flex-1 items-center justify-between gap-3 px-4 py-3 border-2 border-dashed border-gray-300 rounded-xl bg-white hover:border-[#3170A6] transition flex ">
           <input
             type="file"
-            multiple
             accept="image/*,application/pdf"
             onChange={handleImageChange}
             className="absolute inset-0 opacity-0 cursor-pointer"
