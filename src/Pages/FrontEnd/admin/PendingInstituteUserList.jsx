@@ -51,7 +51,9 @@ const PendingInstituteUserList = ({ users }) => {
                     </span>
                   </td>
                   <td className="py-3 px-6 text-center">
-                    <span className="bg-yellow-100 text-yellow-700 py-1 px-3 rounded-full text-xs font-semibold animate-pulse">
+                    <span
+                      className={` ${user.approval_status === "pending" && "bg-yellow-100 text-yellow-700"} ${user.approval_status === "approved" && "bg-green-100 text-green-700"}  py-1 px-3 rounded-full text-xs font-semibold animate-pulse`}
+                    >
                       {user.approval_status}
                     </span>
                   </td>

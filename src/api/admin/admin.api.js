@@ -11,6 +11,7 @@ import {
   addPageFunction,
   addscheduleFunction,
   addutilitiesFunction,
+  approvedInstituteUserFunction,
   bannerListFunction,
   chooseusBannerFunction,
   chooseusListsFunction,
@@ -708,7 +709,21 @@ export const usePendingInstituteUser = () => {
   return useQuery({
     queryKey: "pending_institute_user",
     queryFn: pendingInstituteUserFunction,
-    retry:false
-  })
-}
+    retry: false,
+  });
+};
 
+export const useApprovedInstitute = () => {
+  const query = useQueryClient();
+  return useMutation({
+    mutationKey: ["approved-institute"],
+    mutationFn: (payload) => approvedInstituteUserFunction(payload),
+    onSuccess: (data) => {
+      toast.success(data?.message);
+      query.invalidateQueries(["pending_institute_user"]);
+    },
+    onError: (err) => {
+      toast.error(err?.response?.data?.message);
+    },
+  });
+};

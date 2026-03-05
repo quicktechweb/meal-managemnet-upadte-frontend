@@ -1,5 +1,8 @@
 import React from "react";
-import { usePendingInstituteUser } from "../../../api/admin/admin.api";
+import {
+  useApprovedInstitute,
+  usePendingInstituteUser,
+} from "../../../api/admin/admin.api";
 import { useNavigate, useParams } from "react-router-dom";
 
 const SinglePendingInstituteUser = () => {
@@ -16,7 +19,15 @@ const SinglePendingInstituteUser = () => {
     (institute) => institute._id === id,
   );
 
-  console.log(singlePendingInstituteUser);
+  const { mutateAsync, isPending } = useApprovedInstitute();
+
+  const handleApprove = async () => {
+    const payload = {
+      userId: id,
+      status: "approved",
+    };
+    await mutateAsync({ ...payload });
+  };
 
   return (
     <div className=" bg-gray-100 min-h-screen">
@@ -30,11 +41,14 @@ const SinglePendingInstituteUser = () => {
             ← Back to List
           </button>
           <div className="flex gap-3">
-            <button className="bg-red-600 text-white px-4 py-1 rounded-lg hover:bg-red-600 transition font-semibold text-xs">
+            {/* <button className="bg-red-600 text-white px-4 py-1 rounded-lg hover:bg-red-600 transition font-semibold text-xs">
               Reject
-            </button>
-            <button className="bg-green-800 text-white px-4 py-1 rounded-lg hover:bg-green-700 transition font-semibold text-xs">
-              Approve User
+            </button> */}
+            <button
+              onClick={handleApprove}
+              className="bg-green-800 cursor-pointer text-white px-4 py-1 rounded-lg hover:bg-green-700 transition font-semibold text-xs"
+            >
+              {isPending ? "Approving..." : "Approve User"}
             </button>
           </div>
         </div>
