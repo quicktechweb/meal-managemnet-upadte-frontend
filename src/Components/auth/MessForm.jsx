@@ -32,8 +32,9 @@ const MessForm = () => {
   const [userId, setUserId] = useState(null);
 
   const [formUploadData, setFormUploadData] = useState([]);
+  const [adminFormUploadData, setAdminFormUploadData] = useState([]);
 
-  console.log("formuploaddata", formUploadData);
+  console.log("formuploaddata", adminFormUploadData);
 
   // step 1
 
@@ -179,14 +180,16 @@ const MessForm = () => {
           district: currentData?.district,
           village: currentData?.village,
           location: currentData?.location,
-          email: currentData?.email,
-          phone_number: currentData?.phone,
           password: currentData?.password,
           documents: formUploadData,
         };
 
         await mutateAsync(
-          { information: payload },
+          {
+            email: currentData.email ? currentData?.email : null,
+            phone: currentData?.phone ? currentData?.phone : null,
+            information: payload,
+          },
           {
             onSuccess: (data) => {
               if (data) {
@@ -198,6 +201,7 @@ const MessForm = () => {
               }
             },
             onError: (err) => {
+              toast.error(err?.response?.data?.message);
               console.log(err);
             },
           },
@@ -276,6 +280,7 @@ const MessForm = () => {
       village_admin: data.village_admin,
       location_admin: data.location_admin,
       permission: selected,
+      documents_admin: adminFormUploadData,
     };
 
     await mutateAsync(
@@ -370,6 +375,9 @@ const MessForm = () => {
           prevStep={prevStep}
           setSelected={setSelected}
           selected={selected}
+          setFormUploadData={setFormUploadData}
+         
+          setAdminFormUploadData={setAdminFormUploadData}
         />
       )}
 

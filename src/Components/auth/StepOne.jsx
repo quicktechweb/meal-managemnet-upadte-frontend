@@ -300,17 +300,8 @@ const StepOne = ({
       {/* Contact */}
       <div className="w-full flex flex-col gap-2">
         <h4 className="text-[18px] font-semibold text-gray-500">Contact</h4>
-        <FloatingInput
-          label="Email"
-          type="email"
-          error={errors.email}
-          {...register("email", { required: "Email required" })}
-        />
-        <FloatingInput
-          label="Phone Number"
-          error={errors.phone}
-          {...register("phone", { required: "Phone required" })}
-        />
+        <FloatingInput label="Email" type="email" {...register("email")} />
+        <FloatingInput label="Phone Number" {...register("phone")} />
       </div>
 
       {/* Document */}

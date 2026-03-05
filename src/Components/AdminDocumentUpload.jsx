@@ -2,10 +2,10 @@ import React, { useState, useEffect } from "react";
 import CustomSelect from "./CustomSelect";
 import { FaRegIdCard } from "react-icons/fa";
 
-const DocumentUpload = ({
+const AdminDocumentUpload = ({
   onDocumentsChange,
   initialDocuments = [],
-  setFormUploadData,
+  setAdminFormUploadData,
 }) => {
   const [documentType, setDocumentType] = useState("");
   const [documentOptions, setDocumentOptions] = useState([
@@ -75,7 +75,7 @@ const DocumentUpload = ({
       };
 
       setUploadedData((prev) => [...prev, newData]);
-      setFormUploadData((prev) => [...prev, newData]);
+      setAdminFormUploadData((prev) => [...prev, newData]);
 
       // Reset
       setDocumentType("");
@@ -175,7 +175,6 @@ const DocumentUpload = ({
               <div className="flex items-center gap-4 flex-1">
                 <div className="flex -space-x-2">
                   <img
-                
                     src={item.document_files}
                     alt="preview"
                     className="w-10 h-10 object-cover rounded border-2 border-white shadow-sm"
@@ -207,4 +206,4 @@ const DocumentUpload = ({
   );
 };
 
-export default DocumentUpload;
+export default AdminDocumentUpload;

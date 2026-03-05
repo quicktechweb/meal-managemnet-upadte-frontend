@@ -3,7 +3,8 @@ import { Controller } from "react-hook-form";
 import CustomSelect from "../CustomSelect";
 import { FloatingInput } from "./StepOne";
 import { api } from "../../utils/countryApi";
-import DocumentUpload from "../DocumentUpload";
+
+import AdminDocumentUpload from "../AdminDocumentUpload";
 
 const permissionsList = [
   "Institute Admin Panel",
@@ -12,7 +13,14 @@ const permissionsList = [
   "Institute Management Panel",
 ];
 
-const StepFour = ({ prevStep, form, selected, setSelected }) => {
+const StepFour = ({
+  prevStep,
+  form,
+  selected,
+  setSelected,
+  setFormUploadData,
+  setAdminFormUploadData,
+}) => {
   const {
     register,
     formState: { errors },
@@ -299,7 +307,7 @@ const StepFour = ({ prevStep, form, selected, setSelected }) => {
                 }}
                 render={({ field: { onChange }, fieldState: { error } }) => (
                   <>
-                    <DocumentUpload
+                    <AdminDocumentUpload
                       onDocumentsChange={onChange}
                       initialDocuments={uploadedDocs}
                     />
