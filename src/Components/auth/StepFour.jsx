@@ -310,6 +310,7 @@ const StepFour = ({
                     <AdminDocumentUpload
                       onDocumentsChange={onChange}
                       initialDocuments={uploadedDocs}
+                      setAdminFormUploadData={setAdminFormUploadData}
                     />
                     {error && (
                       <p className="text-red-500 text-sm mt-1">

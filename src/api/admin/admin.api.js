@@ -39,6 +39,7 @@ import {
   getallutilitiesfunction,
   getItemsFunction,
   getWebsiteSetting,
+  pendingInstituteUserFunction,
   singlePageFunction,
   updateAppDataSectionFunction,
   updateBannerFunction,
@@ -702,3 +703,12 @@ export const useGetItems = () => {
     retry: false,
   });
 };
+
+export const usePendingInstituteUser = () => {
+  return useQuery({
+    queryKey: "pending_institute_user",
+    queryFn: pendingInstituteUserFunction,
+    retry:false
+  })
+}
+

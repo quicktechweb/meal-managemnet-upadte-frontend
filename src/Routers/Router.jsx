@@ -74,6 +74,8 @@ import WebsiteSettings from "../Pages/FrontEnd/admin/WebsiteSettings";
 import SelectRecovery from "../Auth/ForgotPassword/SelectRecovery";
 import NewPassword from "../Auth/ForgotPassword/NewPassword";
 import EnterCode from "../Auth/ForgotPassword/EnterCode";
+import InstituteUser from "../Pages/FrontEnd/admin/InstituteUser";
+import SinglePendingInstituteUser from "../Pages/FrontEnd/admin/SinglePendingInstituteUser";
 
 const router = createBrowserRouter([
   {
@@ -434,6 +436,14 @@ const router = createBrowserRouter([
       {
         path: "/admin/dashboard/website-settings",
         element: <WebsiteSettings />,
+      },
+      {
+        path: "/admin/dashboard/institute-user",
+        element: <InstituteUser />,
+      },
+      {
+        path: "/admin/dashboard/institute-user/:id",
+        element: <SinglePendingInstituteUser />,
       },
     ],
   },
