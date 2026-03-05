@@ -193,8 +193,6 @@ const MessForm = () => {
           {
             onSuccess: (data) => {
               if (data) {
-                console.log(data, "step 1 data");
-
                 setUserId(data?.data?.userId);
                 toast.success(data?.data?.message);
                 setStep(step + 1);
@@ -290,7 +288,7 @@ const MessForm = () => {
           if (data) {
             toast.success(data?.data?.message);
 
-            navigate("/#login");
+            navigate("/auth/login");
             setStep(1);
           }
         },
@@ -376,7 +374,6 @@ const MessForm = () => {
           setSelected={setSelected}
           selected={selected}
           setFormUploadData={setFormUploadData}
-         
           setAdminFormUploadData={setAdminFormUploadData}
         />
       )}
@@ -387,7 +384,7 @@ const MessForm = () => {
         </p>
         <Link
           className="w-[150px] inline-block text-center bg-orange-500 px-4 text-white py-1 rounded-2xl font-bold transition-all active:scale-[0.98] cursor-pointer"
-          to="/#login"
+          to="/auth/login"
         >
           Sign In
         </Link>
