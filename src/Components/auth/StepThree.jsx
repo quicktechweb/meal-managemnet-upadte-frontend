@@ -1,10 +1,25 @@
 import React from "react";
 import MealScheduleTable from "../MealTable";
 
-const StepThree = ({ prevStep, form, nextStep, totalPrice }) => {
+const StepThree = ({
+  prevStep,
+  form,
+  nextStep,
+  totalPrice,
+  mealTypeLists,
+  setMealTypeLists,
+  scheduleList,
+  setScheduleList,
+}) => {
   return (
     <div className="space-y-3">
-      <MealScheduleTable totalPrice={totalPrice} />
+      <MealScheduleTable
+        mealTypeLists={mealTypeLists}
+        setMealTypeLists={setMealTypeLists}
+        scheduleList={scheduleList}
+        setScheduleList={setScheduleList}
+        totalPrice={totalPrice}
+      />
 
       <div className="flex gap-2">
         <button

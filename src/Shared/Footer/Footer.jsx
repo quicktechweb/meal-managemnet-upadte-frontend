@@ -12,7 +12,7 @@ const Footer = () => {
 
   const { data: siteData } = useGetWebsiteData();
 
-  console.log(siteData);
+ 
 
   return (
     <footer className="bg-white text-sm text-gray-700 pt-10">

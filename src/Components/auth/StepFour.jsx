@@ -12,15 +12,13 @@ const permissionsList = [
   "Institute Management Panel",
 ];
 
-const StepFour = ({ prevStep, form }) => {
+const StepFour = ({ prevStep, form, selected, setSelected }) => {
   const {
     register,
     formState: { errors },
     watch,
-    trigger,
     control,
     instituteOptions,
-    handleSubmit,
     handleCreateInstituteType,
   } = form;
 
@@ -71,23 +69,21 @@ const StepFour = ({ prevStep, form }) => {
     loadDistricts();
   }, [selectedDivision]);
 
-  const [selected, setSelected] = useState([]);
-
   const togglePermission = (item) => {
     setSelected((prev) =>
       prev.includes(item) ? prev.filter((p) => p !== item) : [...prev, item],
     );
   };
 
-  const onSubmit = (data) => {
-    const payload = {
-      ...data,
-      permissions: selected,
-    };
-  };
+  // const onSubmit = (data) => {
+  //   const payload = {
+  //     ...data,
+  //     permissions: selected,
+  //   };
+  // };
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)}>
+    <div>
       <div className="grid grid-cols-2 gap-5">
         <div className="flex flex-col gap-2.5 mb-3">
           <div className="w-full bg-white rounded-2xl shadow-sm border border-slate-200 p-3">
@@ -330,12 +326,12 @@ const StepFour = ({ prevStep, form }) => {
 
           {/* Permission Items */}
           <div className="p-5 flex flex-col gap-4">
-            {permissionsList.map((item) => {
+            {permissionsList.map((item, index) => {
               const isActive = selected.includes(item);
 
               return (
                 <div
-                  key={item}
+                  key={index}
                   onClick={() => togglePermission(item)}
                   className={`cursor-pointer rounded-xl px-4 py-3 border transition-all duration-200
               ${
@@ -353,22 +349,21 @@ const StepFour = ({ prevStep, form }) => {
       </div>
 
       <div className="flex  gap-2">
-        <button
+        {/* <button
           type="button"
           onClick={prevStep}
           className="w-full border cursor-pointer py-1.5 lg:py-3 rounded-lg"
         >
           Back
-        </button>
+        </button> */}
         <button
           type="submit"
-          onClick={form.handleSubmit}
           className="w-full bg-black cursor-pointer text-white py-1.5 lg:py-3 rounded-lg"
         >
           Signup
         </button>
       </div>
-    </form>
+    </div>
   );
 };
 

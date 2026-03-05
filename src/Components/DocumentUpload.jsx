@@ -2,7 +2,12 @@ import React, { useState, useEffect } from "react";
 import CustomSelect from "./CustomSelect";
 import { FaRegIdCard } from "react-icons/fa";
 
-const DocumentUpload = ({ onDocumentsChange, initialDocuments = [] }) => {
+const DocumentUpload = ({
+  onDocumentsChange,
+  initialDocuments = [],
+  setFormUploadData,
+  formUploadData,
+}) => {
   const [documentType, setDocumentType] = useState("");
   const [documentOptions, setDocumentOptions] = useState([
     "NID",
@@ -12,6 +17,7 @@ const DocumentUpload = ({ onDocumentsChange, initialDocuments = [] }) => {
 
   const [documentNumber, setDocumentNumber] = useState("");
   const [images, setImages] = useState([]);
+  const [files, setFiles] = useState([]);
   const [uploadedData, setUploadedData] = useState(initialDocuments);
 
   useEffect(() => {
@@ -31,6 +37,7 @@ const DocumentUpload = ({ onDocumentsChange, initialDocuments = [] }) => {
       size: file.size,
     }));
     setImages(previewFiles);
+    setFiles(files);
   };
 
   const handleUpload = () => {
@@ -44,14 +51,17 @@ const DocumentUpload = ({ onDocumentsChange, initialDocuments = [] }) => {
       documentType,
       documentNumber,
       images,
+      files,
     };
 
     setUploadedData((prev) => [...prev, newData]);
 
+    setFormUploadData((prev) => [...prev, newData]);
     // Reset current inputs
     setDocumentType("");
     setDocumentNumber("");
     setImages([]);
+    setFiles([]);
   };
 
   const removeDocument = (id) => {

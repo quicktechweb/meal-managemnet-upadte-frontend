@@ -25,3 +25,7 @@ export const logoutFunction = async () => {
   return data;
 };
 
+export const instituteRegistrationFunction = async (payload) => {
+  const data = await axiosPublic.post("/api/institute-registration", payload);
+  return data;
+};

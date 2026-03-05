@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { ChevronDown, Check, X } from "lucide-react";
 
-
 const options = [
   { label: "User", path: true },
   { label: "Client", path: false },
@@ -282,7 +281,6 @@ const StepTwo = ({
                   <p className="text-3xl font-black text-white drop-shadow-sm">
                     ৳ {totalPrice}
                   </p>
-                  
                 </div>
               </div>
             </div>
@@ -480,13 +478,13 @@ const StepTwo = ({
       )}
 
       <div className="flex gap-2">
-        <button
+        {/* <button
           type="button"
           onClick={prevStep}
           className="w-full border border-gray-200 cursor-pointer py-1.5 lg:py-3 rounded-lg"
         >
           Back
-        </button>
+        </button> */}
         <button
           type="button"
           onClick={nextStep}

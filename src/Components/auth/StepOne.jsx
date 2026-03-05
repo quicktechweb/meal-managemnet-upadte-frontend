@@ -10,6 +10,9 @@ const StepOne = ({
   nextStep,
   handleCreateInstituteType,
   instituteOptions,
+  isPending,
+  setFormUploadData,
+  formUploadData,
 }) => {
   const {
     register,
@@ -326,6 +329,8 @@ const StepOne = ({
               <DocumentUpload
                 onDocumentsChange={onChange}
                 initialDocuments={uploadedDocs}
+                formUploadData={formUploadData}
+                setFormUploadData={setFormUploadData}
               />
               {error && (
                 <p className="text-red-500 text-sm mt-1">* {error.message}</p>
@@ -392,10 +397,11 @@ const StepOne = ({
 
       <button
         type="button"
+        disabled={isPending}
         onClick={nextStep}
         className="w-full cursor-pointer bg-black text-white py-1.5 lg:py-3 rounded-lg"
       >
-        Next
+        {isPending ? "Processing..." : "Next"}
       </button>
     </>
   );

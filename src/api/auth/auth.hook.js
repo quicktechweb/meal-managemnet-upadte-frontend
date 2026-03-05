@@ -2,6 +2,7 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 import {
   getUserDataFunction,
   googleLoginFunction,
+  instituteRegistrationFunction,
   loginFunction,
   registerFunction,
 } from "./auth.api";
@@ -86,7 +87,14 @@ export const useGetUserData = (token) => {
   });
 };
 
+export const useLogout = (token) => {};
 
-export const useLogout = (token) => {
-  
-}
+export const useInstituteRegistration = () => {
+  return useMutation({
+    mutationKey: ["institute-registration"],
+    mutationFn: (payload) => instituteRegistrationFunction(payload),
+    onMutate: () => {},
+    onSuccess: () => {},
+    onError: (err) => {},
+  });
+};

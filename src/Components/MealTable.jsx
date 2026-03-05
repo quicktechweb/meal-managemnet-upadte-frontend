@@ -2,13 +2,17 @@ import { useState } from "react";
 import Select from "react-select";
 import { useGetItems } from "../api/admin/admin.api";
 
-const MealScheduleTable = ({ totalPrice }) => {
+const MealScheduleTable = ({
+  totalPrice,
+  mealTypeLists,
+  setMealTypeLists,
+  scheduleList,
+  setScheduleList,
+}) => {
   const { data: items = [] } = useGetItems();
   const days = ["Sat", "Sun", "Mon", "Tue", "Wed", "Thu", "Fri"];
 
   // States
-  const [mealTypeLists, setMealTypeLists] = useState([]);
-  const [scheduleList, setScheduleList] = useState([]);
 
   const [meals, setMeals] = useState([]);
   const [activeMeals, setActiveMeals] = useState([]);
@@ -23,8 +27,10 @@ const MealScheduleTable = ({ totalPrice }) => {
   const [endTime, setEndTime] = useState("");
   const [newMealInput, setNewMealInput] = useState("");
 
+  console.log(totalPrice);
+
   // Item options for react-select
-  const itemOptions = items.map((item) => ({
+  const itemOptions = items?.map((item) => ({
     value: item,
     label: `${item.title} - ${+item.price + +totalPrice} TK`,
     title: item.title,
@@ -124,6 +130,8 @@ const MealScheduleTable = ({ totalPrice }) => {
     hour = hour % 12 || 12;
     return `${hour}:${min} ${ampm}`;
   };
+
+  console.log(items);
 
   return (
     <div className="p-8 bg-gray-50">
