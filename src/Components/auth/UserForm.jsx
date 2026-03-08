@@ -8,6 +8,9 @@ import { api } from "../../utils/countryApi";
 import CustomSelect from "../CustomSelect";
 import DynamicDropdown from "../DynamicSelect";
 import DocumentUpload from "../DocumentUpload";
+import { useInstituteUserRegistration } from "../../api/auth/auth.hook";
+import { useApprovedInstituteUser } from "../../api/cms/user.hook";
+import toast from "react-hot-toast";
 
 const InputField = ({ label, name, control, type = "text", rules = {} }) => (
   <Controller
@@ -46,6 +49,8 @@ const InputField = ({ label, name, control, type = "text", rules = {} }) => (
 );
 
 const UserForm = () => {
+  const navigate = useNavigate();
+  const [formUploadData, setFormUploadData] = useState([]);
   const [divisions, setDivisions] = useState([]);
   const [districts, setDistricts] = useState([]);
 
@@ -99,19 +104,14 @@ const UserForm = () => {
   const [confirmPasswordShow, setConfirmPasswordShow] = useState(false);
 
   const passwordValue = watch("password");
-  const navigate = useNavigate();
 
   const [hallSelect, setHallSelect] = useState(false);
 
-  const onSubmit = (data) => {
-    console.log(data);
-  };
-
   // custom select
-
-  const [gurdian, setGurdian] = useState("");
   const [gender, setGender] = useState("");
   const [religion, setReligion] = useState("");
+
+  // dynamic dropdown
 
   const [genderOptions, setGenderOptions] = useState([
     "Male",
@@ -140,20 +140,46 @@ const UserForm = () => {
     setReligionOptions((prev) => [...prev, newItem]);
   };
 
+  const { data } = useApprovedInstituteUser();
+
+  const selectedInstituteId = watch("institute");
+
+  const selectedInstitute = data?.find(
+    (item) => item._id === selectedInstituteId,
+  );
+
+  const { mutateAsync, isPending } = useInstituteUserRegistration();
+
+  const onSubmit = async (data) => {
+    await mutateAsync(data, {
+      onSuccess: (data) => {
+        if (data) {
+          toast.success(data?.message);
+
+          navigate("/auth/login");
+        }
+      },
+      onError: (err) => {
+        toast.error(err?.response?.data?.message);
+        console.log(err);
+      },
+    });
+  };
+
   return (
     <>
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-3 ">
         <InputField
           label="Full name"
-          name="full-name"
+          name="full_name"
           control={control}
           rules={{ required: "Full Name is required" }}
         />
         <InputField
           label="Nick name"
-          name="nick-name"
+          name="nick_name"
           control={control}
-          rules={{ required: "Nick Name is required" }}
+          rules={{}}
         />
 
         <InputField
@@ -165,36 +191,47 @@ const UserForm = () => {
 
         <InputField
           label="Father Name"
-          name="fatherName"
+          name="father_name"
           control={control}
           rules={{ required: "Father name required" }}
         />
         <InputField
           label="Mother Name"
-          name="motherName"
+          name="mother_name"
           control={control}
           rules={{ required: "Mother name required" }}
         />
         <InputField
           label="Guardian Name"
-          name="guardianName"
+          name="guardian_name"
           control={control}
           rules={{ required: "Guardian name required" }}
         />
 
-        <CustomSelect
-          label="Relation with Gurdian"
-          options={gurdianOptions}
-          value={gurdian}
-          onChange={setGurdian}
-          onCreate={handleCreateGurdian}
-          allowCreate
-          showOther
+        <Controller
+          name="relation_with_guardian"
+          control={control}
+          rules={{
+            required: "Relation with Guardian is required",
+          }}
+          render={({ field: { onChange, value }, fieldState: { error } }) => (
+            <CustomSelect
+              label="Relation with Guardian"
+              options={gurdianOptions}
+              value={value ?? ""}
+              onChange={(newValue) => {
+                onChange(newValue);
+              }}
+              onCreate={handleCreateGurdian}
+              allowCreate
+              showOther
+            />
+          )}
         />
 
         <InputField
           label="Guardian Contact Number"
-          name="guardian-number"
+          name="guardian_number"
           control={control}
           rules={{ required: "Guardian Contact Number required" }}
         />
@@ -266,7 +303,7 @@ const UserForm = () => {
         <div className="mt-2">
           <InputField
             label="Date of Birth"
-            name="dob"
+            name="date_of_birth"
             control={control}
             type="date"
             rules={{ required: "Date of Birth required" }}
@@ -400,7 +437,7 @@ const UserForm = () => {
 
         {/* Password */}
 
-        {/* Hostel */}
+        {/* institute */}
         <Controller
           name="institute"
           control={control}
@@ -413,27 +450,31 @@ const UserForm = () => {
               className="w-full border border-gray-200 rounded-md px-3 h-[50px] text-base text-gray-500"
             >
               <option value="">Name Of the Institute</option>
-              <option value="institute 1">Institute 1</option>
-              <option value="institute 2">Institute 2</option>
-              <option value="institute 3">Institute 3</option>
+              {data?.map((institute) => (
+                <option value={institute?._id}>
+                  {institute.name_of_institute}
+                </option>
+              ))}
             </select>
           )}
         />
 
-        {/* Hostel */}
+        {/* hall */}
         <Controller
           name="hall"
           control={control}
           render={({ field }) => (
             <select
               {...field}
-              onChange={() => setHallSelect(true)}
               className="w-full border border-gray-200 rounded-md px-3 h-[50px] text-base text-gray-500"
             >
               <option value="">Name Of the Hall</option>
-              <option value="Hall 1">Hall 1</option>
-              <option value="Hall 2">Hall 2</option>
-              <option value="Hall 3">Hall 3</option>
+
+              {selectedInstitute?.name_of_hall && (
+                <option value={selectedInstitute.name_of_hall}>
+                  {selectedInstitute.name_of_hall}
+                </option>
+              )}
             </select>
           )}
         />
@@ -447,9 +488,12 @@ const UserForm = () => {
               className="w-full border border-gray-200 rounded-md px-3 h-[50px] text-base text-gray-500"
             >
               <option value="">Name Of the Mess</option>
-              <option value="mess 1">Mess 1</option>
-              <option value="mess 2">Mess 2</option>
-              <option value="mess 3">Mess 3</option>
+
+              {selectedInstitute?.name_of_mess && (
+                <option value={selectedInstitute.name_of_mess}>
+                  {selectedInstitute.name_of_mess}
+                </option>
+              )}
             </select>
           )}
         />
@@ -469,6 +513,7 @@ const UserForm = () => {
                 <DocumentUpload
                   onDocumentsChange={onChange}
                   initialDocuments={uploadedDocs}
+                  setFormUploadData={setFormUploadData}
                 />
                 {error && (
                   <p className="text-red-500 text-sm mt-1">* {error.message}</p>
@@ -484,39 +529,40 @@ const UserForm = () => {
           control={control}
           rules={{ required: "Password is required" }}
           render={({ field, fieldState }) => (
-            <div className="relative ">
-              <input
-                {...field}
-                type={passwordShow ? "text" : "password"}
-                placeholder=" "
-                className={`peer w-full border rounded-md px-3 h-[50px] text-base focus:outline-none focus:border-black transition-all ${
-                  fieldState.error ? "border-red-500" : "border-gray-200"
-                }`}
-              />
+            <>
+              <div className="relative ">
+                <input
+                  {...field}
+                  type={passwordShow ? "text" : "password"}
+                  placeholder=" "
+                  className={`peer w-full border rounded-md px-3 h-[50px] text-base focus:outline-none focus:border-black transition-all ${
+                    fieldState.error ? "border-red-500" : "border-gray-200"
+                  }`}
+                />
 
-              <label
-                className="absolute left-3 bg-white px-1 text-gray-500 transition-all
+                <label
+                  className="absolute left-3 bg-white px-1 text-gray-500 transition-all
         top-1/2 -translate-y-1/2 text-sm md:text-base
         peer-focus:top-1 peer-focus:text-xs peer-focus:text-black
         peer-not-placeholder-shown:top-1 peer-not-placeholder-shown:text-xs
         pointer-events-none"
-              >
-                Password
-              </label>
+                >
+                  Password
+                </label>
 
-              <div
-                onClick={() => setPasswordShow(!passwordShow)}
-                className="absolute top-1/2 -translate-y-1/2 right-4 text-2xl text-gray-500 cursor-pointer"
-              >
-                {passwordShow ? <IoMdEyeOff /> : <IoMdEye />}
+                <div
+                  onClick={() => setPasswordShow(!passwordShow)}
+                  className="absolute top-1/2 -translate-y-1/2 right-4 text-2xl text-gray-500 cursor-pointer"
+                >
+                  {passwordShow ? <IoMdEyeOff /> : <IoMdEye />}
+                </div>
               </div>
-
               {fieldState.error && (
-                <span className="text-red-500 text-sm absolute left-0 -bottom-5">
+                <span className="text-red-500 text-sm ">
                   {fieldState.error.message}
                 </span>
               )}
-            </div>
+            </>
           )}
         />
 
@@ -530,39 +576,40 @@ const UserForm = () => {
               value === passwordValue || "Passwords do not match",
           }}
           render={({ field, fieldState }) => (
-            <div className="relative ">
-              <input
-                {...field}
-                type={confirmPasswordShow ? "text" : "password"}
-                placeholder=" "
-                className={`peer w-full border rounded-md px-3 h-[50px] text-base focus:outline-none focus:border-black transition-all ${
-                  fieldState.error ? "border-red-500" : "border-gray-200"
-                }`}
-              />
+            <>
+              <div className="relative ">
+                <input
+                  {...field}
+                  type={confirmPasswordShow ? "text" : "password"}
+                  placeholder=" "
+                  className={`peer w-full border rounded-md px-3 h-[50px] text-base focus:outline-none focus:border-black transition-all ${
+                    fieldState.error ? "border-red-500" : "border-gray-200"
+                  }`}
+                />
 
-              <label
-                className="absolute left-3 bg-white px-1 text-gray-500 transition-all
+                <label
+                  className="absolute left-3 bg-white px-1 text-gray-500 transition-all
         top-1/2 -translate-y-1/2 text-sm md:text-base
         peer-focus:top-1 peer-focus:text-xs peer-focus:text-black
         peer-not-placeholder-shown:top-1 peer-not-placeholder-shown:text-xs
         pointer-events-none"
-              >
-                Confirm Password
-              </label>
+                >
+                  Confirm Password
+                </label>
 
-              <div
-                onClick={() => setConfirmPasswordShow(!confirmPasswordShow)}
-                className="absolute top-1/2 -translate-y-1/2 right-4 text-2xl text-gray-500 cursor-pointer"
-              >
-                {confirmPasswordShow ? <IoMdEyeOff /> : <IoMdEye />}
+                <div
+                  onClick={() => setConfirmPasswordShow(!confirmPasswordShow)}
+                  className="absolute top-1/2 -translate-y-1/2 right-4 text-2xl text-gray-500 cursor-pointer"
+                >
+                  {confirmPasswordShow ? <IoMdEyeOff /> : <IoMdEye />}
+                </div>
               </div>
-
               {fieldState.error && (
-                <span className="text-red-500 text-sm absolute left-0 -bottom-5">
+                <span className="text-red-500 text-sm ">
                   {fieldState.error.message}
                 </span>
               )}
-            </div>
+            </>
           )}
         />
 
@@ -574,9 +621,10 @@ const UserForm = () => {
         </div>
         <button
           type="submit"
+          disabled={isPending}
           className="w-full cursor-pointer py-3 bg-black text-white rounded-lg"
         >
-          Sign Up
+          {isPending ? "creating..." : "Sign Up"}
         </button>
 
         <div className="flex items-center gap-2 text-sm md:text-[18px]">

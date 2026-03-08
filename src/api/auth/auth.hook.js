@@ -4,6 +4,7 @@ import {
   googleLoginFunction,
   instituteLoginFunction,
   instituteRegistrationFunction,
+  instituteUserRegistrationFunction,
   loginFunction,
   registerFunction,
 } from "./auth.api";
@@ -125,5 +126,15 @@ export const useInstituteLogin = () => {
     onError: (err) => {
       toast.error(err?.response?.data?.error);
     },
+  });
+};
+
+export const useInstituteUserRegistration = () => {
+  return useMutation({
+    mutationKey: ["institute-user-registration"],
+    mutationFn: (payload) => instituteUserRegistrationFunction(payload),
+    onMutate: () => {},
+    onSuccess: () => {},
+    onError: () => {},
   });
 };
