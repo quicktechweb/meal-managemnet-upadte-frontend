@@ -1,15 +1,15 @@
 import React from "react";
 import { usePendingInstituteUser } from "../../../api/admin/admin.api";
-import PendingInstituteUserList from "./PendingInstituteUserList";
+import PendingInstituteList from "./PendingInstituteList";
 
-const InstituteUser = () => {
+const Institutes = () => {
   const { data } = usePendingInstituteUser();
 
   return (
     <div>
-      <PendingInstituteUserList users={data} />
+      <PendingInstituteList users={data} />
     </div>
   );
 };
 
-export default InstituteUser;
+export default Institutes;

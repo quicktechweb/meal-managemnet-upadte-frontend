@@ -1,7 +1,9 @@
 import React from "react";
 import { Link } from "react-router-dom";
 
-const PendingInstituteUserList = ({ users }) => {
+const PendingInstituteList = ({ users }) => {
+  console.log(users);
+
   return (
     <div className="p-6 bg-gray-50 min-h-screen">
       <div className="max-w-6xl mx-auto">
@@ -57,10 +59,10 @@ const PendingInstituteUserList = ({ users }) => {
                       {user.approval_status}
                     </span>
                   </td>
-                  <td className="py-3 px-6 text-center">
+                  <td className="py-3 px-6 ">
                     <Link
                       to={`/admin/dashboard/institute-user/${user._id}`}
-                      className="bg-blue-600 hover:bg-blue-700 text-white py-1 px-4 rounded text-xs transition-colors"
+                      className="bg-blue-600 hover:bg-blue-700 text-white py-1 px-4 rounded text-xs  transition-colors"
                     >
                       View Details
                     </Link>
@@ -75,4 +77,4 @@ const PendingInstituteUserList = ({ users }) => {
   );
 };
 
-export default PendingInstituteUserList;
+export default PendingInstituteList;

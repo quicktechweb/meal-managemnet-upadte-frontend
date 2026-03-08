@@ -74,8 +74,11 @@ import WebsiteSettings from "../Pages/FrontEnd/admin/WebsiteSettings";
 import SelectRecovery from "../Auth/ForgotPassword/SelectRecovery";
 import NewPassword from "../Auth/ForgotPassword/NewPassword";
 import EnterCode from "../Auth/ForgotPassword/EnterCode";
-import InstituteUser from "../Pages/FrontEnd/admin/InstituteUser";
 import SinglePendingInstituteUser from "../Pages/FrontEnd/admin/SinglePendingInstituteUser";
+import InstituteLayout from "../Layout/InstituteLayout";
+import UserSettings from "../Pages/FrontEnd/institute/admin/UserSettings";
+import Institutes from "../Pages/FrontEnd/admin/Institutes";
+import InstituteUser from "../Pages/FrontEnd/institute/admin/InstituteUser";
 
 const router = createBrowserRouter([
   {
@@ -281,6 +284,22 @@ const router = createBrowserRouter([
       // supplierpage
     ],
   },
+
+  {
+    path: "/institute/",
+    element: <InstituteLayout />,
+    children: [
+      {
+        path: "dashboard/user-settings",
+        element: <UserSettings />,
+      },
+      {
+        path: "dashboard/user-institute",
+        element:<InstituteUser/>
+      }
+    ],
+  },
+
   {
     path: "/ecommercesite",
     element: <EcommerceLayout />,
@@ -438,8 +457,8 @@ const router = createBrowserRouter([
         element: <WebsiteSettings />,
       },
       {
-        path: "/admin/dashboard/institute-user",
-        element: <InstituteUser />,
+        path: "/admin/dashboard/institute",
+        element: <Institutes />,
       },
       {
         path: "/admin/dashboard/institute-user/:id",

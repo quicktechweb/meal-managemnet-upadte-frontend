@@ -438,7 +438,7 @@ const UserForm = () => {
 
         {/* institute */}
         <Controller
-          name="institute"
+          name="name_of_the_institute"
           control={control}
           rules={{
             required: "Institute is required",
@@ -450,7 +450,7 @@ const UserForm = () => {
             >
               <option value="">Name Of the Institute</option>
               {data?.map((institute) => (
-                <option value={institute?._id}>
+                <option key={institute?._id} value={institute?._id}>
                   {institute.name_of_institute}
                 </option>
               ))}
