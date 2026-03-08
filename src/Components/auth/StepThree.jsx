@@ -1,13 +1,25 @@
 import React from "react";
 import MealScheduleTable from "../MealTable";
 
-const StepThree = ({ prevStep, nextStep, totalPrice, form }) => {
+const StepThree = ({
+  prevStep,
+  form,
+  nextStep,
+  totalPrice,
+  mealTypeLists,
+  setMealTypeLists,
+  scheduleList,
+  setScheduleList,
+}) => {
   return (
-    <>
-      <div className="space-y-3">
-        <p className="font-semibold">Select the Meals</p>
-        <MealScheduleTable totalPrice={totalPrice} />
-      </div>
+    <div className="space-y-3">
+      <MealScheduleTable
+        mealTypeLists={mealTypeLists}
+        setMealTypeLists={setMealTypeLists}
+        scheduleList={scheduleList}
+        setScheduleList={setScheduleList}
+        totalPrice={totalPrice}
+      />
 
       <div className="flex gap-2">
         <button
@@ -18,14 +30,14 @@ const StepThree = ({ prevStep, nextStep, totalPrice, form }) => {
           Back
         </button>
         <button
-          type="submit"
-          onClick={form.handleSubmit}
+          type="button"
+          onClick={nextStep}
           className="w-full bg-black cursor-pointer text-white py-1.5 lg:py-3 rounded-lg"
         >
-          Signup
+          Next
         </button>
       </div>
-    </>
+    </div>
   );
 };
 

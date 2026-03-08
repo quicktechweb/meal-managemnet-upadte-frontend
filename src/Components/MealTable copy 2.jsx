@@ -2,45 +2,63 @@ import { useState } from "react";
 import Select from "react-select";
 import { useGetItems } from "../api/admin/admin.api";
 
-const MealScheduleTable = ({
-  totalPrice,
-  mealTypeLists,
-  setMealTypeLists,
-  scheduleList,
-  setScheduleList,
-}) => {
+const mealTypeLists = [
+  {
+    mealType: "Breakfast",
+    start_time: "9:00",
+    end_titme: "10:00",
+  },
+  {
+    mealType: "Dinner",
+    start_time: "9:00",
+    end_titme: "10:00",
+  },
+];
+
+const scheduleList = [
+  {
+    day: "Sat",
+    mealType: "Breakfast",
+    start_time: "9:00",
+    end_time: "10:00",
+    items: [
+      {
+        _id: 1,
+        title: "vat",
+        price: 3,
+      },
+    ],
+  },
+];
+
+const MealScheduleTable = ({ totalPrice }) => {
   const { data: items = [] } = useGetItems();
   const days = ["Sat", "Sun", "Mon", "Tue", "Wed", "Thu", "Fri"];
 
-  // States
-
   const [meals, setMeals] = useState([]);
-  const [activeMeals, setActiveMeals] = useState([]);
-  const [scheduleMap, setScheduleMap] = useState({});
-  const [mealTimes, setMealTimes] = useState({});
 
-  // Form states
+  const [activeMeals, setActiveMeals] = useState(meals);
+
   const [selectedDay, setSelectedDay] = useState("");
   const [selectedMeal, setSelectedMeal] = useState("");
   const [selectedOptions, setSelectedOptions] = useState([]);
+
   const [startTime, setStartTime] = useState("");
   const [endTime, setEndTime] = useState("");
   const [newMealInput, setNewMealInput] = useState("");
 
-  console.log(totalPrice);
+  const [scheduleMap, setScheduleMap] = useState({});
+  const [mealTimes, setMealTimes] = useState({});
 
-  // Item options for react-select
-  const itemOptions = items?.map((item) => ({
+  const itemOptions = items.map((item) => ({
     value: item,
     label: `${item.title} - ${+item.price + +totalPrice} TK`,
     title: item.title,
   }));
 
-  // Create meal & schedule
   const handleCreate = () => {
     const finalMealName =
       selectedMeal === "Other" ? newMealInput.trim() : selectedMeal;
-
     if (
       !selectedDay ||
       !finalMealName ||
@@ -52,67 +70,32 @@ const MealScheduleTable = ({
       return;
     }
 
-    // Add new meal
-    if (!meals.includes(finalMealName)) {
+    if (selectedMeal === "Other" && !meals.includes(finalMealName)) {
       setMeals((prev) => [...prev, finalMealName]);
       setActiveMeals((prev) => [...prev, finalMealName]);
     }
 
-    // Add to mealTypeLists
-    if (!mealTypeLists.some((m) => m.mealType === finalMealName)) {
-      setMealTypeLists((prev) => [
-        ...prev,
-        { mealType: finalMealName, start_time: startTime, end_time: endTime },
-      ]);
-    }
+    const selectedItemsList = selectedOptions.map((opt) => opt.title);
 
-    // Prepare items
-    const selectedItemsList = selectedOptions.map((opt) => ({
-      title: opt.title,
-      price: opt.value.price,
-    }));
-
-    // Add to scheduleList
-    setScheduleList((prev) => [
-      ...prev,
-      {
-        day: selectedDay,
-        mealType: finalMealName,
-        start_time: startTime,
-        end_time: endTime,
-        items: selectedItemsList,
-      },
-    ]);
-
-    // Update table map
     setScheduleMap((prev) => ({
       ...prev,
       [selectedDay]: {
         ...(prev[selectedDay] || {}),
-        [finalMealName]: {
-          items: selectedItemsList.map((i) => i.title),
-          startTime,
-          endTime,
-        },
+        [finalMealName]: { items: selectedItemsList, startTime, endTime },
       },
     }));
 
-    // Update mealTimes for header/toggle
     setMealTimes((prev) => ({
       ...prev,
       [finalMealName]: { startTime, endTime },
     }));
 
-    // Reset form
     setSelectedOptions([]);
     setStartTime("");
     setEndTime("");
     setNewMealInput("");
-    setSelectedMeal("");
-    setSelectedDay("");
   };
 
-  // Toggle meal column
   const toggleMealColumn = (mealName) => {
     setActiveMeals((prev) =>
       prev.includes(mealName)
@@ -121,7 +104,6 @@ const MealScheduleTable = ({
     );
   };
 
-  // Format time
   const formatTime12 = (time24) => {
     if (!time24) return "";
     const [hourStr, min] = time24.split(":");
@@ -130,8 +112,6 @@ const MealScheduleTable = ({
     hour = hour % 12 || 12;
     return `${hour}:${min} ${ampm}`;
   };
-
-  console.log(items);
 
   return (
     <div className="p-8 bg-gray-50">
@@ -228,19 +208,17 @@ const MealScheduleTable = ({
           </div>
         </div>
 
-        <div className="flex gap-4 mt-6">
-          <button
-            type="button"
-            onClick={handleCreate}
-            className="flex-1 cursor-pointer bg-orange-600 text-white py-3 font-bold rounded-lg hover:bg-orange-700 transition"
-          >
-            Create Schedule
-          </button>
-        </div>
+        <button
+          type="button"
+          onClick={handleCreate}
+          className="w-full mt-6 cursor-pointer bg-orange-600 text-white py-3 font-bold rounded-lg hover:bg-orange-700 transition"
+        >
+          Create Schedule
+        </button>
       </div>
 
       {/* MEAL TOGGLE */}
-      {meals.length > 0 && (
+      {meals?.length > 0 && (
         <div className="flex flex-wrap justify-center gap-4 mb-10">
           {meals.map((meal) => (
             <div
@@ -250,12 +228,14 @@ const MealScheduleTable = ({
               <h3 className="font-semibold text-gray-800 uppercase text-sm mb-2">
                 {meal}
               </h3>
+
               {mealTimes[meal] && (
                 <p className="text-xs text-orange-600 font-bold mb-3">
                   {formatTime12(mealTimes[meal].startTime)} -{" "}
                   {formatTime12(mealTimes[meal].endTime)}
                 </p>
               )}
+
               <label className="relative inline-flex items-center cursor-pointer">
                 <input
                   type="checkbox"
@@ -270,15 +250,20 @@ const MealScheduleTable = ({
         </div>
       )}
 
-      {/* DYNAMIC TABLE WITH TIMES */}
-      {activeMeals.length > 0 && (
+      {/* DYNAMIC TABLE */}
+      {meals?.length > 0 && (
         <div className="max-w-7xl mx-auto overflow-x-auto border border-gray-200 rounded-xl shadow-lg">
           <table className="w-full text-left border-collapse bg-white">
             <thead className="bg-orange-600 text-white sticky top-0">
               <tr>
-                <th className="p-4 border border-orange-700 w-32">Day</th>
+                <th className="p-4 border border-orange-700 text-center w-32">
+                  Day
+                </th>
                 {activeMeals.map((meal) => (
-                  <th key={meal} className="p-4 border border-orange-700 w-32">
+                  <th
+                    key={meal}
+                    className="p-4 border border-orange-700 text-center"
+                  >
                     {meal}
                   </th>
                 ))}
@@ -287,24 +272,34 @@ const MealScheduleTable = ({
 
             <tbody>
               {days.map((day) => (
-                <tr key={day} className="hover:bg-slate-50">
-                  <td className="py-6 px-6 font-bold">{day}</td>
+                <tr key={day} className="hover:bg-gray-50 transition">
+                  <td className="p-4 font-bold border border-gray-200 text-center bg-gray-100">
+                    {day}
+                  </td>
                   {activeMeals.map((meal) => {
-                    const schedule = scheduleList.find(
-                      (s) => s.day === day && s.mealType === meal,
-                    );
+                    const data = scheduleMap[day]?.[meal];
                     return (
-                      <td key={meal} className="py-6 px-6">
-                        {schedule ? (
-                          <div className="flex items-center flex-wrap max-w-[350px] gap-1">
-                            {schedule.items.map((item) => (
-                              <p key={item.title}>
-                                {item.title} (৳{item.price})
-                              </p>
-                            ))}
+                      <td
+                        key={meal}
+                        className="p-4 border border-gray-200 align-top max-w-[200px]"
+                      >
+                        {data ? (
+                          <div>
+                            <ul className="flex flex-wrap gap-2">
+                              {data.items.map((item, i) => (
+                                <li
+                                  key={i}
+                                  className="text-xs bg-orange-50 p-1 border border-gray-200 rounded font-semibold"
+                                >
+                                  {item}
+                                </li>
+                              ))}
+                            </ul>
                           </div>
                         ) : (
-                          <span className="text-gray-400">No Schedule yet</span>
+                          <p className="text-xs text-gray-400 italic text-center py-4">
+                            Empty
+                          </p>
                         )}
                       </td>
                     );

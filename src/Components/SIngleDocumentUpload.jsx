@@ -15,11 +15,9 @@ const DocumentUpload = ({
   ]);
 
   const [documentNumber, setDocumentNumber] = useState("");
-  const [image, setImage] = useState(null);
+  const [images, setImages] = useState([]);
   const [uploadedData, setUploadedData] = useState(initialDocuments);
   const [loading, setLoading] = useState(false);
-
-  console.log(uploadedData);
 
   useEffect(() => {
     onDocumentsChange?.(uploadedData);
@@ -30,57 +28,63 @@ const DocumentUpload = ({
   };
 
   const handleImageChange = (e) => {
-    const file = e.target.files[0];
-    if (!file) return;
+    const files = Array.from(e.target.files || []);
 
-    setImage({
+    const previewFiles = files.map((file) => ({
       file,
       preview: URL.createObjectURL(file),
       name: file.name,
-    });
+    }));
+
+    setImages(previewFiles);
   };
 
   const handleUpload = async () => {
-    if (!documentType || !documentNumber || !image) {
-      alert("Please select document type, number, and file");
+    if (!documentType || !documentNumber || images.length === 0) {
+      alert("Please select document type, number, and file(s)");
       return;
     }
 
     try {
       setLoading(true);
 
-      const formData = new FormData();
-      formData.append("image", image.file);
+      const uploadedUrls = [];
 
-      const res = await fetch(
-        `https://api.imgbb.com/1/upload?key=${import.meta.env.VITE_IMAGEBB_KEY}`,
-        {
-          method: "POST",
-          body: formData,
-        },
-      );
+      for (let img of images) {
+        const formData = new FormData();
+        formData.append("image", img.file);
 
-      const data = await res.json();
+        const res = await fetch(
+          `https://api.imgbb.com/1/upload?key=${import.meta.env.VITE_IMAGEBB_KEY}`,
+          {
+            method: "POST",
+            body: formData,
+          },
+        );
 
-      if (!data.success) {
-        throw new Error("Upload failed");
+        const data = await res.json();
+
+        if (!data.success) {
+          throw new Error("Upload failed");
+        }
+
+        uploadedUrls.push(data.data.url);
       }
-      const uploadedUrl = data.data.url;
 
       const newData = {
         id: Date.now(),
         document_type: documentType,
         document_number: documentNumber,
-        document_files: uploadedUrl,
+        document_files: uploadedUrls,
       };
 
       setUploadedData((prev) => [...prev, newData]);
       setFormUploadData((prev) => [...prev, newData]);
 
-      // Reset
+      // reset
       setDocumentType("");
       setDocumentNumber("");
-      setImage(null);
+      setImages([]);
     } catch (error) {
       console.error(error);
       alert("Image upload failed");
@@ -124,13 +128,16 @@ const DocumentUpload = ({
         <div className="relative flex-1 flex items-center justify-between gap-3 px-4 py-3 border-2 border-dashed border-gray-300 rounded-xl bg-white hover:border-[#3170A6] transition">
           <input
             type="file"
+            multiple
             accept="image/*"
             onChange={handleImageChange}
             className="absolute inset-0 opacity-0 cursor-pointer"
           />
 
           <span className="text-gray-400 text-sm truncate">
-            {image ? image.name : "Choose document file"}
+            {images.length > 0
+              ? `${images.length} file(s) selected`
+              : "Choose document file(s)"}
           </span>
 
           <span className="bg-[#3170A6] text-white text-sm px-4 py-1.5 rounded-lg">
@@ -141,10 +148,12 @@ const DocumentUpload = ({
         <button
           type="button"
           onClick={handleUpload}
-          disabled={!documentType || !documentNumber || !image || loading}
+          disabled={
+            !documentType || !documentNumber || images.length === 0 || loading
+          }
           className={`px-5 py-2 rounded-xl text-white font-medium transition
             ${
-              !documentType || !documentNumber || !image
+              !documentType || !documentNumber || images.length === 0
                 ? "bg-gray-400 cursor-not-allowed"
                 : "bg-[#112C4B] hover:bg-[#0d2138]"
             }`}
@@ -154,32 +163,42 @@ const DocumentUpload = ({
       </div>
 
       {/* Preview before upload */}
-      {image && (
-        <div className="mt-2">
-          <img
-            src={image.preview}
-            alt="preview"
-            className="w-20 h-20 object-cover rounded border"
-          />
+      {images.length > 0 && (
+        <div className="flex gap-2 flex-wrap mt-2">
+          {images.map((img, index) => (
+            <img
+              key={index}
+              src={img.preview}
+              alt="preview"
+              className="w-16 h-16 object-cover rounded border"
+            />
+          ))}
         </div>
       )}
 
       {/* Uploaded list */}
-      {uploadedData?.length > 0 && (
+      {uploadedData.length > 0 && (
         <div className="space-y-2 mt-3">
-          {uploadedData?.map((item) => (
+          {uploadedData.map((item) => (
             <div
               key={item.id}
               className="flex flex-col sm:flex-row sm:items-center justify-between bg-white border border-gray-200 rounded-xl px-4 py-3"
             >
               <div className="flex items-center gap-4 flex-1">
                 <div className="flex -space-x-2">
-                  <img
-                
-                    src={item.document_files}
-                    alt="preview"
-                    className="w-10 h-10 object-cover rounded border-2 border-white shadow-sm"
-                  />
+                  {item.document_files.slice(0, 3).map((img, idx) => (
+                    <img
+                      key={idx}
+                      src={img}
+                      alt="preview"
+                      className="w-10 h-10 object-cover rounded border-2 border-white shadow-sm"
+                    />
+                  ))}
+                  {item.document_files.length > 3 && (
+                    <div className="w-10 h-10 flex items-center justify-center bg-gray-200 text-xs rounded border">
+                      +{item.document_files.length - 3}
+                    </div>
+                  )}
                 </div>
 
                 <div>
@@ -189,7 +208,9 @@ const DocumentUpload = ({
                   <p className="text-sm text-gray-600">
                     {item.document_number}
                   </p>
-                  <p className="text-xs text-gray-500">1 file(s)</p>
+                  <p className="text-xs text-gray-500">
+                    {item.document_files.length} file(s)
+                  </p>
                 </div>
               </div>
 

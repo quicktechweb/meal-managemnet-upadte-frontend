@@ -2,6 +2,8 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 import {
   getUserDataFunction,
   googleLoginFunction,
+  instituteLoginFunction,
+  instituteRegistrationFunction,
   loginFunction,
   registerFunction,
 } from "./auth.api";
@@ -86,7 +88,42 @@ export const useGetUserData = (token) => {
   });
 };
 
+export const useLogout = (token) => {};
 
-export const useLogout = (token) => {
-  
-}
+export const useInstituteRegistration = () => {
+  return useMutation({
+    mutationKey: ["institute-registration"],
+    mutationFn: (payload) => instituteRegistrationFunction(payload),
+    onMutate: () => {},
+    onSuccess: () => {},
+    onError: (err) => {},
+  });
+};
+
+export const useInstituteLogin = () => {
+  // const { setToken } = useAuth();
+  const navigate = useNavigate();
+  return useMutation({
+    mutationKey: ["institute-login"],
+    mutationFn: (payload) => instituteLoginFunction(payload),
+    onSuccess: (data) => {
+      console.log(data);
+
+      toast.success(data?.message);
+      // setToken(data?.token);
+
+      // if (data?.user?.role === "user") {
+      //   navigate("/dashboard/dashboard");
+      // }
+
+      // if (data?.user?.role === "admin") {
+      //   navigate("/admin/dashboard");
+      // }
+
+      navigate("/");
+    },
+    onError: (err) => {
+      toast.error(err?.response?.data?.error);
+    },
+  });
+};

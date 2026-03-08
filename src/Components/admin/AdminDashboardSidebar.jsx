@@ -120,6 +120,18 @@ const AdminDashboardSidebar = ({ setIsOpenSidebar }) => {
       ],
     },
     {
+      key: "Users",
+      title: "Users",
+      icon: FaClipboardList,
+      links: [
+        {
+          title: "Institute Users",
+          icon: FaShoppingBag,
+          path: "/admin/dashboard/institute-user",
+        },
+      ],
+    },
+    {
       key: "Settings",
       title: "Settings",
       icon: FaClipboardList,
