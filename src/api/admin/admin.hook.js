@@ -250,3 +250,16 @@ export const getItemsFunction = async () => {
   const { data } = await axiosPublic.get("/api/items");
   return data?.data;
 };
+
+export const pendingInstituteUserFunction = async () => {
+  const { data } = await axiosPublic("/api/institute-pending-users");
+  return data?.users;
+};
+
+export const approvedInstituteUserFunction = async (payload) => {
+  const { data } = await axiosPublic.post(
+    "/api/institute-approved-users",
+    payload,
+  );
+  return data;
+};

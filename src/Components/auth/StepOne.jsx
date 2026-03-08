@@ -5,7 +5,15 @@ import CustomSelect from "../CustomSelect";
 import DocumentUpload from "../DocumentUpload";
 import { Controller } from "react-hook-form";
 
-const StepOne = ({ form, nextStep }) => {
+const StepOne = ({
+  form,
+  nextStep,
+  handleCreateInstituteType,
+  instituteOptions,
+  isPending,
+  setFormUploadData,
+  formUploadData,
+}) => {
   const {
     register,
     formState: { errors },
@@ -60,14 +68,6 @@ const StepOne = ({ form, nextStep }) => {
     loadDistricts();
   }, [selectedDivision]);
 
-  const [institute, setInstitute] = useState("");
-  const [instituteOptions, setInstituteOptions] = useState([
-    "School",
-    "Office",
-    "Collage",
-  ]);
-
-  const [hall, setHall] = useState("");
   const [hallOptions, setHallOptions] = useState([]);
 
   const [messOptions, setMessOptions] = useState([]);
@@ -75,10 +75,6 @@ const StepOne = ({ form, nextStep }) => {
   const passwordValue = watch("password");
   const [passwordShow, setPasswordShow] = useState(false);
   const [confirmPasswordShow, setConfirmPasswordShow] = useState(false);
-
-  const handleCreateInstituteType = (newItem) => {
-    setInstituteOptions((prev) => [...prev, newItem]);
-  };
 
   const handleCreateHall = (newItem) => {
     setHallOptions((prev) => [...prev, newItem]);
@@ -108,7 +104,6 @@ const StepOne = ({ form, nextStep }) => {
               value={value ?? ""}
               onChange={(newValue) => {
                 onChange(newValue);
-                setInstitute(newValue);
               }}
               onCreate={handleCreateInstituteType}
               allowCreate
@@ -154,7 +149,6 @@ const StepOne = ({ form, nextStep }) => {
               value={value ?? ""}
               onChange={(v) => {
                 onChange(v);
-                setHall(v);
               }}
               onCreate={handleCreateHall}
               allowCreate
@@ -179,7 +173,6 @@ const StepOne = ({ form, nextStep }) => {
               value={value ?? ""}
               onChange={(v) => {
                 onChange(v);
-                setHall(v);
               }}
               onCreate={handleCreateMess}
               allowCreate
@@ -307,17 +300,8 @@ const StepOne = ({ form, nextStep }) => {
       {/* Contact */}
       <div className="w-full flex flex-col gap-2">
         <h4 className="text-[18px] font-semibold text-gray-500">Contact</h4>
-        <FloatingInput
-          label="Email"
-          type="email"
-          error={errors.email}
-          {...register("email", { required: "Email required" })}
-        />
-        <FloatingInput
-          label="Phone Number"
-          error={errors.phone}
-          {...register("phone", { required: "Phone required" })}
-        />
+        <FloatingInput label="Email" type="email" {...register("email")} />
+        <FloatingInput label="Phone Number" {...register("phone")} />
       </div>
 
       {/* Document */}
@@ -336,6 +320,8 @@ const StepOne = ({ form, nextStep }) => {
               <DocumentUpload
                 onDocumentsChange={onChange}
                 initialDocuments={uploadedDocs}
+                formUploadData={formUploadData}
+                setFormUploadData={setFormUploadData}
               />
               {error && (
                 <p className="text-red-500 text-sm mt-1">* {error.message}</p>
@@ -402,16 +388,17 @@ const StepOne = ({ form, nextStep }) => {
 
       <button
         type="button"
+        disabled={isPending}
         onClick={nextStep}
         className="w-full cursor-pointer bg-black text-white py-1.5 lg:py-3 rounded-lg"
       >
-        Next
+        {isPending ? "Processing..." : "Next"}
       </button>
     </>
   );
 };
 
-const FloatingInput = React.forwardRef(
+export const FloatingInput = React.forwardRef(
   ({ label, type = "text", error, ...rest }, ref) => (
     <>
       <div className="relative w-full">
@@ -429,7 +416,7 @@ const FloatingInput = React.forwardRef(
   ),
 );
 
-const FloatingLabel = ({ text }) => (
+export const FloatingLabel = ({ text }) => (
   <label
     className="absolute left-3 bg-white px-1 text-gray-500 transition-all
       top-1/2 -translate-y-1/2 text-sm md:text-base

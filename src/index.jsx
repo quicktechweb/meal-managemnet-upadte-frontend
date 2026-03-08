@@ -10,18 +10,21 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import AuthProvider from "./providers/AuthProvider";
 import { Toaster } from "react-hot-toast";
 import StepProvider from "./providers/StepProvider";
+import InstituteAuthProvider from "./providers/InstituteAuthProvider";
 const queryClient = new QueryClient();
 
 createRoot(document.getElementById("root")).render(
   <QueryClientProvider client={queryClient}>
-    <AuthProvider>
-      <StepProvider>
-        <Provider store={store}>
-          <RouterProvider router={router} />
-          <Toaster />
-        </Provider>
-      </StepProvider>
-    </AuthProvider>
+    <InstituteAuthProvider>
+      <AuthProvider>
+        <StepProvider>
+          <Provider store={store}>
+            <RouterProvider router={router} />
+            <Toaster />
+          </Provider>
+        </StepProvider>
+      </AuthProvider>
+    </InstituteAuthProvider>
   </QueryClientProvider>,
 );
 

@@ -4,16 +4,34 @@ import { IoMdEye } from "react-icons/io";
 import { IoMdEyeOff } from "react-icons/io";
 
 import { TiTick } from "react-icons/ti";
-import { useLogin } from "../../../api/auth/auth.hook";
+import { useInstituteLogin } from "../../../api/auth/auth.hook";
 import { useForm } from "react-hook-form";
 
 const Login = () => {
   const [passwordShow, setPasswordShow] = useState(false);
   const { register, handleSubmit, reset } = useForm();
 
-  const { mutateAsync, isPending } = useLogin();
+  const { mutateAsync, isPending } = useInstituteLogin();
 
   const onSubmit = async (data) => {
+    const value = data.email?.trim();
+
+    const isEmail = /\S+@\S+\.\S+/.test(value);
+    const isPhone = /^[0-9]{10,15}$/.test(value);
+
+    let payload = {
+      password: data.password,
+    };
+
+    if (isEmail) {
+      payload.email = value;
+    } else if (isPhone) {
+      payload.phone = value;
+    } else {
+      toast.error("Please enter valid email or phone number");
+      return;
+    }
+
     await mutateAsync(data);
     reset();
   };
@@ -92,7 +110,7 @@ const Login = () => {
           >
             <div className="relative">
               <input
-                type="email"
+                type="text"
                 {...register("email")}
                 placeholder=" "
                 className="peer w-full border border-gray-200 rounded-md px-3 h-[50px] text-lg
@@ -106,7 +124,7 @@ const Login = () => {
     peer-not-placeholder-shown:top-1 peer-not-placeholder-shown:text-xs
     pointer-events-none"
               >
-                Email Address
+                Email / Contact Number
               </label>
             </div>
 

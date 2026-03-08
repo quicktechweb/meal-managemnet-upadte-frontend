@@ -40,7 +40,7 @@ const Registration = () => {
         ${location?.pathname === "/register/user" ? "h-[850px]" : "h-auto"}
         justify-center items-stretch shadow-[0_30px_60px_-15px_rgba(120,50,0,0.15)] rounded-[1rem] overflow-hidden max-w-6xl w-full transition-all duration-500`}
       >
-        {step !== 3 && (
+        {step !== 3 && step !== 4 && (
           <div className="relative w-full lg:w-1/2 bg-white overflow-hidden hidden md:flex flex-col items-center justify-center px-4 text-black">
             {/* Accent Glow */}
             {/* <div className="absolute top-0 right-0 w-full h-full bg-gradient-to-br from-orange-500/20 to-transparent pointer-events-none"></div> */}
@@ -107,7 +107,7 @@ const Registration = () => {
 
         {/* Left Side: Registration Form */}
         <div
-          className={`w-full ${step !== 3 ? "lg:w-1/2 " : "max-w-6xl"}  flex flex-col bg-white`}
+          className={`w-full ${step !== 3 && step !== 4 ? "lg:w-1/2 " : "max-w-6xl"}  flex flex-col bg-white`}
         >
           <div className="px-5 pt-8">
             <div className="mb-5 ">

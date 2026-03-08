@@ -1,11 +1,5 @@
 import React, { useState } from "react";
 import { ChevronDown, Check, X } from "lucide-react";
-import {
-  useAllKitchen,
-  useAllService,
-  useGetFeature,
-  useUtilitiesService,
-} from "../../api/admin/admin.api";
 
 const options = [
   { label: "User", path: true },
@@ -37,56 +31,6 @@ const StepTwo = ({
   nextStep,
   form,
 }) => {
-  // const [activeDropdown, setActiveDropdown] = useState(null);
-
-  // const [selectedOption, setSelectedOption] = useState(options[0]);
-
-  // const [kitchenType, setKitchenType] = useState(null);
-
-  // const [studentService, setStudentService] = useState(null);
-  // const [utilityBills, setUtilityBills] = useState([]);
-  // const [serviceFeatures, setServiceFeatures] = useState([]);
-
-  // const { data: kitchenData } = useAllKitchen();
-  // const { data: services } = useAllService();
-  // const { data: allUtilities } = useUtilitiesService();
-  // const { data: getFeature } = useGetFeature();
-
-  // const singleUtilities = allUtilities?.filter(
-  //   (u) => u?.kitchen?.title === kitchenType?.title,
-  // );
-  // const singleFeature = getFeature?.filter(
-  //   (f) => f?.kitchen?.title === kitchenType?.title,
-  // );
-
-  // const handleUtilityBill = (bill) => {
-  //   setUtilityBills((prev) =>
-  //     prev.find((b) => b._id === bill._id)
-  //       ? prev.filter((b) => b._id !== bill._id)
-  //       : [...prev, bill],
-  //   );
-  // };
-
-  // const handleFeature = (feature) => {
-  //   setServiceFeatures((prev) =>
-  //     prev.find((f) => f._id === feature._id)
-  //       ? prev.filter((f) => f._id !== feature._id)
-  //       : [...prev, feature],
-  //   );
-  // };
-
-  // const totalUtilityPrice = utilityBills?.reduce(
-  //   (total, bill) => total + +bill.price,
-  //   0,
-  // );
-
-  // const totalServiceFeaturePrice = serviceFeatures?.reduce(
-  //   (total, feature) => total + +feature?.price,
-  //   0,
-  // );
-
-  // const totalPrice = totalUtilityPrice + totalServiceFeaturePrice;
-
   const SelectedBadge = ({ item, onRemove }) => (
     <span className="flex items-center gap-1 bg-orange-100 text-orange-700 px-3 py-1 rounded-full text-sm font-medium border border-orange-200">
       {item.name || item.title || item.label}
@@ -308,19 +252,36 @@ const StepTwo = ({
           {/* price */}
 
           {studentService && (
-            <div className="flex flex-col gap-2.5">
-              <div className="flex items-center gap-2.5">
-                <h3 className="text-lg font-semibold text-slate-700">
+            <div className="flex flex-col gap-4 p-4 bg-white rounded-3xl shadow-sm border border-slate-100">
+              {/* Amount of Charge - Light & Subtle */}
+              <div className="flex items-center justify-between px-2">
+                <h3 className="text-md font-medium text-slate-500">
                   Amount of Charge
                 </h3>
-                <p className="text-lg font-semibold"> ৳{totalPrice}</p>
+                <p className="text-xl font-bold text-slate-700">
+                  ৳ {totalPrice}
+                </p>
               </div>
 
-              <div className="flex items-center gap-2.5">
-                <h3 className="text-lg font-semibold text-slate-700">
-                  Total Amount
-                </h3>
-                <p className="text-lg font-semibold"> ৳{totalPrice}</p>
+              {/* Styled Divider */}
+              <div className="relative h-px">
+                <div className="absolute inset-0 border-t border-dashed border-gray-300"></div>
+              </div>
+
+              {/* Total Amount - High Contrast & Eye Catchy */}
+              <div className="flex items-center justify-between p-4 bg-gradient-to-r from-orange-500 to-orange-600 rounded-2xl shadow-lg shadow-orange-200 transform transition-transform hover:scale-[1.02]">
+                <div className="flex flex-col">
+                  <h3 className="text-sm font-bold text-orange-100 uppercase tracking-tight">
+                    Total Amount
+                  </h3>
+                  <p className="text-xs text-orange-200">Final Payable</p>
+                </div>
+
+                <div className="flex flex-col items-end">
+                  <p className="text-3xl font-black text-white drop-shadow-sm">
+                    ৳ {totalPrice}
+                  </p>
+                </div>
               </div>
             </div>
           )}
@@ -517,13 +478,13 @@ const StepTwo = ({
       )}
 
       <div className="flex gap-2">
-        <button
+        {/* <button
           type="button"
           onClick={prevStep}
           className="w-full border border-gray-200 cursor-pointer py-1.5 lg:py-3 rounded-lg"
         >
           Back
-        </button>
+        </button> */}
         <button
           type="button"
           onClick={nextStep}
@@ -537,3 +498,53 @@ const StepTwo = ({
 };
 
 export default StepTwo;
+
+// const [activeDropdown, setActiveDropdown] = useState(null);
+
+// const [selectedOption, setSelectedOption] = useState(options[0]);
+
+// const [kitchenType, setKitchenType] = useState(null);
+
+// const [studentService, setStudentService] = useState(null);
+// const [utilityBills, setUtilityBills] = useState([]);
+// const [serviceFeatures, setServiceFeatures] = useState([]);
+
+// const { data: kitchenData } = useAllKitchen();
+// const { data: services } = useAllService();
+// const { data: allUtilities } = useUtilitiesService();
+// const { data: getFeature } = useGetFeature();
+
+// const singleUtilities = allUtilities?.filter(
+//   (u) => u?.kitchen?.title === kitchenType?.title,
+// );
+// const singleFeature = getFeature?.filter(
+//   (f) => f?.kitchen?.title === kitchenType?.title,
+// );
+
+// const handleUtilityBill = (bill) => {
+//   setUtilityBills((prev) =>
+//     prev.find((b) => b._id === bill._id)
+//       ? prev.filter((b) => b._id !== bill._id)
+//       : [...prev, bill],
+//   );
+// };
+
+// const handleFeature = (feature) => {
+//   setServiceFeatures((prev) =>
+//     prev.find((f) => f._id === feature._id)
+//       ? prev.filter((f) => f._id !== feature._id)
+//       : [...prev, feature],
+//   );
+// };
+
+// const totalUtilityPrice = utilityBills?.reduce(
+//   (total, bill) => total + +bill.price,
+//   0,
+// );
+
+// const totalServiceFeaturePrice = serviceFeatures?.reduce(
+//   (total, feature) => total + +feature?.price,
+//   0,
+// );
+
+// const totalPrice = totalUtilityPrice + totalServiceFeaturePrice;
