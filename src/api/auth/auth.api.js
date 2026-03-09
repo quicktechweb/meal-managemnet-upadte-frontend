@@ -30,8 +30,15 @@ export const instituteRegistrationFunction = async (payload) => {
   return data;
 };
 
-
 export const instituteLoginFunction = async (payload) => {
   const { data } = await axiosPublic.post("/api/institute-login", payload);
+  return data;
+};
+
+export const instituteUserRegistrationFunction = async (payload) => {
+  const { data } = await axiosPublic.post(
+    "/api/institute-user-registration",
+    payload,
+  );
   return data;
 };
