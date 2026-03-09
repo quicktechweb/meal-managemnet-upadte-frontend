@@ -3,6 +3,7 @@ import { Controller, useFieldArray, useForm } from "react-hook-form";
 import {
   useAllCost,
   useAllKitchen,
+  useAllService,
   useCreateUtilites,
 } from "../../../api/admin/admin.api";
 import { PlusCircle, Utensils, Tag } from "lucide-react";
@@ -13,6 +14,8 @@ const AddUtilitiesService = () => {
   const { data, isLoading } = useAllKitchen();
 
   const { data: costs } = useAllCost();
+
+  const { data: services } = useAllService();
 
   const { mutateAsync, isPending } = useCreateUtilites();
 
@@ -135,6 +138,46 @@ const AddUtilitiesService = () => {
               <p className="text-red-500 text-sm">
                 {errors.bear_the_cost.message}
               </p>
+            )}
+          </div>
+
+          <div className="space-y-2">
+            <label className="text-sm font-semibold text-slate-700 flex items-center gap-2">
+              <Utensils size={16} className="text-slate-400" />
+              Option
+            </label>
+
+            <Controller
+              name="service"
+              control={control}
+              rules={{ required: "Option is required" }}
+              defaultValue={[]}
+              render={({ field }) => {
+                const options =
+                  services?.map((c) => ({ value: c._id, label: c.title })) ||
+                  [];
+
+               
+                const value = options.filter((o) =>
+                  field.value.includes(o.value),
+                );
+
+                return (
+                  <Select
+                    {...field}
+                    isMulti
+                    options={options}
+                    value={value}
+                    onChange={(selected) =>
+                      field.onChange(selected.map((s) => s.value))
+                    }
+                  />
+                );
+              }}
+            />
+
+            {errors.option && (
+              <p className="text-red-500 text-sm">{errors.option.message}</p>
             )}
           </div>
 

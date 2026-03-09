@@ -51,6 +51,7 @@ const Services = () => {
               <th className="px-6 py-4 font-semibold">Utility Service Name</th>
               <th className="px-6 py-4 font-semibold">Kitchen</th>
               <th className="px-6 py-4 font-semibold">Bear the Cost</th>
+              <th className="px-6 py-4 font-semibold">Service</th>
               <th className="px-6 py-4 font-semibold">Price</th>
               <th className="px-6 py-4 font-semibold">Ranges</th>
               <th className="px-6 py-4 font-semibold text-right">Action</th>
@@ -68,7 +69,7 @@ const Services = () => {
                 </td>
 
                 <td className="px-6 py-4">
-                  <span className="text-xs font-semibold bg-violet-100 text-violet-700 px-3 py-1 rounded-full">
+                  <span className="text-xs inline-block whitespace-nowrap font-semibold bg-violet-100 text-violet-700 px-3 py-1 rounded-full">
                     {item?.kitchen?.title}
                   </span>
                 </td>
@@ -79,6 +80,23 @@ const Services = () => {
                       item?.bear_the_cost?.map((cost) => (
                         <span className="text-xs font-semibold bg-violet-100 text-violet-700 px-3 py-1 rounded-full">
                           {cost.title}
+                        </span>
+                      ))
+                    ) : (
+                      <p className="text-xs font-bold text-gray-400 text-center">
+                        {" "}
+                        N/A
+                      </p>
+                    )}
+                  </div>
+                </td>
+
+                <td className="px-6 py-4">
+                  <div className="flex flex-wrap items-center gap-1.5">
+                    {item?.service?.length > 0 ? (
+                      item?.service?.map((service) => (
+                        <span className="text-xs inline-block font-semibold bg-violet-100 text-violet-700 px-3 py-1 rounded-full">
+                          {service.title}
                         </span>
                       ))
                     ) : (

@@ -3,6 +3,7 @@ import { Controller, useFieldArray, useForm } from "react-hook-form";
 import {
   useAllCost,
   useAllKitchen,
+  useAllService,
   useUpdateUtilities,
   useUtilitiesService,
 } from "../../../api/admin/admin.api";
@@ -16,6 +17,8 @@ const UpdateUtilitiesService = () => {
 
   const { data: allUtilitiesServices } = useUtilitiesService();
   const { data: costs } = useAllCost();
+  const { data: services } = useAllService();
+
   const { data: kitchens } = useAllKitchen();
   const { mutateAsync, isPending } = useUpdateUtilities();
 
@@ -35,6 +38,7 @@ const UpdateUtilitiesService = () => {
       price: "",
       kitchen: "",
       bear_the_cost: [],
+      service: [],
       ranges: [],
     },
   });
@@ -51,6 +55,7 @@ const UpdateUtilitiesService = () => {
         price: singleUtilities.price,
         kitchen: singleUtilities?.kitchen?._id || "",
         bear_the_cost: singleUtilities?.bear_the_cost?.map((c) => c._id) || [],
+        service: singleUtilities?.service?.map((c) => c._id) || [],
         ranges: singleUtilities?.ranges || [],
       });
     }
@@ -143,6 +148,47 @@ const UpdateUtilitiesService = () => {
               <p className="text-red-500 text-sm">
                 {errors.bear_the_cost.message}
               </p>
+            )}
+          </div>
+
+          {/* service */}
+          <div>
+            <label className="text-sm font-semibold flex items-center gap-2">
+              <Utensils size={16} />
+              Service
+            </label>
+
+            <Controller
+              name="service"
+              control={control}
+              rules={{ required: "Service is required" }}
+              defaultValue={[]}
+              render={({ field }) => {
+                const options =
+                  services?.map((s) => ({
+                    value: s._id,
+                    label: s.title,
+                  })) || [];
+
+                const value = options.filter((opt) =>
+                  field.value?.includes(opt.value),
+                );
+
+                return (
+                  <Select
+                    {...field}
+                    isMulti
+                    options={options}
+                    value={value}
+                    onChange={(selected) =>
+                      field.onChange(selected.map((s) => s.value))
+                    }
+                  />
+                );
+              }}
+            />
+            {errors.service && (
+              <p className="text-red-500 text-sm">{errors.service.message}</p>
             )}
           </div>
 
