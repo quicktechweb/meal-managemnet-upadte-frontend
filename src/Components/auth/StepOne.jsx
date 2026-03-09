@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { IoMdEye, IoMdEyeOff } from "react-icons/io";
 import { api } from "../../utils/countryApi";
 import CustomSelect from "../CustomSelect";
@@ -8,11 +8,14 @@ import { Controller } from "react-hook-form";
 const StepOne = ({
   form,
   nextStep,
-  handleCreateInstituteType,
-  instituteOptions,
+  // handleCreateInstituteType,
+  // instituteOptions,
   isPending,
   setFormUploadData,
   formUploadData,
+  // setOrganizeOptions,
+  // organizeOptions,
+  // handleCreateOrganizeType,
 }) => {
   const {
     register,
@@ -84,35 +87,104 @@ const StepOne = ({
     setMessOptions((prev) => [...prev, newItem]);
   };
 
+  const [organizeOptions, setOrganizeOptions] = useState([
+    "Company",
+    "Institute",
+  ]);
+
+  const [instituteOptionsState, setInstituteOptionsState] = useState({
+    Company: ["Office", "Startup", "Agency"],
+    Institute: ["School", "College", "University"],
+  });
+
+  // watch organization
+  const organizationType = form.watch("organization_type");
+
+  // dynamic label
+  const instituteLabel = organizationType ? `${organizationType} Type` : "Type";
+
+  // dynamic options
+  const instituteOptions = useMemo(() => {
+    return instituteOptionsState[organizationType] || [];
+  }, [organizationType, instituteOptionsState]);
+
+  // reset institute when organization changes
+  useEffect(() => {
+    form.setValue("institute_type", "");
+  }, [organizationType, form]);
+
+  // create organization
+  const handleCreateOrganizeType = (value) => {
+    setOrganizeOptions((prev) => [...prev, value]);
+
+    setInstituteOptionsState((prev) => ({
+      ...prev,
+      [value]: [],
+    }));
+  };
+
+  // create institute
+  const handleCreateInstituteType = (value) => {
+    if (!organizationType) return;
+
+    setInstituteOptionsState((prev) => ({
+      ...prev,
+      [organizationType]: [...(prev[organizationType] || []), value],
+    }));
+  };
+
   return (
     <>
+      <Controller
+        name="organization_type"
+        control={form.control}
+        rules={{
+          required: "Organization Type is required",
+        }}
+        render={({ field: { onChange, value }, fieldState: { error } }) => (
+          <div className="space-y-1">
+            <label className="text-sm font-medium">
+              Organization Type <span className="text-red-500">*</span>
+            </label>
+
+            <CustomSelect
+              label="Organization Type"
+              options={organizeOptions}
+              value={value ?? ""}
+              onChange={(newValue) => onChange(newValue)}
+              onCreate={handleCreateOrganizeType}
+              allowCreate
+            />
+
+            {error && <p className="text-red-500 text-sm">{error.message}</p>}
+          </div>
+        )}
+      />
+
+      {/* Dynamic Institute / Company Type */}
+
       <Controller
         name="institute_type"
         control={form.control}
         rules={{
-          required: "Institute Type is required",
+          required: `${instituteLabel} is required`,
         }}
         render={({ field: { onChange, value }, fieldState: { error } }) => (
           <div className="space-y-1">
-            <label className="block text-sm font-medium text-gray-700">
-              Institute Type <span className="text-red-500">*</span>
+            <label className="text-sm font-medium">
+              {instituteLabel} <span className="text-red-500">*</span>
             </label>
 
             <CustomSelect
-              label="Institute Type"
+              label={instituteLabel}
               options={instituteOptions}
               value={value ?? ""}
-              onChange={(newValue) => {
-                onChange(newValue);
-              }}
+              onChange={(newValue) => onChange(newValue)}
               onCreate={handleCreateInstituteType}
               allowCreate
-              showOther
             />
 
-            {error && (
-              <p className="text-red-500 text-sm mt-1">{error.message}</p>
-            )}
+            {error && <p className="text-red-500 text-sm">{error.message}</p>}
           </div>
         )}
       />

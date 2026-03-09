@@ -36,6 +36,11 @@ const MessForm = () => {
 
   // step 1
 
+  const [organizeOptions, setOrganizeOptions] = useState([
+    "Company",
+    "Institute",
+  ]);
+
   const [instituteOptions, setInstituteOptions] = useState([
     "School",
     "Office",
@@ -44,6 +49,10 @@ const MessForm = () => {
 
   const handleCreateInstituteType = (newItem) => {
     setInstituteOptions((prev) => [...prev, newItem]);
+  };
+
+  const handleCreateOrganizeType = (newItem) => {
+    setOrganizeOptions((prev) => [...prev, newItem]);
   };
 
   // step 2
@@ -70,8 +79,6 @@ const MessForm = () => {
   const { data: kitchenData } = useAllKitchen();
   const { data: services } = useAllService();
   const { data: allUtilities } = useUtilitiesService();
-
-  console.log(allUtilities);
 
   const { data: getFeature } = useGetFeature();
 
@@ -306,6 +313,9 @@ const MessForm = () => {
           isPending={isPending}
           setFormUploadData={setFormUploadData}
           formUploadData={formUploadData}
+          setOrganizeOptions={setOrganizeOptions}
+          organizeOptions={organizeOptions}
+          handleCreateOrganizeType={handleCreateOrganizeType}
         />
       )}
       {step === 2 && (
