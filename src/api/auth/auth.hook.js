@@ -1,5 +1,6 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
 import {
+  getInstituteUserDataFunction,
   getUserDataFunction,
   googleLoginFunction,
   instituteLoginFunction,
@@ -11,6 +12,7 @@ import {
 import toast from "react-hot-toast";
 import useAuth from "../../Hooks/useAuth";
 import { useNavigate } from "react-router-dom";
+import useInstituteAuth from "../../Hooks/useInstituteAuth";
 
 export const useLogin = () => {
   const { setToken } = useAuth();
@@ -102,7 +104,7 @@ export const useInstituteRegistration = () => {
 };
 
 export const useInstituteLogin = () => {
-  // const { setToken } = useAuth();
+  const { setToken } = useInstituteAuth();
   const navigate = useNavigate();
   return useMutation({
     mutationKey: ["institute-login"],
@@ -110,20 +112,13 @@ export const useInstituteLogin = () => {
     onSuccess: (data) => {
       console.log(data);
 
+      setToken(data?.token);
+
       data?.user?.role === "institute_user" &&
         navigate("/dashboard/mealmanagement");
       data?.user?.role === "institute_admin" && navigate("/institute");
 
       toast.success(data?.message);
-      // setToken(data?.token);
-
-      // if (data?.user?.role === "user") {
-      //   navigate("/dashboard/dashboard");
-      // }
-
-      // if (data?.user?.role === "admin") {
-      //   navigate("/admin/dashboard");
-      // }
     },
     onError: (err) => {
       toast.error(err?.response?.data?.message);
@@ -138,5 +133,17 @@ export const useInstituteUserRegistration = () => {
     onMutate: () => {},
     onSuccess: () => {},
     onError: () => {},
+  });
+};
+
+export const useAuthInstituteUser = (token) => {
+  return useQuery({
+    queryKey: ["instituteUserData", token],
+    queryFn: getInstituteUserDataFunction,
+    retry: false,
+    enabled: !!token,
+    onError: (err) => {
+      toast.error(err?.message);
+    },
   });
 };

@@ -1,4 +1,4 @@
-import { useGetUserData } from "../api/auth/auth.hook";
+import { useAuthInstituteUser, useGetUserData } from "../api/auth/auth.hook";
 import useLocalStorage from "../Hooks/useLocalStorage";
 
 import { createContext, useEffect, useState } from "react";
@@ -12,7 +12,9 @@ const InstituteAuthProvider = ({ children }) => {
   const [token, setToken, clearToken] = useLocalStorage("token", null);
 
   // mutation:
-  const { data: getUserData, isLoading } = useGetUserData(token);
+  const { data: getUserData, isLoading } = useAuthInstituteUser(token);
+
+  console.log(getUserData);
 
   // get data:
   useEffect(() => {

@@ -291,7 +291,7 @@ const router = createBrowserRouter([
     element: <InstituteLayout />,
     children: [
       {
-        path: "dashboard/user-settings",
+        path: "dashboard/permission-settings",
         element: <UserSettings />,
       },
       {

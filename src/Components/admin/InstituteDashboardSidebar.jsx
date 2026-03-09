@@ -33,9 +33,9 @@ const InstituteDashboardSidebar = ({ setIsOpenSidebar }) => {
       icon: FaClipboardList,
       links: [
         {
-          title: "User Settings",
+          title: "Permission Settings",
           icon: FaShoppingBag,
-          path: "/institute/dashboard/user-settings",
+          path: "/institute/dashboard/permission-settings",
         },
         {
           title: "User Institute",
