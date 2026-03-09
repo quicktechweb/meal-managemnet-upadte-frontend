@@ -1,11 +1,19 @@
-import React from "react";
-import { useFieldArray, useForm } from "react-hook-form";
-import { useAllKitchen, useCreateUtilites } from "../../../api/admin/admin.api";
+import React, { useState } from "react";
+import { Controller, useFieldArray, useForm } from "react-hook-form";
+import {
+  useAllCost,
+  useAllKitchen,
+  useCreateUtilites,
+} from "../../../api/admin/admin.api";
 import { PlusCircle, Utensils, Tag } from "lucide-react";
 import { RxCross2 } from "react-icons/rx";
+import Select from "react-select";
 
 const AddUtilitiesService = () => {
   const { data, isLoading } = useAllKitchen();
+
+  const { data: costs } = useAllCost();
+
   const { mutateAsync, isPending } = useCreateUtilites();
 
   const kitchens = data || [];
@@ -88,6 +96,45 @@ const AddUtilitiesService = () => {
 
             {errors.kitchen && (
               <p className="text-red-500 text-sm">{errors.kitchen.message}</p>
+            )}
+          </div>
+
+          <div className="space-y-2">
+            <label className="text-sm font-semibold text-slate-700 flex items-center gap-2">
+              <Utensils size={16} className="text-slate-400" />
+              Bear the cost
+            </label>
+
+            <Controller
+              name="bear_the_cost"
+              control={control}
+              rules={{ required: "Bear the cost is required" }}
+              defaultValue={[]}
+              render={({ field }) => {
+                const options =
+                  costs?.map((c) => ({ value: c._id, label: c.title })) || [];
+                const value = options.filter((option) =>
+                  field.value?.includes(option.value),
+                );
+
+                return (
+                  <Select
+                    {...field}
+                    isMulti
+                    options={options}
+                    value={value}
+                    onChange={(selected) =>
+                      field.onChange(selected.map((s) => s.value))
+                    }
+                  />
+                );
+              }}
+            />
+
+            {errors.bear_the_cost && (
+              <p className="text-red-500 text-sm">
+                {errors.bear_the_cost.message}
+              </p>
             )}
           </div>
 

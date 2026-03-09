@@ -2,6 +2,7 @@ import { Plus, UtensilsCrossed } from "lucide-react";
 import React from "react";
 import { Link } from "react-router-dom";
 import {
+  useAllCost,
   useDeleteUtilities,
   useUtilitiesService,
 } from "../../../api/admin/admin.api";
@@ -10,6 +11,8 @@ import { MdDelete } from "react-icons/md";
 
 const Services = () => {
   const { data: utilities, isLoading } = useUtilitiesService();
+
+  console.log(utilities);
 
   const { mutateAsync, isPending } = useDeleteUtilities();
 
@@ -47,6 +50,7 @@ const Services = () => {
             <tr className="text-left text-sm text-slate-600">
               <th className="px-6 py-4 font-semibold">Utility Service Name</th>
               <th className="px-6 py-4 font-semibold">Kitchen</th>
+              <th className="px-6 py-4 font-semibold">Bear the Cost</th>
               <th className="px-6 py-4 font-semibold">Price</th>
               <th className="px-6 py-4 font-semibold">Ranges</th>
               <th className="px-6 py-4 font-semibold text-right">Action</th>
@@ -67,6 +71,23 @@ const Services = () => {
                   <span className="text-xs font-semibold bg-violet-100 text-violet-700 px-3 py-1 rounded-full">
                     {item?.kitchen?.title}
                   </span>
+                </td>
+
+                <td className="px-6 py-4">
+                  <div className="flex flex-wrap items-center gap-1.5">
+                    {item?.bear_the_cost?.length > 0 ? (
+                      item?.bear_the_cost?.map((cost) => (
+                        <span className="text-xs font-semibold bg-violet-100 text-violet-700 px-3 py-1 rounded-full">
+                          {cost.title}
+                        </span>
+                      ))
+                    ) : (
+                      <p className="text-xs font-bold text-gray-400 text-center">
+                        {" "}
+                        N/A
+                      </p>
+                    )}
+                  </div>
                 </td>
 
                 <td className="px-6 text-xs py-4 font-bold text-violet-600">
