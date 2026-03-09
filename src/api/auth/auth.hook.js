@@ -4,6 +4,7 @@ import {
   googleLoginFunction,
   instituteLoginFunction,
   instituteRegistrationFunction,
+  instituteUserRegistrationFunction,
   loginFunction,
   registerFunction,
 } from "./auth.api";
@@ -109,6 +110,10 @@ export const useInstituteLogin = () => {
     onSuccess: (data) => {
       console.log(data);
 
+      data?.user?.role === "institute_user" &&
+        navigate("/dashboard/mealmanagement");
+      data?.user?.role === "institute_admin" && navigate("/institute");
+
       toast.success(data?.message);
       // setToken(data?.token);
 
@@ -119,11 +124,19 @@ export const useInstituteLogin = () => {
       // if (data?.user?.role === "admin") {
       //   navigate("/admin/dashboard");
       // }
-
-      navigate("/");
     },
     onError: (err) => {
-      toast.error(err?.response?.data?.error);
+      toast.error(err?.response?.data?.message);
     },
+  });
+};
+
+export const useInstituteUserRegistration = () => {
+  return useMutation({
+    mutationKey: ["institute-user-registration"],
+    mutationFn: (payload) => instituteUserRegistrationFunction(payload),
+    onMutate: () => {},
+    onSuccess: () => {},
+    onError: () => {},
   });
 };

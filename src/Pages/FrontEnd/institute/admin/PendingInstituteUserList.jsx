@@ -6,17 +6,19 @@ const PendingInstituteUserList = ({ users }) => {
     <div className="p-6 bg-gray-50 min-h-screen">
       <div className="max-w-6xl mx-auto">
         <h2 className="text-2xl font-bold mb-6 text-gray-800 border-l-4 border-blue-600 pl-3">
-          Institute Lists
+          Institute User Lists
         </h2>
 
         <div className="bg-white shadow-md rounded-lg overflow-hidden">
           <table className="min-w-full leading-normal">
             <thead>
               <tr className="bg-gray-100 text-gray-600 uppercase text-sm leading-normal">
-                <th className="py-3 px-6 text-left">Institute Name</th>
-                <th className="py-3 px-6 text-left">Admin Email</th>
-                <th className="py-3 px-6 text-left">Admin Phone</th>
-                <th className="py-3 px-6 text-center">Type</th>
+                <th className="py-3 px-6 text-left">
+                  Institute User Full Name
+                </th>
+                <th className="py-3 px-6 text-left">Email</th>
+                <th className="py-3 px-6 text-left">Phone</th>
+                {/* <th className="py-3 px-6 text-center">Institute Name</th> */}
                 <th className="py-3 px-6 text-center">Status</th>
                 <th className="py-3 px-6 text-center">Action</th>
               </tr>
@@ -29,27 +31,23 @@ const PendingInstituteUserList = ({ users }) => {
                 >
                   <td className="py-3 px-6 text-left whitespace-nowrap">
                     <div className="font-medium text-gray-800">
-                      {user.information.name_of_institute}
+                      {user.information.full_name}
                     </div>
                     <div className="text-xs text-gray-500">
                       {user.information.district}, {user.information.division}
                     </div>
                   </td>
                   <td className="py-3 px-6 text-left">
-                    {user.admin_info.email_admin
-                      ? user.admin_info.email_admin
-                      : "N/A"}
+                    {user.email ? user.email : "N/A"}
                   </td>
                   <td className="py-3 px-6 text-left">
-                    {user.admin_info.phone_admin
-                      ? user.admin_info.phone_admin
-                      : "N/A"}
+                    {user.phone ? user.phone : "N/A"}
                   </td>
-                  <td className="py-3 px-6 text-center">
+                  {/* <td className="py-3 px-6 text-center">
                     <span className="bg-blue-100 text-blue-700 py-1 px-3 rounded-full text-xs font-semibold">
-                      {user.information.instituteType}
+                      {user.information.name_of_the_institute}
                     </span>
-                  </td>
+                  </td> */}
                   <td className="py-3 px-6 text-center">
                     <span
                       className={` ${user.approval_status === "pending" && "bg-yellow-100 text-yellow-700"} ${user.approval_status === "approved" && "bg-green-100 text-green-700"}  py-1 px-3 rounded-full text-xs font-semibold animate-pulse`}
@@ -59,8 +57,8 @@ const PendingInstituteUserList = ({ users }) => {
                   </td>
                   <td className="py-3 px-6 text-center">
                     <Link
-                      to={`/admin/dashboard/institute-user/${user._id}`}
-                      className="bg-blue-600 hover:bg-blue-700 text-white py-1 px-4 rounded text-xs transition-colors"
+                      to={`/institute/dashboard/single-user-institute/${user._id}`}
+                      className="bg-blue-600 hover:bg-blue-700 text-white py-1 px-4 rounded text-xs whitespace-nowrap transition-colors"
                     >
                       View Details
                     </Link>
