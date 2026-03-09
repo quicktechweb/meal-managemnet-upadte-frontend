@@ -109,7 +109,7 @@ const InstituteLayout = () => {
 
                 <div className="flex flex-col">
                   <h4 className="text-[15px] font-bold text-gray-800 leading-tight">
-                    Admin
+                    Institute Admin
                   </h4>
                 </div>
               </div>

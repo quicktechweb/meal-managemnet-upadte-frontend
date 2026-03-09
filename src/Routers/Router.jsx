@@ -79,6 +79,7 @@ import InstituteLayout from "../Layout/InstituteLayout";
 import UserSettings from "../Pages/FrontEnd/institute/admin/UserSettings";
 import Institutes from "../Pages/FrontEnd/admin/Institutes";
 import InstituteUser from "../Pages/FrontEnd/institute/admin/InstituteUser";
+import InstituteUserDetails from "../Pages/FrontEnd/institute/admin/InstituteUserDetails";
 
 const router = createBrowserRouter([
   {
@@ -295,8 +296,12 @@ const router = createBrowserRouter([
       },
       {
         path: "dashboard/user-institute",
-        element:<InstituteUser/>
-      }
+        element: <InstituteUser />,
+      },
+      {
+        path: "dashboard/single-user-institute/:id",
+        element: <InstituteUserDetails />,
+      },
     ],
   },
 

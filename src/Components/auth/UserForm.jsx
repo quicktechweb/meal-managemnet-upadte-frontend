@@ -142,11 +142,13 @@ const UserForm = () => {
 
   const { data } = useApprovedInstituteUser();
 
-  const selectedInstituteId = watch("institute");
+  const selectedInstituteId = watch("name_of_institute");
 
   const selectedInstitute = data?.find(
-    (item) => item._id === selectedInstituteId,
+    (item) => item.name_of_institute === selectedInstituteId,
   );
+
+  console.log(selectedInstitute);
 
   const { mutateAsync, isPending } = useInstituteUserRegistration();
 
@@ -438,7 +440,7 @@ const UserForm = () => {
 
         {/* institute */}
         <Controller
-          name="name_of_the_institute"
+          name="name_of_institute"
           control={control}
           rules={{
             required: "Institute is required",
@@ -450,7 +452,10 @@ const UserForm = () => {
             >
               <option value="">Name Of the Institute</option>
               {data?.map((institute) => (
-                <option key={institute?._id} value={institute?._id}>
+                <option
+                  key={institute?._id}
+                  value={institute?.name_of_institute}
+                >
                   {institute.name_of_institute}
                 </option>
               ))}
