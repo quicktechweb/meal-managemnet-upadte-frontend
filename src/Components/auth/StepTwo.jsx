@@ -30,19 +30,16 @@ const StepTwo = ({
   prevStep,
   nextStep,
   form,
+  selectedBill,
+  setSelectedBill,
+  modalData,
+  setModalData,
 }) => {
   const SelectedBadge = ({ item, onRemove }) => (
-    <span className="flex items-center gap-1 bg-orange-100 text-orange-700 px-3 py-1 rounded-full text-sm font-medium border border-orange-200">
-      {item.name || item.title || item.label}
-      <X
-        size={14}
-        className="cursor-pointer hover:text-orange-900"
-        onClick={(e) => {
-          e.stopPropagation();
-          onRemove(item);
-        }}
-      />
-    </span>
+    <div className="flex items-center bg-orange-100 text-orange-800 px-3 py-1 rounded-full gap-2">
+      <span>{item.displayText || item.name}</span>
+      <button onClick={() => onRemove(item)}>x</button>
+    </div>
   );
 
   return (
@@ -154,11 +151,29 @@ const StepTwo = ({
               </div>
               {/* Selected Badges Below */}
               <div className="flex flex-wrap gap-2 w-full max-w-[400px]">
-                {utilityBills.map((bill) => (
+                {/* {utilityBills.map((bill) => (
                   <SelectedBadge
                     key={bill._id}
                     item={bill}
                     onRemove={handleUtilityBill}
+                  />
+                ))} */}
+                {utilityBills.map((bill) => (
+                  <SelectedBadge
+                    key={bill._id}
+                    item={{
+                      ...bill,
+                      displayText: `${bill.name} ${
+                        bill.bear_the_cost
+                          ? `- ${bill.bear_the_cost.title}`
+                          : ""
+                      } ${bill.service ? `(${bill.service.title})` : ""}`,
+                    }}
+                    onRemove={(b) =>
+                      setUtilityBills((prev) =>
+                        prev.filter((u) => u._id !== b._id),
+                      )
+                    }
                   />
                 ))}
               </div>
@@ -493,6 +508,86 @@ const StepTwo = ({
           Next
         </button>
       </div>
+
+      {/* modal */}
+      {selectedBill && (
+        <div className="fixed inset-0 flex items-center justify-center bg-black/50  bg-opacity-30 z-50">
+          <div className="bg-white rounded-xl p-6 w-[400px] max-w-full">
+            <h3 className="font-semibold text-lg mb-4">{selectedBill.name}</h3>
+
+            {/* Bear the Cost */}
+            <label className="block text-sm font-medium mb-1">
+              Bear the Cost
+            </label>
+            <select
+              className="w-full border border-gray-300 rounded-md p-2 mb-4"
+              value={modalData.bear_the_cost?._id || ""}
+              onChange={(e) => {
+                const selected = selectedBill.bear_the_cost.find(
+                  (b) => b._id === e.target.value,
+                );
+                setModalData((prev) => ({ ...prev, bear_the_cost: selected }));
+              }}
+            >
+              <option value="">Select Bear the Cost</option>
+              {selectedBill.bear_the_cost?.map((b) => (
+                <option key={b._id} value={b._id}>
+                  {b.title}
+                </option>
+              ))}
+            </select>
+
+            {/* Service */}
+            <label className="block text-sm font-medium mb-1">Service</label>
+            <select
+              className="w-full border border-gray-300 rounded-md p-2 mb-4"
+              value={modalData.service?._id || ""}
+              onChange={(e) => {
+                const selected = selectedBill.service.find(
+                  (s) => s._id === e.target.value,
+                );
+                setModalData((prev) => ({ ...prev, service: selected }));
+              }}
+            >
+              <option value="">Select Service</option>
+              {selectedBill.service?.map((s) => (
+                <option key={s._id} value={s._id}>
+                  {s.title}
+                </option>
+              ))}
+            </select>
+
+            {/* Buttons */}
+            <div className="flex justify-end gap-3">
+              <button
+                className="px-4 py-2 rounded-md bg-gray-200"
+                onClick={() => setSelectedBill(null)}
+              >
+                Cancel
+              </button>
+              <button
+                className="px-4 py-2 rounded-md bg-orange-500 text-white"
+                onClick={() => {
+                  setUtilityBills((prev) => {
+                    const exists = prev.find((b) => b._id === selectedBill._id);
+                    if (exists) {
+                      return prev.map((b) =>
+                        b._id === selectedBill._id ? { ...b, ...modalData } : b,
+                      );
+                    } else {
+                      return [...prev, { ...selectedBill, ...modalData }];
+                    }
+                  });
+                  setSelectedBill(null);
+                  setActiveDropdown(null);
+                }}
+              >
+                OK
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

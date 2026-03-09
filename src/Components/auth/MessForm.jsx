@@ -34,8 +34,6 @@ const MessForm = () => {
   const [formUploadData, setFormUploadData] = useState([]);
   const [adminFormUploadData, setAdminFormUploadData] = useState([]);
 
-  console.log("formuploaddata", adminFormUploadData);
-
   // step 1
 
   const [instituteOptions, setInstituteOptions] = useState([
@@ -63,9 +61,18 @@ const MessForm = () => {
 
   const [serviceFeatures, setServiceFeatures] = useState([]);
 
+  const [selectedBill, setSelectedBill] = useState(null);
+  const [modalData, setModalData] = useState({
+    bear_the_cost: [],
+    service: [],
+  });
+
   const { data: kitchenData } = useAllKitchen();
   const { data: services } = useAllService();
   const { data: allUtilities } = useUtilitiesService();
+
+  console.log(allUtilities);
+
   const { data: getFeature } = useGetFeature();
 
   useEffect(() => {
@@ -92,12 +99,21 @@ const MessForm = () => {
     setActiveDropdown(activeDropdown === name ? null : name);
   };
 
+  // const handleUtilityBill = (bill) => {
+  //   setUtilityBills((prev) =>
+  //     prev.find((b) => b._id === bill._id)
+  //       ? prev.filter((b) => b._id !== bill._id)
+  //       : [...prev, bill],
+  //   );
+  // };
+
   const handleUtilityBill = (bill) => {
-    setUtilityBills((prev) =>
-      prev.find((b) => b._id === bill._id)
-        ? prev.filter((b) => b._id !== bill._id)
-        : [...prev, bill],
-    );
+    setSelectedBill(bill);
+    setModalData({
+      bear_the_cost: bill.bear_the_cost || [],
+      service: bill.service || [],
+    });
+    setActiveDropdown(null);
   };
 
   const handleFeature = (feature) => {
@@ -136,37 +152,7 @@ const MessForm = () => {
     if (isValid) {
       const currentData = form.getValues();
 
-      const formdata = new FormData();
       if (step === 1) {
-        // formdata.append("instituteType", currentData?.institute_type);
-        // formdata.append("name_of_institute", currentData?.institute_name);
-        // formdata.append("number_of_member", +currentData?.number_of_member);
-        // formdata.append("username", currentData?.username);
-        // formdata.append("name_of_hall", currentData?.hall_name);
-        // formdata.append("name_of_mess", currentData?.mess_name);
-        // formdata.append("country", currentData?.country);
-        // formdata.append("state", currentData?.state);
-        // formdata.append("division", currentData?.division);
-        // formdata.append("district", currentData?.district);
-        // formdata.append("village", currentData?.village);
-        // formdata.append("location", currentData?.location);
-        // formdata.append("email", currentData?.email);
-        // formdata.append("phone_number", currentData?.phone);
-        // formdata.append("password", currentData?.password);
-
-        // const documentsMeta = currentData.documents.map((doc) => ({
-        //   document_type: doc.documentType,
-        //   document_number: doc.documentNumber,
-        // }));
-
-        // formdata.append("documents", JSON.stringify(documentsMeta));
-
-        // currentData.documents.forEach((doc, index) => {
-        //   if (doc.files?.length > 0) {
-        //     formdata.append("document_files", doc.files[0]);
-        //   }
-        // });
-
         const payload = {
           instituteType: currentData?.institute_type,
           name_of_institute: currentData?.institute_name,
@@ -326,9 +312,13 @@ const MessForm = () => {
         <StepTwo
           form={form}
           nextStep={nextStep}
+          selectedBill={selectedBill}
+          setSelectedBill={setSelectedBill}
           prevStep={prevStep}
           selectedOption={selectedOption}
           setSelectedOption={setSelectedOption}
+          modalData={modalData}
+          setModalData={setModalData}
           kitchenType={kitchenType}
           setKitchenType={setKitchenType}
           studentService={studentService}

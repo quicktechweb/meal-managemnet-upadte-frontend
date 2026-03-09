@@ -140,7 +140,7 @@ const StepOne = ({
       <Controller
         name="hall_name"
         control={form.control}
-        rules={{ required: "Hall name is required" }}
+        rules={{}}
         render={({ field: { onChange, value }, fieldState: { error } }) => (
           <>
             <CustomSelect
