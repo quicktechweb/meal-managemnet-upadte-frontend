@@ -28,6 +28,18 @@ const InstituteDashboardSidebar = ({ setIsOpenSidebar }) => {
 
   const sidebarItems = [
     {
+      key: "Meal management",
+      title: "Meal Management",
+      icon: FaClipboardList,
+      links: [
+        {
+          title: "Meal Settings",
+          icon: FaShoppingBag,
+          path: "/institute/dashboard/meal-management",
+        },
+      ],
+    },
+    {
       key: "user management",
       title: "User Management",
       icon: FaClipboardList,

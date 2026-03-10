@@ -212,6 +212,7 @@ const MessForm = () => {
           kitchen_type: kitchenType,
           utility_service: utilityBills,
           service_feature: serviceFeatures,
+          total_amount: totalPrice,
           registration_step: step,
         };
 
