@@ -81,6 +81,7 @@ import Institutes from "../Pages/FrontEnd/admin/Institutes";
 import InstituteUser from "../Pages/FrontEnd/institute/admin/InstituteUser";
 import InstituteUserDetails from "../Pages/FrontEnd/institute/admin/InstituteUserDetails";
 import InstituteAdminMealManagement from "../Pages/FrontEnd/institute/admin/InstituteAdminMealManagement";
+import InstituteAdminProfile from "../Pages/FrontEnd/institute/admin/InstituteAdminProfile";
 
 const router = createBrowserRouter([
   {
@@ -306,6 +307,10 @@ const router = createBrowserRouter([
       {
         path: "dashboard/single-user-institute/:id",
         element: <InstituteUserDetails />,
+      },
+      {
+        path: "dashboard/institute",
+        element: <InstituteAdminProfile />,
       },
     ],
   },
