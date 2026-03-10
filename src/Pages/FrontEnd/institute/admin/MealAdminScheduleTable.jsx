@@ -133,11 +133,21 @@ const MealAdminScheduleTable = () => {
       items: selectedItemsList,
     };
 
-    console.log("newscheduledata", newSchedule);
+    setScheduleList((prev) => {
+      const existingIndex = prev.findIndex(
+        (s) => s.day === selectedDay && s.meal_type === finalMealName,
+      );
 
-    setScheduleList((prev) => [...prev, newSchedule]);
+      console.log(existingIndex);
 
-    console.log("schedulelist", scheduleList);
+      if (existingIndex !== -1) {
+        const updated = [...prev];
+        updated[existingIndex] = newSchedule;
+        return updated;
+      }
+
+      return [...prev, newSchedule];
+    });
 
     setScheduleMap((prev) => ({
       ...prev,
