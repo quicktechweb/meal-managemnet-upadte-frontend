@@ -1,4 +1,5 @@
 import { axiosPublic } from "../../Hooks/useAxiosPublic";
+import { axiosSecure } from "../../Hooks/useAxiosSecure";
 
 export const approvedInstituteUserFunction = async () => {
   const { data } = await axiosPublic("/api/institute-approved-users");
@@ -8,4 +9,9 @@ export const approvedInstituteUserFunction = async () => {
 export const instituteUserListFunction = async () => {
   const { data } = await axiosPublic("/api/instituteuser-pending-users");
   return data?.users;
+};
+
+export const updateInstituteProfileInfoFunction = async ({ id, payload }) => {
+  const { data } = await axiosSecure.patch(`/api/instituteuser/${id}`, payload);
+  return data;
 };

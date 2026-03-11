@@ -3,7 +3,10 @@ import { FaBars } from "react-icons/fa";
 import { Link, Outlet, ScrollRestoration } from "react-router-dom";
 
 import InstituteDashboardSidebar from "../Components/admin/InstituteDashboardSidebar";
+import useInstituteAuth from "../Hooks/useInstituteAuth";
 const InstituteLayout = () => {
+  const { user } = useInstituteAuth();
+
   const [isOpenSidebar, setIsOpenSidebar] = useState(false);
   const [open, setOpen] = useState(false);
   const popupRef = useRef(null);
@@ -109,7 +112,7 @@ const InstituteLayout = () => {
 
                 <div className="flex flex-col">
                   <h4 className="text-[15px] font-bold text-gray-800 leading-tight">
-                    Institute Admin
+                    {user?.user?.information?.name_of_institute}
                   </h4>
                 </div>
               </div>
@@ -120,17 +123,17 @@ const InstituteLayout = () => {
                 >
                   <ul className="text-sm text-gray-700">
                     <Link
-                      to={"/dashboard/profile"}
+                      to={"/institute/dashboard/institute"}
                       className="block px-4 py-2 hover:bg-gray-100 transition"
                     >
                       View Profile
                     </Link>
-                    <Link
+                    {/* <Link
                       to={"/dashboard/change-password"}
                       className="block px-4 py-2 hover:bg-gray-100 transition"
                     >
                       Change Password
-                    </Link>
+                    </Link> */}
                     <li className="px-4 py-2 cursor-pointer block bg-black text-white rounded-bl-md rounded-br-md">
                       Log out
                     </li>

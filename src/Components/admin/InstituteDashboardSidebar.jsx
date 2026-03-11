@@ -28,14 +28,26 @@ const InstituteDashboardSidebar = ({ setIsOpenSidebar }) => {
 
   const sidebarItems = [
     {
+      key: "Meal management",
+      title: "Meal Management",
+      icon: FaClipboardList,
+      links: [
+        {
+          title: "Meal Settings",
+          icon: FaShoppingBag,
+          path: "/institute/dashboard/meal-management",
+        },
+      ],
+    },
+    {
       key: "user management",
       title: "User Management",
       icon: FaClipboardList,
       links: [
         {
-          title: "User Settings",
+          title: "Permission Settings",
           icon: FaShoppingBag,
-          path: "/institute/dashboard/user-settings",
+          path: "/institute/dashboard/permission-settings",
         },
         {
           title: "User Institute",
