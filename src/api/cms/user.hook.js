@@ -2,6 +2,7 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 import {
   approvedInstituteUserFunction,
   instituteUserListFunction,
+  instituteUserMealTypeFunction,
   updateInstituteProfileInfoFunction,
 } from "./user.api";
 
@@ -30,5 +31,13 @@ export const useUpdateInstituteProfileInfo = () => {
     //     toast.success(data?.message);
     //   }
     // },
+  });
+};
+
+export const useInstituteUserMealType = () => {
+  return useQuery({
+    queryKey: "institute_user_meal_type",
+    queryFn: instituteUserMealTypeFunction,
+    retry: false,
   });
 };

@@ -1,5 +1,8 @@
 import React from "react";
-import { useInstituteUserList } from "../../../../api/cms/user.hook";
+import {
+  useInstituteUserList,
+  useInstituteUserMealType,
+} from "../../../../api/cms/user.hook";
 import PendingInstituteUserList from "./PendingInstituteUserList";
 
 const InstituteUser = () => {

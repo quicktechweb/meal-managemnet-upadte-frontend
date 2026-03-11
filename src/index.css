@@ -1,16 +1,14 @@
 @import "tailwindcss";
 
-@import "tailwindcss";
-
 @theme {
   --breakpoint-xxl: 1100px;
 }
 
 /* premimum product start  */
 
-html {
+/* html {
   scroll-behavior: smooth;
-}
+} */
 
 /* Add this in your global styles */
 .no-scrollbar::-webkit-scrollbar {

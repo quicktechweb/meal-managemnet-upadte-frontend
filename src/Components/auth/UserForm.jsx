@@ -142,10 +142,14 @@ const UserForm = () => {
 
   const { data } = useApprovedInstituteUser();
 
-  const selectedInstituteId = watch("name_of_institute");
+  console.log(data);
+
+  const selectedInstituteId = watch("institute_id");
+
+  console.log(selectedInstituteId);
 
   const selectedInstitute = data?.find(
-    (item) => item.name_of_institute === selectedInstituteId,
+    (item) => item._id === selectedInstituteId,
   );
 
   console.log(selectedInstitute);
@@ -153,18 +157,21 @@ const UserForm = () => {
   const { mutateAsync, isPending } = useInstituteUserRegistration();
 
   const onSubmit = async (data) => {
-    await mutateAsync(data, {
-      onSuccess: (data) => {
-        if (data) {
-          toast.success(data?.message);
+    await mutateAsync(
+      {  name_of_institute: selectedInstitute?.name_of_institute ,...data,},
+      {
+        onSuccess: (data) => {
+          if (data) {
+            toast.success(data?.message);
 
-          navigate("/auth/login");
-        }
+            navigate("/auth/login");
+          }
+        },
+        onError: (err) => {
+          toast.error(err?.response?.data?.message);
+        },
       },
-      onError: (err) => {
-        toast.error(err?.response?.data?.message);
-      },
-    });
+    );
   };
 
   return (
@@ -440,7 +447,7 @@ const UserForm = () => {
 
         {/* institute */}
         <Controller
-          name="name_of_institute"
+          name="institute_id"
           control={control}
           rules={{
             required: "Institute is required",
@@ -451,14 +458,16 @@ const UserForm = () => {
               className="w-full border border-gray-200 rounded-md px-3 h-[50px] text-base text-gray-500"
             >
               <option value="">Name Of the Institute</option>
-              {data?.map((institute) => (
-                <option
-                  key={institute?._id}
-                  value={institute?.name_of_institute}
-                >
-                  {institute.name_of_institute}
-                </option>
-              ))}
+              {data?.map(
+                (institute) => (
+                  console.log(institute),
+                  (
+                    <option key={institute?._id} value={institute?._id}>
+                      {institute.name_of_institute}
+                    </option>
+                  )
+                ),
+              )}
             </select>
           )}
         />
