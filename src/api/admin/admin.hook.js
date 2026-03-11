@@ -263,3 +263,8 @@ export const approvedInstituteUserFunction = async (payload) => {
   );
   return data;
 };
+
+export const allCostFunction = async () => {
+  const { data } = await axiosPublic("/api/get-cost");
+  return data?.data;
+};

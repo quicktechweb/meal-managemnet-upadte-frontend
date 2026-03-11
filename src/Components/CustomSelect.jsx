@@ -8,110 +8,77 @@ const CustomSelect = ({
   onChange,
   onCreate,
   allowCreate = false,
-  showOther = false,
-  otherLabel = "Other",
-  placeholder = "add option...",
+  placeholder = "Add option...",
 }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [newItem, setNewItem] = useState("");
   const [searchTerm, setSearchTerm] = useState("");
-  const [isOtherSelected, setIsOtherSelected] = useState(false);
-  const [otherValue, setOtherValue] = useState("");
+  const [showCreateInput, setShowCreateInput] = useState(false);
 
   const dropdownRef = useRef(null);
 
-  // Close dropdown outside click
   useEffect(() => {
     const handleClickOutside = (e) => {
       if (dropdownRef.current && !dropdownRef.current.contains(e.target)) {
         setIsOpen(false);
+        setShowCreateInput(false);
       }
     };
+
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  // Filter options
+  // filter
   const filteredOptions = useMemo(() => {
     return options.filter((item) =>
       item.toLowerCase().includes(searchTerm.toLowerCase()),
     );
   }, [options, searchTerm]);
 
-  // Create new option
-  const handleCreate = () => {
+  // add new item
+  const handleUpdate = () => {
     if (!newItem.trim()) return;
 
     onCreate && onCreate(newItem);
-    onChange && onChange(newItem);
-
     setNewItem("");
-    setSearchTerm("");
-    setIsOpen(false);
-    setIsOtherSelected(false);
-  };
-
-  // When Other clicked
-  const handleOther = () => {
-    setIsOtherSelected(true);
-    setOtherValue("");
-    setIsOpen(false);
+    setShowCreateInput(false);
   };
 
   return (
     <div className="relative w-full" ref={dropdownRef}>
-      {/* Header */}
+      {/* header */}
       <div
-        onClick={() => !isOtherSelected && setIsOpen(!isOpen)}
+        onClick={() => setIsOpen(!isOpen)}
         className="border border-gray-200 rounded-xl px-3 py-2 flex justify-between items-center cursor-pointer bg-white"
       >
-        {isOtherSelected ? (
-          <input
-            type="text"
-            value={otherValue}
-            autoFocus
-            onChange={(e) => {
-              setOtherValue(e.target.value);
-              onChange && onChange(e.target.value);
-            }}
-            placeholder={
-              isOtherSelected ? `${label} here...` : `Select ${label} here...`
-            }
-            className="w-full outline-none text-gray-600 bg-transparent"
-          />
-        ) : (
-          <>
-            <span className={`${!value ? "text-gray-500" : "text-gray-600"}`}>
-              {value || (!isOtherSelected && `Select ${label}`)}
-            </span>
-            <ChevronDown size={18} />
-          </>
-        )}
+        <span className={`${!value ? "text-gray-500" : "text-gray-600"}`}>
+          {value || `Select ${label}`}
+        </span>
+
+        <ChevronDown size={18} />
       </div>
 
-      {/* Dropdown */}
       {isOpen && (
         <div className="border absolute z-40 border-gray-200 border-t-0 bg-white w-full rounded-b-xl shadow-md">
-          {/* Search */}
+          {/* search */}
           <div className="p-3 border-b border-gray-200">
             <input
               type="text"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               placeholder="Search..."
-              className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#3170A6]/20 focus:border-[#3170A6]"
+              className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none"
             />
           </div>
 
-          {/* Options */}
+          {/* options */}
           <div className="max-h-48 overflow-y-auto">
             {filteredOptions.length > 0 ? (
               filteredOptions.map((item, index) => (
                 <div
                   key={index}
                   onClick={() => {
-                    setIsOtherSelected(false);
-                    setOtherValue("");
                     onChange && onChange(item);
                     setIsOpen(false);
                     setSearchTerm("");
@@ -128,38 +95,40 @@ const CustomSelect = ({
             )}
           </div>
 
-          {/* Create + Other */}
+          {/* create */}
           {allowCreate && (
             <>
-              <div className="px-3 py-2 border-t border-gray-200">
-                <input
-                  type="text"
-                  value={newItem}
-                  onChange={(e) => setNewItem(e.target.value)}
-                  placeholder={placeholder}
-                  className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#3170A6]/20 focus:border-[#3170A6]"
-                />
-              </div>
-
-              <div className="flex justify-between px-3 py-2">
-                {showOther && (
+              {!showCreateInput && (
+                <div className="px-3 py-2 border-t border-gray-200">
                   <button
                     type="button"
-                    onClick={handleOther}
-                    className="px-3 py-1 border border-[#3170A6] rounded-lg text-sm"
+                    onClick={() => setShowCreateInput(true)}
+                    className="border border-[#3170A6] rounded-lg px-3 py-1 text-sm bg-[#3170A6] text-white"
                   >
-                    {otherLabel}
+                    Create +
                   </button>
-                )}
+                </div>
+              )}
 
-                <button
-                  type="button"
-                  onClick={handleCreate}
-                  className="border border-[#3170A6] rounded-lg px-3 py-1 text-sm bg-[#3170A6] text-white"
-                >
-                  Create +
-                </button>
-              </div>
+              {showCreateInput && (
+                <div className="px-3 py-2 border-t border-gray-200 flex flex-col gap-2 items-start">
+                  <input
+                    type="text"
+                    value={newItem}
+                    onChange={(e) => setNewItem(e.target.value)}
+                    placeholder={placeholder}
+                    className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none"
+                  />
+
+                  <button
+                    type="button"
+                    onClick={handleUpdate}
+                    className="border border-[#3170A6] rounded-lg px-3 py-1 text-sm bg-[#3170A6] text-white"
+                  >
+                    Update
+                  </button>
+                </div>
+              )}
             </>
           )}
         </div>

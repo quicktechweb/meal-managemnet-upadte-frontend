@@ -42,3 +42,8 @@ export const instituteUserRegistrationFunction = async (payload) => {
   );
   return data;
 };
+
+export const getInstituteUserDataFunction = async () => {
+  const { data } = await axiosSecure("/api/instituteuser");
+  return data;
+};

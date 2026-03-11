@@ -127,7 +127,7 @@ const AdminDashboardSidebar = ({ setIsOpenSidebar }) => {
         {
           title: "Institute Users",
           icon: FaShoppingBag,
-          path: "/admin/dashboard/institute-user",
+          path: "/admin/dashboard/institute",
         },
       ],
     },

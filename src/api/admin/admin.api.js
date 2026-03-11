@@ -11,6 +11,7 @@ import {
   addPageFunction,
   addscheduleFunction,
   addutilitiesFunction,
+  allCostFunction,
   approvedInstituteUserFunction,
   bannerListFunction,
   chooseusBannerFunction,
@@ -725,5 +726,13 @@ export const useApprovedInstitute = () => {
     onError: (err) => {
       toast.error(err?.response?.data?.message);
     },
+  });
+};
+
+export const useAllCost = () => {
+  return useQuery({
+    queryKey: "all-cost",
+    queryFn: allCostFunction,
+    retry: false,
   });
 };

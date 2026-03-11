@@ -80,6 +80,8 @@ import UserSettings from "../Pages/FrontEnd/institute/admin/UserSettings";
 import Institutes from "../Pages/FrontEnd/admin/Institutes";
 import InstituteUser from "../Pages/FrontEnd/institute/admin/InstituteUser";
 import InstituteUserDetails from "../Pages/FrontEnd/institute/admin/InstituteUserDetails";
+import InstituteAdminMealManagement from "../Pages/FrontEnd/institute/admin/InstituteAdminMealManagement";
+import InstituteAdminProfile from "../Pages/FrontEnd/institute/admin/InstituteAdminProfile";
 
 const router = createBrowserRouter([
   {
@@ -291,8 +293,12 @@ const router = createBrowserRouter([
     element: <InstituteLayout />,
     children: [
       {
-        path: "dashboard/user-settings",
+        path: "dashboard/permission-settings",
         element: <UserSettings />,
+      },
+      {
+        path: "dashboard/meal-management",
+        element: <InstituteAdminMealManagement />,
       },
       {
         path: "dashboard/user-institute",
@@ -301,6 +307,10 @@ const router = createBrowserRouter([
       {
         path: "dashboard/single-user-institute/:id",
         element: <InstituteUserDetails />,
+      },
+      {
+        path: "dashboard/institute",
+        element: <InstituteAdminProfile />,
       },
     ],
   },
