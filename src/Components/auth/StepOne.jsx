@@ -604,7 +604,7 @@ const StepOne = ({
         type="button"
         disabled={isPending}
         onClick={nextStep}
-        className="w-full cursor-pointer bg-black text-white py-1.5 lg:py-3 rounded-lg"
+        className="w-full cursor-pointer bg-black text-white py-1.5 lg:py-3 rounded-lg disabled:cursor-not-allowed"
       >
         {isPending ? "Processing..." : "Next"}
       </button>

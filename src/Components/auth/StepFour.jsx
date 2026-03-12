@@ -20,6 +20,7 @@ const StepFour = ({
   setSelected,
   setFormUploadData,
   setAdminFormUploadData,
+  isPending,
 }) => {
   const {
     register,
@@ -369,7 +370,7 @@ const StepFour = ({
           type="submit"
           className="w-full bg-black cursor-pointer text-white py-1.5 lg:py-3 rounded-lg"
         >
-          Signup
+          {isPending ? "Processing..." : "Signup"}
         </button>
       </div>
     </div>

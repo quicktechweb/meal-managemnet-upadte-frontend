@@ -327,6 +327,7 @@ const MessForm = () => {
           setSelectedBill={setSelectedBill}
           prevStep={prevStep}
           selectedOption={selectedOption}
+          isPending={isPending}
           setSelectedOption={setSelectedOption}
           modalData={modalData}
           setModalData={setModalData}
@@ -360,10 +361,12 @@ const MessForm = () => {
           mealTypeLists={mealTypeLists}
           setMealTypeLists={setMealTypeLists}
           scheduleList={scheduleList}
+          isPending={isPending}
           setScheduleList={setScheduleList}
           form={form}
           nextStep={nextStep}
           prevStep={prevStep}
+         
         />
       )}
 
@@ -372,6 +375,7 @@ const MessForm = () => {
           instituteOptions={instituteOptions}
           handleCreateInstituteType={handleCreateInstituteType}
           form={form}
+          isPending={isPending}
           onSubmit={onSubmit}
           nextStep={nextStep}
           prevStep={prevStep}

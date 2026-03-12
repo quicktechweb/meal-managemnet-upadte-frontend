@@ -34,6 +34,7 @@ const StepTwo = ({
   setSelectedBill,
   modalData,
   setModalData,
+  isPending,
 }) => {
   const SelectedBadge = ({ item, onRemove }) => (
     <div className="flex items-center bg-orange-100 text-orange-800 px-3 py-1 rounded-full gap-2">
@@ -503,9 +504,10 @@ const StepTwo = ({
         <button
           type="button"
           onClick={nextStep}
-          className="w-full bg-black cursor-pointer text-white py-1.5 lg:py-3 rounded-lg"
+          disabled={isPending}
+          className="w-full bg-black cursor-pointer text-white py-1.5 lg:py-3 rounded-lg disabled:cursor-not-allowed"
         >
-          Next
+          {isPending ? "Processing..." : "Next"}
         </button>
       </div>
 
