@@ -28,12 +28,17 @@ const StepOne = ({
 
   const [divisions, setDivisions] = useState([]);
   const [districts, setDistricts] = useState([]);
+  const [thana, setThana] = useState([]);
   const [divisionLoading, setDivisionLoading] = useState(false);
   const [districtLoading, setDistrictLoading] = useState(false);
+
+  console.log(thana);
 
   const selectedCountry = watch("country");
   const selectedState = watch("state");
   const selectedDivision = watch("division");
+  const selectedDistrict = watch("district");
+  const selectedThana = watch("thana");
 
   useEffect(() => {
     if (!selectedState) return;
@@ -70,6 +75,19 @@ const StepOne = ({
 
     loadDistricts();
   }, [selectedDivision]);
+
+  useEffect(() => {
+    if (!selectedDistrict) return;
+
+    const loadThana = () => {
+      const thana = districts?.find(
+        (district) => district.district === selectedDistrict,
+      );
+      setThana(thana?.upazilla);
+    };
+
+    loadThana();
+  }, [selectedDistrict]);
 
   const [hallOptions, setHallOptions] = useState([]);
 
@@ -139,14 +157,10 @@ const StepOne = ({
         name="organization_type"
         control={form.control}
         rules={{
-          required: "Organization Type is required",
+          required: "This field is required",
         }}
         render={({ field: { onChange, value }, fieldState: { error } }) => (
           <div className="space-y-1">
-            <label className="text-sm font-medium">
-              Organization Type <span className="text-red-500">*</span>
-            </label>
-
             <CustomSelect
               label="Organization Type"
               options={organizeOptions}
@@ -167,7 +181,7 @@ const StepOne = ({
         name="institute_type"
         control={form.control}
         rules={{
-          required: `${instituteLabel} is required`,
+          required: `This field is required is required`,
         }}
         render={({ field: { onChange, value }, fieldState: { error } }) => (
           <div className="space-y-1">
@@ -182,6 +196,7 @@ const StepOne = ({
               onChange={(newValue) => onChange(newValue)}
               onCreate={handleCreateInstituteType}
               allowCreate
+              disabled={!organizationType}
             />
 
             {error && <p className="text-red-500 text-sm">{error.message}</p>}
@@ -348,9 +363,38 @@ const StepOne = ({
           />
         )}
 
+        {selectedDistrict && (
+          <Controller
+            name="thana"
+            control={control}
+            rules={{ required: "Thana is required" }}
+            render={({ field }) => (
+              <select
+                {...field}
+                className="border border-gray-300 px-2 py-3 rounded w-full text-gray-600"
+              >
+                <option value="">Select upazilla</option>
+
+                {thana?.map((item, index) => (
+                  <option key={item.index} value={item}>
+                    {item}
+                  </option>
+                ))}
+              </select>
+            )}
+          />
+        )}
+
         {/* Village + Location */}
-        {watch("district") && (
+        {watch("thana") && (
           <>
+            <FloatingInput
+              label="Post Office"
+              type={"text"}
+              name="post"
+              error={errors.post}
+              {...register("post", { required: "Post office required" })}
+            />
             <FloatingInput
               label="Village"
               type={"text"}

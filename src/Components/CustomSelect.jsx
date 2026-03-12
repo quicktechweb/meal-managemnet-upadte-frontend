@@ -8,11 +8,12 @@ const CustomSelect = ({
   onChange,
   onCreate,
   allowCreate = false,
-  placeholder = "Add option...",
+  placeholder = "Type or select...",
+  disabled = false,
 }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [newItem, setNewItem] = useState("");
-  const [searchTerm, setSearchTerm] = useState("");
+  const [searchTerm, setSearchTerm] = useState(value || "");
   const [showCreateInput, setShowCreateInput] = useState(false);
 
   const dropdownRef = useRef(null);
@@ -29,49 +30,61 @@ const CustomSelect = ({
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  // filter
+  useEffect(() => {
+    setSearchTerm(value || "");
+  }, [value]);
+
   const filteredOptions = useMemo(() => {
     return options.filter((item) =>
       item.toLowerCase().includes(searchTerm.toLowerCase()),
     );
   }, [options, searchTerm]);
 
-  // add new item
+  const handleInputChange = (e) => {
+    const val = e.target.value;
+    setSearchTerm(val);
+    onChange && onChange(val);
+  };
+
   const handleUpdate = () => {
     if (!newItem.trim()) return;
 
     onCreate && onCreate(newItem);
+    // onChange && onChange(newItem);
+
+    // setSearchTerm(newItem);
     setNewItem("");
     setShowCreateInput(false);
   };
 
   return (
     <div className="relative w-full" ref={dropdownRef}>
-      {/* header */}
-      <div
-        onClick={() => setIsOpen(!isOpen)}
-        className="border border-gray-200 rounded-xl px-3 py-2 flex justify-between items-center cursor-pointer bg-white"
-      >
-        <span className={`${!value ? "text-gray-500" : "text-gray-600"}`}>
-          {value || `Select ${label}`}
-        </span>
+      {/* input + button */}
+      <div className="flex border border-gray-200 rounded-xl overflow-hidden bg-white">
+        {/* input */}
+        <input
+          type="text"
+          value={searchTerm}
+          onChange={handleInputChange}
+          placeholder={placeholder}
+          disabled={disabled}
+          className="w-[90%] px-3 py-2 outline-none text-gray-600 disabled:cursor-not-allowed"
+        />
 
-        <ChevronDown size={18} />
+        {/* dropdown button */}
+        <button
+          type="button"
+          disabled={disabled}
+          onClick={() => setIsOpen(!isOpen)}
+          className="w-[10%] flex items-center justify-center gap-2 border-l border-gray-200 bg-gray-50 hover:bg-gray-100 disabled:cursor-not-allowed"
+        >
+          {/* <span className="text-sm text-gray-600">{label}</span> */}
+          <ChevronDown size={18} />
+        </button>
       </div>
 
       {isOpen && (
-        <div className="border absolute z-40 border-gray-200 border-t-0 bg-white w-full rounded-b-xl shadow-md">
-          {/* search */}
-          <div className="p-3 border-b border-gray-200">
-            <input
-              type="text"
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              placeholder="Search..."
-              className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none"
-            />
-          </div>
-
+        <div className="border absolute z-40 border-gray-200 bg-white w-full rounded-xl mt-1 shadow-md">
           {/* options */}
           <div className="max-h-48 overflow-y-auto">
             {filteredOptions.length > 0 ? (
@@ -79,9 +92,9 @@ const CustomSelect = ({
                 <div
                   key={index}
                   onClick={() => {
+                    setSearchTerm(item);
                     onChange && onChange(item);
                     setIsOpen(false);
-                    setSearchTerm("");
                   }}
                   className="px-3 py-2 hover:bg-gray-100 cursor-pointer"
                 >
@@ -95,7 +108,7 @@ const CustomSelect = ({
             )}
           </div>
 
-          {/* create */}
+          {/* create option */}
           {allowCreate && (
             <>
               {!showCreateInput && (
@@ -111,12 +124,12 @@ const CustomSelect = ({
               )}
 
               {showCreateInput && (
-                <div className="px-3 py-2 border-t border-gray-200 flex flex-col gap-2 items-start">
+                <div className="px-3 py-2 border-t border-gray-200 flex flex-col gap-2">
                   <input
                     type="text"
                     value={newItem}
                     onChange={(e) => setNewItem(e.target.value)}
-                    placeholder={placeholder}
+                    placeholder="Add option..."
                     className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none"
                   />
 
