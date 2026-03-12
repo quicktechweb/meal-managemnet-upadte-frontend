@@ -71,9 +71,15 @@ const MessForm = () => {
   const [serviceFeatures, setServiceFeatures] = useState([]);
 
   const [selectedBill, setSelectedBill] = useState(null);
+
+  const [combineData, setCombineData] = useState([]);
+
+  useEffect(() => {
+    setCombineData(() => [...utilityBills, ...serviceFeatures]);
+  }, [utilityBills, serviceFeatures]);
+
   const [modalData, setModalData] = useState({
     bear_the_cost: [],
-    service: [],
   });
 
   const { data: kitchenData } = useAllKitchen();
@@ -118,8 +124,8 @@ const MessForm = () => {
     setSelectedBill(bill);
     setModalData({
       bear_the_cost: bill.bear_the_cost || [],
-      service: bill.service || [],
     });
+
     setActiveDropdown(null);
   };
 
@@ -142,6 +148,8 @@ const MessForm = () => {
   );
 
   const totalPrice = totalUtilityPrice + totalServiceFeaturePrice;
+
+  console.log(utilityBills);
 
   // step 3
 
@@ -353,6 +361,7 @@ const MessForm = () => {
           setServiceFeatures={setServiceFeatures}
           activeDropdown={activeDropdown}
           setActiveDropdown={setActiveDropdown}
+          combineData={combineData}
         />
       )}
       {step === 3 && (
@@ -366,7 +375,6 @@ const MessForm = () => {
           form={form}
           nextStep={nextStep}
           prevStep={prevStep}
-         
         />
       )}
 
