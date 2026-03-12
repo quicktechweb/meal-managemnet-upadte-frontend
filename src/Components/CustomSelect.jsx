@@ -8,7 +8,7 @@ const CustomSelect = ({
   onChange,
   onCreate,
   allowCreate = false,
-  placeholder = "Type or select...",
+  placeholder = "Select or create option/category",
   disabled = false,
 }) => {
   const [isOpen, setIsOpen] = useState(false);

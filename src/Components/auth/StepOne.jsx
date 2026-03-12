@@ -4,6 +4,7 @@ import { api } from "../../utils/countryApi";
 import CustomSelect from "../CustomSelect";
 import DocumentUpload from "../DocumentUpload";
 import { Controller } from "react-hook-form";
+import { JapaneseYen } from "lucide-react";
 
 const StepOne = ({
   form,
@@ -89,21 +90,9 @@ const StepOne = ({
     loadThana();
   }, [selectedDistrict]);
 
-  const [hallOptions, setHallOptions] = useState([]);
-
-  const [messOptions, setMessOptions] = useState([]);
-
   const passwordValue = watch("password");
   const [passwordShow, setPasswordShow] = useState(false);
   const [confirmPasswordShow, setConfirmPasswordShow] = useState(false);
-
-  const handleCreateHall = (newItem) => {
-    setHallOptions((prev) => [...prev, newItem]);
-  };
-
-  const handleCreateMess = (newItem) => {
-    setMessOptions((prev) => [...prev, newItem]);
-  };
 
   const [organizeOptions, setOrganizeOptions] = useState([
     "Company",
@@ -151,63 +140,136 @@ const StepOne = ({
     }));
   };
 
+  /* -----------------------------
+     HALL
+  ------------------------------*/
+
+  const [hallTypeOptions, setHallTypeOptions] = useState(["Boys", "Girls"]);
+
+  const [hallOptionsState, setHallOptionsState] = useState({
+    Boys: ["Boys Hall 1", "Boys Hall 2"],
+    Girls: ["Girls Hall 1"],
+  });
+
+  const hallType = watch("hall_type");
+
+  const hallOptions = useMemo(() => {
+    return hallOptionsState[hallType] || [];
+  }, [hallType, hallOptionsState]);
+
+  const handleCreateHallType = (value) => {
+    setHallTypeOptions((prev) => [...prev, value]);
+
+    setHallOptionsState((prev) => ({
+      ...prev,
+      [value]: [],
+    }));
+  };
+
+  const handleCreateHallName = (value) => {
+    if (!hallType) return;
+
+    setHallOptionsState((prev) => ({
+      ...prev,
+      [hallType]: [...(prev[hallType] || []), value],
+    }));
+  };
+
+  /* -----------------------------
+     MESS
+  ------------------------------*/
+
+  const [messTypeOptions, setMessTypeOptions] = useState(["Student", "Staff"]);
+
+  const [messOptionsState, setMessOptionsState] = useState({
+    Student: ["Student Mess A"],
+    Staff: ["Staff Mess B"],
+  });
+
+  const messType = watch("mess_type");
+
+  const messOptions = useMemo(() => {
+    return messOptionsState[messType] || [];
+  }, [messType, messOptionsState]);
+
+  const handleCreateMessType = (value) => {
+    setMessTypeOptions((prev) => [...prev, value]);
+
+    setMessOptionsState((prev) => ({
+      ...prev,
+      [value]: [],
+    }));
+  };
+
+  const handleCreateMessName = (value) => {
+    if (!messType) return;
+
+    setMessOptionsState((prev) => ({
+      ...prev,
+      [messType]: [...(prev[messType] || []), value],
+    }));
+  };
   return (
     <>
-      <Controller
-        name="organization_type"
-        control={form.control}
-        rules={{
-          required: "This field is required",
-        }}
-        render={({ field: { onChange, value }, fieldState: { error } }) => (
-          <div className="space-y-1">
-            <CustomSelect
-              label="Organization Type"
-              options={organizeOptions}
-              value={value ?? ""}
-              onChange={(newValue) => onChange(newValue)}
-              onCreate={handleCreateOrganizeType}
-              allowCreate
-            />
+      <div className="bg-gray-100 p-3 rounded-2xl flex flex-col gap-2">
+        <Controller
+          name="organization_type"
+          control={form.control}
+          rules={{
+            required: "This field is required",
+          }}
+          render={({ field: { onChange, value }, fieldState: { error } }) => (
+            <div className="space-y-1">
+              <CustomSelect
+                label="Organization Type"
+                options={organizeOptions}
+                value={value ?? ""}
+                onChange={(newValue) => onChange(newValue)}
+                onCreate={handleCreateOrganizeType}
+                allowCreate
+              />
 
-            {error && <p className="text-red-500 text-sm">{error.message}</p>}
-          </div>
-        )}
-      />
+              {error && <p className="text-red-500 text-sm">{error.message}</p>}
+            </div>
+          )}
+        />
 
-      {/* Dynamic Institute / Company Type */}
+        {/* Dynamic Institute / Company Type */}
 
-      <Controller
-        name="institute_type"
-        control={form.control}
-        rules={{
-          required: `This field is required is required`,
-        }}
-        render={({ field: { onChange, value }, fieldState: { error } }) => (
-          <div className="space-y-1">
-            <label className="text-sm font-medium">
-              {instituteLabel} <span className="text-red-500">*</span>
-            </label>
+        <Controller
+          name="institute_type"
+          control={form.control}
+          rules={{
+            required: `This field is required is required`,
+          }}
+          render={({ field: { onChange, value }, fieldState: { error } }) => (
+            <div className="space-y-1">
+              <label className="text-sm font-medium">
+                {instituteLabel} <span className="text-red-500">*</span>
+              </label>
 
-            <CustomSelect
-              label={instituteLabel}
-              options={instituteOptions}
-              value={value ?? ""}
-              onChange={(newValue) => onChange(newValue)}
-              onCreate={handleCreateInstituteType}
-              allowCreate
-              disabled={!organizationType}
-            />
+              <CustomSelect
+                label={instituteLabel}
+                options={instituteOptions}
+                value={value ?? ""}
+                onChange={(newValue) => onChange(newValue)}
+                onCreate={handleCreateInstituteType}
+                allowCreate
+                disabled={!organizationType}
+              />
 
-            {error && <p className="text-red-500 text-sm">{error.message}</p>}
-          </div>
-        )}
-      />
+              {error && <p className="text-red-500 text-sm">{error.message}</p>}
+            </div>
+          )}
+        />
+      </div>
 
       <FloatingInput
-        label="Name Of the Institute"
+        label={`Name Of the ${organizationType}`}
         error={errors.institute_name}
-        {...register("institute_name", { required: "Institute Name required" })}
+        {...register("institute_name", {
+          required: `${organizationType} Name required`,
+        })}
       />
 
       <FloatingInput
@@ -224,54 +286,90 @@ const StepOne = ({
         })}
       />
 
-      <Controller
-        name="hall_name"
-        control={form.control}
-        rules={{}}
-        render={({ field: { onChange, value }, fieldState: { error } }) => (
-          <>
-            <CustomSelect
-              label="Name of Hall"
-              options={hallOptions}
-              value={value ?? ""}
-              onChange={(v) => {
-                onChange(v);
-              }}
-              onCreate={handleCreateHall}
-              allowCreate
-              showOther
-            />
-            {error && (
-              <p className="text-red-500 text-sm mt-1">{error.message}</p>
-            )}
-          </>
-        )}
-      />
+      {/* HALL TYPE */}
+      <div className="bg-gray-100 p-3 rounded-2xl flex flex-col gap-2">
+        <Controller
+          name="hall_type"
+          control={control}
+          rules={{}}
+          render={({ field, fieldState: { error } }) => (
+            <div className="space-y-1">
+              <CustomSelect
+                label="Hall Type"
+                options={hallTypeOptions}
+                value={field.value ?? ""}
+                onChange={field.onChange}
+                onCreate={handleCreateHallType}
+                allowCreate
+              />
+            </div>
+          )}
+        />
 
-      <Controller
-        name="mess_name"
-        control={form.control}
-        rules={{}}
-        render={({ field: { onChange, value }, fieldState: { error } }) => (
-          <>
-            <CustomSelect
-              label="Name of Mess"
-              options={messOptions}
-              value={value ?? ""}
-              onChange={(v) => {
-                onChange(v);
-              }}
-              onCreate={handleCreateMess}
-              allowCreate
-              showOther
-            />
+        {/* HALL NAME */}
+        <Controller
+          name="hall_name"
+          rules={{}}
+          control={control}
+          render={({ field, fieldState: { error } }) => (
+            <div className="space-y-1">
+              <label className="text-sm font-medium">
+                {hallType ? `${hallType} Name` : "Name"}
+              </label>
+              <CustomSelect
+                label={hallType ? `${hallType} Name` : "Hall Name"}
+                options={hallOptions}
+                value={field.value ?? ""}
+                onChange={field.onChange}
+                onCreate={handleCreateHallName}
+                allowCreate
+                disabled={!hallType}
+              />
+            </div>
+          )}
+        />
+      </div>
 
-            {error && (
-              <p className="text-red-500 text-sm mt-1">{error.message}</p>
-            )}
-          </>
-        )}
-      />
+      <div className="bg-gray-100 p-3 rounded-2xl flex flex-col gap-2">
+        <Controller
+          name="mess_type"
+          rules={{}}
+          control={control}
+          render={({ field, fieldState: { error } }) => (
+            <CustomSelect
+              label="Mess Type"
+              options={messTypeOptions}
+              value={field.value ?? ""}
+              onChange={field.onChange}
+              onCreate={handleCreateMessType}
+              allowCreate
+            />
+          )}
+        />
+
+        {/* MESS NAME */}
+        <Controller
+          name="mess_name"
+          control={control}
+          rules={{}}
+          render={({ field, fieldState: { error } }) => (
+            <div className="space-y-1">
+              <label className="text-sm font-medium">
+                {messType ? `${messType} Name` : "Name"}
+              </label>
+              <CustomSelect
+                label={messType ? `${messType} Name` : "Mess Name"}
+                options={messOptions}
+                value={field.value ?? ""}
+                onChange={field.onChange}
+                onCreate={handleCreateMessName}
+                allowCreate
+                disabled={!messType}
+              />
+            </div>
+          )}
+        />
+      </div>
 
       {/* Address section */}
       <div className="w-full flex flex-col gap-2">
