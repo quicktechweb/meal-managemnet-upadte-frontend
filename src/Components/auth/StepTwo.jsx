@@ -44,16 +44,6 @@ const StepTwo = ({
 
   const handleCharge = (item) => {
     setSelectedCharge(item);
-
-    setCharge((prev) => {
-      const exists = prev.find((c) => c._id === item._id);
-
-      if (exists) {
-        return prev.filter((c) => c._id !== item._id);
-      }
-
-      return [...prev, item];
-    });
   };
 
   const totalPrices = charge?.reduce(
@@ -305,20 +295,37 @@ const StepTwo = ({
 
           {/* price */}
 
-          {totalPrices > 0 && (
-            <div className="flex flex-col gap-2.5">
-              <div className="flex items-center gap-2.5">
-                <h3 className="text-lg font-semibold text-slate-700">
+          {charge?.length > 0 && (
+            <div className="flex flex-col gap-4 p-4 bg-white rounded-3xl shadow-sm border border-slate-100">
+              {/* Amount of Charge - Light & Subtle */}
+              <div className="flex items-center justify-between px-2">
+                <h3 className="text-md font-medium text-slate-500">
                   Amount of Charge
                 </h3>
-                <p className="text-lg font-semibold"> ৳{totalPrices}</p>
+                <p className="text-xl font-bold text-slate-700">
+                  ৳ {totalPrices}
+                </p>
               </div>
 
-              <div className="flex items-center gap-2.5">
-                <h3 className="text-lg font-semibold text-slate-700">
-                  Total Amount
-                </h3>
-                <p className="text-lg font-semibold"> ৳{totalPrices}</p>
+              {/* Styled Divider */}
+              <div className="relative h-px">
+                <div className="absolute inset-0 border-t border-dashed border-gray-300"></div>
+              </div>
+
+              {/* Total Amount - High Contrast & Eye Catchy */}
+              <div className="flex items-center justify-between p-4 bg-gradient-to-r from-orange-500 to-orange-600 rounded-2xl shadow-lg shadow-orange-200 transform transition-transform hover:scale-[1.02]">
+                <div className="flex flex-col">
+                  <h3 className="text-sm font-bold text-orange-100 uppercase tracking-tight">
+                    Total Amount
+                  </h3>
+                  <p className="text-xs text-orange-200">Final Payable</p>
+                </div>
+
+                <div className="flex flex-col items-end">
+                  <p className="text-3xl font-black text-white drop-shadow-sm">
+                    ৳ {totalPrices}
+                  </p>
+                </div>
               </div>
             </div>
           )}
@@ -482,7 +489,7 @@ const StepTwo = ({
                       >
                         {service.name}
 
-                        {setCharge?.find((c) => c._id === service._id) && (
+                        {charge?.find((c) => c._id === service._id) && (
                           <Check size={16} className="text-orange-500" />
                         )}
                       </div>
@@ -511,19 +518,36 @@ const StepTwo = ({
           {/* price */}
 
           {charge?.length > 0 && (
-            <div className="flex flex-col gap-2.5">
-              <div className="flex items-center gap-2.5">
-                <h3 className="text-lg font-semibold text-slate-700">
+            <div className="flex flex-col gap-4 p-4 bg-white rounded-3xl shadow-sm border border-slate-100">
+              {/* Amount of Charge - Light & Subtle */}
+              <div className="flex items-center justify-between px-2">
+                <h3 className="text-md font-medium text-slate-500">
                   Amount of Charge
                 </h3>
-                <p className="text-lg font-semibold"> ৳{totalPrices}</p>
+                <p className="text-xl font-bold text-slate-700">
+                  ৳ {totalPrices}
+                </p>
               </div>
 
-              <div className="flex items-center gap-2.5">
-                <h3 className="text-lg font-semibold text-slate-700">
-                  Total Amount
-                </h3>
-                <p className="text-lg font-semibold"> ৳{totalPrices}</p>
+              {/* Styled Divider */}
+              <div className="relative h-px">
+                <div className="absolute inset-0 border-t border-dashed border-gray-300"></div>
+              </div>
+
+              {/* Total Amount - High Contrast & Eye Catchy */}
+              <div className="flex items-center justify-between p-4 bg-gradient-to-r from-orange-500 to-orange-600 rounded-2xl shadow-lg shadow-orange-200 transform transition-transform hover:scale-[1.02]">
+                <div className="flex flex-col">
+                  <h3 className="text-sm font-bold text-orange-100 uppercase tracking-tight">
+                    Total Amount
+                  </h3>
+                  <p className="text-xs text-orange-200">Final Payable</p>
+                </div>
+
+                <div className="flex flex-col items-end">
+                  <p className="text-3xl font-black text-white drop-shadow-sm">
+                    ৳ {totalPrices}
+                  </p>
+                </div>
               </div>
             </div>
           )}
@@ -643,6 +667,18 @@ const StepTwo = ({
                 type="button"
                 className="px-4 py-2 rounded-md bg-orange-500 text-white"
                 onClick={() => {
+                  setCharge((prev) => {
+                    const exists = prev.find(
+                      (c) => c._id === selectedCharge._id,
+                    );
+
+                    if (exists) {
+                      return prev.filter((c) => c._id !== selectedCharge._id);
+                    }
+
+                    return [...prev, selectedCharge];
+                  });
+
                   setSelectedCharge(null);
                   setActiveDropdown(null);
                 }}

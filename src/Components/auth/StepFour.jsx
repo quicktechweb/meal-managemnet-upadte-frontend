@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { Controller } from "react-hook-form";
 import CustomSelect from "../CustomSelect";
 import { FloatingInput } from "./StepOne";
@@ -91,6 +91,49 @@ const StepFour = ({
   //   };
   // };
 
+  /* -----------------------------
+      ADMIN TYPE
+  ------------------------------*/
+
+  const [adminOptions, setAdminOptions] = useState(["Admin", "Authority"]);
+
+  const [adminType, setAdminType] = useState({
+    Admin: ["Company", "Institute"],
+    Authority: ["Company ", "Institute"],
+  });
+
+  const admin = watch("admin");
+
+  const adminTypes = useMemo(() => {
+    return adminType[admin] || [];
+  }, [admin, adminType]);
+
+  useEffect(() => {
+    form.setValue("admin_panel", "");
+  }, [admin]);
+
+  const handleCreateAdmin = (value) => {
+    setAdminOptions((prev) => [...prev, value]);
+
+    setAdminType((prev) => ({
+      ...prev,
+      [value]: [],
+    }));
+  };
+
+  const handleCreateAdminType = (value) => {
+    if (!admin) return;
+
+    setAdminPanelState((prev) => ({
+      ...prev,
+      [admin]: [...(prev[admin] || []), value],
+    }));
+  };
+
+  const adminLabel = admin ? `${admin} Type` : "Type";
+
+  const nameLabel = admin ? `${admin}` : "";
+
   return (
     <div>
       <div className="grid grid-cols-2 gap-5">
@@ -100,53 +143,67 @@ const StepFour = ({
               <div className="w-1.5 h-6 bg-orange-600 rounded-full"></div>
 
               <h4 className="text-xl font-semibold text-slate-800 tracking-tight">
-                Admin / Authority Information
+                {nameLabel} Information
               </h4>
             </div>
           </div>
 
           <>
-            <Controller
-              name="institute_type"
-              control={form.control}
-              rules={{
-                required: "Institute Type is required",
-              }}
-              render={({
-                field: { onChange, value },
-                fieldState: { error },
-              }) => (
-                <div className="space-y-1">
-                  <label className="block text-sm font-medium text-gray-700">
-                    Institute Type <span className="text-red-500">*</span>
-                  </label>
+            <div className="bg-gray-50 p-4">
+              <Controller
+                name="admin"
+                control={control}
+                rules={{ required: "This field required" }}
+                render={({ field, fieldState: { error } }) => (
+                  <>
+                    <CustomSelect
+                      options={adminOptions}
+                      value={field.value ?? ""}
+                      onChange={field.onChange}
+                      onCreate={handleCreateAdmin}
+                      allowCreate
+                    />
+                    {error && (
+                      <p className="text-red-500 text-sm">{error.message}</p>
+                    )}
+                  </>
+                )}
+              />
 
-                  <CustomSelect
-                    label="Institute Type"
-                    options={instituteOptions}
-                    value={value ?? ""}
-                    onChange={(newValue) => {
-                      onChange(newValue);
-                    }}
-                    onCreate={handleCreateInstituteType}
-                    allowCreate
-                    showOther
-                  />
+              {/* type of */}
+              <Controller
+                name="admin_type"
+                control={control}
+                rules={{ required: "This Field required" }}
+                render={({ field, fieldState: { error } }) => (
+                  <div className="space-y-1">
+                    <label className="text-sm font-medium">
+                      {adminLabel} <span className="text-red-500">*</span>
+                    </label>
+                    <CustomSelect
+                      label={admin ? `${admin} Type` : "Admin Type"}
+                      options={adminTypes}
+                      value={field.value ?? ""}
+                      onChange={field.onChange}
+                      onCreate={handleCreateAdminType}
+                      allowCreate
+                      disabled={!admin}
+                    />
+                    {error && (
+                      <p className="text-red-500 text-sm">{error.message}</p>
+                    )}
+                  </div>
+                )}
+              />
 
-                  {error && (
-                    <p className="text-red-500 text-sm mt-1">{error.message}</p>
-                  )}
-                </div>
-              )}
-            />
-
-            <FloatingInput
-              label="Name Of the Institute"
-              error={errors.institute_name}
-              {...register("institute_name", {
-                required: "Institute Name required",
-              })}
-            />
+              <FloatingInput
+                label={`Name Of ${nameLabel}`}
+                error={errors.institute_name}
+                {...register("institute_name", {
+                  required: "this field required",
+                })}
+              />
+            </div>
 
             <FloatingInput
               label="Username"
@@ -330,7 +387,7 @@ const StepFour = ({
           <div className="flex items-center gap-3 px-5 py-4 bg-gradient-to-r from-indigo-50 to-white border-b border-slate-200">
             <div className="w-1.5 h-6 bg-orange-600 rounded-full"></div>
             <h4 className="text-xl font-semibold text-slate-800">
-              Admin / Authority Permission
+            {nameLabel} Permission
             </h4>
           </div>
 
