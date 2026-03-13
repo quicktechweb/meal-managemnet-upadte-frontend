@@ -7,11 +7,16 @@ export const approvedInstituteUserFunction = async () => {
 };
 
 export const instituteUserListFunction = async () => {
-  const { data } = await axiosPublic("/api/instituteuser-pending-users");
+  const { data } = await axiosSecure("/api/instituteuser-pending-users");
   return data?.users;
 };
 
 export const updateInstituteProfileInfoFunction = async ({ id, payload }) => {
   const { data } = await axiosSecure.patch(`/api/instituteuser/${id}`, payload);
+  return data;
+};
+
+export const instituteUserMealTypeFunction = async () => {
+  const { data } = await axiosSecure("/api/user-meal-type-lists");
   return data;
 };

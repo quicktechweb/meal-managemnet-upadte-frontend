@@ -19,6 +19,8 @@ const SinglePendingInstituteUser = () => {
     (institute) => institute._id === id,
   );
 
+  console.log(singlePendingInstituteUser);
+
   const { mutateAsync, isPending } = useApprovedInstitute();
 
   const handleApprove = async () => {
@@ -226,17 +228,20 @@ const SinglePendingInstituteUser = () => {
                 className="w-full h-48 object-cover rounded-lg border border-gray-300"
               />
             </div>
+
             <div className="bg-white p-4 rounded-xl shadow-sm border border-gray-200">
               <p className="font-bold mb-2">Admin Document (NID)</p>
-
-              <img
-                src={
-                  singlePendingInstituteUser?.admin_info?.documents_admin[0]
-                    .document_files
-                }
-                alt="Admin NID"
-                className="w-full h-48 object-cover rounded-lg border border-gray-300"
-              />
+              {singlePendingInstituteUser?.admin_info?.documents_admin?.length >
+                0 && (
+                <img
+                  src={
+                    singlePendingInstituteUser?.admin_info?.documents_admin[0]
+                      .document_files
+                  }
+                  alt="Admin NID"
+                  className="w-full h-48 object-cover rounded-lg border border-gray-300"
+                />
+              )}
             </div>
           </div>
         </div>

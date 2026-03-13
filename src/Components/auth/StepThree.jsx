@@ -10,6 +10,7 @@ const StepThree = ({
   setMealTypeLists,
   scheduleList,
   setScheduleList,
+  isPending,
 }) => {
   return (
     <div className="space-y-3">
@@ -34,7 +35,7 @@ const StepThree = ({
           onClick={nextStep}
           className="w-full bg-black cursor-pointer text-white py-1.5 lg:py-3 rounded-lg"
         >
-          Next
+          {isPending ? "Processing..." : "Next"}
         </button>
       </div>
     </div>

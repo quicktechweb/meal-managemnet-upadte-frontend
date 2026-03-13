@@ -71,9 +71,15 @@ const MessForm = () => {
   const [serviceFeatures, setServiceFeatures] = useState([]);
 
   const [selectedBill, setSelectedBill] = useState(null);
+
+  const [combineData, setCombineData] = useState([]);
+
+  useEffect(() => {
+    setCombineData(() => [...utilityBills, ...serviceFeatures]);
+  }, [utilityBills, serviceFeatures]);
+
   const [modalData, setModalData] = useState({
     bear_the_cost: [],
-    service: [],
   });
 
   const { data: kitchenData } = useAllKitchen();
@@ -118,8 +124,8 @@ const MessForm = () => {
     setSelectedBill(bill);
     setModalData({
       bear_the_cost: bill.bear_the_cost || [],
-      service: bill.service || [],
     });
+
     setActiveDropdown(null);
   };
 
@@ -142,6 +148,8 @@ const MessForm = () => {
   );
 
   const totalPrice = totalUtilityPrice + totalServiceFeaturePrice;
+
+  console.log(utilityBills);
 
   // step 3
 
@@ -327,6 +335,7 @@ const MessForm = () => {
           setSelectedBill={setSelectedBill}
           prevStep={prevStep}
           selectedOption={selectedOption}
+          isPending={isPending}
           setSelectedOption={setSelectedOption}
           modalData={modalData}
           setModalData={setModalData}
@@ -352,6 +361,7 @@ const MessForm = () => {
           setServiceFeatures={setServiceFeatures}
           activeDropdown={activeDropdown}
           setActiveDropdown={setActiveDropdown}
+          combineData={combineData}
         />
       )}
       {step === 3 && (
@@ -360,6 +370,7 @@ const MessForm = () => {
           mealTypeLists={mealTypeLists}
           setMealTypeLists={setMealTypeLists}
           scheduleList={scheduleList}
+          isPending={isPending}
           setScheduleList={setScheduleList}
           form={form}
           nextStep={nextStep}
@@ -372,6 +383,7 @@ const MessForm = () => {
           instituteOptions={instituteOptions}
           handleCreateInstituteType={handleCreateInstituteType}
           form={form}
+          isPending={isPending}
           onSubmit={onSubmit}
           nextStep={nextStep}
           prevStep={prevStep}

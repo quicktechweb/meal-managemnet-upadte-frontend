@@ -55,7 +55,7 @@ const UpdateUtilitiesService = () => {
         price: singleUtilities.price,
         kitchen: singleUtilities?.kitchen?._id || "",
         bear_the_cost: singleUtilities?.bear_the_cost?.map((c) => c._id) || [],
-        service: singleUtilities?.service?.map((c) => c._id) || [],
+        service: singleUtilities?.service?._id || [],
         ranges: singleUtilities?.ranges || [],
       });
     }
@@ -151,47 +151,27 @@ const UpdateUtilitiesService = () => {
             )}
           </div>
 
-          {/* service */}
+    
           <div>
             <label className="text-sm font-semibold flex items-center gap-2">
               <Utensils size={16} />
               Service
             </label>
-
-            <Controller
-              name="service"
-              control={control}
-              rules={{ required: "Service is required" }}
-              defaultValue={[]}
-              render={({ field }) => {
-                const options =
-                  services?.map((s) => ({
-                    value: s._id,
-                    label: s.title,
-                  })) || [];
-
-                const value = options.filter((opt) =>
-                  field.value?.includes(opt.value),
-                );
-
-                return (
-                  <Select
-                    {...field}
-                    isMulti
-                    options={options}
-                    value={value}
-                    onChange={(selected) =>
-                      field.onChange(selected.map((s) => s.value))
-                    }
-                  />
-                );
-              }}
-            />
+            <select
+              {...register("service", { required: "Service is required" })}
+              className="w-full bg-slate-50 border border-gray-300 rounded-xl p-3"
+            >
+              <option value="">Choose a Service...</option>
+              {services?.map((item) => (
+                <option key={item._id} value={item._id}>
+                  {item.title}
+                </option>
+              ))}
+            </select>
             {errors.service && (
               <p className="text-red-500 text-sm">{errors.service.message}</p>
             )}
           </div>
-
           {/* Name */}
           <div>
             <label className="text-sm font-semibold flex items-center gap-2">

@@ -45,6 +45,7 @@ const Features = () => {
             <tr className="text-left text-sm text-slate-600">
               <th className="px-6 py-4 font-semibold">Feature Name</th>
               <th className="px-6 py-4 font-semibold">Kitchen</th>
+              <th className="px-6 py-4 font-semibold">Service</th>
               <th className="px-6 py-4 font-semibold">Price</th>
               <th className="px-6 py-4 font-semibold text-right">Action</th>
             </tr>
@@ -63,6 +64,12 @@ const Features = () => {
                 <td className="px-6 py-4">
                   <span className="text-xs font-semibold bg-violet-100 text-violet-700 px-3 py-1 rounded-full">
                     {item?.kitchen?.title}
+                  </span>
+                </td>
+
+                <td className="px-6 py-4">
+                  <span className="text-xs font-semibold bg-violet-100 text-violet-700 px-3 py-1 rounded-full">
+                    {item?.service?.title}
                   </span>
                 </td>
 
