@@ -142,6 +142,9 @@ export const useUpdateUtilities = () => {
         navigate("/admin/dashboard/service");
       }
     },
+    onError: (err) => {
+      toast.error(err?.response?.data?.message);
+    },
   });
 };
 

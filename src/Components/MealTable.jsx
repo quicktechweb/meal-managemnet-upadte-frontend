@@ -63,7 +63,13 @@ const MealScheduleTable = ({
     if (!mealTypeLists.some((m) => m.meal_type === finalMealName)) {
       setMealTypeLists((prev) => [
         ...prev,
-        { meal_type: finalMealName, start_time: startTime, end_time: endTime },
+        {
+          meal_type: finalMealName,
+          start_time: startTime,
+          end_time: endTime,
+          items: selectedItemsList,
+          status: "active",
+        },
       ]);
     }
 

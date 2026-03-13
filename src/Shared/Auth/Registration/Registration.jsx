@@ -1,5 +1,11 @@
 import { TiTick } from "react-icons/ti";
-import { NavLink, Outlet, useLocation, useNavigate } from "react-router-dom";
+import {
+  NavLink,
+  Outlet,
+  ScrollRestoration,
+  useLocation,
+  useNavigate,
+} from "react-router-dom";
 import useStep from "../../../Hooks/useStep";
 import { useState } from "react";
 import { ChevronDown } from "lucide-react";
@@ -170,6 +176,7 @@ const Registration = () => {
                 : "flex-grow px-5  overflow-y-auto"
             }
           >
+            <ScrollRestoration />
             <Outlet />
           </div>
         </div>

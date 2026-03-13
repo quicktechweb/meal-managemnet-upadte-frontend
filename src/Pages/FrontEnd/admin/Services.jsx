@@ -93,18 +93,7 @@ const Services = () => {
 
                 <td className="px-6 py-4">
                   <div className="flex flex-wrap items-center gap-1.5">
-                    {item?.service?.length > 0 ? (
-                      item?.service?.map((service) => (
-                        <span className="text-xs inline-block font-semibold bg-violet-100 text-violet-700 px-3 py-1 rounded-full">
-                          {service.title}
-                        </span>
-                      ))
-                    ) : (
-                      <p className="text-xs font-bold text-gray-400 text-center">
-                        {" "}
-                        N/A
-                      </p>
-                    )}
+                    {item?.service?.title}
                   </div>
                 </td>
 
