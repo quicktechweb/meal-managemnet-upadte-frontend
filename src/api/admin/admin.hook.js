@@ -268,3 +268,18 @@ export const allCostFunction = async () => {
   const { data } = await axiosPublic("/api/get-cost");
   return data?.data;
 };
+
+export const createItemFunction = async (payload) => {
+  const { data } = await axiosPublic.post("/api/item-create", payload);
+  return data;
+};
+
+export const deleteItemFunction = async (id) => {
+  const { data } = await axiosPublic.delete(`/api/item/${id}`);
+  return data;
+};
+
+export const UpdateitemFunction = async ({ id, payload }) => {
+  const { data } = await axiosPublic.put(`/api/items/${id}`, payload);
+  return data;
+};
