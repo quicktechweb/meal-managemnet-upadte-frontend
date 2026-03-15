@@ -13,7 +13,8 @@ const CustomSelect = ({
 }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [newItem, setNewItem] = useState("");
-  const [searchTerm, setSearchTerm] = useState(value || "");
+  const [inputValue, setInputValue] = useState(value || "");
+  const [searchTerm, setSearchTerm] = useState("");
   const [showCreateInput, setShowCreateInput] = useState(false);
 
   const dropdownRef = useRef(null);
@@ -30,8 +31,10 @@ const CustomSelect = ({
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
+
+
   useEffect(() => {
-    setSearchTerm(value || "");
+    setInputValue(value || "");
   }, [value]);
 
   const filteredOptions = useMemo(() => {
@@ -42,8 +45,13 @@ const CustomSelect = ({
 
   const handleInputChange = (e) => {
     const val = e.target.value;
-    setSearchTerm(val);
+    setInputValue(val);
     onChange && onChange(val);
+  };
+
+  const handleSearchChange = (e) => {
+    const val = e.target.value;
+    setSearchTerm(val);
   };
 
   const handleUpdate = () => {
@@ -64,7 +72,7 @@ const CustomSelect = ({
         {/* input */}
         <input
           type="text"
-          value={searchTerm}
+          value={inputValue}
           onChange={handleInputChange}
           placeholder={placeholder}
           disabled={disabled}
@@ -86,6 +94,15 @@ const CustomSelect = ({
       {isOpen && (
         <div className="border absolute z-40 border-gray-200 bg-white w-full rounded-xl mt-1 shadow-md">
           {/* options */}
+
+          <input
+            type="text"
+            value={searchTerm}
+            onChange={handleSearchChange}
+            placeholder="Search Here"
+            className="w-[100%] px-3 py-2 outline-none text-gray-600"
+          />
+
           <div className="max-h-48 overflow-y-auto">
             {filteredOptions.length > 0 ? (
               filteredOptions.map((item, index) => (

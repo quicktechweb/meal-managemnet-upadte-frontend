@@ -28,14 +28,14 @@ const AdminDashboardSidebar = ({ setIsOpenSidebar }) => {
 
   const sidebarItems = [
     {
-      key: "Schedule",
-      title: "Schedule",
+      key: "meal-item",
+      title: "Meal Items",
       icon: FaClipboardList,
       links: [
         {
-          title: "All Schedule",
+          title: "Items",
           icon: FaShoppingBag,
-          path: "/admin/dashboard/all-schedule",
+          path: "/admin/dashboard/item",
         },
       ],
     },

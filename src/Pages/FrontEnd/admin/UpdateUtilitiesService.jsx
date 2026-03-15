@@ -38,7 +38,7 @@ const UpdateUtilitiesService = () => {
       price: "",
       kitchen: "",
       bear_the_cost: [],
-      service: [],
+
       ranges: [],
     },
   });
@@ -55,7 +55,7 @@ const UpdateUtilitiesService = () => {
         price: singleUtilities.price,
         kitchen: singleUtilities?.kitchen?._id || "",
         bear_the_cost: singleUtilities?.bear_the_cost?.map((c) => c._id) || [],
-        service: singleUtilities?.service?._id || [],
+
         ranges: singleUtilities?.ranges || [],
       });
     }
@@ -151,27 +151,6 @@ const UpdateUtilitiesService = () => {
             )}
           </div>
 
-    
-          <div>
-            <label className="text-sm font-semibold flex items-center gap-2">
-              <Utensils size={16} />
-              Service
-            </label>
-            <select
-              {...register("service", { required: "Service is required" })}
-              className="w-full bg-slate-50 border border-gray-300 rounded-xl p-3"
-            >
-              <option value="">Choose a Service...</option>
-              {services?.map((item) => (
-                <option key={item._id} value={item._id}>
-                  {item.title}
-                </option>
-              ))}
-            </select>
-            {errors.service && (
-              <p className="text-red-500 text-sm">{errors.service.message}</p>
-            )}
-          </div>
           {/* Name */}
           <div>
             <label className="text-sm font-semibold flex items-center gap-2">
@@ -194,8 +173,7 @@ const UpdateUtilitiesService = () => {
             <input
               type="number"
               {...register("price", {
-                required: "Price is required",
-                min: { value: 1, message: "Price must be greater than 0" },
+                required: "",
               })}
               className="w-full bg-slate-50 border border-gray-300 rounded-xl p-3"
             />

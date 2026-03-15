@@ -82,6 +82,9 @@ import InstituteUser from "../Pages/FrontEnd/institute/admin/InstituteUser";
 import InstituteUserDetails from "../Pages/FrontEnd/institute/admin/InstituteUserDetails";
 import InstituteAdminMealManagement from "../Pages/FrontEnd/institute/admin/InstituteAdminMealManagement";
 import InstituteAdminProfile from "../Pages/FrontEnd/institute/admin/InstituteAdminProfile";
+import Items from "../Pages/FrontEnd/admin/Items";
+import AddItem from "../Pages/FrontEnd/admin/AddItem";
+import UpdateItem from "../Pages/FrontEnd/admin/UpdateItem";
 
 const router = createBrowserRouter([
   {
@@ -377,108 +380,121 @@ const router = createBrowserRouter([
         element: <UpdateFeature />,
       },
       {
-        path: "/admin/dashboard/notices",
+        path: "notices",
         element: <Notices />,
       },
 
       {
-        path: "/admin/dashboard/add-notice",
+        path: "add-notice",
         element: <AddNotice />,
       },
       {
-        path: "/admin/dashboard/update-notice/:id",
+        path: "update-notice/:id",
         element: <UpdateNotice />,
       },
       {
-        path: "/admin/dashboard/live-kitchen",
+        path: "live-kitchen",
         element: <LiveKitchenVideo />,
       },
 
       {
-        path: "/admin/dashboard/add-live-kitchen",
+        path: "add-live-kitchen",
         element: <AddLiveKitchenVideo />,
       },
       {
-        path: "/admin/dashboard/update-live-kithen/:id",
+        path: "update-live-kithen/:id",
         element: <UpdateLiveKitchenVideo />,
       },
       {
-        path: "/admin/dashboard/banner",
+        path: "banner",
         element: <Banner />,
       },
       {
-        path: "/admin/dashboard/add-banner",
+        path: "add-banner",
         element: <AddBanner />,
       },
       {
-        path: "/admin/dashboard/update-banner/:id",
+        path: "update-banner/:id",
         element: <UpdateBanner />,
       },
       {
-        path: "/admin/dashboard/choose-us",
+        path: "choose-us",
         element: <ChooseUs />,
       },
 
       {
-        path: "/admin/dashboard/add-choose-us-banner",
+        path: "add-choose-us-banner",
         element: <AddChooseUsBanner />,
       },
       {
-        path: "/admin/dashboard/update-choose-us-banner/:id",
+        path: "update-choose-us-banner/:id",
         element: <UpdateChooseUsBanner />,
       },
       {
-        path: "/admin/dashboard/add-choose-us-list",
+        path: "add-choose-us-list",
         element: <AddChooseUsList />,
       },
       {
-        path: "/admin/dashboard/pages",
+        path: "pages",
         element: <Pages />,
       },
       {
-        path: "/admin/dashboard/add-page",
+        path: "add-page",
         element: <AddPage />,
       },
       {
-        path: "/admin/dashboard/update-page/:id",
+        path: "update-page/:id",
         element: <UpdatePage />,
       },
       {
-        path: "/admin/dashboard/app-section",
+        path: "app-section",
         element: <AppSection />,
       },
       {
-        path: "/admin/dashboard/add-app-section",
+        path: "add-app-section",
         element: <AddAppSection />,
       },
       {
-        path: "/admin/dashboard/update-app-section/:id",
+        path: "update-app-section/:id",
         element: <UpdateAppSection />,
       },
       {
-        path: "/admin/dashboard/faq",
+        path: "faq",
         element: <FaqAdmin />,
       },
       {
-        path: "/admin/dashboard/add-faq",
+        path: "add-faq",
         element: <AddFaq />,
       },
       {
-        path: "/admin/dashboard/update-faq/:id",
+        path: "update-faq/:id",
         element: <UpdateFaq />,
       },
       {
-        path: "/admin/dashboard/website-settings",
+        path: "website-settings",
         element: <WebsiteSettings />,
       },
       {
-        path: "/admin/dashboard/institute",
+        path: "institute",
         element: <Institutes />,
       },
       {
-        path: "/admin/dashboard/institute-user/:id",
+        path: "institute-user/:id",
         element: <SinglePendingInstituteUser />,
       },
+
+      {
+        path: "item",
+        element: <Items />,
+      },
+      {
+        path:"add-item",
+         element:<AddItem/>
+      },
+      {
+        path:"update-item/:id",
+         element:<UpdateItem/>
+      }
     ],
   },
 ]);

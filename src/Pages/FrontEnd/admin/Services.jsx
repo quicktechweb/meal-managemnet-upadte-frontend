@@ -2,7 +2,6 @@ import { Plus, UtensilsCrossed } from "lucide-react";
 import React from "react";
 import { Link } from "react-router-dom";
 import {
-  useAllCost,
   useDeleteUtilities,
   useUtilitiesService,
 } from "../../../api/admin/admin.api";
@@ -51,7 +50,7 @@ const Services = () => {
               <th className="px-6 py-4 font-semibold">Utility Service Name</th>
               <th className="px-6 py-4 font-semibold">Kitchen</th>
               <th className="px-6 py-4 font-semibold">Bear the Cost</th>
-              <th className="px-6 py-4 font-semibold">Service</th>
+
               <th className="px-6 py-4 font-semibold">Price</th>
               <th className="px-6 py-4 font-semibold">Ranges</th>
               <th className="px-6 py-4 font-semibold text-right">Action</th>
@@ -88,12 +87,6 @@ const Services = () => {
                         N/A
                       </p>
                     )}
-                  </div>
-                </td>
-
-                <td className="px-6 py-4">
-                  <div className="flex flex-wrap items-center gap-1.5">
-                    {item?.service?.title}
                   </div>
                 </td>
 

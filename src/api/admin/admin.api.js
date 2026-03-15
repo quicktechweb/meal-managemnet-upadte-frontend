@@ -16,6 +16,7 @@ import {
   bannerListFunction,
   chooseusBannerFunction,
   chooseusListsFunction,
+  createItemFunction,
   createWebsiteSetting,
   deleteAppDataSectionFunction,
   deletebannerFunction,
@@ -23,6 +24,7 @@ import {
   deleteChooseusListsFunction,
   deleteFaqFunction,
   deletefeatureFunction,
+  deleteItemFunction,
   deleteKitchenVideoFunction,
   deleteNoticeFunction,
   deletePageFunction,
@@ -48,6 +50,7 @@ import {
   updateChooseusBannerFunction,
   UpdateFaqFunction,
   updateFeatureFunction,
+  UpdateitemFunction,
   updatenoticeFunction,
   updatePageFunction,
   updateScheduleFunction,
@@ -737,5 +740,54 @@ export const useAllCost = () => {
     queryKey: "all-cost",
     queryFn: allCostFunction,
     retry: false,
+  });
+};
+
+export const useCreateItem = () => {
+  // get - items;
+  const query = useQueryClient();
+  return useMutation({
+    mutationKey: ["add-item"],
+    mutationFn: (payload) => createItemFunction(payload),
+    onSuccess: (data) => {
+      toast.success(data?.message);
+      query.invalidateQueries(["get-items"]);
+      navigate("/admin/dashboard/item");
+    },
+    onError: (err) => {
+      toast.error(err?.response?.data?.message);
+    },
+  });
+};
+
+export const useDeleteItem = () => {
+  const query = useQueryClient();
+
+  return useMutation({
+    mutationKey: ["delete-item"],
+    mutationFn: (id) => deleteItemFunction(id),
+    onSuccess: (data) => {
+      toast.success(data?.message);
+      query.invalidateQueries(["get-items"]);
+    },
+    onError: (err) => {
+      toast.error(err?.response?.data?.message);
+    },
+  });
+};
+
+export const useUpdateItem = () => {
+  const query = useQueryClient();
+  const navigate = useNavigate();
+  return useMutation({
+    mutationKey: ["update-item"],
+    mutationFn: UpdateitemFunction,
+    onSuccess: (data) => {
+      if (data?.success) {
+        toast.success(data?.message);
+        query.invalidateQueries(["get-items"]);
+        navigate("/admin/dashboard/item");
+      }
+    },
   });
 };

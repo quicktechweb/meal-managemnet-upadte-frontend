@@ -1,9 +1,8 @@
-import React, { useState } from "react";
+import React from "react";
 import { Controller, useFieldArray, useForm } from "react-hook-form";
 import {
   useAllCost,
   useAllKitchen,
-  useAllService,
   useCreateUtilites,
 } from "../../../api/admin/admin.api";
 import { PlusCircle, Utensils, Tag } from "lucide-react";
@@ -11,11 +10,9 @@ import { RxCross2 } from "react-icons/rx";
 import Select from "react-select";
 
 const AddUtilitiesService = () => {
-  const { data, isLoading } = useAllKitchen();
+  const { data } = useAllKitchen();
 
   const { data: costs } = useAllCost();
-
-  const { data: services } = useAllService();
 
   const { mutateAsync, isPending } = useCreateUtilites();
 
@@ -138,30 +135,6 @@ const AddUtilitiesService = () => {
               <p className="text-red-500 text-sm">
                 {errors.bear_the_cost.message}
               </p>
-            )}
-          </div>
-
-          <div className="space-y-2">
-            <label className="text-sm font-semibold text-slate-700 flex items-center gap-2">
-              <Utensils size={16} className="text-slate-400" />
-              Service
-            </label>
-
-            <select
-              onChange={(e) => handleChange(e)}
-              {...register("service", { required: "Service is required" })}
-              className="w-full bg-slate-50 border border-slate-200 text-slate-900 rounded-xl p-3 outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500"
-            >
-              <option value="">Choose a service...</option>
-              {services?.map((item) => (
-                <option key={item._id} value={item._id}>
-                  {item.title}
-                </option>
-              ))}
-            </select>
-
-            {errors.service && (
-              <p className="text-red-500 text-sm">{errors.service.message}</p>
             )}
           </div>
 
