@@ -149,7 +149,7 @@ const StepFour = ({
           </div>
 
           <>
-            <div className="bg-gray-50 p-4">
+            <div className="bg-gray-50 flex flex-col gap-3 p-4">
               <Controller
                 name="admin"
                 control={control}
@@ -204,6 +204,13 @@ const StepFour = ({
                 })}
               />
             </div>
+            <FloatingInput
+              label={`Name Of Institute`}
+              error={errors.institute_name}
+              {...register("institute_name", {
+                required: "this field required",
+              })}
+            />
 
             <FloatingInput
               label="Username"
@@ -387,7 +394,7 @@ const StepFour = ({
           <div className="flex items-center gap-3 px-5 py-4 bg-gradient-to-r from-indigo-50 to-white border-b border-slate-200">
             <div className="w-1.5 h-6 bg-orange-600 rounded-full"></div>
             <h4 className="text-xl font-semibold text-slate-800">
-            {nameLabel} Permission
+              {nameLabel} Permission
             </h4>
           </div>
 
