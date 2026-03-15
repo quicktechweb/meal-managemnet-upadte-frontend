@@ -149,8 +149,6 @@ const MessForm = () => {
 
   const totalPrice = totalUtilityPrice + totalServiceFeaturePrice;
 
-  console.log(utilityBills);
-
   // step 3
 
   const [mealTypeLists, setMealTypeLists] = useState([]);

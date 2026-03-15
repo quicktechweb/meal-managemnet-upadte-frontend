@@ -4,7 +4,6 @@ import { api } from "../../utils/countryApi";
 import CustomSelect from "../CustomSelect";
 import DocumentUpload from "../DocumentUpload";
 import { Controller } from "react-hook-form";
-import { JapaneseYen } from "lucide-react";
 
 const StepOne = ({
   form,
@@ -109,6 +108,8 @@ const StepOne = ({
 
   // dynamic label
   const instituteLabel = organizationType ? `${organizationType} Type` : "Type";
+
+  const institute_name_label = organizationType ? `${organizationType}` : "";
 
   // dynamic options
   const instituteOptions = useMemo(() => {
@@ -240,9 +241,9 @@ const StepOne = ({
           name="institute_type"
           control={form.control}
           rules={{
-            required: `This field is required is required`,
+            required: "This field is required",
           }}
-          render={({ field: { onChange, value }, fieldState: { error } }) => (
+          render={({ field, fieldState: { error } }) => (
             <div className="space-y-1">
               <label className="text-sm font-medium">
                 {instituteLabel} <span className="text-red-500">*</span>
@@ -251,9 +252,12 @@ const StepOne = ({
               <CustomSelect
                 label={instituteLabel}
                 options={instituteOptions}
-                value={value ?? ""}
-                onChange={(newValue) => onChange(newValue)}
-                onCreate={handleCreateInstituteType}
+                value={field.value || ""}
+                onChange={field.onChange}
+                onCreate={(newItem) => {
+                  handleCreateInstituteType(newItem);
+                  field.onChange(newItem);
+                }}
                 allowCreate
                 disabled={!organizationType}
               />
@@ -265,10 +269,10 @@ const StepOne = ({
       </div>
 
       <FloatingInput
-        label={`Name Of the ${organizationType}`}
+        label={`Name Of the ${institute_name_label}`}
         error={errors.institute_name}
         {...register("institute_name", {
-          required: `${organizationType} Name required`,
+          required: `${institute_name_label} Name required`,
         })}
       />
 
