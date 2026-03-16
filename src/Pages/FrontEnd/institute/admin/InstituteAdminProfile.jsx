@@ -41,7 +41,7 @@ const InstituteAdminProfile = () => {
         </div>
 
         <Link
-          to={`/admin/dashboard/profile-update/${me?._id}`}
+          to={`/institute/dashboard/profile-update/${me?._id}`}
           className="flex items-center gap-2 bg-indigo-600 text-white px-4 py-2 rounded-xl hover:bg-indigo-700 cursor-pointer"
         >
           <Edit3 size={16} />

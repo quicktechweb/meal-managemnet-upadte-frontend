@@ -316,6 +316,10 @@ const router = createBrowserRouter([
         path: "dashboard/institute",
         element: <InstituteAdminProfile />,
       },
+      {
+        path: "dashboard/profile-update/:id",
+        element: <InstituteAdminProfileUpdate />,
+      },
     ],
   },
 
@@ -495,10 +499,6 @@ const router = createBrowserRouter([
       {
         path: "update-item/:id",
         element: <UpdateItem />,
-      },
-      {
-        path: "profile-update/:id",
-        element: <InstituteAdminProfileUpdate />,
       },
     ],
   },
