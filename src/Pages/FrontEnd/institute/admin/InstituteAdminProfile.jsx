@@ -10,24 +10,27 @@ import {
   BookOpen,
 } from "lucide-react";
 import useInstituteAuth from "../../../../Hooks/useInstituteAuth";
-import { useUpdateInstituteProfileInfo } from "../../../../api/cms/user.hook";
-import toast from "react-hot-toast";
-import { useQueryClient } from "@tanstack/react-query";
+
+import { useAllKitchen } from "../../../../api/admin/admin.api";
+import { Link } from "react-router-dom";
 
 const InstituteAdminProfile = () => {
-  const [showEditModal, setShowEditModal] = useState(false);
+  const { data } = useAllKitchen();
+
   const { user } = useInstituteAuth();
 
   const me = user?.user;
 
-  console.log(me);
+  const kitchenType = data?.find(
+    (item) => item._id === me?.services?.kitchen_type,
+  );
 
   if (!me) return null;
 
   return (
     <div className="p-3 lg:p-6 bg-gray-50 min-h-screen antialiased text-gray-800">
       {/* Header */}
-      <div className="max-w-6xl mx-auto mb-4 flex justify-between items-center">
+      <div className=" mx-auto mb-4 flex justify-between items-center">
         <div>
           <h4 className="text-xl lg:text-3xl font-extrabold text-gray-900">
             Account Profile
@@ -37,16 +40,16 @@ const InstituteAdminProfile = () => {
           </p>
         </div>
 
-        <button
-          onClick={() => setShowEditModal(true)}
+        <Link
+          to={`/admin/dashboard/profile-update/${me?._id}`}
           className="flex items-center gap-2 bg-indigo-600 text-white px-4 py-2 rounded-xl hover:bg-indigo-700 cursor-pointer"
         >
           <Edit3 size={16} />
           Edit Profile
-        </button>
+        </Link>
       </div>
 
-      <div className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-3 gap-4">
+      <div className=" mx-auto grid grid-cols-1 lg:grid-cols-3 gap-4">
         {/* LEFT */}
         <div className="space-y-6">
           <div className="bg-white p-6 rounded-3xl shadow-sm border border-gray-200 flex flex-col items-center text-center">
@@ -169,9 +172,98 @@ const InstituteAdminProfile = () => {
         </div>
       </div>
 
-      {showEditModal && (
-        <EditProfileModal me={me} onClose={() => setShowEditModal(false)} />
-      )}
+      {/* service */}
+
+      <div className=" mx-auto my-10 p-6 bg-white rounded-2xl shadow-sm border border-gray-100">
+        {/* Header Section */}
+        <div className="mb-8 border-b border-gray-100 pb-5">
+          <h4 className="text-2xl lg:text-3xl font-black text-gray-900 tracking-tight">
+            Manage Your Service
+          </h4>
+          <p className="text-gray-500 mt-1">
+            View and oversee your active utility subscriptions.
+          </p>
+        </div>
+
+        <div className="space-y-8">
+          <section>
+            <h5 className="text-sm font-semibold uppercase tracking-wider text-indigo-600 mb-4">
+              Your Utility Services
+            </h5>
+
+            {/* Overview Grid */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+              <div className="p-4 bg-gray-50 rounded-xl">
+                <p className="text-xs text-gray-500 uppercase font-medium">
+                  Account Type
+                </p>
+                <p className="text-lg font-bold text-gray-800 capitalize">
+                  {me?.services?.user_type || "Standard"}
+                </p>
+              </div>
+              <div className="p-4 bg-gray-50 rounded-xl">
+                <p className="text-xs text-gray-500 uppercase font-medium">
+                  Kitchen Configuration
+                </p>
+                <p className="text-lg font-bold text-gray-800">
+                  {kitchenType?.title || "Not Specified"}
+                </p>
+              </div>
+            </div>
+
+            {/* Services & Features List */}
+            <div className="space-y-6">
+              <div>
+                <p className="font-bold text-gray-700 mb-3 flex items-center">
+                  <span className="w-2 h-2 bg-green-500 rounded-full mr-2"></span>
+                  Active Utilities
+                </p>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  {me?.services?.utility_service?.map((service, index) => (
+                    <div
+                      key={index}
+                      className="flex flex-col p-3 border border-gray-100 rounded-lg bg-white hover:border-indigo-200 transition-colors"
+                    >
+                      <span className="font-semibold text-gray-800">
+                        {service?.name}
+                      </span>
+                      <span className="text-xs text-gray-400">
+                        Standard Service
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              <div>
+                <p className="font-bold text-gray-700 mb-3">
+                  Included Features
+                </p>
+                <div className="flex flex-wrap gap-2">
+                  {me?.services?.service_feature?.map((feature, index) => (
+                    <span
+                      key={index}
+                      className="px-3 py-1 bg-indigo-50 text-indigo-700 text-sm font-medium rounded-full border border-indigo-100"
+                    >
+                      {feature?.name}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            </div>
+
+            {/* Billing Summary */}
+            <div className="mt-10 p-5 bg-gray-900 rounded-2xl text-white flex justify-between items-center">
+              <div>
+                <p className="text-gray-400 text-sm">Total Monthly Amount</p>
+                <h4 className="text-3xl font-bold">
+                  ${me?.services?.total_amount}
+                </h4>
+              </div>
+            </div>
+          </section>
+        </div>
+      </div>
     </div>
   );
 };
@@ -186,289 +278,5 @@ const InfoItem = ({ label, value, icon }) => (
     </div>
 
     <p className="text-gray-900 font-semibold">{value || "N/A"}</p>
-  </div>
-);
-
-/* ============================
-        EDIT PROFILE MODAL
-============================ */
-
-const EditProfileModal = ({ me, onClose }) => {
-  const [formData, setFormData] = useState({
-    instituteType: me?.information?.instituteType || "",
-    name_of_institute: me?.information?.name_of_institute || "",
-    number_of_member: me?.information?.number_of_member || "",
-    username: me?.information?.username || "",
-    country: me?.information?.country || "",
-    state: me?.information?.state || "",
-    division: me?.information?.division || "",
-    district: me?.information?.district || "",
-    village: me?.information?.village || "",
-    location: me?.information?.location || "",
-    documents: me?.information?.documents || [],
-    password: me?.information?.password,
-  });
-
-  const { mutateAsync, isPending } = useUpdateInstituteProfileInfo();
-
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-
-    setFormData((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
-  };
-
-  const handleDocumentChange = (index, field, value) => {
-    const updatedDocs = [...formData.documents];
-
-    updatedDocs[index][field] = value;
-
-    setFormData({
-      ...formData,
-      documents: updatedDocs,
-    });
-  };
-
-  const addDocument = () => {
-    setFormData({
-      ...formData,
-      documents: [
-        ...formData.documents,
-        {
-          document_type: "",
-          document_number: "",
-          document_files: "",
-        },
-      ],
-    });
-  };
-
-  const removeDocument = (index) => {
-    const updatedDocs = formData.documents.filter((_, i) => i !== index);
-
-    setFormData({
-      ...formData,
-      documents: updatedDocs,
-    });
-  };
-  const query = useQueryClient();
-  const submitHandler = async (e) => {
-    e.preventDefault();
-
-    const payload = {
-      information: formData,
-    };
-
-    await mutateAsync(
-      { id: me?._id, payload: { ...payload } },
-      {
-        onSuccess: (data) => {
-          if (data) {
-            toast.success(data?.data?.message);
-            query.invalidateQueries(["instituteUserData"]);
-            onClose();
-          }
-        },
-        onError: (err) => {
-          toast.error(err?.response?.data?.message);
-          console.log(err);
-        },
-      },
-    );
-  };
-
-  return (
-    <div className="fixed inset-0 bg-black/40 z-50 flex items-center justify-center p-4">
-      <div className="bg-white w-full max-w-3xl rounded-xl shadow-lg max-h-[90vh] overflow-y-auto">
-        {/* Header */}
-        <div className="p-4 border-b border-gray-200 flex justify-between items-center">
-          <h3 className="text-lg font-bold">Edit Institute Information</h3>
-
-          <button className="cursos-pointer" onClick={onClose}>
-            <X />
-          </button>
-        </div>
-
-        <form onSubmit={submitHandler} className="p-6 space-y-4">
-          <InputField
-            label="Institute Type"
-            name="instituteType"
-            value={formData.instituteType}
-            onChange={handleChange}
-          />
-
-          <InputField
-            label="Institute Name"
-            name="name_of_institute"
-            value={formData.name_of_institute}
-            onChange={handleChange}
-          />
-
-          <InputField
-            label="Total Members"
-            name="number_of_member"
-            value={formData.number_of_member}
-            onChange={handleChange}
-          />
-
-          <InputField
-            label="Username"
-            name="username"
-            value={formData.username}
-            onChange={handleChange}
-          />
-
-          <InputField
-            label="Country"
-            name="country"
-            value={formData.country}
-            onChange={handleChange}
-          />
-
-          <InputField
-            label="State"
-            name="state"
-            value={formData.state}
-            onChange={handleChange}
-          />
-
-          <InputField
-            label="Division"
-            name="division"
-            value={formData.division}
-            onChange={handleChange}
-          />
-
-          <InputField
-            label="District"
-            name="district"
-            value={formData.district}
-            onChange={handleChange}
-          />
-
-          <InputField
-            label="Village"
-            name="village"
-            value={formData.village}
-            onChange={handleChange}
-          />
-
-          <InputField
-            label="Location"
-            name="location"
-            value={formData.location}
-            onChange={handleChange}
-            isTextArea
-          />
-
-          {/* DOCUMENTS */}
-          <div className="pt-6">
-            <h4 className="font-semibold mb-4">Documents</h4>
-
-            {formData.documents.map((doc, index) => (
-              <div
-                key={index}
-                className="border border-gray-200 rounded-lg p-4 mb-3 grid md:grid-cols-3 gap-3"
-              >
-                <InputField
-                  label="Document Type"
-                  value={doc.document_type}
-                  onChange={(e) =>
-                    handleDocumentChange(index, "document_type", e.target.value)
-                  }
-                />
-
-                <InputField
-                  label="Document Number"
-                  value={doc.document_number}
-                  onChange={(e) =>
-                    handleDocumentChange(
-                      index,
-                      "document_number",
-                      e.target.value,
-                    )
-                  }
-                />
-
-                <InputField
-                  label="Document File URL"
-                  value={doc.document_files}
-                  onChange={(e) =>
-                    handleDocumentChange(
-                      index,
-                      "document_files",
-                      e.target.value,
-                    )
-                  }
-                />
-
-                <button
-                  type="button"
-                  onClick={() => removeDocument(index)}
-                  className="text-red-500 text-sm cursor-pointer"
-                >
-                  Remove
-                </button>
-              </div>
-            ))}
-
-            <button
-              type="button"
-              onClick={addDocument}
-              className="bg-indigo-600 cursor-pointer text-white px-4 py-2 rounded-lg"
-            >
-              Add Document
-            </button>
-          </div>
-
-          {/* FOOTER */}
-          <div className="flex justify-end gap-3 pt-6">
-            <button
-              type="button"
-              onClick={onClose}
-              className="px-5 py-2 bg-gray-200 cursor-pointer rounded-lg"
-            >
-              Cancel
-            </button>
-
-            <button
-              type="submit"
-              disabled={isPending}
-              className="px-5 py-2 bg-indigo-600 cursor-pointer text-white rounded-lg"
-            >
-              {isPending ? "Upadating..." : "Update"}
-            </button>
-          </div>
-        </form>
-      </div>
-    </div>
-  );
-};
-
-/* ==============================
-        INPUT FIELD
-================================ */
-
-const InputField = ({ label, name, value, onChange, isTextArea = false }) => (
-  <div className="flex flex-col gap-1">
-    <label className="text-sm font-semibold">{label}</label>
-
-    {isTextArea ? (
-      <textarea
-        name={name}
-        value={value}
-        onChange={onChange}
-        className="border border-gray-200 rounded-lg px-3 py-2"
-      />
-    ) : (
-      <input
-        name={name}
-        value={value}
-        onChange={onChange}
-        className="border border-gray-200 rounded-lg px-3 py-2"
-      />
-    )}
   </div>
 );

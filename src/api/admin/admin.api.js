@@ -12,6 +12,7 @@ import {
   addscheduleFunction,
   addutilitiesFunction,
   allCostFunction,
+  allServiceTypeFunction,
   approvedInstituteUserFunction,
   bannerListFunction,
   chooseusBannerFunction,
@@ -791,3 +792,12 @@ export const useUpdateItem = () => {
     },
   });
 };
+
+
+export const useServiceType = () => {
+   return useQuery({
+     queryKey: "all-service-type",
+     queryFn: allServiceTypeFunction,
+     retry: false,
+   });
+}

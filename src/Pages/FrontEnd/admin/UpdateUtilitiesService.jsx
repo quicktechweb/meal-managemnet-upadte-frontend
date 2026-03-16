@@ -3,7 +3,7 @@ import { Controller, useFieldArray, useForm } from "react-hook-form";
 import {
   useAllCost,
   useAllKitchen,
-  useAllService,
+  useServiceType,
   useUpdateUtilities,
   useUtilitiesService,
 } from "../../../api/admin/admin.api";
@@ -17,7 +17,8 @@ const UpdateUtilitiesService = () => {
 
   const { data: allUtilitiesServices } = useUtilitiesService();
   const { data: costs } = useAllCost();
-  const { data: services } = useAllService();
+
+  const { data: service_type } = useServiceType();
 
   const { data: kitchens } = useAllKitchen();
   const { mutateAsync, isPending } = useUpdateUtilities();
@@ -105,6 +106,34 @@ const UpdateUtilitiesService = () => {
             </select>
             {errors.kitchen && (
               <p className="text-red-500 text-sm">{errors.kitchen.message}</p>
+            )}
+          </div>
+
+          <div className="space-y-2">
+            <label className="text-sm font-semibold text-slate-700 flex items-center gap-2">
+              <Utensils size={16} className="text-slate-400" />
+              Service Type
+            </label>
+
+            <select
+              onChange={(e) => handleChange(e)}
+              {...register("service_type", {
+                required: "service type is required",
+              })}
+              className="w-full bg-slate-50 border border-slate-200 text-slate-900 rounded-xl p-3 outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500"
+            >
+              <option value="">Choose a service type...</option>
+              {service_type?.map((item) => (
+                <option key={item._id} value={item._id}>
+                  {item.title}
+                </option>
+              ))}
+            </select>
+
+            {errors.service_type && (
+              <p className="text-red-500 text-sm">
+                {errors.service_type.message}
+              </p>
             )}
           </div>
 

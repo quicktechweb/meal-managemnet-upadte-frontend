@@ -608,13 +608,13 @@ const StepTwo = ({
         </div>
       )}
       <div className="flex gap-2">
-        {/* <button
+        <button
           type="button"
           onClick={prevStep}
           className="w-full border border-gray-200 cursor-pointer py-1.5 lg:py-3 rounded-lg"
         >
           Back
-        </button> */}
+        </button>
         <button
           type="button"
           onClick={nextStep}
