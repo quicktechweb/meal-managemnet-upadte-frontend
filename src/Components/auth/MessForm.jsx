@@ -219,11 +219,11 @@ const MessForm = () => {
           utility_service: utilityBills,
           service_feature: serviceFeatures,
           total_amount: totalPrice,
-          registration_step: step,
+          
         };
 
         await mutateAsync(
-          { userId: userId, services: { ...payload } },
+          { userId: userId, services: { ...payload }, registration_step: step },
           {
             onSuccess: (data) => {
               if (data) {
@@ -244,11 +244,11 @@ const MessForm = () => {
           userId: userId,
           meal_type_lists: mealTypeLists,
           schedule_lists: scheduleList,
-          registration_step: step,
+          
         };
 
         await mutateAsync(
-          { userId: userId, routine: { ...payload } },
+          { userId: userId, routine: { ...payload }, registration_step: step },
           {
             onSuccess: (data) => {
               if (data) {
@@ -284,7 +284,7 @@ const MessForm = () => {
     };
 
     await mutateAsync(
-      { userId: userId, admin_info: { ...payload } },
+      { userId: userId, admin_info: { ...payload }, registration_step: step },
       {
         onSuccess: (data) => {
           if (data) {
