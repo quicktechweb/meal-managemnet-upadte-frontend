@@ -1,7 +1,7 @@
 import { useState } from "react";
 import Select from "react-select";
 import { useGetItems } from "../api/admin/admin.api";
-
+import { components } from "react-select";
 const MealScheduleTable = ({
   totalPrice,
   mealTypeLists,
@@ -24,13 +24,15 @@ const MealScheduleTable = ({
   const [selectedMeal, setSelectedMeal] = useState("");
   const [selectedOptions, setSelectedOptions] = useState([]);
 
+  console.log(selectedOptions);
+
   const [startTime, setStartTime] = useState("");
   const [endTime, setEndTime] = useState("");
   const [newMealInput, setNewMealInput] = useState("");
 
   const [selectedItem, setSelectedItem] = useState(null);
 
-  console.log(selectedItem);
+  console.log(items);
 
   const itemOptions = items?.map((item) => ({
     value: item,
@@ -75,6 +77,24 @@ const MealScheduleTable = ({
     );
   };
 
+  const CustomMultiValueLabel = (props) => {
+    const { data } = props;
+
+    return (
+      <components.MultiValueLabel {...props}>
+        <div className="flex items-center gap-1">
+          <img
+            src={data.image}
+            alt={data.label}
+            className="w-4 h-4 rounded object-cover"
+          />
+          <span>{data.label}</span>
+          <span className="text-orange-600 text-xs">(৳{data.price})</span>
+        </div>
+      </components.MultiValueLabel>
+    );
+  };
+
   // Create meal & schedule
   const handleCreate = () => {
     const finalMealName =
@@ -111,10 +131,12 @@ const MealScheduleTable = ({
       ]);
     }
 
+    console.log(selectedOptions, "selected option");
+
     // Prepare items
     const selectedItemsList = selectedOptions.map((opt) => ({
-      title: opt.title,
-      price: +opt.value.price + +totalPrice,
+      title: opt.label,
+      price: +opt.price + +totalPrice,
     }));
 
     // Add to scheduleList
@@ -242,7 +264,10 @@ const MealScheduleTable = ({
             options={itemOptions}
             value={selectedOptions}
             onChange={setSelectedOptions}
-            components={{ Option: CustomOption }}
+            components={{
+              Option: CustomOption,
+              MultiValueLabel: CustomMultiValueLabel,
+            }}
           />
         </div>
 
@@ -336,12 +361,13 @@ const MealScheduleTable = ({
                     const schedule = scheduleList.find(
                       (s) => s.day === day && s.meal_type === meal,
                     );
+
                     return (
                       <td key={meal} className="py-6 px-6">
                         {schedule ? (
                           <div className="flex items-center flex-wrap max-w-[350px] gap-1">
                             {schedule.items.map((item) => (
-                              <p key={item.title}>
+                              <p key={item.label}>
                                 {item.title} (৳{item.price})
                               </p>
                             ))}
