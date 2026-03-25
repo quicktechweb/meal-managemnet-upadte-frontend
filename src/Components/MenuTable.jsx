@@ -53,6 +53,38 @@ const schedule2 = [
   },
 ];
 
+// schedule_lists: [
+//   {
+//     day: "Sat",
+//     meal_type: "Breakfast",
+//     start_time: "09:00",
+//     end_time: "11:00",
+//     items: [
+//       { title: "Vat", price: 20, _id: "69b7b78642d61b4ae80e3c45" },
+//       { title: "Dal", price: 30, _id: "69b7b78642d61b4ae80e3c46" },
+//       { title: "Goru", price: 130, _id: "69b7b78642d61b4ae80e3c47" },
+//       {
+//         title: "Kacchi Biriyani",
+//         price: 190,
+//         _id: "69b7b78642d61b4ae80e3c48",
+//       },
+//     ],
+//     _id: "69b7b78642d61b4ae80e3c44",
+//   },
+//   {
+//     day: "Sun",
+//     meal_type: "Breakfast",
+//     start_time: "09:00",
+//     end_time: "11:00",
+//     items: [
+//       { title: "Vat", price: 20, _id: "69b7b78642d61b4ae80e3c4a" },
+//       { title: "Dal", price: 30, _id: "69b7b78642d61b4ae80e3c4b" },
+//       { title: "Goru", price: 130, _id: "69b7b78642d61b4ae80e3c4c" },
+//     ],
+//     _id: "69b7b78642d61b4ae80e3c49",
+//   },
+// ];
+
 const columnHelper = createColumnHelper();
 const columns = [
   columnHelper.accessor("day", { header: "Day" }),
