@@ -10,6 +10,7 @@ const InstituteAuthProvider = ({ children }) => {
 
   const { data, isLoading } = useAuthInstituteUser(token);
 
+
   useEffect(() => {
     if (token && data) {
       setUser(data);

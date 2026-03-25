@@ -63,8 +63,6 @@ const schedule2 = [
   },
 ];
 
-
-
 /* =========================
    UTIL: NEXT 7 DAYS
 ========================= */
@@ -236,6 +234,11 @@ export default function MealManagementPart() {
   const [guestSelectedOptions, setGuestSelectedOptions] = useState({});
 
   const [selectedOptions, setSelectedOptions] = useState({});
+
+  console.log(selectedMeals);
+
+  console.log(selectedOptions);
+
   const [showModal, setShowModal] = useState(false);
 
   const activePlan = mealPlans[activeIndex];

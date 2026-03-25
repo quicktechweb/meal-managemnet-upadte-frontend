@@ -1,6 +1,7 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
 import {
   approvedInstituteUserFunction,
+  instituteUserAdminDataFunction,
   instituteUserListFunction,
   instituteUserMealTypeFunction,
   updateInstituteProfileInfoFunction,
@@ -38,6 +39,15 @@ export const useInstituteUserMealType = () => {
   return useQuery({
     queryKey: "institute_user_meal_type",
     queryFn: instituteUserMealTypeFunction,
+    retry: false,
+  });
+};
+
+export const useInstituteUserAdminData = (id) => {
+  return useQuery({
+    queryKey: ["institute-user-admin-data", id],
+    queryFn: () => instituteUserAdminDataFunction(id),
+    enabled: !!id,
     retry: false,
   });
 };

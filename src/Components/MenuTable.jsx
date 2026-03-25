@@ -8,6 +8,7 @@ import {
   useReactTable,
 } from "@tanstack/react-table";
 import useInstituteAuth from "../Hooks/useInstituteAuth";
+import { useInstituteUserAdminData } from "../api/cms/user.hook";
 
 const columnHelper = createColumnHelper();
 
@@ -15,7 +16,9 @@ const MenuTable = () => {
   const [isExpanded, setIsExpanded] = useState(true);
   const { user, loading } = useInstituteAuth();
 
-  const routine = user?.user?.routine;
+  const { data } = useInstituteUserAdminData(user?.user?.institute_id);
+
+  const routine = data?.routine;
 
   const mealTypes = React.useMemo(() => {
     return (

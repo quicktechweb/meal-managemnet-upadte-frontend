@@ -20,3 +20,8 @@ export const instituteUserMealTypeFunction = async () => {
   const { data } = await axiosSecure("/api/user-meal-type-lists");
   return data;
 };
+
+export const instituteUserAdminDataFunction = async (id) => {
+  const { data } = await axiosPublic(`/api/insituteuser-admin-data/${id}`);
+  return data?.data;
+};
