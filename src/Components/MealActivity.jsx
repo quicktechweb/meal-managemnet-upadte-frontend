@@ -7,6 +7,8 @@ import {
   FaCheckCircle,
 } from "react-icons/fa";
 import MealCard from "./MealCard";
+import { AllMealActivityCard } from "../Pages/FrontEnd/Dashboard/UserDashboard/MealManagementPart/AllMealActivityCard";
+import AllMealActivity from "../Pages/FrontEnd/Dashboard/UserDashboard/MealManagementPart/AllMealActivity";
 
 // ----------------- SCHEDULE -----------------
 const schedule2 = [
@@ -523,7 +525,7 @@ const MealActivity = () => {
           )}
 
           {daywiseSelect !== "day-wise" && (
-            <AllMealActivityCard
+            <AllMealActivity
               globalMealStatus={globalMealStatus}
               setGlobalMealStatus={setGlobalMealStatus}
               weeklyMealStatus={weeklyMealStatus}

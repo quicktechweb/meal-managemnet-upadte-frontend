@@ -44,11 +44,10 @@ export const AllMealActivityCard = ({
     }
   };
 
- 
   const handleCheckboxChange = (checked) => {
     if (checked) {
       setCheckedSource("other");
-     
+
       if (selectOtherOption) {
         const option = data?.items?.find(
           (item) => item.meal_id === selectOtherOption,
@@ -112,7 +111,7 @@ export const AllMealActivityCard = ({
             className="w-full border border-gray-300 rounded-lg px-2 py-2 text-sm"
           >
             <option value="">Select {title}</option>
-            {otherOptions.map((option) => (
+            {otherOptions?.map((option) => (
               <option key={option.meal_id} value={option.meal_id}>
                 {option.title}
               </option>
