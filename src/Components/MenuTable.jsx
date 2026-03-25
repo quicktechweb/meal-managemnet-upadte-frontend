@@ -7,105 +7,100 @@ import {
   getCoreRowModel,
   useReactTable,
 } from "@tanstack/react-table";
-
-const schedule2 = [
-  {
-    day: "Sat",
-    morning: ["Alu Vorta + Dal", "Egg + Ruti"],
-    afternoon: ["Murgi + Mangsho + Dal", "Murgi + Mach + Dal"],
-    night: ["Bhat, Alu (Dim-er shonge)", "Dal + Shobji"],
-  },
-  {
-    day: "Sun",
-    morning: ["Shobji Parota / Pitha", "Egg + Ruti"],
-    afternoon: ["Mach (Bhaji/Porha) + Dal", "Murgi + Mangsho + Dal"],
-    night: ["Murgir Jhol + Bhaja Shobji", "Bhat, Alu (Dim-er shonge)"],
-  },
-  {
-    day: "Mon",
-    morning: ["Nesco/Soup + Bhat/Parota"],
-    afternoon: ["Gosht & Murgi + Bhat/Dal (Soup/Mukhar)"],
-    night: ["Bhat, Dal + Alu Vorta"],
-  },
-  {
-    day: "Tue",
-    morning: ["Alu Vorta + Dal"],
-    afternoon: ["Mach (Bhaji/Porha) + Dal"],
-    night: ["Bhat + Dim"],
-  },
-  {
-    day: "Wed",
-    morning: ["Shobji + Dal / Nesco + Dal", "Bhat, Alu (Dim-er shonge)"],
-    afternoon: ["Murgi + Mach + Dal", "Bhat, Alu (Dim-er shonge)"],
-    night: ["Bhat, Alu (Dim-er shonge)", "Bhat, Alu (Dim-er shonge)"],
-  },
-  {
-    day: "Thu",
-    morning: ["Alu, Piaj Vorta + Dal", "Shobji + Dal / Nesco + Dal"],
-    afternoon: ["Mach + Dal", "Murgi + Mach + Dal"],
-    night: ["Murgir Jhol + Shobji Lettuce", "Bhat, Alu (Dim-er shonge)"],
-  },
-  {
-    day: "Fri",
-    morning: ["Ruti + Shobji/ Ruti + Dal"],
-    afternoon: ["Gorur Mangsho/Prani Jhol"],
-    night: ["Bhat, Dim + Shobji (Shak, Mushroom)"],
-  },
-];
-
-// schedule_lists: [
-//   {
-//     day: "Sat",
-//     meal_type: "Breakfast",
-//     start_time: "09:00",
-//     end_time: "11:00",
-//     items: [
-//       { title: "Vat", price: 20, _id: "69b7b78642d61b4ae80e3c45" },
-//       { title: "Dal", price: 30, _id: "69b7b78642d61b4ae80e3c46" },
-//       { title: "Goru", price: 130, _id: "69b7b78642d61b4ae80e3c47" },
-//       {
-//         title: "Kacchi Biriyani",
-//         price: 190,
-//         _id: "69b7b78642d61b4ae80e3c48",
-//       },
-//     ],
-//     _id: "69b7b78642d61b4ae80e3c44",
-//   },
-//   {
-//     day: "Sun",
-//     meal_type: "Breakfast",
-//     start_time: "09:00",
-//     end_time: "11:00",
-//     items: [
-//       { title: "Vat", price: 20, _id: "69b7b78642d61b4ae80e3c4a" },
-//       { title: "Dal", price: 30, _id: "69b7b78642d61b4ae80e3c4b" },
-//       { title: "Goru", price: 130, _id: "69b7b78642d61b4ae80e3c4c" },
-//     ],
-//     _id: "69b7b78642d61b4ae80e3c49",
-//   },
-// ];
+import useInstituteAuth from "../Hooks/useInstituteAuth";
 
 const columnHelper = createColumnHelper();
-const columns = [
-  columnHelper.accessor("day", { header: "Day" }),
-  columnHelper.accessor("morning", { header: "Morning" }),
-  columnHelper.accessor("afternoon", { header: "Afternoon" }),
-  columnHelper.accessor("night", { header: "Night" }),
-];
 
 const MenuTable = () => {
   const [isExpanded, setIsExpanded] = useState(true);
+  const { user, loading } = useInstituteAuth();
 
+  const routine = user?.user?.routine;
+
+  const mealTypes = React.useMemo(() => {
+    return (
+      routine?.meal_type_lists?.map((m) => ({
+        type: m.meal_type,
+        start: m.start_time,
+        end: m.end_time,
+      })) || []
+    );
+  }, [routine]);
+
+  const columns = React.useMemo(() => {
+    return [
+      columnHelper.accessor("day", { header: "Day" }),
+
+      ...mealTypes.map((meal, index) =>
+        columnHelper.accessor(meal.type, {
+          id: `${meal.type}-${index}`,
+          header: () => (
+            <div>
+              <div>{meal.type}</div>
+              <div className="text-xs font-normal">
+                {meal.start} - {meal.end}
+              </div>
+            </div>
+          ),
+          cell: (info) => info.getValue() || "-",
+        }),
+      ),
+    ];
+  }, [mealTypes]);
+
+  // const groupedSchedule = React.useMemo(() => {
+  //   if (!routine) return [];
+
+  //   const days = [...new Set(routine?.schedule_lists?.map((s) => s.day))];
+
+  //   return days.map((day) => {
+  //     const meals = routine?.schedule_lists?.filter((s) => s.day === day);
+
+  //     const row = { day };
+
+  //     mealTypes.forEach((type) => {
+  //       const meal = meals.find((m) => m.meal_type === type);
+  //       row[type] = meal?.items?.map((i) => i.title).join(", ") || "-";
+  //     });
+
+  //     return row;
+  //   });
+  // }, [routine, mealTypes]);
+
+  const groupedSchedule = React.useMemo(() => {
+    if (!routine) return [];
+
+    const days = [...new Set(routine?.schedule_lists?.map((s) => s.day))];
+
+    return days.map((day) => {
+      const meals = routine?.schedule_lists?.filter((s) => s.day === day);
+
+      const row = { day };
+
+      mealTypes.forEach((meal) => {
+        const found = meals.find((m) => m.meal_type === meal.type);
+
+        row[meal.type] = found?.items?.map((i) => i.title).join(", ") || "-";
+      });
+
+      return row;
+    });
+  }, [routine, mealTypes]);
   const table = useReactTable({
-    data: schedule2,
+    data: groupedSchedule,
     columns,
     getCoreRowModel: getCoreRowModel(),
   });
 
+  if (loading) {
+    return <div className="p-4">Loading...</div>;
+  }
+
   return (
     <div className="shadow-xl">
       <h4 className="text-lg font-semibold mb-3">Menu Lists</h4>
-      <div className="w-full ">
+
+      <div className="w-full">
         <button
           onClick={() => setIsExpanded(!isExpanded)}
           className="w-full flex justify-between items-center bg-orange-500 p-2 lg:p-4 text-white rounded-t-md cursor-pointer font-bold transition-colors hover:bg-orange-600 text-xs lg:text-base"
@@ -113,13 +108,15 @@ const MenuTable = () => {
           <span>Weekly Meal Lists</span>
           {isExpanded ? <ChevronUp size={20} /> : <ChevronDown size={20} />}
         </button>
+
         <div
-          className={`transition-all duration-300 ease-in-out overflow-hidden  ${
+          className={`transition-all duration-300 ease-in-out overflow-hidden ${
             isExpanded ? "max-h-[1000px] border border-gray-300" : "max-h-0"
           }`}
         >
           <div className="overflow-x-auto">
             <table className="min-w-full text-sm sm:text-base">
+              {/* Desktop Header */}
               <thead className="bg-orange-500 hidden md:table-header-group">
                 {table.getHeaderGroups().map((headerGroup) => (
                   <tr key={headerGroup.id}>
@@ -138,6 +135,7 @@ const MenuTable = () => {
                 ))}
               </thead>
 
+              {/* Body */}
               <tbody className="divide-y divide-gray-200">
                 {table.getRowModel().rows.map((row) => (
                   <tr
@@ -149,9 +147,12 @@ const MenuTable = () => {
                         key={cell.id}
                         className="px-4 py-2 md:py-3 border-black md:border-b flex justify-between md:table-cell"
                       >
+                        {/* Mobile Header */}
                         <span className="font-bold text-orange-600 md:hidden mr-4">
                           {cell.column.columnDef.header?.toString()}:
                         </span>
+
+                        {/* Cell Data */}
                         <span className="text-right md:text-left">
                           {flexRender(
                             cell.column.columnDef.cell,
@@ -164,6 +165,13 @@ const MenuTable = () => {
                 ))}
               </tbody>
             </table>
+
+            {/* Empty State */}
+            {table.getRowModel().rows.length === 0 && (
+              <div className="p-4 text-center text-gray-500">
+                No schedule available
+              </div>
+            )}
           </div>
         </div>
       </div>
