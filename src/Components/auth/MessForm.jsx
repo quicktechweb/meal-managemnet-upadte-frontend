@@ -104,8 +104,6 @@ const MessForm = () => {
     (u) => u?.kitchen?.title === kitchenType?.title,
   );
 
-  console.log(singleUtilities);
-
   const singleFeature = getFeature?.filter(
     (f) => f?.kitchen?.title === kitchenType?.title,
   );
@@ -219,7 +217,6 @@ const MessForm = () => {
           utility_service: utilityBills,
           service_feature: serviceFeatures,
           total_amount: totalPrice,
-          
         };
 
         await mutateAsync(
@@ -244,7 +241,6 @@ const MessForm = () => {
           userId: userId,
           meal_type_lists: mealTypeLists,
           schedule_lists: scheduleList,
-          
         };
 
         await mutateAsync(
@@ -382,10 +378,12 @@ const MessForm = () => {
       return total;
     }, 0);
 
+  console.log(utilityBills);
+
   return (
     <form
       onSubmit={handleSubmit(onSubmit)}
-      className="flex flex-col space-y-4 w-full"
+      className="flex flex-col space-y-4 w-full overflow-x-hidden h-[800px] overflow-y-scroll global-scrollbar"
     >
       <Stepper step={step} />
 

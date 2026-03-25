@@ -31,7 +31,7 @@ const UpdateFeature = () => {
   } = useForm();
 
   useEffect(() => {
-    if (singleFeature && kitchen.length > 0) {
+    if (singleFeature && kitchen?.length > 0) {
       reset({
         name: singleFeature.name,
         price: singleFeature.price,

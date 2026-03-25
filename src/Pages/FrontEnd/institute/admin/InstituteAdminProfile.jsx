@@ -176,13 +176,25 @@ const InstituteAdminProfile = () => {
 
       <div className=" mx-auto my-10 p-6 bg-white rounded-2xl shadow-sm border border-gray-100">
         {/* Header Section */}
-        <div className="mb-8 border-b border-gray-100 pb-5">
-          <h4 className="text-2xl lg:text-3xl font-black text-gray-900 tracking-tight">
-            Manage Your Service
-          </h4>
-          <p className="text-gray-500 mt-1">
-            View and oversee your active utility subscriptions.
-          </p>
+        <div className="mb-8 border-b border-gray-100 pb-5 flex items-center justify-between">
+          <div>
+            <h4 className="text-2xl lg:text-3xl font-black text-gray-900 tracking-tight">
+              Manage Your Service
+            </h4>
+            <p className="text-gray-500 mt-1">
+              View and oversee your active utility subscriptions.
+            </p>
+          </div>
+
+          <div>
+            <Link
+              to={`/institute/dashboard/service-update/${me?._id}`}
+              className="flex items-center gap-2 bg-indigo-600 text-white px-4 py-2 rounded-xl hover:bg-indigo-700 cursor-pointer"
+            >
+              <Edit3 size={16} />
+              Edit Profile
+            </Link>
+          </div>
         </div>
 
         <div className="space-y-8">

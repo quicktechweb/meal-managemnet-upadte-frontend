@@ -14,8 +14,6 @@ const InstituteAuthProvider = ({ children }) => {
   // mutation:
   const { data: getUserData, isLoading } = useAuthInstituteUser(token);
 
-  console.log(getUserData?.user?.routine?.schedule_lists);
-
   // const allMealSchedule = [
   //   ...new Map(
   //     getUserData?.user?.routine?.schedule_lists?.map((item) => [
@@ -29,14 +27,14 @@ const InstituteAuthProvider = ({ children }) => {
     ...new Set(getUserData?.user?.routine?.schedule_lists?.map((s) => s.day)),
   ];
 
- const groupedSchedule = days.map((day) => ({
-   day,
-   meals: getUserData?.user?.routine?.schedule_lists?.filter(
-     (s) => s.day === day,
-   ),
- }));
+  const groupedSchedule = days.map((day) => ({
+    day,
+    meals: getUserData?.user?.routine?.schedule_lists?.filter(
+      (s) => s.day === day,
+    ),
+  }));
 
- console.log(groupedSchedule);
+  console.log(groupedSchedule);
 
   // get data:
   useEffect(() => {

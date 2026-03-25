@@ -86,6 +86,7 @@ import Items from "../Pages/FrontEnd/admin/Items";
 import AddItem from "../Pages/FrontEnd/admin/AddItem";
 import UpdateItem from "../Pages/FrontEnd/admin/UpdateItem";
 import InstituteAdminProfileUpdate from "../Pages/FrontEnd/institute/admin/InstituteAdminProfileUpdate";
+import InstituteAdminServiceUpdate from "../Pages/FrontEnd/institute/admin/InstituteAdminServiceUpdate";
 
 const router = createBrowserRouter([
   {
@@ -319,6 +320,10 @@ const router = createBrowserRouter([
       {
         path: "dashboard/profile-update/:id",
         element: <InstituteAdminProfileUpdate />,
+      },
+      {
+        path: "dashboard/service-update/:id",
+        element: <InstituteAdminServiceUpdate />,
       },
     ],
   },
