@@ -22,6 +22,11 @@ export const instituteUserMealTypeFunction = async () => {
 };
 
 export const instituteUserAdminDataFunction = async (id) => {
-  const { data } = await axiosPublic(`/api/insituteuser-admin-data/${id}`);
+  const { data } = await axiosPublic.get(`/api/insituteuser-admin-data/${id}`);
   return data?.data;
+};
+
+export const instituteCreateUserMealFunction = async (payload) => {
+  const { data } = await axiosPublic.post("/api/create-user-meal", payload);
+  return data;
 };

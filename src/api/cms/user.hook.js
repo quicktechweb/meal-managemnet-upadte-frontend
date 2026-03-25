@@ -1,6 +1,7 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
 import {
   approvedInstituteUserFunction,
+  instituteCreateUserMealFunction,
   instituteUserAdminDataFunction,
   instituteUserListFunction,
   instituteUserMealTypeFunction,
@@ -49,5 +50,18 @@ export const useInstituteUserAdminData = (id) => {
     queryFn: () => instituteUserAdminDataFunction(id),
     enabled: !!id,
     retry: false,
+  });
+};
+
+export const useInstituteUserCreateMeal = (payload) => {
+  return useMutation({
+    mutationKey: ["create-user-meal"],
+    mutationFn: (payload) => instituteCreateUserMealFunction(payload),
+    onSuccess: (data) => {
+      toast.success(data?.message);
+    },
+    onError: (err) => {
+      toast.error(err?.response?.data?.message);
+    },
   });
 };

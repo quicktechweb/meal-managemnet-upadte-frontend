@@ -40,6 +40,7 @@ const MealScheduleTable = ({
     price: +item.price + +totalPrice,
     image: item.image,
     ingridents: item.ingridents,
+    video: item.video,
   }));
 
   // Custom option
@@ -437,17 +438,28 @@ const MealScheduleTable = ({
                   </span>
                 </div>
 
-                <div className="space-y-3">
-                  <div
-                    dangerouslySetInnerHTML={{
-                      __html:
-                        selectedItem?.ingridents || "No ingredients listed.",
-                    }}
-                    className="text-gray-600 leading-relaxed text-sm 
+                <div className="flex justify-between">
+                  <div className="space-y-3">
+                    <div
+                      dangerouslySetInnerHTML={{
+                        __html:
+                          selectedItem?.ingridents || "No ingredients listed.",
+                      }}
+                      className="text-gray-600 leading-relaxed text-sm 
               [&_ul]:list-disc [&_ul]:pl-5 [&_ul]:space-y-1 
               [&_ol]:list-decimal [&_ol]:pl-5 [&_ol]:space-y-1 
               [&_h1]:text-lg [&_h2]:text-lg [&_h3]:text-md [&_h1]:font-bold [&_h4]:text-md"
-                  />
+                    />
+                  </div>
+
+                  <div className="w-[300px] h-[190px] aspect-video rounded-md">
+                    <video
+                      src={selectedItem.video}
+                      controls
+                      autoPlay
+                      className="w-full h-full"
+                    />
+                  </div>
                 </div>
               </div>
 

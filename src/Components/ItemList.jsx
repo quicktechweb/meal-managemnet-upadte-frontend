@@ -1,5 +1,5 @@
 import { Plus } from "lucide-react";
-import React from "react";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
 
 import { FiEdit } from "react-icons/fi";
@@ -13,6 +13,8 @@ const ItemList = () => {
   const handleDelete = async (item) => {
     await mutateAsync(item?._id);
   };
+
+  const [selectedVideo, setSelectedVideo] = useState(null);
 
   return (
     <div className="service-container ">
@@ -79,7 +81,16 @@ const ItemList = () => {
                   ৳ {item.price}
                 </td>
                 <td className="px-6 py-4 font-semibold text-slate-800">
-                  {item?.video ? item?.video : "N/A"}
+                  {item?.video ? (
+                    <button
+                      onClick={() => setSelectedVideo(item)}
+                      className="text-blue-600 cursor-pointer hover:underline font-medium"
+                    >
+                      Play Video
+                    </button>
+                  ) : (
+                    "N/A"
+                  )}
                 </td>
 
                 <td className="px-6 py-4 flex items-center justify-end gap-2.5 ">
@@ -104,6 +115,33 @@ const ItemList = () => {
           </tbody>
         </table>
       </div>
+      {selectedVideo && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-4">
+          <div className="bg-white rounded-xl w-full max-w-3xl overflow-hidden shadow-xl">
+            {/* Header */}
+            <div className="flex justify-between items-center p-4 border-b">
+              <h3 className="font-semibold text-lg">{selectedVideo.title}</h3>
+
+              <button
+                onClick={() => setSelectedVideo(null)}
+                className="text-gray-500 cursor-pointer hover:text-red-500 text-xl"
+              >
+                ✕
+              </button>
+            </div>
+
+            {/* Video Player */}
+            <div className="bg-black aspect-video">
+              <video
+                src={selectedVideo.video}
+                controls
+                autoPlay
+                className="w-full h-full"
+              />
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
