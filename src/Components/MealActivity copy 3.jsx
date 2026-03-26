@@ -89,6 +89,8 @@ const MealActivity = () => {
     };
   });
 
+  console.log(mealPlans, "mealplans");
+
   /* ========================= STATES ========================= */
   const [activeIndex, setActiveIndex] = useState(0);
   const activePlan = mealPlans[activeIndex];
@@ -194,6 +196,8 @@ const MealActivity = () => {
   );
 
   const mealKeys = Object.keys(activePlan?.meals || {});
+
+  console.log("meal keys", mealKeys);
 
   return (
     <div className="flex flex-col gap-4">
@@ -376,7 +380,7 @@ const MealActivity = () => {
         />
       )}
 
-      {/* {daywiseSelect === "day-wise" && (
+      {daywiseSelect === "day-wise" && (
         <div className="overflow-x-auto bg-white shadow rounded">
           <table className="min-w-full">
             <thead className="bg-orange-500 text-white">
@@ -439,7 +443,7 @@ const MealActivity = () => {
             </tbody>
           </table>
         </div>
-      )} */}
+      )}
     </div>
   );
 };

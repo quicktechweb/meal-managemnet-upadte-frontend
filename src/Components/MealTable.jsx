@@ -24,15 +24,13 @@ const MealScheduleTable = ({
   const [selectedMeal, setSelectedMeal] = useState("");
   const [selectedOptions, setSelectedOptions] = useState([]);
 
-  console.log(selectedOptions);
+  
 
   const [startTime, setStartTime] = useState("");
   const [endTime, setEndTime] = useState("");
   const [newMealInput, setNewMealInput] = useState("");
 
   const [selectedItem, setSelectedItem] = useState(null);
-
-  console.log(items);
 
   const itemOptions = items?.map((item) => ({
     value: item,
@@ -138,6 +136,9 @@ const MealScheduleTable = ({
     const selectedItemsList = selectedOptions.map((opt) => ({
       title: opt.label,
       price: +opt.price + +totalPrice,
+      image: opt.image,
+      video: opt.video,
+      ingridents: opt.ingridents,
     }));
 
     // Add to scheduleList

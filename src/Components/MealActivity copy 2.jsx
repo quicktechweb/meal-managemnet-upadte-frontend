@@ -47,7 +47,7 @@ const getMealTypeGradient = (type) => {
     case "dinner":
       return "bg-gradient-to-r from-indigo-500 to-purple-600";
     default:
-      return "bg-gradient-to-r from-blue-400 to-orange-500";
+      return "";
   }
 };
 
@@ -56,8 +56,6 @@ const MealActivity = () => {
   const { data } = useInstituteUserAdminData(user?.user?.institute_id);
 
   const routine = data?.routine;
-
-  console.log(routine);
 
   /* =========================
      Meal Plan
@@ -79,7 +77,7 @@ const MealActivity = () => {
         price:
           meal.items?.reduce((sum, item) => sum + Number(item.price || 0), 0) ||
           0,
-        options: meal.items?.map((item) => item) || ["No meal available"],
+        options: meal.items?.map((i) => i.title) || ["No meal available"],
       };
     });
 
@@ -115,9 +113,11 @@ const MealActivity = () => {
       setter((prev) => {
         if (!prev[activeDate]) {
           const obj = {};
-          Object.keys(activePlan.meals || {}).forEach((mealKey) => {
-            obj[mealKey] = "";
-          });
+          Object.entries(activePlan.meals || {}).forEach(
+            ([mealKey, mealData]) => {
+              obj[mealKey] = mealData.options?.[0];
+            },
+          );
           return { ...prev, [activeDate]: obj };
         }
         return prev;
@@ -292,7 +292,7 @@ const MealActivity = () => {
                       data={mealData}
                       selected={selectedMeals[activeDate]?.includes(mealKey)}
                       onToggle={() => toggleMeal(mealKey)}
-                      selectedOption={selectedOptions}
+                      selectedOption={selectedOptions?.[activeDate]?.[mealKey]}
                       setSelectedOption={(option) =>
                         setSelectedOptions((prev) => ({
                           ...prev,
@@ -376,7 +376,7 @@ const MealActivity = () => {
         />
       )}
 
-      {/* {daywiseSelect === "day-wise" && (
+      {daywiseSelect === "day-wise" && (
         <div className="overflow-x-auto bg-white shadow rounded">
           <table className="min-w-full">
             <thead className="bg-orange-500 text-white">
@@ -439,7 +439,7 @@ const MealActivity = () => {
             </tbody>
           </table>
         </div>
-      )} */}
+      )}
     </div>
   );
 };
