@@ -129,22 +129,48 @@ const MealActivity = () => {
   const [guestSelectedMealKeys, setGuestSelectedMealKeys] = useState({});
   /* ========================= HANDLERS ========================= */
   const handleMealSelect = (mealKey, items) => {
-    dispatch(
-      setMeal({
-        date: activeDate,
-        mealKey,
-        items,
-      }),
-    );
+    dispatch(setMeal({ date: activeDate, mealKey, items }));
+
+    if (items.length === 0) {
+      setSelectedMealKeys((prev) => {
+        const updated = {
+          ...prev,
+          [activeDate]: {
+            ...prev[activeDate],
+            [mealKey]: false,
+          },
+        };
+
+        const anySelected = Object.values(updated[activeDate] || {}).some(
+          Boolean,
+        );
+        setShowUserSubmit(anySelected);
+
+        return updated;
+      });
+    }
   };
   const handleGuestMealSelect = (mealKey, items) => {
-    dispatch(
-      setGuestMeal({
-        date: activeDate,
-        mealKey,
-        items,
-      }),
-    );
+    dispatch(setGuestMeal({ date: activeDate, mealKey, items }));
+
+    if (items.length === 0) {
+      setGuestSelectedMealKeys((prev) => {
+        const updated = {
+          ...prev,
+          [activeDate]: {
+            ...prev[activeDate],
+            [mealKey]: false,
+          },
+        };
+
+        const anySelected = Object.values(updated[activeDate] || {}).some(
+          Boolean,
+        );
+        setShowGuestSubmit(anySelected);
+
+        return updated;
+      });
+    }
   };
 
   const setGuestMealQty = (mealKey, qty) => {
@@ -159,8 +185,6 @@ const MealActivity = () => {
 
   // toggle user meal
   const toggleUserMeal = (mealKey) => {
-    setShowUserSubmit(true);
-
     setSelectedMealKeys((prev) => {
       const isSelected = prev?.[activeDate]?.[mealKey];
 
@@ -168,13 +192,20 @@ const MealActivity = () => {
         dispatch(setMeal({ date: activeDate, mealKey, items: [] }));
       }
 
-      return {
+      const updated = {
         ...prev,
         [activeDate]: {
           ...prev[activeDate],
           [mealKey]: !isSelected,
         },
       };
+
+      const anySelected = Object.values(updated[activeDate] || {}).some(
+        Boolean,
+      );
+      setShowUserSubmit(anySelected);
+
+      return updated;
     });
   };
 
@@ -200,48 +231,71 @@ const MealActivity = () => {
 
   /* ========================= SUBMIT ========================= */
   const handleSubmitMeals = async () => {
-    const meals = selectedMeals[activeDate] || {};
+    const payload = [];
+    Object.entries(selectedMeals).forEach(([date, meals]) => {
+      Object.entries(meals)
+        .filter(([, items]) => items.length > 0)
+        .forEach(([mealKey, items]) => {
+          const dayTotal = items.reduce(
+            (sum, item) => sum + (item.price || 0),
+            0,
+          );
 
-    const payload = Object.entries(meals).map(([mealKey, items]) => ({
-      date: activeDate.split(" ")[0],
-      day: activeDate.split("(")[1]?.replace(")", ""),
-      institute_id: user?.user?.institute_id,
-      total_amount: total,
-      meal_type: mealKey,
-      status: "active",
-      user_id: user?.user?._id,
-      items: items.map((item) => ({
-        item_name: item.label,
-        price: item.price,
-      })),
-    }));
+          payload.push({
+            date: date.split(" ")[0],
+            day: date.split("(")[1]?.replace(")", ""),
+            institute_id: user?.user?.institute_id,
+            total_amount: dayTotal,
+            meal_type: mealKey,
+            status: "active",
+            user_id: user?.user?._id,
+            items: items.map((item) => ({
+              item_name: item.label,
+              price: item.price,
+            })),
+          });
+        });
+    });
 
-    console.log(payload, "payload");
+    if (!payload.length) {
+      toast.error("Please select at least one meal.");
+      return;
+    }
 
     await mutateAsync(payload);
   };
 
   const handleGuestMeals = async () => {
-    const meals = guestSelectedMeals[activeDate] || {};
-    const qtys = guestMeals[activeDate] || {};
+    const payload = [];
 
-    const payload = Object.entries(meals)
-      .filter(([, items]) => items.length > 0)
-      .map(([mealKey, items]) => ({
-        date: activeDate.split(" ")[0],
-        day: activeDate.split("(")[1]?.replace(")", ""),
-        institute_id: user?.user?.institute_id,
-        total_amount: guestTotal,
-        meal_type: mealKey,
-        status: "active",
-        user_id: user?.user?._id,
-        is_guest: true,
-        guest_qty: qtys[mealKey] ?? 1,
-        items: items.map((item) => ({
-          item_name: item.label,
-          price: item.price,
-        })),
-      }));
+  
+    Object.entries(guestSelectedMeals).forEach(([date, meals]) => {
+      const qtys = guestMeals[date] || {};
+
+      Object.entries(meals)
+        .filter(([, items]) => items.length > 0)
+        .forEach(([mealKey, items]) => {
+          const qty = qtys[mealKey] ?? 1;
+          const dayTotal =
+            items.reduce((sum, item) => sum + (item.price || 0), 0) * qty;
+
+          payload.push({
+            date: date.split(" ")[0],
+            day: date.split("(")[1]?.replace(")", ""),
+            institute_id: user?.user?.institute_id,
+            total_amount: dayTotal,
+            meal_type: mealKey,
+            status: "active",
+            user_id: user?.user?._id,
+            is_guest: true,
+            guest_qty: qty,
+            items: items.map((item) => ({
+              item_name: item.label,
+              price: item.price,
+            })),
+          });
+        });
+    });
 
     if (!payload.length) {
       toast.error("Please select at least one guest meal.");
@@ -281,27 +335,41 @@ const MealActivity = () => {
         <div className="max-w-7xl flex flex-col xl:flex-row gap-y-4 xl:gap-3">
           {/* SIDEBAR */}
           <aside className="bg-white p-3 rounded-xl shadow w-[260px]">
-            <h2 className="flex items-center justify-center gap-3 font-bold">
+            <h2 className="flex items-center mb-2 justify-center gap-3 font-bold">
               <input type="date" ref={dateRef} className="absolute opacity-0" />
               <button onClick={() => dateRef.current?.showPicker()}>
                 <FaCalendarAlt />
               </button>
               Meal Calendar
             </h2>
+            {mealPlans.map((plan, index) => {
+              const hasUserMeal = Object.values(
+                selectedMeals?.[plan.date] || {},
+              ).some((items) => items.length > 0);
+              const hasGuestMeal = Object.values(
+                guestSelectedMeals?.[plan.date] || {},
+              ).some((items) => items.length > 0);
 
-            {mealPlans.map((plan, index) => (
-              <button
-                key={index}
-                onClick={() => setActiveIndex(index)}
-                className={`block w-full p-2 rounded mb-2 ${
-                  activeIndex === index
-                    ? "bg-orange-500 text-white"
-                    : "bg-gray-100"
-                }`}
-              >
-                {plan.date}
-              </button>
-            ))}
+              return (
+                <button
+                  key={index}
+                  onClick={() => setActiveIndex(index)}
+                  className={`block w-full p-2 rounded mb-2 relative ${
+                    activeIndex === index
+                      ? "bg-orange-500 text-white"
+                      : hasUserMeal && hasGuestMeal
+                        ? "bg-purple-100 text-purple-700"
+                        : hasUserMeal
+                          ? "bg-green-100 text-green-700"
+                          : hasGuestMeal
+                            ? "bg-blue-100 text-blue-700"
+                            : "bg-gray-100"
+                  }`}
+                >
+                  {plan.date}
+                </button>
+              );
+            })}
           </aside>
 
           {/* new code  */}
@@ -338,7 +406,7 @@ const MealActivity = () => {
                       {Object.entries(activePlan?.meals || {}).map(
                         ([mealKey, mealData]) => (
                           <MealCard
-                            key={mealKey}
+                            key={`${activeDate}-${mealKey}`}
                             title={mealData.type}
                             icon={getMealIcon(mealData.type)}
                             gradient={getMealTypeGradient(mealData.type)}
@@ -349,6 +417,9 @@ const MealActivity = () => {
                             onSelectClick={() => toggleUserMeal(mealKey)}
                             isSelected={
                               selectedMealKeys?.[activeDate]?.[mealKey]
+                            }
+                            selectedValues={
+                              selectedMeals?.[activeDate]?.[mealKey] || []
                             }
                           />
                         ),
@@ -394,7 +465,7 @@ const MealActivity = () => {
                       {Object.entries(activePlan?.meals || {}).map(
                         ([mealKey, mealData]) => (
                           <MealCard
-                            key={mealKey}
+                            key={`guest-${activeDate}-${mealKey}`}
                             title={mealData.type}
                             icon={getMealIcon(mealData.type)}
                             gradient={getMealTypeGradient(mealData.type)}
@@ -407,6 +478,9 @@ const MealActivity = () => {
                             onSelectClick={() => toggleGuestMeal(mealKey)}
                             isSelected={
                               guestSelectedMealKeys?.[activeDate]?.[mealKey]
+                            }
+                            selectedValues={
+                              guestSelectedMeals?.[activeDate]?.[mealKey] || []
                             }
                           />
                         ),

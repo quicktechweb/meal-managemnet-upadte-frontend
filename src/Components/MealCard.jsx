@@ -13,9 +13,9 @@ const MealCard = ({
   onChangeSelected,
   onSelectClick,
   isSelected,
+  selectedValues = [],
 }) => {
   const [selectedItem, setSelectedItem] = useState(null);
-  const [selectedOptions, setSelectedOptions] = useState([]);
 
   /* ================= OPTIONS ================= */
   const itemOptions = data?.options?.map((item) => ({
@@ -27,9 +27,17 @@ const MealCard = ({
     video: item?.video,
   }));
 
+  const selectedOptions = selectedValues.map((item) => ({
+    value: item.value,
+    label: item.label,
+    price: item.price,
+    image: item.image,
+    ingridents: item.ingridents,
+    video: item.video,
+  }));
   /* ================= SELECT HANDLER ================= */
   const handleChange = (selected) => {
-    setSelectedOptions(selected);
+    // setSelectedOptions(selected);
     onChangeSelected && onChangeSelected(selected);
   };
 
@@ -110,6 +118,7 @@ const MealCard = ({
           isMulti
           options={itemOptions}
           value={selectedOptions}
+          getOptionValue={(opt) => opt.label}
           onChange={handleChange}
           components={{
             Option: CustomOption,
