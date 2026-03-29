@@ -7,6 +7,7 @@ import {
   instituteUserMealTypeFunction,
   updateInstituteProfileInfoFunction,
 } from "./user.api";
+import toast from "react-hot-toast";
 
 export const useApprovedInstituteUser = () => {
   return useQuery({

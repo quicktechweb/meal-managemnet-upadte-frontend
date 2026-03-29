@@ -1,10 +1,26 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef } from "react";
 import { FaSun, FaUtensils, FaMoon, FaCalendarAlt } from "react-icons/fa";
 
 import MealCard from "./MealCard";
 import AllMealActivity from "../Pages/FrontEnd/Dashboard/UserDashboard/MealManagementPart/AllMealActivity";
 import useInstituteAuth from "../Hooks/useInstituteAuth";
-import { useInstituteUserAdminData } from "../api/cms/user.hook";
+import {
+  useInstituteUserAdminData,
+  useInstituteUserCreateMeal,
+} from "../api/cms/user.hook";
+
+import { useDispatch, useSelector } from "react-redux";
+import {
+  setMeal,
+  setGuestQty,
+  selectTotal,
+  selectGuestTotal,
+  clearMeals,
+  setGuestMeal,
+} from "../feature/mealSlice";
+
+import axios from "axios";
+import toast from "react-hot-toast";
 
 /* ========================= */
 const getNext7Days = () => {
@@ -53,15 +69,13 @@ const getMealTypeGradient = (type) => {
 
 const MealActivity = () => {
   const { user } = useInstituteAuth();
+
   const { data } = useInstituteUserAdminData(user?.user?.institute_id);
+
+  const { mutateAsync, isPending } = useInstituteUserCreateMeal();
 
   const routine = data?.routine;
 
-  console.log(routine);
-
-  /* =========================
-     Meal Plan
-  ========================= */
   const mealPlans = getNext7Days().map((dayObj) => {
     const dateObj = new Date(dayObj.date);
     const dayName = weekDays[dateObj.getDay()];
@@ -76,10 +90,7 @@ const MealActivity = () => {
 
       mealsObj[key] = {
         type: meal.meal_type,
-        price:
-          meal.items?.reduce((sum, item) => sum + Number(item.price || 0), 0) ||
-          0,
-        options: meal.items?.map((item) => item) || ["No meal available"],
+        options: meal.items || [],
       };
     });
 
@@ -91,109 +102,122 @@ const MealActivity = () => {
 
   /* ========================= STATES ========================= */
   const [activeIndex, setActiveIndex] = useState(0);
+  const [daywiseSelect, setDaywiseSelect] = useState("day-wise");
+
   const activePlan = mealPlans[activeIndex];
   const activeDate = activePlan?.date;
 
-  const [daywiseSelect, setDaywiseSelect] = useState("day-wise");
-
-  const [selectedMeals, setSelectedMeals] = useState({});
-  const [selectedOptions, setSelectedOptions] = useState({});
-
-  const [guestMeals, setGuestMeals] = useState({});
-  const [guestSelectedOptions, setGuestSelectedOptions] = useState({});
-
-  const [weeklyMealStatus, setWeeklyMealStatus] = useState(getNext7Days());
-  const [globalMealStatus, setGlobalMealStatus] = useState({});
-
   const dateRef = useRef(null);
 
-  /* ========================= DEFAULT OPTIONS ========================= */
-  useEffect(() => {
-    if (!activePlan) return;
+  const dispatch = useDispatch();
 
-    const init = (setter) => {
-      setter((prev) => {
-        if (!prev[activeDate]) {
-          const obj = {};
-          Object.keys(activePlan.meals || {}).forEach((mealKey) => {
-            obj[mealKey] = "";
-          });
-          return { ...prev, [activeDate]: obj };
-        }
-        return prev;
-      });
-    };
+  const selectedMeals = useSelector((state) => state.meal.selectedMeals);
+  const guestMeals = useSelector((state) => state.meal.guestMeals);
 
-    init(setSelectedOptions);
-    init(setGuestSelectedOptions);
-  }, [activeDate, activePlan]);
+  const total = useSelector((state) => selectTotal(state, activeDate));
+  const guestTotal = useSelector((state) =>
+    selectGuestTotal(state, activeDate),
+  );
 
+  const [showUserSubmit, setShowUserSubmit] = useState(false);
+  const [showGuestSubmit, setShowGuestSubmit] = useState(false);
+  const [selectedMealKeys, setSelectedMealKeys] = useState({});
+  const [guestSelectedMealKeys, setGuestSelectedMealKeys] = useState({});
   /* ========================= HANDLERS ========================= */
-  const toggleMeal = (mealKey) => {
-    setSelectedMeals((prev) => {
-      const mealsForDate = prev[activeDate] || [];
+  const handleMealSelect = (mealKey, items) => {
+    dispatch(
+      setMeal({
+        date: activeDate,
+        mealKey,
+        items,
+      }),
+    );
+  };
+  const handleGuestMealSelect = (mealKey, items) => {
+    dispatch(
+      setGuestMeal({
+        date: activeDate,
+        mealKey,
+        items,
+      }),
+    );
+  };
+
+  const setGuestMealQty = (mealKey, qty) => {
+    dispatch(
+      setGuestQty({
+        date: activeDate,
+        mealKey,
+        qty,
+      }),
+    );
+  };
+
+  // toggle user meal
+  const toggleUserMeal = (mealKey) => {
+    setShowUserSubmit(true);
+
+    setSelectedMealKeys((prev) => {
+      const isSelected = prev?.[activeDate]?.[mealKey];
+
+      if (isSelected) {
+        dispatch(setMeal({ date: activeDate, mealKey, items: [] }));
+      }
+
       return {
         ...prev,
-        [activeDate]: mealsForDate.includes(mealKey)
-          ? mealsForDate.filter((m) => m !== mealKey)
-          : [...mealsForDate, mealKey],
+        [activeDate]: {
+          ...prev[activeDate],
+          [mealKey]: !isSelected,
+        },
       };
     });
   };
 
   const toggleGuestMeal = (mealKey) => {
-    setGuestMeals((prev) => {
-      const dayMeals = prev[activeDate] || {};
+    setShowGuestSubmit(true);
 
-      if (dayMeals[mealKey]) {
-        const updated = { ...dayMeals };
-        delete updated[mealKey];
-        return { ...prev, [activeDate]: updated };
+    setGuestSelectedMealKeys((prev) => {
+      const isSelected = prev?.[activeDate]?.[mealKey];
+
+      if (isSelected) {
+        dispatch(setGuestMeal({ date: activeDate, mealKey, items: [] }));
       }
 
       return {
         ...prev,
-        [activeDate]: { ...dayMeals, [mealKey]: 1 },
+        [activeDate]: {
+          ...prev[activeDate],
+          [mealKey]: !isSelected,
+        },
       };
     });
   };
 
-  const setGuestMealQty = (mealKey, qty) => {
-    setGuestMeals((prev) => {
-      const dayMeals = prev[activeDate] || {};
-      return {
-        ...prev,
-        [activeDate]: { ...dayMeals, [mealKey]: qty },
-      };
-    });
+  /* ========================= SUBMIT ========================= */
+  const handleSubmitMeals = async () => {
+    const meals = selectedMeals[activeDate] || {};
+
+    const payload = Object.entries(meals).map(([mealKey, items]) => ({
+      date: activeDate.split(" ")[0],
+      day: activeDate.split("(")[1]?.replace(")", ""),
+      institute_id: user?.user?.institute_id,
+      total_amount: total,
+      meal_type: mealKey,
+      status: "active",
+      user_id: user?.user?._id,
+      items: items.map((item) => ({
+        item_name: item.label,
+        price: item.price,
+      })),
+    }));
+
+    console.log(payload, "payload");
+
+    await mutateAsync(payload );
   };
 
-  /* ========================= TOTAL ========================= */
-  const totalAmount = Object.entries(selectedMeals).reduce(
-    (sum, [date, meals]) => {
-      const plan = mealPlans.find((p) => p.date === date);
-      return (
-        sum + meals.reduce((s, m) => s + (plan?.meals?.[m]?.price || 0), 0)
-      );
-    },
-    0,
-  );
-
-  const guestTotalAmount = Object.entries(guestMeals).reduce(
-    (sum, [date, meals]) => {
-      const plan = mealPlans.find((p) => p.date === date);
-      return (
-        sum +
-        Object.entries(meals).reduce(
-          (s, [mealKey, qty]) => s + (plan?.meals?.[mealKey]?.price || 0) * qty,
-          0,
-        )
-      );
-    },
-    0,
-  );
-
-  const mealKeys = Object.keys(activePlan?.meals || {});
+  const handleGuestMeals = async () => {};
 
   return (
     <div className="flex flex-col gap-4">
@@ -204,7 +228,7 @@ const MealActivity = () => {
           className={`px-4 py-2 font-semibold rounded ${
             daywiseSelect === "day-wise"
               ? "bg-orange-500 text-white"
-              : "bg-gray-200 cursor-pointer"
+              : "bg-gray-200"
           }`}
         >
           Day Wise
@@ -214,29 +238,21 @@ const MealActivity = () => {
           className={`px-4 py-2 font-semibold rounded ${
             daywiseSelect === "show-all"
               ? "bg-orange-500 text-white"
-              : "bg-gray-200 cursor-pointer"
+              : "bg-gray-200"
           }`}
         >
           All
         </button>
       </div>
 
-      {/* ================= DAY WISE ================= */}
       {daywiseSelect === "day-wise" && (
         <div className="max-w-7xl flex flex-col xl:flex-row gap-y-4 xl:gap-3">
           {/* SIDEBAR */}
           <aside className="bg-white p-3 rounded-xl shadow w-[260px]">
-            <h2 className="flex items-center justify-center gap-3 font-bold text-gray-800 ">
-              <input
-                type="date"
-                ref={dateRef}
-                className="absolute opacity-0 pointer-events-none"
-              />
-              <button
-                onClick={() => dateRef.current?.showPicker()}
-                className="p-2 rounded-md hover:bg-gray-100 transition"
-              >
-                <FaCalendarAlt className="text-orange-500" />
+            <h2 className="flex items-center justify-center gap-3 font-bold">
+              <input type="date" ref={dateRef} className="absolute opacity-0" />
+              <button onClick={() => dateRef.current?.showPicker()}>
+                <FaCalendarAlt />
               </button>
               Meal Calendar
             </h2>
@@ -245,7 +261,7 @@ const MealActivity = () => {
               <button
                 key={index}
                 onClick={() => setActiveIndex(index)}
-                className={`block w-full text-left p-2 rounded mb-2 ${
+                className={`block w-full p-2 rounded mb-2 ${
                   activeIndex === index
                     ? "bg-orange-500 text-white"
                     : "bg-gray-100"
@@ -256,127 +272,140 @@ const MealActivity = () => {
             ))}
           </aside>
 
+          {/* new code  */}
+
           <div className="flex flex-col gap-4">
-            <div>
-              {/* USER */}
-              <div className="bg-white/90 backdrop-blur-xl rounded-3xl shadow-lg p-6 flex justify-between items-start sm:items-center flex-wrap">
-                <div className="flex flex-col">
-                  <h1 className="text-xl xl:text-3xl font-extrabold text-gray-800">
-                    Choose Your Meals
-                  </h1>
-                  <p className="text-sm text-gray-500 mt-1">
-                    Select your preferred meals for the selected date(s)
-                  </p>
-                </div>
-                <div className="flex flex-col items-end mt-4 sm:mt-0">
-                  <div className="flex items-center gap-4">
-                    <span className="text-sm bg-orange-100 text-orange-700 px-3 py-1 rounded-full font-medium">
-                      {activeDate}
-                    </span>
-                    <span className="text-md text-gray-500">Total:</span>
-                    <span className="text-2xl font-bold text-green-600 -ms-2">
-                      ৳{totalAmount}
-                    </span>
+            {daywiseSelect === "day-wise" && (
+              <div className="flex flex-col xl:flex-row gap-4">
+                <div className="flex flex-col gap-4 w-full">
+                  {/* USER */}
+
+                  <div>
+                    <div className="bg-white/90 backdrop-blur-xl rounded-3xl shadow-lg p-6 flex justify-between items-start sm:items-center flex-wrap mb-5">
+                      <div className="flex flex-col">
+                        <h1 className="text-xl xl:text-3xl font-extrabold text-gray-800">
+                          Choose Your Meals
+                        </h1>
+                        <p className="text-sm text-gray-500 mt-1">
+                          Select your preferred meals for the selected date(s)
+                        </p>
+                      </div>
+                      <div className="flex flex-col items-end mt-4 sm:mt-0">
+                        <div className="flex items-center gap-4">
+                          <span className="text-sm bg-orange-100 text-orange-700 px-3 py-1 rounded-full font-medium">
+                            {activeDate}
+                          </span>
+                          <span className="text-md text-gray-500">Total:</span>
+                          <span className="text-2xl font-bold text-green-600 -ms-2">
+                            ৳{total}
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                    <div className="flex flex-wrap gap-4">
+                      {Object.entries(activePlan?.meals || {}).map(
+                        ([mealKey, mealData]) => (
+                          <MealCard
+                            key={mealKey}
+                            title={mealData.type}
+                            icon={getMealIcon(mealData.type)}
+                            gradient={getMealTypeGradient(mealData.type)}
+                            data={mealData}
+                            onChangeSelected={(items) =>
+                              handleMealSelect(mealKey, items)
+                            }
+                            onSelectClick={() => toggleUserMeal(mealKey)}
+                            isSelected={
+                              selectedMealKeys?.[activeDate]?.[mealKey]
+                            }
+                          />
+                        ),
+                      )}
+                    </div>
+
+                    {showUserSubmit && (
+                      <div className="flex items-center justify-center mt-4 ">
+                        <button
+                          onClick={handleSubmitMeals}
+                          className="px-6 py-3 bg-green-600 text-white rounded-xl cursor-pointer"
+                        >
+                          Submit Meal
+                        </button>
+                      </div>
+                    )}
+                  </div>
+
+                  {/* GUEST */}
+                  <div>
+                    <div className="bg-white/90 backdrop-blur-xl rounded-3xl shadow-lg p-6 flex justify-between items-start sm:items-center flex-wrap mb-5">
+                      <div className="flex flex-col">
+                        <h1 className="text-xl xl:text-3xl font-extrabold text-gray-800">
+                          Choose Your Meals for Guest
+                        </h1>
+                        <p className="text-sm text-gray-500 mt-1">
+                          Select meals and quantity for your guests
+                        </p>
+                      </div>
+                      <div className="flex flex-col items-end mt-4 sm:mt-0">
+                        <div className="flex items-center gap-4">
+                          <span className="text-sm bg-orange-100 text-orange-700 px-3 py-1 rounded-full font-medium">
+                            {activeDate}
+                          </span>
+                          <span className="text-md text-gray-500">Total:</span>
+                          <span className="text-2xl font-bold text-green-600 -ms-2">
+                            ৳{guestTotal}
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                    <div className="flex flex-wrap gap-4">
+                      {Object.entries(activePlan?.meals || {}).map(
+                        ([mealKey, mealData]) => (
+                          <MealCard
+                            key={mealKey}
+                            title={mealData.type}
+                            icon={getMealIcon(mealData.type)}
+                            gradient={getMealTypeGradient(mealData.type)}
+                            data={mealData}
+                            quantity={1}
+                            setQuantity={(qty) => setGuestMealQty(mealKey, qty)}
+                            onChangeSelected={(items) =>
+                              handleGuestMealSelect(mealKey, items)
+                            }
+                            onSelectClick={() => toggleGuestMeal(mealKey)}
+                            isSelected={
+                              guestSelectedMealKeys?.[activeDate]?.[mealKey]
+                            }
+                          />
+                        ),
+                      )}
+                    </div>
+
+                    {showGuestSubmit && (
+                      <button
+                        onClick={handleGuestMeals}
+                        className="px-6 py-3 bg-green-600 cursor-pointer text-white rounded-xl"
+                      >
+                        Submit Meal
+                      </button>
+                    )}
                   </div>
                 </div>
               </div>
-
-              <div className="flex flex-wrap gap-4">
-                {Object.entries(activePlan?.meals || {}).map(
-                  ([mealKey, mealData]) => (
-                    <MealCard
-                      key={mealKey}
-                      title={mealData.type}
-                      icon={getMealIcon(mealData.type)}
-                      gradient={getMealTypeGradient(mealData.type)}
-                      data={mealData}
-                      selected={selectedMeals[activeDate]?.includes(mealKey)}
-                      onToggle={() => toggleMeal(mealKey)}
-                      selectedOption={selectedOptions}
-                      setSelectedOption={(option) =>
-                        setSelectedOptions((prev) => ({
-                          ...prev,
-                          [activeDate]: {
-                            ...prev[activeDate],
-                            [mealKey]: option,
-                          },
-                        }))
-                      }
-                    />
-                  ),
-                )}
-              </div>
-            </div>
-
-            <div>
-              {/* GUEST */}
-              <div className="bg-white/90 backdrop-blur-xl rounded-3xl shadow-lg p-6 flex justify-between items-start sm:items-center flex-wrap">
-                <div className="flex flex-col">
-                  <h1 className="text-xl xl:text-3xl font-extrabold text-gray-800">
-                    Choose Your Meals for Guest
-                  </h1>
-                  <p className="text-sm text-gray-500 mt-1">
-                    Select meals and quantity for your guests
-                  </p>
-                </div>
-                <div className="flex flex-col items-end mt-4 sm:mt-0">
-                  <div className="flex items-center gap-4">
-                    <span className="text-sm bg-orange-100 text-orange-700 px-3 py-1 rounded-full font-medium">
-                      {activeDate}
-                    </span>
-                    <span className="text-md text-gray-500">Total:</span>
-                    <span className="text-2xl font-bold text-green-600 -ms-2">
-                      ৳{guestTotalAmount}
-                    </span>
-                  </div>
-                </div>
-              </div>
-
-              <div className="flex flex-wrap gap-4">
-                {Object.entries(activePlan?.meals || {}).map(
-                  ([mealKey, mealData]) => (
-                    <MealCard
-                      key={mealKey}
-                      title={mealData.type}
-                      icon={getMealIcon(mealData.type)}
-                      gradient={getMealTypeGradient(mealData.type)}
-                      data={mealData}
-                      selected={!!guestMeals[activeDate]?.[mealKey]}
-                      quantity={guestMeals[activeDate]?.[mealKey] || 1}
-                      setQuantity={(qty) => setGuestMealQty(mealKey, qty)}
-                      onToggle={() => toggleGuestMeal(mealKey)}
-                      selectedOption={
-                        guestSelectedOptions?.[activeDate]?.[mealKey]
-                      }
-                      setSelectedOption={(option) =>
-                        setGuestSelectedOptions((prev) => ({
-                          ...prev,
-                          [activeDate]: {
-                            ...prev[activeDate],
-                            [mealKey]: option,
-                          },
-                        }))
-                      }
-                    />
-                  ),
-                )}
-              </div>
-            </div>
+            )}
           </div>
         </div>
       )}
 
-      {/* ================= SHOW ALL ================= */}
-      {daywiseSelect === "show-all" && (
-        <AllMealActivity
-          globalMealStatus={globalMealStatus}
-          setGlobalMealStatus={setGlobalMealStatus}
-          weeklyMealStatus={weeklyMealStatus}
-          setWeeklyMealStatus={setWeeklyMealStatus}
-        />
-      )}
+      {daywiseSelect === "show-all" && <AllMealActivity />}
+    </div>
+  );
+};
 
-      {/* {daywiseSelect === "day-wise" && (
+export default MealActivity;
+
+{
+  /* {daywiseSelect === "day-wise" && (
         <div className="overflow-x-auto bg-white shadow rounded">
           <table className="min-w-full">
             <thead className="bg-orange-500 text-white">
@@ -439,9 +468,5 @@ const MealActivity = () => {
             </tbody>
           </table>
         </div>
-      )} */}
-    </div>
-  );
-};
-
-export default MealActivity;
+      )} */
+}

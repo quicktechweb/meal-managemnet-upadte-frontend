@@ -13,6 +13,8 @@ const MealAdminScheduleTable = () => {
 
   const { user } = useInstituteAuth();
 
+  console.log(user?.user?.services?.total_amount);
+
   console.log(user);
 
   const { data: items = [] } = useGetItems();
@@ -38,6 +40,8 @@ const MealAdminScheduleTable = () => {
   const [startTime, setStartTime] = useState("");
   const [endTime, setEndTime] = useState("");
   const [newMealInput, setNewMealInput] = useState("");
+
+  console.log(items);
 
   const itemOptions = items?.map((item) => ({
     value: item,
@@ -120,7 +124,7 @@ const MealAdminScheduleTable = () => {
 
     const selectedItemsList = selectedOptions.map((opt) => ({
       title: opt.title,
-      price: opt.value.price + user?.user?.services?.total_amount,
+      price: opt.value.price + +user?.user?.services?.total_amount,
     }));
 
     console.log(selectedItemsList);
