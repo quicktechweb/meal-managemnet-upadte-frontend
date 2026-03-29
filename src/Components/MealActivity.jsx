@@ -119,6 +119,10 @@ const MealActivity = () => {
     selectGuestTotal(state, activeDate),
   );
 
+  const guestSelectedMeals = useSelector(
+    (state) => state.meal.guestSelectedMeals,
+  );
+
   const [showUserSubmit, setShowUserSubmit] = useState(false);
   const [showGuestSubmit, setShowGuestSubmit] = useState(false);
   const [selectedMealKeys, setSelectedMealKeys] = useState({});
@@ -214,10 +218,38 @@ const MealActivity = () => {
 
     console.log(payload, "payload");
 
-    await mutateAsync(payload );
+    await mutateAsync(payload);
   };
 
-  const handleGuestMeals = async () => {};
+  const handleGuestMeals = async () => {
+    const meals = guestSelectedMeals[activeDate] || {};
+    const qtys = guestMeals[activeDate] || {};
+
+    const payload = Object.entries(meals)
+      .filter(([, items]) => items.length > 0)
+      .map(([mealKey, items]) => ({
+        date: activeDate.split(" ")[0],
+        day: activeDate.split("(")[1]?.replace(")", ""),
+        institute_id: user?.user?.institute_id,
+        total_amount: guestTotal,
+        meal_type: mealKey,
+        status: "active",
+        user_id: user?.user?._id,
+        is_guest: true,
+        guest_qty: qtys[mealKey] ?? 1,
+        items: items.map((item) => ({
+          item_name: item.label,
+          price: item.price,
+        })),
+      }));
+
+    if (!payload.length) {
+      toast.error("Please select at least one guest meal.");
+      return;
+    }
+
+    await mutateAsync(payload);
+  };
 
   return (
     <div className="flex flex-col gap-4">
@@ -367,7 +399,7 @@ const MealActivity = () => {
                             icon={getMealIcon(mealData.type)}
                             gradient={getMealTypeGradient(mealData.type)}
                             data={mealData}
-                            quantity={1}
+                            quantity={guestMeals?.[activeDate]?.[mealKey] ?? 1}
                             setQuantity={(qty) => setGuestMealQty(mealKey, qty)}
                             onChangeSelected={(items) =>
                               handleGuestMealSelect(mealKey, items)

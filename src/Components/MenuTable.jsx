@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import { ChevronDown, ChevronUp } from "lucide-react";
-
 import {
   createColumnHelper,
   flexRender,
@@ -15,28 +14,43 @@ const columnHelper = createColumnHelper();
 const MenuTable = () => {
   const [isExpanded, setIsExpanded] = useState(true);
   const { user, loading } = useInstituteAuth();
-
   const { data } = useInstituteUserAdminData(user?.user?.institute_id);
 
   const routine = data?.routine;
 
-  const mealTypes = React.useMemo(() => {
-    return (
+  const { mealTypes, groupedSchedule } = React.useMemo(() => {
+    const types =
       routine?.meal_type_lists?.map((m) => ({
         type: m.meal_type,
         start: m.start_time,
         end: m.end_time,
-      })) || []
-    );
+      })) || [];
+
+    const days = [...new Set(routine?.schedule_lists?.map((s) => s.day) || [])];
+
+    const schedule = days.map((day) => {
+      const meals = routine?.schedule_lists?.filter((s) => s.day === day) || [];
+      const row = { day };
+      types.forEach((meal) => {
+        const found = meals.find((m) => m.meal_type === meal.type);
+        row[meal.type] = found?.items?.map((i) => i.title).join(", ") || "-";
+      });
+      return row;
+    });
+
+    return { mealTypes: types, groupedSchedule: schedule };
   }, [routine]);
 
   const columns = React.useMemo(() => {
     return [
-      columnHelper.accessor("day", { header: "Day" }),
-
+      columnHelper.accessor("day", {
+        header: "Day",
+        headerText: "Day",
+      }),
       ...mealTypes.map((meal, index) =>
         columnHelper.accessor(meal.type, {
           id: `${meal.type}-${index}`,
+          headerText: `${meal.type} (${meal.start} - ${meal.end})`,
           header: () => (
             <div>
               <div>{meal.type}</div>
@@ -51,44 +65,6 @@ const MenuTable = () => {
     ];
   }, [mealTypes]);
 
-  // const groupedSchedule = React.useMemo(() => {
-  //   if (!routine) return [];
-
-  //   const days = [...new Set(routine?.schedule_lists?.map((s) => s.day))];
-
-  //   return days.map((day) => {
-  //     const meals = routine?.schedule_lists?.filter((s) => s.day === day);
-
-  //     const row = { day };
-
-  //     mealTypes.forEach((type) => {
-  //       const meal = meals.find((m) => m.meal_type === type);
-  //       row[type] = meal?.items?.map((i) => i.title).join(", ") || "-";
-  //     });
-
-  //     return row;
-  //   });
-  // }, [routine, mealTypes]);
-
-  const groupedSchedule = React.useMemo(() => {
-    if (!routine) return [];
-
-    const days = [...new Set(routine?.schedule_lists?.map((s) => s.day))];
-
-    return days.map((day) => {
-      const meals = routine?.schedule_lists?.filter((s) => s.day === day);
-
-      const row = { day };
-
-      mealTypes.forEach((meal) => {
-        const found = meals.find((m) => m.meal_type === meal.type);
-
-        row[meal.type] = found?.items?.map((i) => i.title).join(", ") || "-";
-      });
-
-      return row;
-    });
-  }, [routine, mealTypes]);
   const table = useReactTable({
     data: groupedSchedule,
     columns,
@@ -119,7 +95,6 @@ const MenuTable = () => {
         >
           <div className="overflow-x-auto">
             <table className="min-w-full text-sm sm:text-base">
-              {/* Desktop Header */}
               <thead className="bg-orange-500 hidden md:table-header-group">
                 {table.getHeaderGroups().map((headerGroup) => (
                   <tr key={headerGroup.id}>
@@ -138,24 +113,22 @@ const MenuTable = () => {
                 ))}
               </thead>
 
-              {/* Body */}
               <tbody className="divide-y divide-gray-200">
                 {table.getRowModel().rows.map((row) => (
                   <tr
                     key={row.id}
-                    className="hover:bg-gray-50 flex flex-col md:table-row mb-4 md:mb-0 border md:border-none rounded-lg md:rounded-none"
+                    className="hover:bg-gray-50 flex flex-col md:table-row mb-4 md:mb-0 border border-gray-200 md:border-none rounded-lg md:rounded-none"
                   >
                     {row.getVisibleCells().map((cell) => (
                       <td
                         key={cell.id}
                         className="px-4 py-2 md:py-3 border-black md:border-b flex justify-between md:table-cell"
                       >
-                        {/* Mobile Header */}
                         <span className="font-bold text-orange-600 md:hidden mr-4">
-                          {cell.column.columnDef.header?.toString()}:
+                          {cell.column.columnDef.headerText ??
+                            cell.column.columnDef.header?.toString()}
+                          :
                         </span>
-
-                        {/* Cell Data */}
                         <span className="text-right md:text-left">
                           {flexRender(
                             cell.column.columnDef.cell,
@@ -169,7 +142,6 @@ const MenuTable = () => {
               </tbody>
             </table>
 
-            {/* Empty State */}
             {table.getRowModel().rows.length === 0 && (
               <div className="p-4 text-center text-gray-500">
                 No schedule available
