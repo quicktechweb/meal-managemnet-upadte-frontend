@@ -2,6 +2,8 @@ import React, { useState } from "react";
 
 import { AllMealActivityCard } from "./AllMealActivityCard";
 import { GuestCard } from "./GuestCard";
+import useInstituteAuth from "../../../../../Hooks/useInstituteAuth";
+import { useInstituteUserAdminData } from "../../../../../api/cms/user.hook";
 
 export const schedule2 = [
   {
@@ -55,6 +57,44 @@ export const schedule2 = [
 ];
 
 export default function AllMealActivity() {
+  const { user } = useInstituteAuth();
+
+  const { data } = useInstituteUserAdminData(user?.user?.institute_id);
+
+  const routine = data?.routine;
+
+  const result = Object.values(
+    routine?.schedule_lists.reduce((acc, curr) => {
+      const key = curr.meal_type.toLowerCase();
+
+      if (!acc[key]) {
+        acc[key] = {
+          mealType: key,
+          items: [],
+        };
+      }
+
+      curr.items.forEach((item) => {
+        const exists = acc[key].items.some((i) => i.title === item.title);
+
+        if (!exists) {
+          acc[key].items.push({
+            meal_id: item._id || item.title,
+            title: item.title,
+            price: item.price,
+            image: item.image,
+            video: item.video,
+            ingridents: item.ingridents,
+          });
+        }
+      });
+
+      return acc;
+    }, {}),
+  );
+
+  console.log(result);
+
   const [selectedMeals, setSelectedMeals] = useState({
     breakfast: null,
     lunch: null,
@@ -119,11 +159,11 @@ export default function AllMealActivity() {
       </div>
       {/* Meal Cards */}
       <div className="flex flex-wrap gap-6">
-        {["breakfast", "lunch", "dinner"].map((type) => (
+        {["breakfast", "lunch"].map((type) => (
           <AllMealActivityCard
             key={type}
             title={type}
-            data={schedule2.find((m) => m.mealType === type)}
+            data={result?.find((m) => m.mealType === type)}
             selectedMeal={selectedMeals[type]}
             onSelect={(option) => handleSelect(type, option)}
             setSelectedOption={(option) =>

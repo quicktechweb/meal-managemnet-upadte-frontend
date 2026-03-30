@@ -1,6 +1,9 @@
 import { useState, useEffect } from "react";
 import { FaCheckCircle } from "react-icons/fa";
 
+import Select from "react-select";
+import { components } from "react-select";
+
 export const AllMealActivityCard = ({
   title,
   icon,
@@ -12,54 +15,68 @@ export const AllMealActivityCard = ({
   setSelectedOption,
   selectedOption,
 }) => {
-  const defaultOption = data?.items?.[0]; // first item
-  const otherOptions = data?.items?.slice(1); // rest
+  const [selectedItem, setSelectedItem] = useState(null);
+  const handleChange = (selected) => {};
 
-  const [checkedSource, setCheckedSource] = useState("default"); // "default" or "other"
-  const [selectOtherOption, setSelectOtherOption] = useState(""); // meal_id of dropdown
+  console.log(data);
 
-  // Initialize selection on load
-  useEffect(() => {
-    if (!selectedOption) {
-      setSelectedOption(defaultOption);
-      setCheckedSource("default");
-    }
-  }, [defaultOption, selectedOption, setSelectedOption]);
+  const itemOptions = data?.options?.map((item) => ({
+    value: item,
+    label: item?.title,
+    price: +item?.price,
+    image: item?.image,
+    ingridents: item?.ingridents,
+    video: item?.video,
+  }));
 
-  // Upper default click
-  const handleDefaultClick = () => {
-    setSelectedOption(defaultOption);
-    setCheckedSource("default");
-    // checkbox unchecked but dropdown value remains
+  console.log(itemOptions);
+
+  const CustomOption = (props) => {
+    const { data } = props;
+
+    return (
+      <div
+        {...props.innerProps}
+        className="flex items-center justify-between gap-3 p-2 hover:bg-gray-100"
+      >
+        <div className="flex items-center gap-3">
+          <img
+            src={data.image}
+            alt={data.label}
+            className="w-10 h-10 rounded object-cover"
+          />
+
+          <div className="flex flex-col">
+            <span className="font-semibold">{data.label}</span>
+            <span className="text-xs text-orange-600">৳{data.price}</span>
+          </div>
+        </div>
+
+        <button
+          onClick={(e) => {
+            e.stopPropagation();
+            setSelectedItem(data);
+          }}
+          className="text-xs bg-orange-500 text-white px-2 py-1 rounded"
+        >
+          Details
+        </button>
+      </div>
+    );
   };
 
-  // Dropdown change
-  const handleDropdownChange = (meal_id) => {
-    setSelectOtherOption(meal_id);
-    const option = data?.items?.find((item) => item.meal_id === meal_id);
-    if (!option) return;
-    // only move tick if checkbox is already checked
-    if (checkedSource === "other") {
-      setSelectedOption(option);
-    }
+  const CustomMultiValueLabel = (props) => {
+    const { data } = props;
+
+    return (
+      <components.MultiValueLabel {...props}>
+        <div className="flex items-center gap-1">
+          <span>{data.label}</span>
+          <span className="text-orange-600 text-xs">(৳{data.price})</span>
+        </div>
+      </components.MultiValueLabel>
+    );
   };
-
-  const handleCheckboxChange = (checked) => {
-    if (checked) {
-      setCheckedSource("other");
-
-      if (selectOtherOption) {
-        const option = data?.items?.find(
-          (item) => item.meal_id === selectOtherOption,
-        );
-        if (option) setSelectedOption(option);
-      }
-    } else {
-      setCheckedSource("default");
-      setSelectedOption(defaultOption);
-    }
-  };
-
   return (
     <div className="bg-white/90 backdrop-blur-xl rounded-2xl p-3 shadow-lg w-full md:w-[350px] lg:w-[320px] xl:w-[300px]">
       {/* HEADER */}
@@ -83,41 +100,17 @@ export const AllMealActivityCard = ({
 
       {/* OPTIONS */}
       <div className="mt-3 space-y-2">
-        {/* DEFAULT OPTION */}
-        <button
-          type="button"
-          onClick={handleDefaultClick}
-          className="w-full flex items-center gap-2 px-3 py-2 rounded-lg text-xs text-left"
-        >
-          <span className="w-4">
-            {checkedSource === "default" && (
-              <FaCheckCircle className="text-green-600 text-sm" />
-            )}
-          </span>
-          <span className="flex-1">{defaultOption?.title}</span>
-        </button>
-
-        {/* OTHER OPTIONS */}
-        <div className="flex items-center gap-2">
-          <input
-            type="checkbox"
-            checked={checkedSource === "other"}
-            onChange={(e) => handleCheckboxChange(e.target.checked)}
-          />
-
-          <select
-            value={selectOtherOption}
-            onChange={(e) => handleDropdownChange(e.target.value)}
-            className="w-full border border-gray-300 rounded-lg px-2 py-2 text-sm"
-          >
-            <option value="">Select {title}</option>
-            {otherOptions?.map((option) => (
-              <option key={option.meal_id} value={option.meal_id}>
-                {option.title}
-              </option>
-            ))}
-          </select>
-        </div>
+        <Select
+          isMulti
+          options={itemOptions}
+          value={""}
+          getOptionValue={(opt) => opt.label}
+          onChange={handleChange}
+          components={{
+            Option: CustomOption,
+            MultiValueLabel: CustomMultiValueLabel,
+          }}
+        />
 
         {/* QUANTITY */}
         {quantity !== undefined && (
