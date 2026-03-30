@@ -19,7 +19,6 @@ import {
   setGuestMeal,
 } from "../feature/mealSlice";
 
-import axios from "axios";
 import toast from "react-hot-toast";
 
 /* ========================= */
@@ -102,7 +101,7 @@ const MealActivity = () => {
 
   /* ========================= STATES ========================= */
   const [activeIndex, setActiveIndex] = useState(0);
-  const [daywiseSelect, setDaywiseSelect] = useState("day-wise");
+  const [daywiseSelect, setDaywiseSelect] = useState("show-all");
 
   const activePlan = mealPlans[activeIndex];
   const activeDate = activePlan?.date;
@@ -268,7 +267,6 @@ const MealActivity = () => {
   const handleGuestMeals = async () => {
     const payload = [];
 
-  
     Object.entries(guestSelectedMeals).forEach(([date, meals]) => {
       const qtys = guestMeals[date] || {};
 
@@ -305,6 +303,10 @@ const MealActivity = () => {
     await mutateAsync(payload);
   };
 
+  const mealKeys = [
+    ...new Set(mealPlans.flatMap((plan) => Object.keys(plan.meals || {}))),
+  ];
+
   return (
     <div className="flex flex-col gap-4">
       {/* TOGGLE */}
@@ -314,7 +316,7 @@ const MealActivity = () => {
           className={`px-4 py-2 font-semibold rounded ${
             daywiseSelect === "day-wise"
               ? "bg-orange-500 text-white"
-              : "bg-gray-200"
+              : "bg-gray-200 cursor-pointer"
           }`}
         >
           Day Wise
@@ -324,7 +326,7 @@ const MealActivity = () => {
           className={`px-4 py-2 font-semibold rounded ${
             daywiseSelect === "show-all"
               ? "bg-orange-500 text-white"
-              : "bg-gray-200"
+              : "bg-gray-200 cursor-pointer"
           }`}
         >
           All
@@ -504,19 +506,13 @@ const MealActivity = () => {
       )}
 
       {daywiseSelect === "show-all" && <AllMealActivity />}
-    </div>
-  );
-};
 
-export default MealActivity;
-
-{
-  /* {daywiseSelect === "day-wise" && (
+      {daywiseSelect === "day-wise" && (
         <div className="overflow-x-auto bg-white shadow rounded">
           <table className="min-w-full">
             <thead className="bg-orange-500 text-white">
               <tr>
-                <th className="p-2">Date</th>
+                <th className="p-2 text-left">Date</th>
                 {mealKeys.map((meal) => (
                   <th key={meal} className="p-2 capitalize">
                     {meal}
@@ -531,36 +527,53 @@ export default MealActivity;
                   <td className="p-2 font-semibold">{plan.date}</td>
 
                   {mealKeys.map((meal) => {
-                    const isUserActive =
-                      selectedMeals?.[plan.date]?.includes(meal);
+                    const userItems = selectedMeals?.[plan.date]?.[meal] || [];
+                    const guestItems =
+                      guestSelectedMeals?.[plan.date]?.[meal] || [];
+                    const guestQty = guestMeals?.[plan.date]?.[meal] ?? 1;
 
-                    const guestQty = guestMeals?.[plan.date]?.[meal];
-
-                    const isActive = isUserActive || guestQty;
-
-                    const userOption = selectedOptions?.[plan.date]?.[meal];
-
-                    const guestOption =
-                      guestSelectedOptions?.[plan.date]?.[meal];
+                    const isUserActive = userItems.length > 0;
+                    const isGuestActive = guestItems.length > 0;
+                    const isActive = isUserActive || isGuestActive;
 
                     return (
                       <td key={meal} className="p-2 text-sm">
-                        <div className="flex flex-col">
-                          <span>
-                            {isUserActive
-                              ? userOption
-                              : plan.meals?.[meal]?.options?.[0]}
-                          </span>
-
-                          {guestQty && (
-                            <span className="text-blue-600 text-xs">
-                              {guestOption} ×{guestQty} (Guest)
-                            </span>
+                        <div className="flex flex-col gap-1">
+                          {/* User items */}
+                          {isUserActive && (
+                            <div className="flex flex-wrap gap-1">
+                              {userItems.map((item, i) => (
+                                <span
+                                  key={i}
+                                  className="text-xs bg-green-50 text-green-700 px-2 py-0.5 rounded-full border border-green-200"
+                                >
+                                  {item.label} ৳{item.price}
+                                </span>
+                              ))}
+                            </div>
                           )}
 
+                          {/* Guest items */}
+                          {isGuestActive && (
+                            <div className="flex flex-wrap gap-1">
+                              {guestItems.map((item, i) => (
+                                <span
+                                  key={i}
+                                  className="text-xs bg-blue-50 text-blue-700 px-2 py-0.5 rounded-full border border-blue-200"
+                                >
+                                  {item.label} ৳{item.price} ×{guestQty}
+                                </span>
+                              ))}
+                              <span className="text-xs text-blue-500">
+                                (Guest)
+                              </span>
+                            </div>
+                          )}
+
+                          {/* Status badge */}
                           <span
-                            className={`text-xs px-2 py-1 mt-1 rounded text-white w-fit ${
-                              isActive ? "bg-green-600" : "bg-red-600"
+                            className={`text-xs px-2 py-1 rounded text-white w-fit ${
+                              isActive ? "bg-green-600" : "bg-red-400"
                             }`}
                           >
                             {isActive ? "ON" : "OFF"}
@@ -574,5 +587,9 @@ export default MealActivity;
             </tbody>
           </table>
         </div>
-      )} */
-}
+      )}
+    </div>
+  );
+};
+
+export default MealActivity;
