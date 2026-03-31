@@ -11,6 +11,7 @@ import {
   useAllKitchen,
   useAllService,
   useGetFeature,
+  useServiceType,
   useUtilitiesService,
 } from "../../api/admin/admin.api";
 import StepFour from "./StepFour";
@@ -56,12 +57,11 @@ const MessForm = () => {
   };
 
   // step 2
-  const options = [
-    { label: "User", path: true },
-    { label: "Client", path: false },
-  ];
+
+  const { data: service_type } = useServiceType();
+
   const [activeDropdown, setActiveDropdown] = useState(null);
-  const [selectedOption, setSelectedOption] = useState(options[0]);
+  const [selectedOption, setSelectedOption] = useState(service_type?.[0]);
 
   const [kitchenType, setKitchenType] = useState(null);
 
@@ -153,11 +153,6 @@ const MessForm = () => {
 
   const [mealTypeLists, setMealTypeLists] = useState([]);
   const [scheduleList, setScheduleList] = useState([]);
-
-
-
-  
-
 
   // step 4
   const [selected, setSelected] = useState([]);
@@ -441,6 +436,7 @@ const MessForm = () => {
           activeDropdown={activeDropdown}
           setActiveDropdown={setActiveDropdown}
           combineData={combineData}
+          service_type={service_type}
           // charge
           charge={charge}
           setCharge={setCharge}

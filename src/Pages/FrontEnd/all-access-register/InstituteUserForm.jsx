@@ -8,13 +8,9 @@ import {
   Lock,
   Phone,
   Home,
-  Briefcase,
-  Heart,
 } from "lucide-react";
 import { useForm } from "react-hook-form";
-import { FaRegIdCard } from "react-icons/fa";
-import { BiSolidInstitution } from "react-icons/bi";
-import { IoCloseCircle } from "react-icons/io5";
+
 
 import toast from "react-hot-toast";
 import { useRegister } from "../../../api/auth/auth.hook";
@@ -219,15 +215,17 @@ const InstituteUserForm = () => {
         validation={{ required: "Required" }}
       />
 
-      <CustomSelect
-        label="Name of Hall"
-        options={hallOptions}
-        value={hall}
-        onChange={setHall}
-        onCreate={handleCreateHall}
-        allowCreate
-        showOther
-      />
+      <div className="">
+        <CustomSelect
+          label="Name of Hall"
+          options={hallOptions}
+          value={hall}
+          onChange={setHall}
+          onCreate={handleCreateHall}
+          allowCreate
+          showOther
+        />
+      </div>
 
       <CustomSelect
         label="Name of Mess"
