@@ -6,18 +6,21 @@ const DynamicDropdown = ({ control }) => {
   const occupation = useWatch({ control, name: "occupation" });
   const institution = useWatch({ control, name: "institution" });
   const designation = useWatch({ control, name: "designation" });
+  const degree = useWatch({ control, name: "degree" });
 
   const [options, setOptions] = useState({
     occupation: ["Business", "Job", "Study"],
     institution: ["Institution", "Company"],
     designation: ["Designation", "Department"],
-    year: ["2024", "2025", "2026"],
+    degree: ["Physics", "Chemistry", "Software Engineer"],
+    year: ["Honours 1st year", "Honours 2nd year"],
   });
 
   const [isOther, setIsOther] = useState({
     occupation: false,
     institution: false,
     designation: false,
+    degree: false,
     year: false,
   });
 
@@ -35,7 +38,8 @@ const DynamicDropdown = ({ control }) => {
       category === "occupation" ||
       (category === "institution" && occupation) ||
       (category === "designation" && institution) ||
-      (category === "year" && designation);
+      (category === "degree" && designation) ||
+      (category === "year" && degree);
 
     if (!visible) return null;
 
@@ -43,7 +47,9 @@ const DynamicDropdown = ({ control }) => {
       <Controller
         name={category}
         control={control}
-        rules={{ required: `${label} is required` }}
+        rules={{
+          required: category === "year" ? false : `${label} is required`,
+        }}
         render={({ field, fieldState }) => (
           <div className="w-full">
             <CustomStepDropdown
@@ -74,11 +80,15 @@ const DynamicDropdown = ({ control }) => {
   };
 
   return (
-    <div className="flex flex-col gap-4 w-full">
-      {renderDropdown("occupation", "Select Occupation")}
-      {renderDropdown("institution", "Select Institution/Company")}
-      {renderDropdown("designation", "Select Designation/Department")}
-      {renderDropdown("year", "Select Year")}
+    <div className="flex flex-col gap-2 w-full bg-gray-200 p-2">
+      {renderDropdown("occupation", "Select or Create Occupation")}
+      {renderDropdown("institution", "Select or Create Institution/Company")}
+      {renderDropdown("designation", "Select or Create Designation/Department")}
+      {renderDropdown(
+        "degree",
+        "Select or Create Department / Designation Name  ",
+      )}
+      {renderDropdown("year", "Select or Create Department/Job Year")}
     </div>
   );
 };
@@ -135,7 +145,7 @@ const CustomStepDropdown = ({
       ) : (
         <div
           onClick={() => setIsOpen(!isOpen)}
-          className="border border-gray-200 rounded-xl px-3 py-2 flex justify-between items-center cursor-pointer bg-gray-50 text-gray-500"
+          className="border border-gray-200 rounded-xl px-3 py-2 flex justify-between items-center cursor-pointer bg-gray-50 text-gray-500 text-[13px]"
         >
           <span>{value || label}</span>
           <ChevronDown size={18} />
