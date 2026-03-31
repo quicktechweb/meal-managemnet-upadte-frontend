@@ -89,6 +89,8 @@ const MealActivity = () => {
 
       mealsObj[key] = {
         type: meal.meal_type,
+        start_time: meal.start_time,
+        end_time: meal.end_time,
         options: meal.items || [],
       };
     });
@@ -104,6 +106,7 @@ const MealActivity = () => {
   const [daywiseSelect, setDaywiseSelect] = useState("show-all");
 
   const activePlan = mealPlans[activeIndex];
+
   const activeDate = activePlan?.date;
 
   const dateRef = useRef(null);
@@ -127,8 +130,10 @@ const MealActivity = () => {
   const [selectedMealKeys, setSelectedMealKeys] = useState({});
   const [guestSelectedMealKeys, setGuestSelectedMealKeys] = useState({});
   /* ========================= HANDLERS ========================= */
-  const handleMealSelect = (mealKey, items) => {
-    dispatch(setMeal({ date: activeDate, mealKey, items }));
+  const handleMealSelect = (mealKey, items, start_time, end_time) => {
+    dispatch(
+      setMeal({ date: activeDate, mealKey, items, start_time, end_time }),
+    );
 
     if (items.length === 0) {
       setSelectedMealKeys((prev) => {
@@ -232,28 +237,29 @@ const MealActivity = () => {
   const handleSubmitMeals = async () => {
     const payload = [];
     Object.entries(selectedMeals).forEach(([date, meals]) => {
-      Object.entries(meals)
-        .filter(([, items]) => items.length > 0)
-        .forEach(([mealKey, items]) => {
-          const dayTotal = items.reduce(
-            (sum, item) => sum + (item.price || 0),
-            0,
-          );
+      Object.entries(meals).forEach(([mealKey, data]) => {
+        const dayTotal = data?.items.reduce(
+          (sum, item) => sum + (item.price || 0),
+          0,
+        );
 
-          payload.push({
-            date: date.split(" ")[0],
-            day: date.split("(")[1]?.replace(")", ""),
-            institute_id: user?.user?.institute_id,
-            total_amount: dayTotal,
-            meal_type: mealKey,
-            status: "active",
-            user_id: user?.user?._id,
-            items: items.map((item) => ({
-              item_name: item.label,
-              price: item.price,
-            })),
-          });
+        payload.push({
+          type: daywiseSelect,
+          date: date.split(" ")[0],
+          day: date.split("(")[1]?.replace(")", ""),
+          institute_id: user?.user?.institute_id,
+          total_amount: dayTotal,
+          meal_type: mealKey,
+          start_time: data?.start_time,
+          end_time: data?.end_time,
+          status: "active",
+          user_id: user?.user?._id,
+          items: data?.items?.map((item) => ({
+            item_name: item.label,
+            price: item.price,
+          })),
         });
+      });
     });
 
     if (!payload.length) {
@@ -348,6 +354,7 @@ const MealActivity = () => {
               const hasUserMeal = Object.values(
                 selectedMeals?.[plan.date] || {},
               ).some((items) => items.length > 0);
+
               const hasGuestMeal = Object.values(
                 guestSelectedMeals?.[plan.date] || {},
               ).some((items) => items.length > 0);
@@ -407,23 +414,31 @@ const MealActivity = () => {
                     <div className="flex flex-wrap gap-4">
                       {Object.entries(activePlan?.meals || {}).map(
                         ([mealKey, mealData]) => (
-                          <MealCard
-                            key={`${activeDate}-${mealKey}`}
-                            title={mealData.type}
-                            icon={getMealIcon(mealData.type)}
-                            gradient={getMealTypeGradient(mealData.type)}
-                            data={mealData}
-                            onChangeSelected={(items) =>
-                              handleMealSelect(mealKey, items)
-                            }
-                            onSelectClick={() => toggleUserMeal(mealKey)}
-                            isSelected={
-                              selectedMealKeys?.[activeDate]?.[mealKey]
-                            }
-                            selectedValues={
-                              selectedMeals?.[activeDate]?.[mealKey] || []
-                            }
-                          />
+                          console.log(mealData),
+                          (
+                            <MealCard
+                              key={`${activeDate}-${mealKey}`}
+                              title={mealData.type}
+                              icon={getMealIcon(mealData.type)}
+                              gradient={getMealTypeGradient(mealData.type)}
+                              data={mealData}
+                              onChangeSelected={(items) =>
+                                handleMealSelect(
+                                  mealKey,
+                                  items,
+                                  mealData.start_time,
+                                  mealData.end_time,
+                                )
+                              }
+                              onSelectClick={() => toggleUserMeal(mealKey)}
+                              isSelected={
+                                selectedMealKeys?.[activeDate]?.[mealKey]
+                              }
+                              selectedValues={
+                                selectedMeals?.[activeDate]?.[mealKey] || []
+                              }
+                            />
+                          )
                         ),
                       )}
                     </div>
@@ -505,7 +520,9 @@ const MealActivity = () => {
         </div>
       )}
 
-      {daywiseSelect === "show-all" && <AllMealActivity />}
+      {daywiseSelect === "show-all" && (
+        <AllMealActivity allWise={daywiseSelect} />
+      )}
 
       {daywiseSelect === "day-wise" && (
         <div className="overflow-x-auto bg-white shadow rounded">

@@ -29,6 +29,8 @@ export const GuestCard = ({ title, data, onChange }) => {
   const notify = (overrides = {}) => {
     onChange?.({
       mealType: data?.mealType,
+      start_time: data?.start_time,
+      end_time: data?.end_time,
       isOn,
       quantity,
       items: selectedValues.map((v) => v.value),
@@ -112,14 +114,19 @@ export const GuestCard = ({ title, data, onChange }) => {
     <div className="bg-white/90 rounded-2xl p-3 shadow-lg hover:shadow-2xl  w-full md:w-[350px] lg:w-[320px] xl:w-[300px]">
       {/* HEADER */}
       <div
-        className={`flex items-center gap-2 px-3 py-3 rounded-xl text-white capitalize ${gradient}`}
+        className={` px-3 py-3 rounded-xl text-white capitalize ${gradient}`}
       >
-        <h3 className="font-semibold text-sm lg:text-lg">{title}</h3>
-        <span className="ml-auto bg-white/20 px-2 py-1 rounded-full text-xs">
-          {hasSelection
-            ? `৳${selectedValues.reduce((sum, v) => sum + v.price, 0) * quantity}`
-            : "৳0"}
-        </span>
+        <div className="flex items-center gap-2">
+          <h3 className=" font-semibold text-sm lg:text-lg">{title}</h3>
+          <span className="ml-auto bg-white/20 px-2 py-1 rounded-full text-xs">
+            {hasSelection
+              ? `৳${selectedValues.reduce((sum, v) => sum + v.price, 0) * quantity}`
+              : "৳0"}
+          </span>
+        </div>
+        <div className="flex font-semibold justify-center">
+          <p>{data?.start_time}</p>-<p>{data?.end_time}</p>
+        </div>
       </div>
 
       {/* SELECT */}

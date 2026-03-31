@@ -8,7 +8,14 @@ const gradientMap = {
   dinner: "bg-gradient-to-r from-indigo-500 to-purple-600",
 };
 
-export const AllMealActivityCard = ({ title, data, onChange }) => {
+export const AllMealActivityCard = ({
+  title,
+  data,
+  onChange,
+  institute_id,
+  user_id,
+  allWise,
+}) => {
   const [selectedValues, setSelectedValues] = useState([]);
   const [isOn, setIsOn] = useState(false);
   const [selectedItem, setSelectedItem] = useState(null);
@@ -29,11 +36,25 @@ export const AllMealActivityCard = ({ title, data, onChange }) => {
     setSelectedValues(selected || []);
     if (!selected || selected.length === 0) {
       setIsOn(false);
-      onChange?.({ mealType: data?.mealType, isOn: false, items: [] });
+      onChange?.({
+        mealType: data?.mealType,
+        start_time: data?.start_time,
+        institute_id: institute_id,
+        end_time: data?.end_time,
+        type: allWise,
+        user_id: user_id,
+        meal_status: false,
+        items: [],
+      });
     } else {
       onChange?.({
         mealType: data?.mealType,
-        isOn,
+        institute_id: institute_id,
+        start_time: data?.start_time,
+        end_time: data?.end_time,
+        type: allWise,
+        user_id: user_id,
+        meal_status,
         items: selected.map((v) => v.value),
       });
     }
@@ -45,7 +66,12 @@ export const AllMealActivityCard = ({ title, data, onChange }) => {
     setIsOn(newIsOn);
     onChange?.({
       mealType: data?.mealType,
-      isOn: newIsOn,
+      institute_id: institute_id,
+      start_time: data?.start_time,
+      end_time: data?.end_time,
+      user_id: user_id,
+      type: allWise,
+      meal_status: newIsOn,
       items: selectedValues.map((v) => v.value),
     });
   };
@@ -99,17 +125,22 @@ export const AllMealActivityCard = ({ title, data, onChange }) => {
   };
 
   return (
-    <div className="bg-white/90 backdrop-blur-xl rounded-2xl p-3 shadow-lg w-full md:w-[350px] lg:w-[320px] xl:w-[300px]">
+    <div className="bg-white/90 backdrop-blur-xl rounded-2xl p-3 shadow-lg w-full md:w-[350px] lg:w-[320px] xl:w-[330px]">
       {/* HEADER */}
       <div
-        className={`flex items-center gap-2 px-3 py-3 rounded-xl text-white capitalize ${gradient}`}
+        className={`  px-3 py-3 rounded-xl text-white capitalize ${gradient}`}
       >
-        <h3 className="font-semibold text-sm lg:text-lg">{title}</h3>
-        <span className="ml-auto bg-white/20 px-2 py-1 rounded-full text-xs">
-          {hasSelection
-            ? `৳${selectedValues.reduce((sum, v) => sum + v.price, 0)}`
-            : "৳0"}
-        </span>
+        <div className="flex items-center gap-2 ">
+          <h3 className="font-semibold text-sm lg:text-lg">{title}</h3>
+          <span className="ml-auto bg-white/20 px-2 py-1 rounded-full text-xs">
+            {hasSelection
+              ? `৳${selectedValues.reduce((sum, v) => sum + v.price, 0)}`
+              : "৳0"}
+          </span>
+        </div>
+        <div className="flex font-semibold justify-center">
+          <p>{data?.start_time}</p>-<p>{data?.end_time}</p>
+        </div>
       </div>
 
       {/* SELECT */}

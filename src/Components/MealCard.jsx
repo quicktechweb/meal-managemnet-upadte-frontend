@@ -17,6 +17,8 @@ const MealCard = ({
 }) => {
   const [selectedItem, setSelectedItem] = useState(null);
 
+
+
   /* ================= OPTIONS ================= */
   const itemOptions = data?.options?.map((item) => ({
     value: item,
@@ -27,7 +29,7 @@ const MealCard = ({
     video: item?.video,
   }));
 
-  const selectedOptions = selectedValues.map((item) => ({
+  const selectedOptions = selectedValues?.items?.map((item) => ({
     value: item.value,
     label: item.label,
     price: item.price,

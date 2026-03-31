@@ -11,13 +11,19 @@ const mealSlice = createSlice({
   initialState,
   reducers: {
     setMeal: (state, action) => {
-      const { date, mealKey, items } = action.payload;
+      const { date, mealKey, items, start_time, end_time } = action.payload;
+
+      console.log(start_time);
 
       if (!state.selectedMeals[date]) {
         state.selectedMeals[date] = {};
       }
 
-      state.selectedMeals[date][mealKey] = items;
+      state.selectedMeals[date][mealKey] = {
+        start_time: start_time,
+        end_time: end_time,
+        items: items,
+      };
     },
 
     setGuestQty: (state, action) => {
@@ -55,8 +61,11 @@ export default mealSlice.reducer;
 export const selectTotal = (state, date) => {
   const meals = state.meal.selectedMeals[date] || {};
 
-  return Object.values(meals).reduce((total, arr) => {
-    return total + arr.reduce((sum, item) => sum + (item.price || 0), 0);
+  return Object.values(meals).reduce((total, mealObj) => {
+    return (
+      total +
+      (mealObj.items || []).reduce((sum, item) => sum + (item.price || 0), 0)
+    );
   }, 0);
 };
 

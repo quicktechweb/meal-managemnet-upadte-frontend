@@ -2,11 +2,19 @@ import React, { useState } from "react";
 import { AllMealActivityCard } from "./AllMealActivityCard";
 import { GuestCard } from "./GuestCard";
 import useInstituteAuth from "../../../../../Hooks/useInstituteAuth";
-import { useInstituteUserAdminData } from "../../../../../api/cms/user.hook";
+import {
+  useInstituteUserAdminData,
+  useInstituteUserCreateMeal,
+} from "../../../../../api/cms/user.hook";
 import toast from "react-hot-toast";
 
-export default function AllMealActivity() {
+export default function AllMealActivity({ allWise }) {
+ 
+
   const { user } = useInstituteAuth();
+
+  const { mutateAsync, isPending } = useInstituteUserCreateMeal();
+
   const { data } = useInstituteUserAdminData(user?.user?.institute_id);
 
   const [mealData, setMealData] = useState({});
@@ -21,7 +29,12 @@ export default function AllMealActivity() {
           routine.schedule_lists.reduce((acc, curr) => {
             const key = curr.meal_type.toLowerCase();
             if (!acc[key]) {
-              acc[key] = { mealType: key, items: [] };
+              acc[key] = {
+                mealType: key,
+                start_time: curr.start_time,
+                end_time: curr.end_time,
+                items: [],
+              };
             }
             curr.items.forEach((item) => {
               const exists = acc[key].items.some((i) => i.title === item.title);
@@ -55,17 +68,19 @@ export default function AllMealActivity() {
     }));
   };
 
-  const handleUpdate = () => {
-    const payload = {
-      meals: Object.values(mealData),
-    };
+  const handleUpdate = async () => {
+    const mealsArray = Object.values(mealData);
 
-    console.log(payload, "all meals");
+    const validMeals = mealsArray.filter(
+      (meal) => Array.isArray(meal.items) && meal.items.length > 0,
+    );
 
-    if (!payload.meals.length) {
+    if (!validMeals.length) {
       toast.error("Please select at least one meal.");
       return;
     }
+
+    await mutateAsync(validMeals);
   };
 
   const handleGuestUpdate = () => {
@@ -96,13 +111,16 @@ export default function AllMealActivity() {
       </div>
 
       {/* Meal Cards */}
-      <div className="flex flex-wrap gap-6">
+      <div className="flex flex-wrap gap-3">
         {result?.map((meal) => (
           <AllMealActivityCard
+            allWise={allWise}
             key={meal.mealType}
             title={meal.mealType}
             data={meal}
             onChange={handleMealChange}
+            institute_id={user?.user?.institute_id}
+            user_id={user?.user?._id}
           />
         ))}
       </div>
@@ -179,10 +197,12 @@ export default function AllMealActivity() {
                           </span>
                           <span
                             className={`px-2 py-0.5 text-[9px] text-white rounded ${
-                              currentMeal?.isOn ? "bg-green-600" : "bg-red-500"
+                              currentMeal?.meal_status
+                                ? "bg-green-600"
+                                : "bg-red-500"
                             }`}
                           >
-                            {currentMeal?.isOn ? "ON" : "OFF"}
+                            {currentMeal?.meal_status ? "ON" : "OFF"}
                           </span>
                         </div>
 
