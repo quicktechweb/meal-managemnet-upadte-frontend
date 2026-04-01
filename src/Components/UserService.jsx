@@ -1,5 +1,6 @@
 import { ChevronDown } from "lucide-react";
 import React from "react";
+import { SelectedBadge } from "./auth/StepTwo";
 
 const UserService = (
   kitchenType,
@@ -123,7 +124,7 @@ const UserService = (
                       onRemove={handleUtilityBill}
                     />
                   ))} */}
-            {utilityBills.map((bill) => (
+            {utilityBills?.map((bill) => (
               <SelectedBadge
                 key={bill._id}
                 item={{
@@ -212,7 +213,7 @@ const UserService = (
                 >
                   {service.name}
 
-                  {charge.find((c) => c._id === service._id) && (
+                  {charge?.find((c) => c._id === service._id) && (
                     <Check size={16} className="text-orange-500" />
                   )}
                 </div>
@@ -223,7 +224,7 @@ const UserService = (
 
         {/* Selected Charges */}
         <div className="flex flex-wrap gap-2">
-          {charge.map((item) => (
+          {charge?.map((item) => (
             <SelectedBadge
               key={item._id}
               item={item}
@@ -255,7 +256,7 @@ const UserService = (
               )}
 
               {singlecharge?.ranges &&
-                singlecharge.ranges.length > 0 &&
+                singlecharge?.ranges?.length > 0 &&
                 (() => {
                   const matchedRange = singlecharge.ranges.find(
                     (r) => +members >= r.min && +members <= r.max,

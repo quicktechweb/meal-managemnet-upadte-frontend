@@ -58,10 +58,16 @@ const MessForm = () => {
 
   // step 2
 
+  const [activeDropdown, setActiveDropdown] = useState(null);
   const { data: service_type } = useServiceType();
 
-  const [activeDropdown, setActiveDropdown] = useState(null);
-  const [selectedOption, setSelectedOption] = useState(service_type?.[0]);
+  const [selectedOption, setSelectedOption] = useState(null);
+
+  useEffect(() => {
+    if (service_type && service_type.length > 0) {
+      setSelectedOption(service_type[0]);
+    }
+  }, [service_type]);
 
   const [kitchenType, setKitchenType] = useState(null);
 
@@ -306,8 +312,6 @@ const MessForm = () => {
 
   const [charge, setCharge] = useState([]);
 
-  console.log(charge);
-
   const [chargeModalData, setChargeModalData] = useState({
     type: "",
   });
@@ -377,8 +381,6 @@ const MessForm = () => {
 
       return total;
     }, 0);
-
-  console.log(utilityBills);
 
   return (
     <form
