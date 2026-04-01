@@ -36,7 +36,7 @@ const MessForm = () => {
   const [adminFormUploadData, setAdminFormUploadData] = useState([]);
 
   // step 1
-
+  const currentData = form.getValues();
   const [organizeOptions, setOrganizeOptions] = useState([
     "Company",
     "Institute",
@@ -143,17 +143,42 @@ const MessForm = () => {
     );
   };
 
-  const totalUtilityPrice = utilityBills?.reduce(
-    (total, bill) => total + +bill.price,
-    0,
-  );
+  const totalUtilityPrice = utilityBills?.reduce((total, bill) => {
+    let billPrice = 0;
+
+    if (bill?.ranges?.length > 0) {
+      const matchedRange = bill.ranges.find(
+        (range) =>
+          currentData?.number_of_member >= range.min &&
+          currentData?.number_of_member <= range.max,
+      );
+
+      if (matchedRange) {
+        billPrice = matchedRange.price;
+      }
+    } else {
+      billPrice = +bill.price || 0;
+    }
+
+    return total + billPrice;
+  }, 0);
+
+  console.log(utilityBills, "utility bills");
+
+  console.log(totalUtilityPrice, "total service feature price");
 
   const totalServiceFeaturePrice = serviceFeatures?.reduce(
     (total, feature) => total + +feature?.price,
     0,
   );
 
-  const totalPrice = totalUtilityPrice + totalServiceFeaturePrice;
+  console.log(serviceFeatures, "service features");
+
+  console.log(totalServiceFeaturePrice, "total service feature price");
+
+  const totalPrice = +totalUtilityPrice + totalServiceFeaturePrice;
+
+  console.log(totalPrice, "total price");
 
   // step 3
 
@@ -164,7 +189,7 @@ const MessForm = () => {
   const [selected, setSelected] = useState([]);
 
   const { mutateAsync, isPending } = useInstituteRegistration();
-  const currentData = form.getValues();
+
   const nextStep = async () => {
     const isValid = await form.trigger();
 

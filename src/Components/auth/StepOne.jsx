@@ -418,7 +418,7 @@ const StepOne = ({
           <Controller
             name="division"
             control={control}
-            rules={{ required: "Division is required" }}
+            rules={{}}
             render={({ field }) => (
               <select
                 {...field}
@@ -444,7 +444,7 @@ const StepOne = ({
           <Controller
             name="district"
             control={control}
-            rules={{ required: "District is required" }}
+            rules={{}}
             render={({ field }) => (
               <select
                 {...field}
@@ -469,7 +469,7 @@ const StepOne = ({
           <Controller
             name="thana"
             control={control}
-            rules={{ required: "Thana is required" }}
+            rules={{}}
             render={({ field }) => (
               <select
                 {...field}
@@ -495,21 +495,21 @@ const StepOne = ({
               type={"text"}
               name="post"
               error={errors.post}
-              {...register("post", { required: "Post office required" })}
+              {...register("post", {})}
             />
             <FloatingInput
               label="Village"
               type={"text"}
               name="village"
               error={errors.village}
-              {...register("village", { required: "Village required" })}
+              {...register("village", {})}
             />
             <FloatingInput
               label="Location"
               type={"text"}
               name="location"
               error={errors.location}
-              {...register("location", { required: "Location required" })}
+              {...register("location", {})}
             />
           </>
         )}

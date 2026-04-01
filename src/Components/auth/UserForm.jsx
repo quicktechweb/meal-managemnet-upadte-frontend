@@ -514,6 +514,16 @@ const UserForm = () => {
             )}
           />
 
+          {/* room number */}
+          <InputField
+            label="Room Number"
+            name="room_number"
+            control={control}
+            rules={{
+              required: "Room Number is required",
+            }}
+          />
+
           <div className="flex flex-col gap-1">
             <h4 className="text-[18px] font-semibold text-gray-500">
               Document
