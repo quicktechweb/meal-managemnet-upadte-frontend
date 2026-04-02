@@ -1,10 +1,9 @@
 import React, { useState } from "react";
-
 import useInstituteAuth from "../../../../../Hooks/useInstituteAuth";
 import { useInstituteUserAdminData } from "../../../../../api/cms/user.hook";
-
 import { FaCalendarAlt, FaCheckCircle } from "react-icons/fa";
-import { ChevronDown } from "lucide-react";
+import { ChevronDown, Plus, X } from "lucide-react";
+import UserMealSummary from "../../../../../Components/UserMealSummary";
 
 export default function AllMealActivity({ allWise }) {
   const { user } = useInstituteAuth();
@@ -36,18 +35,29 @@ export default function AllMealActivity({ allWise }) {
   };
 
   const [selectedDays, setSelectedDays] = useState([getNext7Days()[0]]);
-
   const [activeDayView, setActiveDayView] = useState(getNext7Days()[0]);
 
   const selectedMeals = sortedMeals?.filter(
     (item) => item?.day === activeDayView,
   );
 
+  console.log(selectedMeals);
+
+  // const selectedTotalAmount = selectedMeals?.map((meal) =>
+  //   meal?.items?.reduce((acc, item) => acc + Number(item?.price || 0), 0),
+  // );
+
+  // console.log(selectedTotalAmount);
+
   const getKey = (meal) => `${meal.day}-${meal.meal_type}`;
 
+  // ── Regular Meal State ──
+  const [openKey, setOpenKey] = useState(null);
   const [selectedGroupMap, setSelectedGroupMap] = useState({});
   const [useAlternativeMap, setUseAlternativeMap] = useState({});
-  const [openKey, setOpenKey] = useState(null);
+  // ON/OFF toggle — defaultON (true)
+  const [mealOnOffMap, setMealOnOffMap] = useState({});
+
   const handleSelect = (key, groupIndex) => {
     setSelectedGroupMap((prev) => ({ ...prev, [key]: groupIndex }));
     setOpenKey(null);
@@ -57,6 +67,57 @@ export default function AllMealActivity({ allWise }) {
     setUseAlternativeMap((prev) => ({ ...prev, [key]: !prev[key] }));
     setSelectedGroupMap((prev) => ({ ...prev, [key]: undefined }));
     setOpenKey(null);
+  };
+
+  // ON/OFF toggle handler
+  const handleMealToggle = (key) => {
+    setMealOnOffMap((prev) => ({
+      ...prev,
+
+      [key]: prev[key] === false ? true : false,
+    }));
+  };
+
+  // meal ON আছে কিনা — default ON
+  const isMealOn = (key) => mealOnOffMap[key] !== false;
+
+  // Guest Meal State
+  const [guestOpenKey, setGuestOpenKey] = useState(null);
+  const [guestSelectedGroupMap, setGuestSelectedGroupMap] = useState({});
+  const [guestUseAlternativeMap, setGuestUseAlternativeMap] = useState({});
+  const [guestQuantityMap, setGuestQuantityMap] = useState({});
+  //  which meal a add guest
+  const [guestEnabledMap, setGuestEnabledMap] = useState({});
+
+  const handleGuestSelect = (key, groupIndex) => {
+    setGuestSelectedGroupMap((prev) => ({ ...prev, [key]: groupIndex }));
+    setGuestOpenKey(null);
+  };
+
+  const handleGuestCheckboxToggle = (key) => {
+    setGuestUseAlternativeMap((prev) => ({ ...prev, [key]: !prev[key] }));
+    setGuestSelectedGroupMap((prev) => ({ ...prev, [key]: undefined }));
+    setGuestOpenKey(null);
+  };
+
+  const handleQuantityChange = (key, value) => {
+    const qty = Math.max(1, parseInt(value) || 1);
+    setGuestQuantityMap((prev) => ({ ...prev, [key]: qty }));
+  };
+
+  // Guest add/remove
+  const handleAddGuest = (key) => {
+    setGuestEnabledMap((prev) => ({ ...prev, [key]: true }));
+    setGuestQuantityMap((prev) => ({ ...prev, [key]: 1 }));
+  };
+
+  const handleRemoveGuest = (key) => {
+    setGuestEnabledMap((prev) => ({ ...prev, [key]: false }));
+    // guest data clear
+    setGuestSelectedGroupMap((prev) => ({ ...prev, [key]: undefined }));
+    setGuestUseAlternativeMap((prev) => ({ ...prev, [key]: false }));
+    setGuestQuantityMap((prev) => ({ ...prev, [key]: 1 }));
+    setGuestOpenKey(null);
   };
 
   const getMealTypeGradient = (type) => {
@@ -77,26 +138,172 @@ export default function AllMealActivity({ allWise }) {
       selectedDays.includes(item?.day),
     );
 
-    const finalSelections = allSelectedMeals?.map((meal) => {
-      const key = getKey(meal);
-      const isAlternative = !!useAlternativeMap[key];
-      const altGroupIndex = selectedGroupMap[key];
+    // Regular meals — OFF
+    const finalSelections = allSelectedMeals
+      ?.filter((meal) => isMealOn(getKey(meal)))
+      ?.map((meal) => {
+        const key = getKey(meal);
+        const isAlternative = !!useAlternativeMap[key];
+        const altGroupIndex = selectedGroupMap[key];
 
-      return {
-        day: meal.day,
-        meal_type: meal.meal_type,
-        selected_items: isAlternative
-          ? (meal?.alternative_items?.[altGroupIndex] ?? [])
-          : (meal?.items ?? []),
-        is_alternative: isAlternative,
-      };
-    });
+        return {
+          day: meal.day,
+          meal_type: meal.meal_type,
+          is_on: true,
+          selected_items: isAlternative
+            ? (meal?.alternative_items?.[altGroupIndex] ?? [])
+            : (meal?.items ?? []),
+          is_alternative: isAlternative,
+        };
+      });
 
-    
+    const finalGuestSelections = allSelectedMeals
+      ?.filter((meal) => guestEnabledMap[getKey(meal)])
+      ?.map((meal) => {
+        const key = getKey(meal);
+        const isAlternative = !!guestUseAlternativeMap[key];
+        const altGroupIndex = guestSelectedGroupMap[key];
+
+        return {
+          day: meal.day,
+          meal_type: meal.meal_type,
+          selected_items: isAlternative
+            ? (meal?.alternative_items?.[altGroupIndex] ?? [])
+            : (meal?.items ?? []),
+          is_alternative: isAlternative,
+          quantity: guestQuantityMap[key] ?? 1,
+        };
+      });
   };
 
-  const handleGuestUpdate = () => {
-    console.log("Guest meal updated");
+  // Meal Item Selector
+  const ItemSelector = ({ meal, isGuest }) => {
+    const key = getKey(meal);
+    const useAlt = isGuest
+      ? guestUseAlternativeMap[key]
+      : useAlternativeMap[key];
+    const selGroupMap = isGuest ? guestSelectedGroupMap : selectedGroupMap;
+    const curOpenKey = isGuest ? guestOpenKey : openKey;
+
+    const onDefaultClick = () => {
+      if (isGuest) {
+        setGuestUseAlternativeMap((prev) => ({ ...prev, [key]: false }));
+        setGuestSelectedGroupMap((prev) => ({ ...prev, [key]: undefined }));
+        setGuestOpenKey(null);
+      } else {
+        setUseAlternativeMap((prev) => ({ ...prev, [key]: false }));
+        setSelectedGroupMap((prev) => ({ ...prev, [key]: undefined }));
+        setOpenKey(null);
+      }
+    };
+
+    const onCheckboxToggle = () =>
+      isGuest ? handleGuestCheckboxToggle(key) : handleCheckboxToggle(key);
+
+    const onDropdownToggle = () => {
+      if (isGuest) {
+        setGuestOpenKey(guestOpenKey === key ? null : key);
+      } else {
+        setOpenKey(openKey === key ? null : key);
+      }
+    };
+
+    const onSelect = (i) =>
+      isGuest ? handleGuestSelect(key, i) : handleSelect(key, i);
+
+    return (
+      <>
+        {/* Default Items */}
+        <button
+          onClick={onDefaultClick}
+          className="px-2 w-full flex cursor-pointer items-center gap-2.5 bg-gray-100 my-2 rounded-2xl py-2"
+        >
+          <FaCheckCircle
+            className={`text-sm transition-colors flex-shrink-0 ${
+              useAlt ? "text-gray-300" : "text-green-600"
+            }`}
+          />
+          <div className="flex flex-wrap gap-1">
+            {meal?.items?.map((foodItem, i) => (
+              <div key={i} className="flex items-center gap-1">
+                <span className="font-semibold text-xs">{foodItem.title}</span>
+                <span className="text-[10px] text-orange-600">
+                  (৳{foodItem.price})
+                </span>
+                {meal.items.length - 1 !== i && ","}
+              </div>
+            ))}
+          </div>
+        </button>
+
+        {/* Alternative Row */}
+        <div className="flex items-center gap-2.5 my-2">
+          <input
+            type="checkbox"
+            checked={!!useAlt}
+            onChange={onCheckboxToggle}
+            className="cursor-pointer w-4 h-4 flex-shrink-0"
+          />
+          <div className="relative w-full">
+            <button
+              type="button"
+              disabled={!useAlt}
+              onClick={onDropdownToggle}
+              className={`py-1 px-2 shadow-md w-full rounded-md flex items-center justify-between border transition-colors ${
+                useAlt
+                  ? "bg-white border-gray-200 cursor-pointer"
+                  : "bg-gray-50 border-gray-100 cursor-not-allowed opacity-50"
+              }`}
+            >
+              <span className="text-sm">
+                {selGroupMap[key] !== undefined
+                  ? meal?.alternative_items?.[selGroupMap[key]]
+                      ?.map((food) => `${food.title} (৳${food.price})`)
+                      .join(", ")
+                  : "Select Alternative Item"}
+              </span>
+              <ChevronDown
+                className={`transition-transform duration-300 flex-shrink-0 ${
+                  curOpenKey === key ? "rotate-180" : ""
+                }`}
+                size={18}
+              />
+            </button>
+
+            {curOpenKey === key && useAlt && (
+              <div className="absolute w-full z-50 rounded-md p-2 bg-white border border-gray-200 shadow-md">
+                {meal?.alternative_items?.map((altGroup, i) => {
+                  const isSelected = selGroupMap[key] === i;
+                  return (
+                    <div
+                      key={i}
+                      onClick={() => onSelect(i)}
+                      className={`flex flex-wrap gap-2 py-2 px-2 rounded cursor-pointer ${
+                        isSelected
+                          ? "bg-blue-100 border border-blue-400"
+                          : "hover:bg-gray-100"
+                      }`}
+                    >
+                      {altGroup?.map((food, idx) => (
+                        <div key={idx} className="flex items-center gap-1">
+                          <span className="font-semibold text-xs">
+                            {food.title}
+                          </span>
+                          <span className="text-[10px] text-orange-600">
+                            (৳{food.price})
+                          </span>
+                          {altGroup.length - 1 !== idx && ","}
+                        </div>
+                      ))}
+                    </div>
+                  );
+                })}
+              </div>
+            )}
+          </div>
+        </div>
+      </>
+    );
   };
 
   return (
@@ -118,33 +325,28 @@ export default function AllMealActivity({ allWise }) {
               return (
                 <div
                   key={index}
-                  className={`flex items-center gap-2 border-b border-gray-100 py-2 px-2 rounded-md cursor-pointer ${
+                  onClick={() => {
+                    setActiveDayView(plan);
+
+                    setSelectedDays((prev) =>
+                      prev.includes(plan)
+                        ? prev.filter((d) => d !== plan)
+                        : [...prev, plan],
+                    );
+                  }}
+                  className={`flex items-center justify-between border-b border-gray-100 py-2 px-3 rounded-md cursor-pointer transition-colors ${
                     isViewing
                       ? "bg-orange-500 text-white"
-                      : "hover:bg-orange-100"
+                      : isSelected
+                        ? "bg-orange-100 text-orange-600"
+                        : "hover:bg-orange-50 text-gray-700"
                   }`}
                 >
-                  {/* Checkbox — day select/unselect */}
-                  <input
-                    type="checkbox"
-                    checked={isSelected}
-                    onChange={() => {
-                      setSelectedDays((prev) =>
-                        prev.includes(plan)
-                          ? prev.filter((d) => d !== plan)
-                          : [...prev, plan],
-                      );
-                    }}
-                    className="cursor-pointer w-4 h-4 flex-shrink-0"
-                  />
+                  <span>{plan}</span>
 
-                  {/* Day name click → view এ দেখাও */}
-                  <span
-                    onClick={() => setActiveDayView(plan)}
-                    className="flex-1 text-left"
-                  >
-                    {plan}
-                  </span>
+                  {isSelected && !isViewing && (
+                    <span className="w-2 h-2 rounded-full bg-orange-400" />
+                  )}
                 </div>
               );
             })}
@@ -152,29 +354,29 @@ export default function AllMealActivity({ allWise }) {
         </aside>
 
         <div className="flex flex-col gap-3">
-          {/* Header */}
-          <div className="bg-white/90 backdrop-blur-xl rounded-3xl shadow-lg p-6 flex justify-between items-start sm:items-center flex-wrap">
-            <div className="flex flex-col">
-              <h1 className="text-xl xl:text-3xl font-extrabold text-gray-800">
-                Choose Your Meals
-              </h1>
-              <p className="text-sm text-gray-500 mt-1">
-                Select your preferred meals for the selected date(s)
-              </p>
-            </div>
+          {/* Regular Meal Header */}
+          <div className="bg-white/90 backdrop-blur-xl rounded-3xl shadow-lg p-6">
+            <h1 className="text-xl xl:text-3xl font-extrabold text-gray-800">
+              Choose Your Meals
+            </h1>
+            <p className="text-sm text-gray-500 mt-1">
+              Select your preferred meals for the selected date(s)
+            </p>
           </div>
 
-          {/* Meal Cards */}
+          {/* Regular Meal Cards */}
           <div className="flex flex-wrap gap-3">
             {selectedMeals?.map((meal) => {
               const key = getKey(meal);
+              const isOn = isMealOn(key);
+              const isGuestAdded = !!guestEnabledMap[key];
 
               return (
                 <div
                   key={key}
                   className="bg-white/90 backdrop-blur-xl rounded-2xl p-3 shadow-lg w-full md:w-[350px] lg:w-[320px] xl:w-[330px]"
                 >
-                  {/* Meal Type Header */}
+                  {/* Meal Header + Toggle */}
                   <div
                     className={`px-3 py-3 rounded-xl text-white capitalize ${getMealTypeGradient(meal?.meal_type)}`}
                   >
@@ -182,131 +384,118 @@ export default function AllMealActivity({ allWise }) {
                       <h3 className="font-semibold text-sm lg:text-lg">
                         {meal?.meal_type}
                       </h3>
-                      {/* কোন day এর card সেটা দেখাও */}
                       <span className="text-xs bg-white/20 px-2 py-0.5 rounded-full">
                         {meal.day}
                       </span>
                       <span className="ml-auto bg-white/20 px-2 py-1 rounded-full text-xs">
                         ৳0
                       </span>
+
+                      {/* ON/OFF Toggle */}
+                      <button
+                        onClick={() => handleMealToggle(key)}
+                        className={`relative w-12 h-6 rounded-full transition-colors flex-shrink-0 ${
+                          isOn ? "bg-green-400" : "bg-gray-400"
+                        }`}
+                      >
+                        <span
+                          className={`absolute top-0.5 w-5 h-5 bg-white rounded-full shadow transition-all duration-300 ${
+                            isOn ? "left-6" : "left-0.5"
+                          }`}
+                        />
+                      </button>
                     </div>
-                    <div className="flex font-semibold justify-center">
+                    <div className="flex font-semibold justify-center mt-1">
                       <p>{meal?.start_time}</p>-<p>{meal?.end_time}</p>
                     </div>
                   </div>
 
-                  <div className="mt-2">
-                    {/* Default Items */}
-                    <button
-                      onClick={() => {
-                        setUseAlternativeMap((prev) => ({
-                          ...prev,
-                          [key]: false,
-                        }));
-                        setSelectedGroupMap((prev) => ({
-                          ...prev,
-                          [key]: undefined,
-                        }));
-                        setOpenKey(null);
-                      }}
-                      className="px-2 w-full flex cursor-pointer items-center gap-2.5 bg-gray-100 my-2 rounded-2xl py-2"
-                    >
-                      <FaCheckCircle
-                        className={`text-sm transition-colors flex-shrink-0 ${
-                          useAlternativeMap[key]
-                            ? "text-gray-300"
-                            : "text-green-600"
-                        }`}
-                      />
-                      <div className="flex flex-wrap gap-1">
-                        {meal?.items?.map((foodItem, i) => (
-                          <div key={i} className="flex items-center gap-1">
-                            <span className="font-semibold text-xs">
-                              {foodItem.title}
-                            </span>
-                            <span className="text-[10px] text-orange-600">
-                              (৳{foodItem.price})
-                            </span>
-                            {meal.items.length - 1 !== i && ","}
-                          </div>
-                        ))}
-                      </div>
-                    </button>
+                  {/* OFF overlay */}
+                  <div
+                    className={`mt-2 ${!isOn ? "opacity-40 pointer-events-none" : ""}`}
+                  >
+                    <ItemSelector meal={meal} isGuest={false} />
+                  </div>
 
-                    {/* Alternative Row */}
-                    <div className="flex items-center gap-2.5 my-2">
-                      <input
-                        type="checkbox"
-                        checked={!!useAlternativeMap[key]}
-                        onChange={() => handleCheckboxToggle(key)}
-                        className="cursor-pointer w-4 h-4 flex-shrink-0"
-                      />
+                  {/* OFF OFF message */}
+                  {!isOn && (
+                    <p className="text-center text-xs text-gray-400 mt-1">
+                      This meal is turned OFF — won't be sent
+                    </p>
+                  )}
 
-                      <div className="relative w-full">
-                        <button
-                          type="button"
-                          disabled={!useAlternativeMap[key]}
-                          onClick={() =>
-                            setOpenKey(openKey === key ? null : key)
-                          }
-                          className={`py-1 px-2 shadow-md w-full rounded-md flex items-center justify-between border transition-colors ${
-                            useAlternativeMap[key]
-                              ? "bg-white border-gray-200 cursor-pointer"
-                              : "bg-gray-50 border-gray-100 cursor-not-allowed opacity-50"
-                          }`}
-                        >
-                          <span className="text-sm">
-                            {selectedGroupMap[key] !== undefined
-                              ? meal?.alternative_items?.[selectedGroupMap[key]]
-                                  ?.map(
-                                    (food) => `${food.title} (৳${food.price})`,
-                                  )
-                                  .join(", ")
-                              : "Select Alternative Item"}
+                  {/* ── Guest Section ── */}
+                  <div className="mt-3 border-t border-gray-100 pt-3">
+                    {!isGuestAdded ? (
+                      // Guest  button
+                      <button
+                        onClick={() => handleAddGuest(key)}
+                        className="flex items-center gap-1.5 text-xs text-orange-500 hover:text-orange-600 font-semibold"
+                      >
+                        <Plus size={14} />
+                        Add Guest Meal
+                      </button>
+                    ) : (
+                      // Guest card
+                      <div className="bg-orange-50 rounded-xl p-2">
+                        <div className="flex items-center justify-between mb-2">
+                          <span className="text-xs font-bold text-orange-600">
+                            Guest Meal
                           </span>
-                          <ChevronDown
-                            className={`transition-transform duration-300 flex-shrink-0 ${
-                              openKey === key ? "rotate-180" : ""
-                            }`}
-                            size={18}
-                          />
-                        </button>
+                          {/* Guest remove button */}
+                          <button
+                            onClick={() => handleRemoveGuest(key)}
+                            className="text-gray-400 hover:text-red-500 transition-colors"
+                          >
+                            <X size={14} />
+                          </button>
+                        </div>
 
-                        {openKey === key && useAlternativeMap[key] && (
-                          <div className="absolute w-full z-50 rounded-md p-2 bg-white border border-gray-200 shadow-md">
-                            {meal?.alternative_items?.map((altGroup, i) => {
-                              const isSelected = selectedGroupMap[key] === i;
-                              return (
-                                <div
-                                  key={i}
-                                  onClick={() => handleSelect(key, i)}
-                                  className={`flex flex-wrap gap-2 py-2 px-2 rounded cursor-pointer ${
-                                    isSelected
-                                      ? "bg-blue-100 border border-blue-400"
-                                      : "hover:bg-gray-100"
-                                  }`}
-                                >
-                                  {altGroup?.map((food, idx) => (
-                                    <div
-                                      key={idx}
-                                      className="flex items-center gap-1"
-                                    >
-                                      <span className="font-semibold text-xs">
-                                        {food.title}
-                                      </span>
-                                      <span className="text-[10px] text-orange-600">
-                                        (৳{food.price})
-                                      </span>
-                                      {altGroup.length - 1 !== idx && ","}
-                                    </div>
-                                  ))}
-                                </div>
-                              );
-                            })}
+                        <ItemSelector meal={meal} isGuest={true} />
+
+                        {/* Quantity */}
+                        <div className="flex items-center gap-2 mt-2">
+                          <span className="text-xs text-gray-500 flex-shrink-0">
+                            Quantity:
+                          </span>
+                          <div className="flex items-center border border-gray-200 rounded-lg overflow-hidden">
+                            <button
+                              type="button"
+                              onClick={() =>
+                                handleQuantityChange(
+                                  key,
+                                  (guestQuantityMap[key] ?? 1) - 1,
+                                )
+                              }
+                              className="px-3 py-1 bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold transition-colors"
+                            >
+                              -
+                            </button>
+                            <input
+                              type="number"
+                              min={1}
+                              value={guestQuantityMap[key] ?? 1}
+                              onChange={(e) =>
+                                handleQuantityChange(key, e.target.value)
+                              }
+                              className="w-12 text-center text-sm py-1 border-x border-gray-200 outline-none bg-white"
+                            />
+                            <button
+                              type="button"
+                              onClick={() =>
+                                handleQuantityChange(
+                                  key,
+                                  (guestQuantityMap[key] ?? 1) + 1,
+                                )
+                              }
+                              className="px-3 py-1 bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold transition-colors"
+                            >
+                              +
+                            </button>
                           </div>
-                        )}
+                        </div>
                       </div>
-                    </div>
+                    )}
                   </div>
                 </div>
               );
@@ -320,130 +509,19 @@ export default function AllMealActivity({ allWise }) {
           >
             Update
           </button>
-
-          {/* Guest Meal Header */}
-          <div className="bg-white/90 rounded-3xl shadow-lg p-6 flex justify-between items-start sm:items-center flex-wrap">
-            <div className="flex flex-col">
-              <h1 className="text-xl xl:text-3xl font-extrabold text-gray-800">
-                Choose Your Meals for Guest
-              </h1>
-              <p className="text-sm text-gray-500 mt-1">
-                Select your preferred meals for the selected date(s)
-              </p>
-            </div>
-          </div>
-
-          {/* Guest Meal Cards */}
-          <div className="flex flex-wrap gap-6"></div>
-
-          {/* Guest Update Button */}
-          <button
-            onClick={handleGuestUpdate}
-            className="w-1/3 mx-auto block bg-gradient-to-r from-orange-400 to-pink-500 text-white py-3 rounded-2xl cursor-pointer"
-          >
-            Update Guest Meals
-          </button>
         </div>
       </div>
+      <UserMealSummary
+        sortedMeals={sortedMeals}
+        getKey={getKey}
+        useAlternativeMap={useAlternativeMap}
+        selectedGroupMap={selectedGroupMap}
+        guestUseAlternativeMap={guestUseAlternativeMap}
+        guestEnabledMap={guestEnabledMap}
+        getNext7Days={getNext7Days}
+        guestSelectedGroupMap={guestSelectedGroupMap}
+        isMealOn={isMealOn}
+      />
     </div>
   );
 }
-
-{
-  /* Weekly Summary Table */
-}
-{
-  /* <div className="overflow-x-auto bg-white rounded-2xl shadow">
-        <table className="min-w-full">
-          <thead className="bg-orange-500 text-white">
-            <tr>
-              <th className="px-4 py-3">Day</th>
-              {result?.map((meal) => (
-                <th key={meal.mealType} className="px-4 py-3 capitalize">
-                  {meal.mealType}
-                </th>
-              ))}
-            </tr>
-          </thead>
-          <tbody>
-            {weekNames?.map((name) => (
-              <tr key={name} className="border-b">
-                <td className="text-center px-4 py-3 font-medium">{name}</td>
-
-                {result?.map((meal) => {
-                  const currentMeal = mealData[meal.mealType];
-                  const currentGuestMeal = guestMealData[meal.mealType];
-
-                  return (
-                    <td key={meal.mealType} className="px-4 py-3 text-sm">
-                      <div className="flex flex-col gap-1 items-center">
-                        <div className="flex items-center gap-1.5">
-                          <span className="text-xs text-gray-700">
-                            {currentMeal?.items?.length > 0
-                              ? currentMeal.items.map((i) => i.title).join(", ")
-                              : "—"}
-                          </span>
-                          <span
-                            className={`px-2 py-0.5 text-[9px] text-white rounded ${
-                              currentMeal?.meal_status
-                                ? "bg-green-600"
-                                : "bg-red-500"
-                            }`}
-                          >
-                            {currentMeal?.meal_status ? "ON" : "OFF"}
-                          </span>
-                        </div>
-
-                        {currentGuestMeal?.items?.length > 0 && (
-                          <span className="text-[10px] text-gray-400">
-                            Guest:{" "}
-                            {currentGuestMeal.items
-                              .map((i) => i.title)
-                              .join(", ")}{" "}
-                            x{currentGuestMeal.quantity}
-                          </span>
-                        )}
-                      </div>
-                    </td>
-                  );
-                })}
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div> */
-}
-
-{
-  /* Guest Meal Header */
-}
-// <div className="bg-white/90 rounded-3xl shadow-lg p-6 flex justify-between items-start sm:items-center flex-wrap">
-//   <div className="flex flex-col">
-//     <h1 className="text-xl xl:text-3xl font-extrabold text-gray-800">
-//       Choose Your Meals for Guest
-//     </h1>
-//     <p className="text-sm text-gray-500 mt-1">
-//       Select your preferred meals for the selected date(s)
-//     </p>
-//   </div>
-// </div>
-
-{
-  /* Guest Meal Cards */
-}
-// <div className="flex flex-wrap gap-6">
-{
-  /* {result?.map((meal) => (
-              <GuestCard
-                key={`guest-${meal.mealType}`}
-                title={meal.mealType}
-                data={meal}
-                onChange={handleGuestMealChange}
-              />
-            ))} */
-}
-// </div>
-
-// <button className="w-1/3 mx-auto block bg-gradient-to-r from-orange-400 to-pink-500 text-white py-3 rounded-2xl cursor-pointer">
-//   Update Guest Meals
-// </button>
