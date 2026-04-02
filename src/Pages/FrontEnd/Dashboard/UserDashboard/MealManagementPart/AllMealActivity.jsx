@@ -1,111 +1,23 @@
 import React, { useState } from "react";
-import { AllMealActivityCard } from "./AllMealActivityCard";
-import { GuestCard } from "./GuestCard";
+
 import useInstituteAuth from "../../../../../Hooks/useInstituteAuth";
-import {
-  useInstituteUserAdminData,
-  useInstituteUserCreateMeal,
-} from "../../../../../api/cms/user.hook";
-import toast from "react-hot-toast";
+import { useInstituteUserAdminData } from "../../../../../api/cms/user.hook";
+
 import { FaCalendarAlt, FaCheckCircle } from "react-icons/fa";
 import { ChevronDown } from "lucide-react";
 
 export default function AllMealActivity({ allWise }) {
   const { user } = useInstituteAuth();
-
-  const { mutateAsync, isPending } = useInstituteUserCreateMeal();
-
   const { data } = useInstituteUserAdminData(user?.user?.institute_id);
 
-  const [mealData, setMealData] = useState({});
-
-  const [guestMealData, setGuestMealData] = useState({});
-
   const routine = data?.routine;
-
-  // const result =
-  //   routine?.schedule_lists && routine.schedule_lists.length > 0
-  //     ? Object.values(
-  //         routine.schedule_lists.reduce((acc, curr) => {
-  //           const key = curr.meal_type.toLowerCase();
-  //           if (!acc[key]) {
-  //             acc[key] = {
-  //               mealType: key,
-  //               start_time: curr.start_time,
-  //               end_time: curr.end_time,
-  //               items: curr.items,
-  //               alternative_items: curr.alternative_items,
-  //             };
-  //           }
-  //           // curr.items.forEach((item) => {
-  //           //   const exists = acc[key].items.some((i) => i.title === item.title);
-  //           //   if (!exists) {
-  //           //     acc[key].items.push({
-  //           //       meal_id: item._id || item.title,
-  //           //       title: item.title,
-  //           //       price: item.price,
-  //           //       image: item.image,
-  //           //       video: item.video,
-  //           //       ingridents: item.ingridents,
-  //           //     });
-  //           //   }
-  //           // });
-
-  //           return acc;
-  //         }, {}),
-  //       )
-  //     : [];
-
-  const handleMealChange = (payload) => {
-    setMealData((prev) => ({
-      ...prev,
-      [payload.mealType]: payload,
-    }));
-  };
-
-  const handleGuestMealChange = (payload) => {
-    setGuestMealData((prev) => ({
-      ...prev,
-      [payload.mealType]: payload,
-    }));
-  };
-
-  const handleUpdate = async () => {
-    const mealsArray = Object.values(mealData);
-
-    const validMeals = mealsArray.filter(
-      (meal) => Array.isArray(meal.items) && meal.items.length > 0,
-    );
-
-    if (!validMeals.length) {
-      toast.error("Please select at least one meal.");
-      return;
-    }
-
-    await mutateAsync(validMeals);
-  };
-
-  const handleGuestUpdate = () => {
-    const payload = {
-      guestMeals: Object.values(guestMealData),
-    };
-    console.log("Sending guest data to backend:", payload.guestMeals);
-  };
-
-  const weekNames = Array.from({ length: 7 }, (_, i) => {
-    const date = new Date();
-    date.setDate(date.getDate() + i);
-    return date.toLocaleDateString("en-US", { weekday: "short" });
-  });
   const weekDays = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
   const sortByToday = (data) => {
     const today = new Date().getDay();
-
     return data?.sort((a, b) => {
       const aIndex = weekDays.indexOf(a.day);
       const bIndex = weekDays.indexOf(b.day);
-
       return ((aIndex - today + 7) % 7) - ((bIndex - today + 7) % 7);
     });
   };
@@ -115,14 +27,11 @@ export default function AllMealActivity({ allWise }) {
   const getNext7Days = () => {
     const days = [];
     const today = new Date();
-
     for (let i = 0; i < 7; i++) {
       const d = new Date(today);
       d.setDate(today.getDate() + i);
-
       days.push(weekDays[d.getDay()]);
     }
-
     return days;
   };
 
@@ -132,16 +41,28 @@ export default function AllMealActivity({ allWise }) {
     (item) => item?.day === daySelectOption,
   );
 
-  console.log(selectedMeals);
-
   const [openIndex, setOpenIndex] = useState(null);
-  const [selectedGroupIndex, setSelectedGroupIndex] = useState(null);
+  const [selectedGroupMap, setSelectedGroupMap] = useState({});
+  const [useAlternativeMap, setUseAlternativeMap] = useState({});
 
-  const handleSelect = (index) => {
-    setSelectedGroupIndex(index);
-    if (openIndex === index) {
-      setOpenIndex(null);
-    }
+  // Alternative group select করলে
+  const handleSelect = (mealIndex, groupIndex) => {
+    setSelectedGroupMap((prev) => ({ ...prev, [mealIndex]: groupIndex }));
+    setOpenIndex(null);
+  };
+
+  // Checkbox toggle করলে
+  const handleCheckboxToggle = (mealIndex) => {
+    setUseAlternativeMap((prev) => ({
+      ...prev,
+      [mealIndex]: !prev[mealIndex],
+    }));
+    // alternative selection clear করো
+    setSelectedGroupMap((prev) => ({
+      ...prev,
+      [mealIndex]: undefined,
+    }));
+    setOpenIndex(null);
   };
 
   const getMealTypeGradient = (type) => {
@@ -157,9 +78,32 @@ export default function AllMealActivity({ allWise }) {
     }
   };
 
+  const handleUpdate = () => {
+    const finalSelections = selectedMeals?.map((meal, index) => {
+      const isAlternative = !!useAlternativeMap[index];
+      const altGroupIndex = selectedGroupMap[index];
+
+      return {
+        meal_type: meal.meal_type,
+        day: meal.day,
+        selected_items: isAlternative
+          ? (meal?.alternative_items?.[altGroupIndex] ?? [])
+          : (meal?.items ?? []),
+        is_alternative: isAlternative,
+      };
+    });
+
+    console.log("Final Selections:", finalSelections);
+  };
+
+  const handleGuestUpdate = () => {
+    console.log("Guest meal updated");
+  };
+
   return (
     <div className="space-y-4">
       <div className="max-w-7xl flex flex-col xl:flex-row gap-y-4 xl:gap-3">
+        {/* Sidebar Calendar */}
         <aside className="bg-white p-3 rounded-xl shadow w-[260px] h-[350px]">
           <h2 className="flex items-center mb-2 justify-center gap-3 font-bold">
             <button>
@@ -167,14 +111,18 @@ export default function AllMealActivity({ allWise }) {
             </button>
             Meal Calendar
           </h2>
-          <div className="flex flex-col justify-center ">
+          <div className="flex flex-col justify-center">
             {getNext7Days().map((plan, index) => {
               const isActiveDay = daySelectOption === plan;
-
               return (
                 <button
+                  key={index}
                   onClick={() => setDaySelectOption(plan)}
-                  className={`${isActiveDay ? "bg-orange-500 text-white rounded-md overflow-hidden" : "hover:bg-orange-100 hover:rounded-md "}border-b  border-gray-100 py-2 cursor-pointer `}
+                  className={`${
+                    isActiveDay
+                      ? "bg-orange-500 text-white rounded-md overflow-hidden"
+                      : "hover:bg-orange-100 hover:rounded-md"
+                  } border-b border-gray-100 py-2 cursor-pointer`}
                 >
                   {plan}
                 </button>
@@ -203,10 +151,11 @@ export default function AllMealActivity({ allWise }) {
                 key={index}
                 className="bg-white/90 backdrop-blur-xl rounded-2xl p-3 shadow-lg w-full md:w-[350px] lg:w-[320px] xl:w-[330px]"
               >
+                {/* Meal Type Header */}
                 <div
-                  className={`  px-3 py-3 rounded-xl text-white capitalize ${getMealTypeGradient(meal?.meal_type)} `}
+                  className={`px-3 py-3 rounded-xl text-white capitalize ${getMealTypeGradient(meal?.meal_type)}`}
                 >
-                  <div className="flex items-center gap-2 ">
+                  <div className="flex items-center gap-2">
                     <h3 className="font-semibold text-sm lg:text-lg">
                       {meal?.meal_type}
                     </h3>
@@ -219,116 +168,127 @@ export default function AllMealActivity({ allWise }) {
                   </div>
                 </div>
 
-                <div className="">
-                  <button className="px-2 w-full flex cursor-pointer items-center gap-2.5 bg-gray-100 my-2 rounded-2xl">
-                    <FaCheckCircle className="text-green-600 text-sm" />
-                    {meal?.items?.map((item, index) => (
-                      <div className="flex items-center gap-1">
-                        <span className="font-semibold text-xs">
-                          {item.title}
-                        </span>
-                        <span className="text-[10px] text-orange-600">
-                          (৳{item.price})
-                        </span>{" "}
-                        {data?.items?.length - 1 !== index && ","}
-                      </div>
-                    ))}
+                <div className="mt-2">
+                  <button
+                    onClick={() => {
+                      setUseAlternativeMap((prev) => ({
+                        ...prev,
+                        [index]: false,
+                      }));
+
+                      setSelectedGroupMap((prev) => ({
+                        ...prev,
+                        [index]: undefined,
+                      }));
+                      setOpenIndex(null);
+                    }}
+                    className="px-2 w-full flex cursor-pointer items-center gap-2.5 bg-gray-100 my-2 rounded-2xl py-2"
+                  >
+                    <FaCheckCircle
+                      className={`text-sm transition-colors flex-shrink-0 ${
+                        useAlternativeMap[index]
+                          ? "text-gray-300"
+                          : "text-green-600"
+                      }`}
+                    />
+                    <div className="flex flex-wrap gap-1">
+                      {meal?.items?.map((foodItem, i) => (
+                        <div key={i} className="flex items-center gap-1">
+                          <span className="font-semibold text-xs">
+                            {foodItem.title}
+                          </span>
+                          <span className="text-[10px] text-orange-600">
+                            (৳{foodItem.price})
+                          </span>
+                          {meal.items.length - 1 !== i && ","}
+                        </div>
+                      ))}
+                    </div>
                   </button>
 
-                  <div className="relative">
-                    {/* Button */}
-                    <button
-                      type="button"
-                      onClick={() =>
-                        setOpenIndex(openIndex === index ? null : index)
-                      }
-                      className="bg-white py-1 px-2 shadow-md w-full my-2 rounded-md flex items-center justify-between border border-gray-200"
-                    >
-                      <span className="text-sm">
-                        {selectedGroupIndex !== null
-                          ? meal?.alternative_items?.[selectedGroupIndex]
-                              ?.map((item) => `${item.title} (৳${item.price})`)
-                              .join(", ")
-                          : "Select Alternative Item"}
-                      </span>
-
-                      <ChevronDown
-                        className={`transition-transform duration-300 ${
-                          openIndex === index ? "rotate-180" : ""
-                        }`}
-                        size={18}
-                      />
-                    </button>
+                  {/* Alternative Row — Checkbox + Dropdown */}
+                  <div className="flex items-center gap-2.5 my-2">
+                    {/* Checkbox */}
+                    <input
+                      type="checkbox"
+                      checked={!!useAlternativeMap[index]}
+                      onChange={() => handleCheckboxToggle(index)}
+                      className="cursor-pointer w-4 h-4 flex-shrink-0"
+                    />
 
                     {/* Dropdown */}
-                    {openIndex === index && (
-                      <div className="absolute w-full z-50 rounded-md p-2 bg-white border border-gray-200 shadow-md">
-                        {meal?.alternative_items?.map((alternative_item, i) => {
-                          const isSelected = selectedGroupIndex === i;
+                    <div className="relative w-full">
+                      <button
+                        type="button"
+                        disabled={!useAlternativeMap[index]}
+                        onClick={() =>
+                          setOpenIndex(openIndex === index ? null : index)
+                        }
+                        className={`py-1 px-2 shadow-md w-full rounded-md flex items-center justify-between border transition-colors ${
+                          useAlternativeMap[index]
+                            ? "bg-white border-gray-200 cursor-pointer"
+                            : "bg-gray-50 border-gray-100 cursor-not-allowed opacity-50"
+                        }`}
+                      >
+                        <span className="text-sm">
+                          {selectedGroupMap[index] !== undefined
+                            ? meal?.alternative_items?.[selectedGroupMap[index]]
+                                ?.map(
+                                  (food) => `${food.title} (৳${food.price})`,
+                                )
+                                .join(", ")
+                            : "Select Alternative Item"}
+                        </span>
+                        <ChevronDown
+                          className={`transition-transform duration-300 flex-shrink-0 ${
+                            openIndex === index ? "rotate-180" : ""
+                          }`}
+                          size={18}
+                        />
+                      </button>
 
-                          return (
-                            <div
-                              key={i}
-                              onClick={() => handleSelect(i)}
-                              className={`flex flex-wrap gap-2 py-2 px-2 rounded cursor-pointer
-                  ${
-                    isSelected
-                      ? "bg-blue-100 border border-blue-400"
-                      : "hover:bg-gray-100"
-                  }
-                `}
-                            >
-                              {alternative_item?.map((item, index) => (
-                                <div
-                                  key={index}
-                                  className="flex items-center gap-1"
-                                >
-                                  <span className="font-semibold text-xs">
-                                    {item.title}
-                                  </span>
-                                  <span className="text-[10px] text-orange-600">
-                                    (৳{item.price})
-                                  </span>
-                                  {alternative_item.length - 1 !== index && ","}
-                                </div>
-                              ))}
-                            </div>
-                          );
-                        })}
-                      </div>
-                    )}
+                      {/* Dropdown List */}
+                      {openIndex === index && useAlternativeMap[index] && (
+                        <div className="absolute w-full z-50 rounded-md p-2 bg-white border border-gray-200 shadow-md">
+                          {meal?.alternative_items?.map((altGroup, i) => {
+                            const isSelected = selectedGroupMap[index] === i;
+                            return (
+                              <div
+                                key={i}
+                                onClick={() => handleSelect(index, i)}
+                                className={`flex flex-wrap gap-2 py-2 px-2 rounded cursor-pointer ${
+                                  isSelected
+                                    ? "bg-blue-100 border border-blue-400"
+                                    : "hover:bg-gray-100"
+                                }`}
+                              >
+                                {altGroup?.map((food, idx) => (
+                                  <div
+                                    key={idx}
+                                    className="flex items-center gap-1"
+                                  >
+                                    <span className="font-semibold text-xs">
+                                      {food.title}
+                                    </span>
+                                    <span className="text-[10px] text-orange-600">
+                                      (৳{food.price})
+                                    </span>
+                                    {altGroup.length - 1 !== idx && ","}
+                                  </div>
+                                ))}
+                              </div>
+                            );
+                          })}
+                        </div>
+                      )}
+                    </div>
                   </div>
-
-                  {/* <Select
-          isMulti
-          options={itemOptions}
-          value={selectedValues}
-          getOptionValue={(opt) => opt.label}
-          onChange={handleChange}
-          placeholder={`Select ${title}...`}
-          components={{
-            Option: CustomOption,
-            MultiValueLabel: CustomMultiValueLabel,
-          }}
-        /> */}
                 </div>
               </div>
             ))}
-
-            {/* {result?.map((meal) => (
-              <AllMealActivityCard
-                allWise={allWise}
-                key={meal.mealType}
-                title={meal.mealType}
-                data={meal}
-                onChange={handleMealChange}
-                institute_id={user?.user?.institute_id}
-                user_id={user?.user?._id}
-              />
-            ))}
-             */}
           </div>
 
+          {/* Update Button */}
           <button
             onClick={handleUpdate}
             className="w-1/3 mx-auto block bg-gradient-to-r from-orange-400 to-pink-500 text-white py-3 rounded-2xl cursor-pointer"
@@ -349,17 +309,9 @@ export default function AllMealActivity({ allWise }) {
           </div>
 
           {/* Guest Meal Cards */}
-          <div className="flex flex-wrap gap-6">
-            {/* {result?.map((meal) => (
-              <GuestCard
-                key={`guest-${meal.mealType}`}
-                title={meal.mealType}
-                data={meal}
-                onChange={handleGuestMealChange}
-              />
-            ))} */}
-          </div>
+          <div className="flex flex-wrap gap-6"></div>
 
+          {/* Guest Update Button */}
           <button
             onClick={handleGuestUpdate}
             className="w-1/3 mx-auto block bg-gradient-to-r from-orange-400 to-pink-500 text-white py-3 rounded-2xl cursor-pointer"
@@ -368,9 +320,15 @@ export default function AllMealActivity({ allWise }) {
           </button>
         </div>
       </div>
+    </div>
+  );
+}
 
-      {/* Weekly Summary Table */}
-      {/* <div className="overflow-x-auto bg-white rounded-2xl shadow">
+{
+  /* Weekly Summary Table */
+}
+{
+  /* <div className="overflow-x-auto bg-white rounded-2xl shadow">
         <table className="min-w-full">
           <thead className="bg-orange-500 text-white">
             <tr>
@@ -428,7 +386,39 @@ export default function AllMealActivity({ allWise }) {
             ))}
           </tbody>
         </table>
-      </div> */}
-    </div>
-  );
+      </div> */
 }
+
+{
+  /* Guest Meal Header */
+}
+// <div className="bg-white/90 rounded-3xl shadow-lg p-6 flex justify-between items-start sm:items-center flex-wrap">
+//   <div className="flex flex-col">
+//     <h1 className="text-xl xl:text-3xl font-extrabold text-gray-800">
+//       Choose Your Meals for Guest
+//     </h1>
+//     <p className="text-sm text-gray-500 mt-1">
+//       Select your preferred meals for the selected date(s)
+//     </p>
+//   </div>
+// </div>
+
+{
+  /* Guest Meal Cards */
+}
+// <div className="flex flex-wrap gap-6">
+{
+  /* {result?.map((meal) => (
+              <GuestCard
+                key={`guest-${meal.mealType}`}
+                title={meal.mealType}
+                data={meal}
+                onChange={handleGuestMealChange}
+              />
+            ))} */
+}
+// </div>
+
+// <button className="w-1/3 mx-auto block bg-gradient-to-r from-orange-400 to-pink-500 text-white py-3 rounded-2xl cursor-pointer">
+//   Update Guest Meals
+// </button>
