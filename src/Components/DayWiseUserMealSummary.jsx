@@ -1,6 +1,6 @@
 import React from "react";
 
-const UserMealSummary = ({
+const DayWiseUserMealSummary = ({
   sortedMeals,
   getKey,
   useAlternativeMap,
@@ -10,6 +10,7 @@ const UserMealSummary = ({
   getNext7Days,
   guestSelectedGroupMap,
   isMealOn,
+  getNext7DaysWithDates,
 }) => {
   return (
     <div className="bg-white/90 backdrop-blur-xl rounded-3xl shadow-lg p-6 mt-4 w-full">
@@ -25,7 +26,7 @@ const UserMealSummary = ({
 
           const groupedByDay = {};
           sortedMeals?.forEach((meal) => {
-            if (!groupedByDay[meal.day]) groupedByDay[meal.day] = {};
+            if (!groupedByDay[meal.day]) groupedByDay[meal?.day] = {};
             const key = getKey(meal);
             const isAlternative = !!useAlternativeMap[key];
             const altGroupIndex = selectedGroupMap[key];
@@ -50,14 +51,16 @@ const UserMealSummary = ({
             };
           });
 
-          const days = getNext7Days();
+          const days = getNext7DaysWithDates;
+
+          console.log(days);
 
           return (
             <table className="w-full text-sm border-collapse">
               <thead>
                 <tr className="bg-orange-400 text-white">
                   <th className="px-4 py-3 text-left rounded-tl-xl font-semibold">
-                    Day
+                    Date
                   </th>
                   {mealTypes.map((type, i) => (
                     <th
@@ -74,18 +77,20 @@ const UserMealSummary = ({
 
               <tbody>
                 {days.map((day, rowIndex) => {
-                  const dayData = groupedByDay[day];
+                  console.log(day);
+
+                  const dayData = groupedByDay[day?.day];
 
                   return (
                     <tr
-                      key={day}
+                      key={day?.day}
                       className={`border-b border-gray-100 ${
                         rowIndex % 2 === 0 ? "bg-white" : "bg-gray-50"
                       }`}
                     >
-                      {/* Day cell */}
-                      <td className="px-4 py-3 font-bold text-gray-700">
-                        {day}
+                      <td className="px-4 py-3 font-bold text-gray-700 flex items-center gap-1">
+                        {day?.date} {day?.month}{" "}
+                        <h5 className="text-xs">({day?.day})</h5>
                       </td>
 
                       {mealTypes.map((type) => {
@@ -107,7 +112,6 @@ const UserMealSummary = ({
                             key={type}
                             className={`px-4 py-3 ${!cell.is_on ? "opacity-80" : ""}`}
                           >
-                            {/* ON/OFF badge */}
                             <span
                               className={`text-[10px] font-bold px-2 py-0.5 rounded-full mb-1 inline-block ${
                                 cell.is_on
@@ -118,7 +122,6 @@ const UserMealSummary = ({
                               {cell.is_on ? "ON" : "OFF"}
                             </span>
 
-                            {/* Selected items */}
                             <div className="flex flex-wrap gap-1 mt-1">
                               {cell.selected_items?.map((item, i) => (
                                 <span
@@ -138,7 +141,6 @@ const UserMealSummary = ({
                               )}
                             </div>
 
-                            {/* Guest info */}
                             {cell.guest && (
                               <div className="mt-1.5 flex flex-wrap items-center gap-1">
                                 <span className="text-[10px] text-purple-500 font-semibold">
@@ -169,4 +171,4 @@ const UserMealSummary = ({
   );
 };
 
-export default UserMealSummary;
+export default DayWiseUserMealSummary;
