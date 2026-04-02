@@ -21,6 +21,8 @@ const InstituteAdminProfile = () => {
 
   const me = user?.user;
 
+  console.log(me);
+
   const kitchenType = data?.find(
     (item) => item._id === me?.services?.kitchen_type,
   );
@@ -152,21 +154,23 @@ const InstituteAdminProfile = () => {
 
           <div className="md:col-span-3 grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="bg-white p-4 rounded-xl shadow-sm border border-gray-200">
-              <p className="font-bold mb-2">Institute Document (NID)</p>
+              <p className="font-bold mb-2">Institute Document</p>
               <img
                 src={me?.information.documents[0].document_files}
                 alt="NID"
                 className="w-full h-48 object-cover rounded-lg border border-gray-300"
               />
             </div>
-            <div className="bg-white p-4 rounded-xl shadow-sm border border-gray-200">
-              <p className="font-bold mb-2">Admin Document (NID)</p>
 
-              <img
-                src={me?.admin_info?.documents_admin[0].document_files}
-                alt="Admin NID"
-                className="w-full h-48 object-cover rounded-lg border border-gray-300"
-              />
+            <div className="bg-white p-4 rounded-xl shadow-sm border border-gray-200">
+              <p className="font-bold mb-2">Admin Document</p>
+              {me?.admin_info?.documents_admin?.length > 0 && (
+                <img
+                  src={me?.admin_info?.documents_admin[0]?.document_files}
+                  alt="Admin NID"
+                  className="w-full h-48 object-cover rounded-lg border border-gray-300"
+                />
+              )}
             </div>
           </div>
         </div>

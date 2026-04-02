@@ -12,10 +12,6 @@ const MealScheduleTable = ({
   scheduleList,
   setScheduleList,
 }) => {
-  console.log(scheduleList);
-
-  console.log(totalPrice);
-
   const { data: items = [] } = useGetItems();
   const days = ["Sat", "Sun", "Mon", "Tue", "Wed", "Thu", "Fri"];
 
@@ -32,7 +28,7 @@ const MealScheduleTable = ({
   const [selectedOptions, setSelectedOptions] = useState([]);
   const [alternativeGroups, setAlternativeGroups] = useState([[]]);
   const [activeAlternatives, setActiveAlternatives] = useState([]);
-  console.log(activeAlternatives, "activeAlternatives");
+  
 
   const [startTime, setStartTime] = useState("");
   const [endTime, setEndTime] = useState("");
