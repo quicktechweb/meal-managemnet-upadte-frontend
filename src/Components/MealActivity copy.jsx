@@ -125,50 +125,6 @@ const MealActivity = () => {
 
     const meals = routine?.schedule_lists?.filter((s) => s.day === dayName);
 
-    console.log(meals, "all meals for this day"); //array given bellow
-
-  //    [
-  //   {
-  //     day: 'Wed',
-  //     meal_type: 'Breakfast',
-  //     start_time: '09:00',
-  //     end_time: '11:00',
-  //     items: [
-  //       { title: 'Vat', price: 15, _id: '69b7cf1caddf9b61b5cd07b8' },
-  //       { title: 'Goru', price: 125, _id: '69b7cf1caddf9b61b5cd07b9' },
-  //       { title: 'Dal', price: 25, _id: '69b7cf1caddf9b61b5cd07ba' },
-  //       { title: 'Murgi', price: 85, _id: '69b7cf1caddf9b61b5cd07bb' }
-  //     ],
-  //     _id: '69b7cf1caddf9b61b5cd07b7'
-  //   },
-  //   {
-  //     day: 'Wed',
-  //     meal_type: 'Lunch',
-  //     start_time: '13:00',
-  //     end_time: '14:00',
-  //     items: [
-  //       { title: 'Vat', price: 15, _id: '69b7cf1caddf9b61b5cd07bd' },
-  //       { title: 'Goru', price: 125, _id: '69b7cf1caddf9b61b5cd07be' },
-  //       { title: 'Dal', price: 25, _id: '69b7cf1caddf9b61b5cd07bf' }
-  //     ],
-  //     _id: '69b7cf1caddf9b61b5cd07bc'
-  //   },
-  //   {
-  //     day: 'Wed',
-  //     meal_type: 'Dinner',
-  //     start_time: '21:00',
-  //     end_time: '23:00',
-  //     items: [
-  //       {
-  //         title: 'Kacchi Biriyani',
-  //         price: 185,
-  //         _id: '69b7cf1caddf9b61b5cd07c1'
-  //       }
-  //     ],
-  //     _id: '69b7cf1caddf9b61b5cd07c0'
-  //   }
-  // ]
-
     return {
       date: dayObj.date,
       day: dayName,
@@ -190,8 +146,6 @@ const MealActivity = () => {
   const [guestSelectedOptions, setGuestSelectedOptions] = useState({});
 
   const [selectedOptions, setSelectedOptions] = useState({});
-
-  const [showModal, setShowModal] = useState(false);
 
   const activePlan = mealPlans[activeIndex];
 
@@ -768,5 +722,3 @@ const MealActivity = () => {
 };
 
 export default MealActivity;
-
-

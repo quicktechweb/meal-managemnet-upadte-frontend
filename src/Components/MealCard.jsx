@@ -17,8 +17,6 @@ const MealCard = ({
 }) => {
   const [selectedItem, setSelectedItem] = useState(null);
 
-
-
   /* ================= OPTIONS ================= */
   const itemOptions = data?.options?.map((item) => ({
     value: item,

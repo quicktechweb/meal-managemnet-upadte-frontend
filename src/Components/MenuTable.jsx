@@ -28,7 +28,22 @@ const MenuTable = () => {
 
     const days = [...new Set(routine?.schedule_lists?.map((s) => s.day) || [])];
 
-    const schedule = days.map((day) => {
+    const weekDays = ["Sat", "Sun", "Mon", "Tue", "Wed", "Thu", "Fri"];
+    const sorted = [
+      ...weekDays.slice(
+        weekDays.indexOf(
+          ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri"][new Date().getDay()],
+        ),
+      ),
+      ...weekDays.slice(
+        0,
+        weekDays.indexOf(
+          ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri"][new Date().getDay()],
+        ),
+      ),
+    ];
+
+    const schedule = sorted.map((day) => {
       const meals = routine?.schedule_lists?.filter((s) => s.day === day) || [];
       const row = { day };
       types.forEach((meal) => {

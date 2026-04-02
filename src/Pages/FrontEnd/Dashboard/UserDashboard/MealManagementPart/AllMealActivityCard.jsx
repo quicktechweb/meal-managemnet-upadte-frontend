@@ -1,4 +1,6 @@
+import { ChevronDown } from "lucide-react";
 import { useState } from "react";
+import { FaCheckCircle } from "react-icons/fa";
 import Select from "react-select";
 import { components } from "react-select";
 
@@ -16,21 +18,13 @@ export const AllMealActivityCard = ({
   user_id,
   allWise,
 }) => {
+  console.log(data?.items);
+
   const [selectedValues, setSelectedValues] = useState([]);
   const [isOn, setIsOn] = useState(false);
   const [selectedItem, setSelectedItem] = useState(null);
 
   const hasSelection = selectedValues.length > 0;
-
-  const itemOptions =
-    data?.items?.map((item) => ({
-      value: item,
-      label: item?.title,
-      price: +item?.price,
-      image: item?.image,
-      ingridents: item?.ingridents,
-      video: item?.video,
-    })) || [];
 
   const handleChange = (selected) => {
     setSelectedValues(selected || []);
@@ -79,49 +73,12 @@ export const AllMealActivityCard = ({
   const gradient =
     gradientMap[data?.mealType] || "bg-gradient-to-r from-gray-400 to-gray-600";
 
-  const CustomOption = (props) => {
-    const { data: optData } = props;
-    return (
-      <div
-        {...props.innerProps}
-        className="flex items-center justify-between gap-3 p-2 hover:bg-gray-100"
-      >
-        <div className="flex items-center gap-3">
-          {optData.image && (
-            <img
-              src={optData.image}
-              alt={optData.label}
-              className="w-10 h-10 rounded object-cover"
-            />
-          )}
-          <div className="flex flex-col">
-            <span className="font-semibold">{optData.label}</span>
-            <span className="text-xs text-orange-600">৳{optData.price}</span>
-          </div>
-        </div>
-        <button
-          onClick={(e) => {
-            e.stopPropagation();
-            setSelectedItem(optData);
-          }}
-          className="text-xs bg-orange-500 text-white px-2 py-1 rounded"
-        >
-          Details
-        </button>
-      </div>
-    );
-  };
+  const [open, setOpen] = useState(false);
+  const [selectedGroupIndex, setSelectedGroupIndex] = useState(null);
 
-  const CustomMultiValueLabel = (props) => {
-    const { data: optData } = props;
-    return (
-      <components.MultiValueLabel {...props}>
-        <div className="flex items-center gap-1">
-          <span>{optData.label}</span>
-          <span className="text-orange-600 text-xs">(৳{optData.price})</span>
-        </div>
-      </components.MultiValueLabel>
-    );
+  const handleSelect = (index) => {
+    setSelectedGroupIndex(index);
+    setOpen(false);
   };
 
   return (
@@ -144,8 +101,80 @@ export const AllMealActivityCard = ({
       </div>
 
       {/* SELECT */}
-      <div className="mt-3">
-        <Select
+      <div className="">
+        <button className="px-2 w-full flex cursor-pointer items-center gap-2.5 bg-gray-100 my-2 rounded-2xl">
+          <FaCheckCircle className="text-green-600 text-sm" />
+          {data?.items?.map((item, index) => (
+            <div className="flex items-center gap-1">
+              <span className="font-semibold text-xs">{item.title}</span>
+              <span className="text-[10px] text-orange-600">
+                (৳{item.price})
+              </span>{" "}
+              {data?.items?.length - 1 !== index && ","}
+            </div>
+          ))}
+        </button>
+
+        <div className="relative">
+          {/* Button */}
+          <button
+            type="button"
+            onClick={() => setOpen(!open)}
+            className="bg-white py-1 px-2 shadow-md w-full my-2 rounded-md flex items-center justify-between border border-gray-200"
+          >
+            <span className="text-sm">
+              {selectedGroupIndex !== null
+                ? data?.alternative_items?.[selectedGroupIndex]
+                    ?.map((item) => `${item.title} (৳${item.price})`)
+                    .join(", ")
+                : "Select Alternative Item"}
+            </span>
+
+            <ChevronDown
+              className={`transition-transform duration-300 ${
+                open ? "rotate-180" : ""
+              }`}
+              size={18}
+            />
+          </button>
+
+          {/* Dropdown */}
+          {open && (
+            <div className="absolute w-full z-50 rounded-md p-2 bg-white border border-gray-200 shadow-md">
+              {data?.alternative_items?.map((alternative_item, i) => {
+                const isSelected = selectedGroupIndex === i;
+
+                return (
+                  <div
+                    key={i}
+                    onClick={() => handleSelect(i)}
+                    className={`flex flex-wrap gap-2 py-2 px-2 rounded cursor-pointer
+                  ${
+                    isSelected
+                      ? "bg-blue-100 border border-blue-400"
+                      : "hover:bg-gray-100"
+                  }
+                `}
+                  >
+                    {alternative_item?.map((item, index) => (
+                      <div key={index} className="flex items-center gap-1">
+                        <span className="font-semibold text-xs">
+                          {item.title}
+                        </span>
+                        <span className="text-[10px] text-orange-600">
+                          (৳{item.price})
+                        </span>
+                        {alternative_item.length - 1 !== index && ","}
+                      </div>
+                    ))}
+                  </div>
+                );
+              })}
+            </div>
+          )}
+        </div>
+
+        {/* <Select
           isMulti
           options={itemOptions}
           value={selectedValues}
@@ -156,7 +185,7 @@ export const AllMealActivityCard = ({
             Option: CustomOption,
             MultiValueLabel: CustomMultiValueLabel,
           }}
-        />
+        /> */}
       </div>
 
       {/* TOGGLE */}
