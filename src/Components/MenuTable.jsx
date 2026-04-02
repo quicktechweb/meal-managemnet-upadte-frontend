@@ -25,8 +25,7 @@ const MenuTable = () => {
         start: m.start_time,
         end: m.end_time,
       })) || [];
-
-    const days = [...new Set(routine?.schedule_lists?.map((s) => s.day) || [])];
+    console.log("types", types);
 
     const weekDays = ["Sat", "Sun", "Mon", "Tue", "Wed", "Thu", "Fri"];
     const sorted = [
@@ -48,7 +47,20 @@ const MenuTable = () => {
       const row = { day };
       types.forEach((meal) => {
         const found = meals.find((m) => m.meal_type === meal.type);
-        row[meal.type] = found?.items?.map((i) => i.title).join(", ") || "-";
+
+        console.log(found, "found alternative");
+
+        row[meal.type] = {
+          items:
+            found?.items?.map((i) => `${i.title} (৳${i.price})`).join(", ") ||
+            "-",
+          alternativeItems:
+            found?.alternative_items?.map((alternative_item) =>
+              alternative_item
+                ?.map((item) => `${item?.title} (৳${item?.price})`)
+                .join(", "),
+            ) || null,
+        };
       });
       return row;
     });
@@ -61,6 +73,7 @@ const MenuTable = () => {
       columnHelper.accessor("day", {
         header: "Day",
         headerText: "Day",
+        cell: (info) => info.getValue(),
       }),
       ...mealTypes.map((meal, index) =>
         columnHelper.accessor(meal.type, {
@@ -74,7 +87,20 @@ const MenuTable = () => {
               </div>
             </div>
           ),
-          cell: (info) => info.getValue() || "-",
+          cell: (info) => {
+            const value = info.getValue();
+            return (
+              <div>
+                <span>{value?.items || "-"}</span>
+                {value?.alternativeItems?.length > 0 && (
+                  <div className="text-xs text-gray-500 mt-1">
+                    <span className="font-semibold text-orange-400">Alt: </span>
+                    {value.alternativeItems.join(" | ")}
+                  </div>
+                )}
+              </div>
+            );
+          },
         }),
       ),
     ];
@@ -116,7 +142,7 @@ const MenuTable = () => {
                     {headerGroup.headers.map((header) => (
                       <th
                         key={header.id}
-                        className="px-4 py-3 text-left font-semibold text-white border-b border-black"
+                        className="px-4 py-3 text-left font-semibold text-white border-b border-gray-200"
                       >
                         {flexRender(
                           header.column.columnDef.header,
@@ -137,7 +163,7 @@ const MenuTable = () => {
                     {row.getVisibleCells().map((cell) => (
                       <td
                         key={cell.id}
-                        className="px-4 py-2 md:py-3 border-black md:border-b flex justify-between md:table-cell"
+                        className="px-4 py-2 md:py-3 border-gray-300 md:border-b flex justify-between md:table-cell"
                       >
                         <span className="font-bold text-orange-600 md:hidden mr-4">
                           {cell.column.columnDef.headerText ??
