@@ -41,7 +41,7 @@ export default function Navbar() {
   return (
     <>
       <nav
-        className={`w-full z-50 transition-all duration-500 ${
+        className={`w-full z-[9999] transition-all duration-500 ${
           scrolled ||
           location?.pathname === "/faq" ||
           location?.pathname === "/contact-us" ||

@@ -11,6 +11,7 @@ import {
   useAllKitchen,
   useAllService,
   useGetFeature,
+  useServiceType,
   useUtilitiesService,
 } from "../../api/admin/admin.api";
 import StepFour from "./StepFour";
@@ -35,7 +36,7 @@ const MessForm = () => {
   const [adminFormUploadData, setAdminFormUploadData] = useState([]);
 
   // step 1
-
+  const currentData = form.getValues();
   const [organizeOptions, setOrganizeOptions] = useState([
     "Company",
     "Institute",
@@ -56,12 +57,17 @@ const MessForm = () => {
   };
 
   // step 2
-  const options = [
-    { label: "User", path: true },
-    { label: "Client", path: false },
-  ];
+
   const [activeDropdown, setActiveDropdown] = useState(null);
-  const [selectedOption, setSelectedOption] = useState(options[0]);
+  const { data: service_type } = useServiceType();
+
+  const [selectedOption, setSelectedOption] = useState(null);
+
+  useEffect(() => {
+    if (service_type && service_type.length > 0) {
+      setSelectedOption(service_type[0]);
+    }
+  }, [service_type]);
 
   const [kitchenType, setKitchenType] = useState(null);
 
@@ -104,8 +110,6 @@ const MessForm = () => {
     (u) => u?.kitchen?.title === kitchenType?.title,
   );
 
-  console.log(singleUtilities);
-
   const singleFeature = getFeature?.filter(
     (f) => f?.kitchen?.title === kitchenType?.title,
   );
@@ -139,17 +143,42 @@ const MessForm = () => {
     );
   };
 
-  const totalUtilityPrice = utilityBills?.reduce(
-    (total, bill) => total + +bill.price,
-    0,
-  );
+  const totalUtilityPrice = utilityBills?.reduce((total, bill) => {
+    let billPrice = 0;
+
+    if (bill?.ranges?.length > 0) {
+      const matchedRange = bill.ranges.find(
+        (range) =>
+          currentData?.number_of_member >= range.min &&
+          currentData?.number_of_member <= range.max,
+      );
+
+      if (matchedRange) {
+        billPrice = matchedRange.price;
+      }
+    } else {
+      billPrice = +bill.price || 0;
+    }
+
+    return total + billPrice;
+  }, 0);
+
+  console.log(utilityBills, "utility bills");
+
+  console.log(totalUtilityPrice, "total service feature price");
 
   const totalServiceFeaturePrice = serviceFeatures?.reduce(
     (total, feature) => total + +feature?.price,
     0,
   );
 
-  const totalPrice = totalUtilityPrice + totalServiceFeaturePrice;
+  console.log(serviceFeatures, "service features");
+
+  console.log(totalServiceFeaturePrice, "total service feature price");
+
+  const totalPrice = +totalUtilityPrice + totalServiceFeaturePrice;
+
+  console.log(totalPrice, "total price");
 
   // step 3
 
@@ -160,7 +189,7 @@ const MessForm = () => {
   const [selected, setSelected] = useState([]);
 
   const { mutateAsync, isPending } = useInstituteRegistration();
-  const currentData = form.getValues();
+
   const nextStep = async () => {
     const isValid = await form.trigger();
 
@@ -219,11 +248,10 @@ const MessForm = () => {
           utility_service: utilityBills,
           service_feature: serviceFeatures,
           total_amount: totalPrice,
-          registration_step: step,
         };
 
         await mutateAsync(
-          { userId: userId, services: { ...payload } },
+          { userId: userId, services: { ...payload }, registration_step: step },
           {
             onSuccess: (data) => {
               if (data) {
@@ -244,11 +272,10 @@ const MessForm = () => {
           userId: userId,
           meal_type_lists: mealTypeLists,
           schedule_lists: scheduleList,
-          registration_step: step,
         };
 
         await mutateAsync(
-          { userId: userId, routine: { ...payload } },
+          { userId: userId, routine: { ...payload }, registration_step: step },
           {
             onSuccess: (data) => {
               if (data) {
@@ -284,7 +311,7 @@ const MessForm = () => {
     };
 
     await mutateAsync(
-      { userId: userId, admin_info: { ...payload } },
+      { userId: userId, admin_info: { ...payload }, registration_step: step },
       {
         onSuccess: (data) => {
           if (data) {
@@ -309,8 +336,6 @@ const MessForm = () => {
   const { data, isLoading } = useAllService();
 
   const [charge, setCharge] = useState([]);
-
-  console.log(charge);
 
   const [chargeModalData, setChargeModalData] = useState({
     type: "",
@@ -385,7 +410,7 @@ const MessForm = () => {
   return (
     <form
       onSubmit={handleSubmit(onSubmit)}
-      className="flex flex-col space-y-4 w-full"
+      className="flex flex-col space-y-4 w-full overflow-x-hidden h-[800px] overflow-y-scroll global-scrollbar"
     >
       <Stepper step={step} />
 
@@ -438,6 +463,7 @@ const MessForm = () => {
           activeDropdown={activeDropdown}
           setActiveDropdown={setActiveDropdown}
           combineData={combineData}
+          service_type={service_type}
           // charge
           charge={charge}
           setCharge={setCharge}

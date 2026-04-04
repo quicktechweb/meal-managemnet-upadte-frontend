@@ -1,12 +1,13 @@
 import React, { useState } from "react";
-import useInstituteAuth from "../../../../../Hooks/useInstituteAuth";
-import { useInstituteUserAdminData } from "../../../../../api/cms/user.hook";
-import { FaCalendarAlt, FaCheckCircle } from "react-icons/fa";
-import { ChevronDown, Plus, X } from "lucide-react";
-import UserMealSummary from "../../../../../Components/UserMealSummary";
-import ItemsSelector from "../../../../../Components/ItemsSelector";
+import useInstituteAuth from "../Hooks/useInstituteAuth";
+import { useInstituteUserAdminData } from "../api/cms/user.hook";
+import { FaCalendarAlt } from "react-icons/fa";
+import { Plus } from "lucide-react";
 
-export default function AllMealActivity({ allWise }) {
+import DayWiseUserMealSummary from "./DayWiseUserMealSummary";
+import ItemsSelector from "./ItemsSelector";
+
+const DayWiseMealActivity = () => {
   const { user } = useInstituteAuth();
   const { data } = useInstituteUserAdminData(user?.user?.institute_id);
 
@@ -35,6 +36,22 @@ export default function AllMealActivity({ allWise }) {
     return days;
   };
 
+  // 7 days with month
+  const getNext7DaysWithDates = () => {
+    const days = [];
+    const today = new Date();
+    for (let i = 0; i < 7; i++) {
+      const d = new Date(today);
+      d.setDate(today.getDate() + i);
+      days.push({
+        day: weekDays[d.getDay()],
+        date: d.getDate(),
+        month: d.toLocaleString("default", { month: "short" }),
+      });
+    }
+    return days;
+  };
+
   const [selectedDays, setSelectedDays] = useState([getNext7Days()[0]]);
   const [activeDayView, setActiveDayView] = useState(getNext7Days()[0]);
 
@@ -48,7 +65,7 @@ export default function AllMealActivity({ allWise }) {
   const [openKey, setOpenKey] = useState(null);
   const [selectedGroupMap, setSelectedGroupMap] = useState({});
   const [useAlternativeMap, setUseAlternativeMap] = useState({});
-  // ON/OFF toggle — defaultON (true)
+  //  Default OFF (undefined/false = OFF)
   const [mealOnOffMap, setMealOnOffMap] = useState({});
 
   const handleSelect = (key, groupIndex) => {
@@ -62,23 +79,22 @@ export default function AllMealActivity({ allWise }) {
     setOpenKey(null);
   };
 
-  // ON/OFF toggle handler
+  //  Updated toggle — default OFF
   const handleMealToggle = (key) => {
     setMealOnOffMap((prev) => ({
       ...prev,
-
-      [key]: prev[key] === false ? true : false,
+      [key]: prev[key] !== true,
     }));
   };
 
-  const isMealOn = (key) => mealOnOffMap[key] !== false;
+  //  Default OFF — undefined/false মানে OFF
+  const isMealOn = (key) => mealOnOffMap[key] === true;
 
   // Guest Meal State
   const [guestOpenKey, setGuestOpenKey] = useState(null);
   const [guestSelectedGroupMap, setGuestSelectedGroupMap] = useState({});
   const [guestUseAlternativeMap, setGuestUseAlternativeMap] = useState({});
   const [guestQuantityMap, setGuestQuantityMap] = useState({});
-  //  which meal a add guest
   const [guestEnabledMap, setGuestEnabledMap] = useState({});
 
   const handleGuestSelect = (key, groupIndex) => {
@@ -97,7 +113,6 @@ export default function AllMealActivity({ allWise }) {
     setGuestQuantityMap((prev) => ({ ...prev, [key]: qty }));
   };
 
-  // Guest add/remove
   const handleAddGuest = (key) => {
     setGuestEnabledMap((prev) => ({ ...prev, [key]: true }));
     setGuestQuantityMap((prev) => ({ ...prev, [key]: 1 }));
@@ -105,7 +120,6 @@ export default function AllMealActivity({ allWise }) {
 
   const handleRemoveGuest = (key) => {
     setGuestEnabledMap((prev) => ({ ...prev, [key]: false }));
-    // guest data clear
     setGuestSelectedGroupMap((prev) => ({ ...prev, [key]: undefined }));
     setGuestUseAlternativeMap((prev) => ({ ...prev, [key]: false }));
     setGuestQuantityMap((prev) => ({ ...prev, [key]: 1 }));
@@ -130,9 +144,8 @@ export default function AllMealActivity({ allWise }) {
       selectedDays.includes(item?.day),
     );
 
-    // Regular meals — OFF
     const finalSelections = allSelectedMeals
-      // ?.filter((meal) => isMealOn(getKey(meal)))
+      ?.filter((meal) => isMealOn(getKey(meal)))
       ?.map((meal) => {
         const key = getKey(meal);
         const isAlternative = !!useAlternativeMap[key];
@@ -141,7 +154,7 @@ export default function AllMealActivity({ allWise }) {
         return {
           day: meal.day,
           meal_type: meal.meal_type,
-          is_on: isMealOn(getKey(meal)) ? true : false,
+          is_on: true,
           selected_items: isAlternative
             ? (meal?.alternative_items?.[altGroupIndex] ?? [])
             : (meal?.items ?? []),
@@ -166,9 +179,9 @@ export default function AllMealActivity({ allWise }) {
           quantity: guestQuantityMap[key] ?? 1,
         };
       });
-
-    console.log(finalSelections);
   };
+
+  // Meal Item Selector
 
   return (
     <div className="space-y-4">
@@ -176,7 +189,7 @@ export default function AllMealActivity({ allWise }) {
         {/* Sidebar Calendar */}
         <aside className="bg-white p-3 rounded-xl shadow w-[260px] h-[360px]">
           <div className="flex flex-col gap-1 mb-2">
-            <h2 className="flex items-center  justify-center gap-3 font-bold">
+            <h2 className="flex items-center justify-center gap-3 font-bold">
               <span>
                 <FaCalendarAlt />
               </span>
@@ -187,20 +200,19 @@ export default function AllMealActivity({ allWise }) {
             </p>
           </div>
           <div className="flex flex-col justify-center">
-            {getNext7Days().map((plan, index) => {
-              const isSelected = selectedDays.includes(plan);
-              const isViewing = activeDayView === plan;
+            {getNext7DaysWithDates().map(({ day, date, month }, index) => {
+              const isSelected = selectedDays.includes(day);
+              const isViewing = activeDayView === day;
 
               return (
                 <div
                   key={index}
                   onClick={() => {
-                    setActiveDayView(plan);
-
+                    setActiveDayView(day);
                     setSelectedDays((prev) =>
-                      prev.includes(plan)
-                        ? prev.filter((d) => d !== plan)
-                        : [...prev, plan],
+                      prev.includes(day)
+                        ? prev.filter((d) => d !== day)
+                        : [...prev, day],
                     );
                   }}
                   className={`flex items-center justify-between border-b border-gray-100 py-2 px-3 rounded-md cursor-pointer transition-colors ${
@@ -211,10 +223,17 @@ export default function AllMealActivity({ allWise }) {
                         : "hover:bg-orange-50 text-gray-700"
                   }`}
                 >
-                  <span>{plan}</span>
-
+                  <span className="font-medium">{day}</span>
+                  {/* Date */}
+                  <span
+                    className={`text-xs ${
+                      isViewing ? "text-white/80" : "text-gray-400"
+                    }`}
+                  >
+                    {date} {month}
+                  </span>
                   {isSelected && !isViewing && (
-                    <span className="w-2 h-2 rounded-full bg-orange-400" />
+                    <span className="w-2 h-2 rounded-full bg-orange-400 ml-1" />
                   )}
                 </div>
               );
@@ -305,17 +324,16 @@ export default function AllMealActivity({ allWise }) {
                     />
                   </div>
 
-                  {/* OFF OFF message */}
+                  {/* OFF message */}
                   {!isOn && (
                     <p className="text-center text-xs text-gray-400 mt-1">
                       This meal is turned OFF — won't be sent
                     </p>
                   )}
 
-                  {/* ── Guest Section ── */}
+                  {/* Guest Section */}
                   <div className="mt-3 border-t border-gray-100 pt-3">
                     {!isGuestAdded ? (
-                      // Guest  button
                       <button
                         onClick={() => handleAddGuest(key)}
                         className="flex items-center gap-1.5 text-xs text-orange-500 hover:text-orange-600 font-semibold"
@@ -324,13 +342,11 @@ export default function AllMealActivity({ allWise }) {
                         Add Guest Meal
                       </button>
                     ) : (
-                      // Guest card
                       <div className="bg-orange-50 rounded-xl p-2">
                         <div className="flex items-center justify-between mb-2">
                           <span className="text-xs font-bold text-orange-600">
                             Guest Meal
                           </span>
-                          {/* Guest remove button */}
                           <button
                             onClick={() => handleRemoveGuest(key)}
                             className="text-gray-400 hover:text-red-500 transition-colors"
@@ -399,7 +415,7 @@ export default function AllMealActivity({ allWise }) {
           </button>
         </div>
       </div>
-      <UserMealSummary
+      <DayWiseUserMealSummary
         sortedMeals={sortedMeals}
         getKey={getKey}
         useAlternativeMap={useAlternativeMap}
@@ -407,9 +423,12 @@ export default function AllMealActivity({ allWise }) {
         guestUseAlternativeMap={guestUseAlternativeMap}
         guestEnabledMap={guestEnabledMap}
         getNext7Days={getNext7Days}
+        getNext7DaysWithDates={getNext7DaysWithDates()}
         guestSelectedGroupMap={guestSelectedGroupMap}
         isMealOn={isMealOn}
       />
     </div>
   );
-}
+};
+
+export default DayWiseMealActivity;

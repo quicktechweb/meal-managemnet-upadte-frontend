@@ -18,7 +18,6 @@ import { GrRestaurant } from "react-icons/gr";
 import { FaUser } from "react-icons/fa";
 
 const DashboardSideBar = ({ setIsOpenSidebar }) => {
- 
   const [openSections, setOpenSections] = useState({});
 
   const toggleSection = (key) => {
@@ -30,20 +29,20 @@ const DashboardSideBar = ({ setIsOpenSidebar }) => {
 
   // Sidebar configuration
   const sidebarItems = [
-    {
-      key: "Admin",
-      title: "Admin",
-      icon: FaHome,
-      roles: ["SUPERadmin"],
-      links: [
-        // { title: "Make Admin", path: "/dashboard/makeadmin" },
-        {
-          title: "Super Admin",
-          icon: FaDesktop,
-          path: "/dashboard/superadmin",
-        },
-      ],
-    },
+    // {
+    //   key: "Admin",
+    //   title: "Admin",
+    //   icon: FaHome,
+    //   roles: ["SUPERadmin"],
+    //   links: [
+    //     // { title: "Make Admin", path: "/dashboard/makeadmin" },
+    //     {
+    //       title: "Super Admin",
+    //       icon: FaDesktop,
+    //       path: "/dashboard/superadmin",
+    //     },
+    //   ],
+    // },
 
     //   {
     //   key: "CompanySettings",

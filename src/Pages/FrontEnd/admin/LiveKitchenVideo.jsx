@@ -11,8 +11,6 @@ import { Plus } from "lucide-react";
 const LiveKitchenVideoTable = () => {
   const { data: liveKitchenVideo } = useAllLiveKitchenVideo();
 
-  console.log(liveKitchenVideo);
-
   const { mutateAsync, isPending } = useDeleteKitchenvideo();
 
   const handleDelete = async (item) => {

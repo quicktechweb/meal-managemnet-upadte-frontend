@@ -6,6 +6,8 @@ import {
   FaSignOutAlt,
   FaShoppingBag,
 } from "react-icons/fa";
+import { MdReviews } from "react-icons/md";
+
 import { NavLink, useLocation, useNavigate } from "react-router-dom";
 import PropTypes from "prop-types";
 import { ChevronRight } from "lucide-react";
@@ -117,6 +119,11 @@ const AdminDashboardSidebar = ({ setIsOpenSidebar }) => {
           icon: FaShoppingBag,
           path: "/admin/dashboard/faq",
         },
+        // {
+        //   title: "Home Review",
+        //   icon: MdReviews,
+        //   path: "/admin/dashboard/home-review",
+        // },
       ],
     },
     {

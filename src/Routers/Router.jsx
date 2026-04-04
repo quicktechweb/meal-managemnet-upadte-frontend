@@ -85,6 +85,9 @@ import InstituteAdminProfile from "../Pages/FrontEnd/institute/admin/InstituteAd
 import Items from "../Pages/FrontEnd/admin/Items";
 import AddItem from "../Pages/FrontEnd/admin/AddItem";
 import UpdateItem from "../Pages/FrontEnd/admin/UpdateItem";
+import InstituteAdminProfileUpdate from "../Pages/FrontEnd/institute/admin/InstituteAdminProfileUpdate";
+import InstituteAdminServiceUpdate from "../Pages/FrontEnd/institute/admin/InstituteAdminServiceUpdate";
+import HomeReview from "../Pages/FrontEnd/admin/HomeReview";
 
 const router = createBrowserRouter([
   {
@@ -315,6 +318,14 @@ const router = createBrowserRouter([
         path: "dashboard/institute",
         element: <InstituteAdminProfile />,
       },
+      {
+        path: "dashboard/profile-update/:id",
+        element: <InstituteAdminProfileUpdate />,
+      },
+      {
+        path: "dashboard/service-update/:id",
+        element: <InstituteAdminServiceUpdate />,
+      },
     ],
   },
 
@@ -488,13 +499,17 @@ const router = createBrowserRouter([
         element: <Items />,
       },
       {
-        path:"add-item",
-         element:<AddItem/>
+        path: "add-item",
+        element: <AddItem />,
       },
       {
-        path:"update-item/:id",
-         element:<UpdateItem/>
-      }
+        path: "update-item/:id",
+        element: <UpdateItem />,
+      },
+      {
+        path: "home-review",
+        element: <HomeReview />,
+      },
     ],
   },
 ]);

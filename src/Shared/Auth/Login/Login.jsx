@@ -6,8 +6,10 @@ import { IoMdEyeOff } from "react-icons/io";
 import { TiTick } from "react-icons/ti";
 import { useInstituteLogin } from "../../../api/auth/auth.hook";
 import { useForm } from "react-hook-form";
+import { useGetWebsiteData } from "../../../api/admin/admin.api";
 
 const Login = () => {
+  const { data: siteData } = useGetWebsiteData();
   const [passwordShow, setPasswordShow] = useState(false);
   const { register, handleSubmit, reset } = useForm();
 
@@ -35,6 +37,9 @@ const Login = () => {
     await mutateAsync(data);
     reset();
   };
+
+  console.log(siteData);
+
   return (
     <div className="min-h-screen bg-white flex items-center justify-center w-full ">
       <div className="flex flex-row-reverse h-auto  justify-center items-center shadow-2xl rounded-2xl ">
@@ -92,14 +97,21 @@ const Login = () => {
 
         {/*  Login Form */}
         <div className="relative w-full max-w-full md:max-w-[450px] h-full bg-white overflow-hidden p-4 lg:p-8 flex flex-col rounded-tl-2xl rounded-bl-2xl">
-          <div className="mt-4">
+          <div className="mt-4 flex items-center justify-center flex-col">
+            <Link to={"/"} className="w-[150px] h-20">
+              <img
+                src={siteData?.logoUrl}
+                alt={siteData?.siteName}
+                className="w-full h-full"
+              />
+            </Link>
             <h2 className="text-3xl lg:text-5xl font-serif font-bold text-black ">
               Login
             </h2>
           </div>
 
           <div className="mt-1.5 lg:mt-3">
-            <h3 className="text-sm lg:text-base  text-[#818181]">
+            <h3 className="text-sm lg:text-base text-center text-[#818181]">
               Please enter your login details to sign in.
             </h3>
           </div>

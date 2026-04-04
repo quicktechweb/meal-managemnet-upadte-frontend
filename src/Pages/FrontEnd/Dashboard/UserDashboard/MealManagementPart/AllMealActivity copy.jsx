@@ -54,7 +54,7 @@ export const schedule2 = [
   },
 ];
 
-export default function AllMealActivity({}) {
+export default function AllMealActivitys({}) {
   const [selectedMeals, setSelectedMeals] = useState({
     breakfast: null,
     lunch: null,

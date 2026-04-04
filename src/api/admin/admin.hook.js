@@ -283,3 +283,8 @@ export const UpdateitemFunction = async ({ id, payload }) => {
   const { data } = await axiosPublic.put(`/api/items/${id}`, payload);
   return data;
 };
+
+export const allServiceTypeFunction = async () => {
+  const { data } = await axiosPublic.get("/api/service-type");
+  return data?.data;
+};
