@@ -44,6 +44,7 @@ const Features = () => {
           <thead className="bg-slate-50">
             <tr className="text-left text-sm text-slate-600">
               <th className="px-6 py-4 font-semibold">Feature Name</th>
+              <th className="px-6 py-4 font-semibold">Service Type</th>
               <th className="px-6 py-4 font-semibold">Kitchen</th>
 
               <th className="px-6 py-4 font-semibold">Price</th>
@@ -59,6 +60,10 @@ const Features = () => {
               >
                 <td className="px-6 py-4 font-semibold text-slate-800">
                   {item.name}
+                </td>
+
+                <td className="px-6 py-4 font-semibold text-slate-800">
+                  {item?.service_type?.title}
                 </td>
 
                 <td className="px-6 py-4">

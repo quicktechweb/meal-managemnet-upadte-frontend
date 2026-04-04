@@ -213,6 +213,9 @@ const NormalUserForm = () => {
         }}
         render={({ field: { onChange, value }, fieldState: { error } }) => (
           <div className="space-y-1">
+            <label className="text-gray-600 text-sm font-semibold mb-3">
+              Gender
+            </label>
             <CustomSelect
               label="Gender"
               options={genderOptions}
@@ -241,6 +244,9 @@ const NormalUserForm = () => {
         }}
         render={({ field: { onChange, value }, fieldState: { error } }) => (
           <div className="space-y-1">
+            <label className="text-gray-600 text-sm font-semibold mb-3">
+              Religion
+            </label>
             <CustomSelect
               label="Religion"
               options={religionOptions}
@@ -261,20 +267,25 @@ const NormalUserForm = () => {
         )}
       />
 
-      <FormInput
-        icon={Mail}
-        type="date"
-        placeholder="Date of birth"
-        name="date"
-        validation={{
-          required: "Date of birth Required",
-        }}
-      />
+      <div>
+        <label className="text-gray-600 text-sm font-semibold mb-3">
+          Date of Birth
+        </label>
+        <FormInput
+          icon={Mail}
+          type="date"
+          placeholder="Date of birth"
+          name="date"
+          validation={{
+            required: "Date of birth Required",
+          }}
+        />
+      </div>
 
       <DynamicDropdown control={control} />
 
       <div className="w-full flex flex-col gap-2">
-        <h4 className="text-[18px] font-semibold text-gray-500">Address</h4>
+        <label className="text-gray-600 text-sm font-semibold ">Address</label>
 
         {/* Country */}
         <Controller
@@ -395,7 +406,7 @@ const NormalUserForm = () => {
       </div> */}
 
       <div className="flex flex-col gap-2">
-        <h4 className="text-[18px] font-semibold text-gray-500">Contact</h4>
+        <label className="text-gray-600 text-sm font-semibold ">Address</label>
         <FormInput
           icon={Mail}
           type="email"
@@ -417,7 +428,7 @@ const NormalUserForm = () => {
       </div>
 
       <div className="flex flex-col gap-1">
-        <h4 className="text-[18px] font-semibold text-gray-500">Document</h4>
+        <label className="text-gray-600 text-sm font-semibold ">Document</label>
         <DocumentUpload />
       </div>
 

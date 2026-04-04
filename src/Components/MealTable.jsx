@@ -1,6 +1,9 @@
 import { useState } from "react";
 import Select from "react-select";
 import { useGetItems } from "../api/admin/admin.api";
+import { components } from "react-select";
+import toast from "react-hot-toast";
+import { FaMinus, FaPlus } from "react-icons/fa";
 
 const MealScheduleTable = ({
   totalPrice,
@@ -23,6 +26,9 @@ const MealScheduleTable = ({
   const [selectedDay, setSelectedDay] = useState("");
   const [selectedMeal, setSelectedMeal] = useState("");
   const [selectedOptions, setSelectedOptions] = useState([]);
+  const [alternativeGroups, setAlternativeGroups] = useState([[]]);
+  const [activeAlternatives, setActiveAlternatives] = useState([]);
+  
 
   const [startTime, setStartTime] = useState("");
   const [endTime, setEndTime] = useState("");
@@ -30,14 +36,22 @@ const MealScheduleTable = ({
 
   const [selectedItem, setSelectedItem] = useState(null);
 
-  console.log(selectedItem);
-
   const itemOptions = items?.map((item) => ({
     value: item,
     label: item.title,
     price: +item.price + +totalPrice,
     image: item.image,
     ingridents: item.ingridents,
+    video: item.video,
+  }));
+
+  const alternativeOptions = items?.map((item) => ({
+    value: item,
+    label: item.title,
+    price: +item.price + +totalPrice,
+    image: item.image,
+    ingridents: item.ingridents,
+    video: item.video,
   }));
 
   // Custom option
@@ -72,6 +86,76 @@ const MealScheduleTable = ({
           Details
         </button>
       </div>
+    );
+  };
+
+  const alternativeCustomOption = (props) => {
+    const { data } = props;
+
+    return (
+      <div
+        {...props.innerProps}
+        className="flex items-center justify-between gap-3 p-2 hover:bg-gray-100"
+      >
+        <div className="flex items-center gap-3">
+          <img
+            src={data.image}
+            alt={data.label}
+            className="w-10 h-10 rounded object-cover"
+          />
+
+          <div className="flex flex-col">
+            <span className="font-semibold">{data.label}</span>
+            <span className="text-xs text-orange-600">৳{data.price}</span>
+          </div>
+        </div>
+
+        <button
+          onClick={(e) => {
+            e.stopPropagation();
+            setSelectedItem(data);
+          }}
+          className="text-xs bg-orange-500 text-white px-2 py-1 rounded"
+        >
+          Details
+        </button>
+      </div>
+    );
+  };
+
+  const CustomMultiValueLabel = (props) => {
+    const { data } = props;
+
+    return (
+      <components.MultiValueLabel {...props}>
+        <div className="flex items-center gap-1">
+          <img
+            src={data.image}
+            alt={data.label}
+            className="w-4 h-4 rounded object-cover"
+          />
+          <span>{data.label}</span>
+          <span className="text-orange-600 text-xs">(৳{data.price})</span>
+        </div>
+      </components.MultiValueLabel>
+    );
+  };
+
+  const alternativeCustomMultiValueLabel = (props) => {
+    const { data } = props;
+
+    return (
+      <components.MultiValueLabel {...props}>
+        <div className="flex items-center gap-1">
+          <img
+            src={data.image}
+            alt={data.label}
+            className="w-4 h-4 rounded object-cover"
+          />
+          <span>{data.label}</span>
+          <span className="text-orange-600 text-xs">(৳{data.price})</span>
+        </div>
+      </components.MultiValueLabel>
     );
   };
 
@@ -113,9 +197,24 @@ const MealScheduleTable = ({
 
     // Prepare items
     const selectedItemsList = selectedOptions.map((opt) => ({
-      title: opt.title,
-      price: +opt.value.price + +totalPrice,
+      title: opt.label,
+      price: +opt.price + +totalPrice,
+      image: opt.image,
+      video: opt.video,
+      ingridents: opt.ingridents,
     }));
+
+    //alternative selected item list
+
+    const alternativeSelectedItemsList = alternativeGroups.map((group) =>
+      group.map((opt) => ({
+        title: opt.label,
+        price: +opt.price + +totalPrice,
+        image: opt.image,
+        video: opt.video,
+        ingridents: opt.ingridents,
+      })),
+    );
 
     // Add to scheduleList
     setScheduleList((prev) => [
@@ -126,8 +225,15 @@ const MealScheduleTable = ({
         start_time: startTime,
         end_time: endTime,
         items: selectedItemsList,
+        alternative_items: alternativeSelectedItemsList,
       },
     ]);
+
+    alternativeSelectedItemsList.forEach((_, idx) => {
+      setActiveAlternatives((prev) =>
+        prev.includes(idx) ? prev : [...prev, idx],
+      );
+    });
 
     // Update table map
     setScheduleMap((prev) => ({
@@ -150,6 +256,7 @@ const MealScheduleTable = ({
 
     // Reset form
     setSelectedOptions([]);
+    setAlternativeGroups([[]]);
     setStartTime("");
     setEndTime("");
     setNewMealInput("");
@@ -242,8 +349,88 @@ const MealScheduleTable = ({
             options={itemOptions}
             value={selectedOptions}
             onChange={setSelectedOptions}
-            components={{ Option: CustomOption }}
+            components={{
+              Option: CustomOption,
+              MultiValueLabel: CustomMultiValueLabel,
+            }}
           />
+        </div>
+
+        <div className="mt-4">
+          <label className="block text-sm font-semibold text-gray-700 mb-2">
+            Alternative Items
+          </label>
+
+          {alternativeGroups.map((group, groupIndex) => (
+            <div key={groupIndex} className="flex items-center gap-2 mb-3">
+              <div className="flex-1">
+                <Select
+                  isMulti
+                  options={alternativeOptions}
+                  value={group}
+                  onChange={(newValues) => {
+                    if (newValues.length <= selectedOptions.length) {
+                      const updated = [...alternativeGroups];
+                      updated[groupIndex] = newValues;
+                      setAlternativeGroups(updated);
+                    } else {
+                      toast.error(
+                        `Maximum ${selectedOptions.length}টি alternative item select করা যাবে!`,
+                        {
+                          duration: 3000,
+                          position: "top-right",
+                          style: {
+                            background: "#f97316",
+                            color: "#fff",
+                            fontWeight: "600",
+                          },
+                          iconTheme: {
+                            primary: "#fff",
+                            secondary: "#f97316",
+                          },
+                        },
+                      );
+                    }
+                  }}
+                  isDisabled={selectedOptions.length === 0}
+                  placeholder={
+                    selectedOptions.length === 0
+                      ? "First select items above..."
+                      : `Alternative group ${groupIndex + 1}...`
+                  }
+                  components={{
+                    Option: alternativeCustomOption,
+                    MultiValueLabel: alternativeCustomMultiValueLabel,
+                  }}
+                />
+              </div>
+
+              {/* Remove button */}
+              {groupIndex > 0 && (
+                <button
+                  onClick={() => {
+                    const updated = alternativeGroups.filter(
+                      (_, i) => i !== groupIndex,
+                    );
+                    setAlternativeGroups(updated);
+                  }}
+                  className="w-8 h-8 rounded-full bg-red-500 text-white cursor-pointer flex items-center justify-center"
+                >
+                  <FaMinus />
+                </button>
+              )}
+
+              {/* Add button */}
+              {groupIndex === alternativeGroups.length - 1 && (
+                <button
+                  onClick={() => setAlternativeGroups((prev) => [...prev, []])}
+                  className="w-8 h-8 rounded-full bg-orange-500 text-white cursor-pointer flex items-center justify-center"
+                >
+                  <FaPlus />
+                </button>
+              )}
+            </div>
+          ))}
         </div>
 
         <div className="grid grid-cols-2 gap-6 mt-4">
@@ -336,15 +523,51 @@ const MealScheduleTable = ({
                     const schedule = scheduleList.find(
                       (s) => s.day === day && s.meal_type === meal,
                     );
+
                     return (
                       <td key={meal} className="py-6 px-6">
                         {schedule ? (
-                          <div className="flex items-center flex-wrap max-w-[350px] gap-1">
-                            {schedule.items.map((item) => (
-                              <p key={item.title}>
-                                {item.title} (৳{item.price})
-                              </p>
-                            ))}
+                          <div className="flex flex-col gap-3">
+                            {/* Main Items */}
+                            <div className="flex flex-wrap gap-1">
+                              {schedule.items.map((item) => (
+                                <span
+                                  key={item.title}
+                                  className="bg-orange-100 text-orange-700 text-xs px-2 py-1 rounded-full font-medium"
+                                >
+                                  {item.title} (৳{item.price})
+                                </span>
+                              ))}
+                            </div>
+
+                            {/* Active Alternative Groups */}
+                            {activeAlternatives.length > 0 && (
+                              <div className="flex flex-col gap-2 border-t border-gray-200 pt-2">
+                                {activeAlternatives.map((altIdx) => {
+                                  const group =
+                                    schedule.alternative_items?.[altIdx];
+                                  if (!group || group.length === 0) return null;
+                                  return (
+                                    <div
+                                      key={altIdx}
+                                      className="flex flex-wrap gap-1 items-center"
+                                    >
+                                      <span className="text-xs text-gray-400 font-semibold mr-1">
+                                        Alt {altIdx + 1}:
+                                      </span>
+                                      {group.map((item) => (
+                                        <span
+                                          key={item.title}
+                                          className="bg-blue-50 text-blue-600 text-xs px-2 py-1 rounded-full font-medium"
+                                        >
+                                          {item.title} (৳{item.price})
+                                        </span>
+                                      ))}
+                                    </div>
+                                  );
+                                })}
+                              </div>
+                            )}
                           </div>
                         ) : (
                           <span className="text-gray-400">No Schedule yet</span>
@@ -411,17 +634,28 @@ const MealScheduleTable = ({
                   </span>
                 </div>
 
-                <div className="space-y-3">
-                  <div
-                    dangerouslySetInnerHTML={{
-                      __html:
-                        selectedItem?.ingridents || "No ingredients listed.",
-                    }}
-                    className="text-gray-600 leading-relaxed text-sm 
+                <div className="flex justify-between">
+                  <div className="space-y-3">
+                    <div
+                      dangerouslySetInnerHTML={{
+                        __html:
+                          selectedItem?.ingridents || "No ingredients listed.",
+                      }}
+                      className="text-gray-600 leading-relaxed text-sm 
               [&_ul]:list-disc [&_ul]:pl-5 [&_ul]:space-y-1 
               [&_ol]:list-decimal [&_ol]:pl-5 [&_ol]:space-y-1 
               [&_h1]:text-lg [&_h2]:text-lg [&_h3]:text-md [&_h1]:font-bold [&_h4]:text-md"
-                  />
+                    />
+                  </div>
+
+                  <div className="w-[300px] h-[190px] aspect-video rounded-md">
+                    <video
+                      src={selectedItem.video}
+                      controls
+                      autoPlay
+                      className="w-full h-full"
+                    />
+                  </div>
                 </div>
               </div>
 

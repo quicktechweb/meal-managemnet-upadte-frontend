@@ -20,3 +20,13 @@ export const instituteUserMealTypeFunction = async () => {
   const { data } = await axiosSecure("/api/user-meal-type-lists");
   return data;
 };
+
+export const instituteUserAdminDataFunction = async (id) => {
+  const { data } = await axiosPublic.get(`/api/insituteuser-admin-data/${id}`);
+  return data?.data;
+};
+
+export const instituteCreateUserMealFunction = async (payload) => {
+  const { data } = await axiosPublic.post("/api/create-user-meal", payload);
+  return data;
+};

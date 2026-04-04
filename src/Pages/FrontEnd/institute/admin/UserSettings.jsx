@@ -44,9 +44,9 @@ const UserSettings = () => {
 
               {/* Action Buttons */}
               <div className="flex flex-wrap gap-2 pt-4 border-t border-gray-50">
-                <button className="flex items-center gap-1 px-3 py-1.5 bg-indigo-50 text-indigo-600 rounded-md text-xs font-medium hover:bg-indigo-100 transition-colors cursor-pointer">
+                {/* <button className="flex items-center gap-1 px-3 py-1.5 bg-indigo-50 text-indigo-600 rounded-md text-xs font-medium hover:bg-indigo-100 transition-colors cursor-pointer">
                   <Edit3 size={14} /> Edit
-                </button>
+                </button> */}
                 <button className="flex items-center gap-1 px-3 py-1.5 bg-emerald-50 text-emerald-600 rounded-md text-xs font-medium hover:bg-emerald-100 transition-colors cursor-pointer">
                   <Plus size={14} /> Add
                 </button>

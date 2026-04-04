@@ -1,38 +1,12 @@
 import { configureStore, combineReducers } from "@reduxjs/toolkit";
-
-import {
-  persistStore,
-  persistReducer,
-  FLUSH,
-  REHYDRATE,
-  PAUSE,
-  PERSIST,
-  PURGE,
-  REGISTER,
-} from "redux-persist";
-
-import storage from "redux-persist/lib/storage";
 import cartSlice from "../feature/cartSlice";
-
-const rootPersistConfig = {
-  key: "root",
-  storage,
-};
+import mealReducer from "../feature/mealSlice";
 
 const rootReducer = combineReducers({
   cart: cartSlice,
+  meal: mealReducer,
 });
-
-const persistedReducer = persistReducer(rootPersistConfig, rootReducer);
 
 export const store = configureStore({
-  reducer: persistedReducer,
-  middleware: (getDefaultMiddleware) =>
-    getDefaultMiddleware({
-      serializableCheck: {
-        ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
-      },
-    }),
+  reducer: rootReducer,
 });
-
-export const persistor = persistStore(store);
