@@ -4,15 +4,15 @@ import { Link } from "react-router-dom";
 
 import { FiEdit } from "react-icons/fi";
 import { MdDelete } from "react-icons/md";
-import { useAllPackage, useDeleteItem } from "../../../api/admin/admin.api";
+import { useAllPackage, usePackageDelete } from "../../../api/admin/admin.api";
 
 const Packages = () => {
   const { data, isLoading } = useAllPackage();
 
-  const { mutateAsync, isPending } = useDeleteItem();
+  const { mutateAsync, isPending } = usePackageDelete();
 
   const handleDelete = async (item) => {
-    await mutateAsync(item?._id);
+    await mutateAsync(item);
   };
 
   return (
@@ -106,9 +106,9 @@ const Packages = () => {
                       </Link>
 
                       <button
-                        onClick={() => handleDelete(pkg)}
+                        onClick={() => handleDelete(pkg?._id)}
                         disabled={isPending}
-                        className="text-slate-600 hover:text-red-500 transition disabled:opacity-50"
+                        className="text-slate-600 hover:text-red-500 transition disabled:opacity-50 cursor-pointer"
                       >
                         <MdDelete />
                       </button>

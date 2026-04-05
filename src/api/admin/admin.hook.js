@@ -298,3 +298,8 @@ export const allPackageFunction = async () => {
   const { data } = await axiosPublic.get("/api/packages");
   return data?.data;
 };
+
+export const packageDeleteFunction = async (id) => {
+  const { data } = await axiosPublic.delete(`/api/packages/${id}`);
+  return data;
+};

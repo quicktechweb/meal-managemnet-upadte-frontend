@@ -46,6 +46,7 @@ import {
   getallutilitiesfunction,
   getItemsFunction,
   getWebsiteSetting,
+  packageDeleteFunction,
   pendingInstituteUserFunction,
   singlePageFunction,
   updateAppDataSectionFunction,
@@ -825,5 +826,21 @@ export const useAllPackage = () => {
     queryKey: "all-packages",
     queryFn: allPackageFunction,
     retry: false,
+  });
+};
+
+export const usePackageDelete = (id) => {
+  const query = useQueryClient();
+
+  return useMutation({
+    mutationKey: ["delete-package"],
+    mutationFn: (id) => packageDeleteFunction(id),
+    onSuccess: (data) => {
+      toast.success(data?.message);
+      query.invalidateQueries(["all-packages"]);
+    },
+    onError: (err) => {
+      toast.error(err?.response?.data?.message);
+    },
   });
 };
