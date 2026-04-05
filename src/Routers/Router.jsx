@@ -90,6 +90,7 @@ import InstituteAdminServiceUpdate from "../Pages/FrontEnd/institute/admin/Insti
 import HomeReview from "../Pages/FrontEnd/admin/HomeReview";
 import AddPackage from "../Components/admin/AddPackage";
 import Packages from "../Pages/FrontEnd/admin/Packages";
+import UpdatePackage from "../Pages/FrontEnd/admin/UpdatePackage";
 
 const router = createBrowserRouter([
   {
@@ -520,6 +521,10 @@ const router = createBrowserRouter([
         path: "packages",
         element: <Packages />,
       },
+      {
+        path: "update-package/:id",
+        element:<UpdatePackage/>
+      }
     ],
   },
 ]);

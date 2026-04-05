@@ -56,6 +56,7 @@ import {
   updateFeatureFunction,
   UpdateitemFunction,
   updatenoticeFunction,
+  updatePackageFunction,
   updatePageFunction,
   updateScheduleFunction,
   updateUtilitiesFunction,
@@ -829,7 +830,7 @@ export const useAllPackage = () => {
   });
 };
 
-export const usePackageDelete = (id) => {
+export const usePackageDelete = () => {
   const query = useQueryClient();
 
   return useMutation({
@@ -841,6 +842,22 @@ export const usePackageDelete = (id) => {
     },
     onError: (err) => {
       toast.error(err?.response?.data?.message);
+    },
+  });
+};
+
+export const usePackageUpdate = () => {
+  const query = useQueryClient();
+  const navigate = useNavigate();
+  return useMutation({
+    mutationKey: ["update-package"],
+    mutationFn: (payload) => updatePackageFunction(payload),
+    onSuccess: (data) => {
+      if (data?.success) {
+        toast.success(data?.message);
+        query.invalidateQueries(["all-packages"]);
+        navigate("/admin/dashboard/packages");
+      }
     },
   });
 };

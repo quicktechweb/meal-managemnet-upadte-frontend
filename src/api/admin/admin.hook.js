@@ -303,3 +303,8 @@ export const packageDeleteFunction = async (id) => {
   const { data } = await axiosPublic.delete(`/api/packages/${id}`);
   return data;
 };
+
+export const updatePackageFunction = async ({ id, payload }) => {
+  const { data } = await axiosPublic.put(`/api/packages/${id}`, payload);
+  return data;
+};

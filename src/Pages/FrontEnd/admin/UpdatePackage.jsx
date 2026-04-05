@@ -1,15 +1,20 @@
-import React, { useState } from "react";
-import { useForm, Controller } from "react-hook-form";
+import React, { useState, useEffect } from "react";
+import { useParams } from "react-router-dom";
+import {
+  useAllPackage,
+  useGetItems,
+  usePackageUpdate,
+} from "../../../api/admin/admin.api";
+import { Controller, useForm } from "react-hook-form";
 import { BiPackage } from "react-icons/bi";
 import { FaMinus, FaMoneyBill, FaPlus } from "react-icons/fa";
 import { MdRestaurantMenu } from "react-icons/md";
 import Select from "react-select";
 import { components } from "react-select";
-import { useAddPackage, useGetItems } from "../../api/admin/admin.api";
 import toast from "react-hot-toast";
 
 const dayNames = ["Sat", "Sun", "Mon", "Tue", "Wed", "Thu", "Fri"];
-// ── Custom Select components ─────────────────────────────────────
+
 const CustomOption = (props) => (
   <div
     {...props.innerProps}
@@ -43,10 +48,23 @@ const CustomMultiValueLabel = (props) => (
   </components.MultiValueLabel>
 );
 
-const AddPackage = () => {
-  const { data: items = [] } = useGetItems();
+const toOption = (item) => ({
+  value: item,
+  title: item.title,
+  label: item.title,
+  _id: item._id,
+  price: +item.price,
+  image: item.image,
+  video: item.video,
+  ingridents: item.ingridents,
+});
 
-  const { mutateAsync, isPending } = useAddPackage();
+const UpdatePackage = () => {
+  const { id } = useParams();
+
+  const { data: items = [] } = useGetItems();
+  const { data: allPackages = [], isLoading } = useAllPackage();
+  const { mutateAsync, isPending } = usePackageUpdate();
 
   const [alternativeGroups, setAlternativeGroups] = useState([[]]);
 
@@ -70,27 +88,47 @@ const AddPackage = () => {
   const selectedItems = watch("items") || [];
   const selectedDay = watch("day");
 
-  // ── Option builders ──────────────────────────────────────────────
-  const buildOptions = (list) =>
-    list.map((item) => ({
-      value: item,
-      title: item.title,
-      label: item.title,
-      _id: item._id,
-      price: +item.price,
-      image: item.image,
-      video: item.video,
-      ingridents: item.ingridents,
-    }));
+  const itemOptions = items.map(toOption);
 
-  const itemOptions = buildOptions(items);
+  // ── Populate form when package data is available ─────────────────────────
+  useEffect(() => {
+    if (!allPackages.length || !items.length) return;
 
-  // ── Alternative group handlers ───────────────────────────────────
+    const singlePackage = allPackages.find((pkg) => pkg?._id === id);
+    if (!singlePackage) return;
+
+    const resolveOptions = (storedItems = []) =>
+      storedItems
+        .map((stored) => {
+          const match = items.find(
+            (i) => i._id === (stored?._id ?? stored?.value?._id ?? stored),
+          );
+          return match ? toOption(match) : null;
+        })
+        .filter(Boolean);
+
+    reset({
+      day: singlePackage.day ?? null,
+      title: singlePackage.package_title ?? "",
+      price: singlePackage.package_price ?? "",
+      items: resolveOptions(singlePackage.items),
+    });
+
+    const existingAltGroups = singlePackage.alternative_items?.length
+      ? singlePackage.alternative_items.map((group) => resolveOptions(group))
+      : [[]];
+
+    setAlternativeGroups(existingAltGroups);
+  }, [allPackages, items, id, reset]);
+
+  // ── Alternative group handlers ───────────────────────────────────────────
   const handleAlternativeChange = (groupIndex, newValues) => {
     if (newValues.length <= selectedItems.length) {
-      const updated = [...alternativeGroups];
-      updated[groupIndex] = newValues;
-      setAlternativeGroups(updated);
+      setAlternativeGroups((prev) => {
+        const updated = [...prev];
+        updated[groupIndex] = newValues;
+        return updated;
+      });
     } else {
       toast.error(
         `Maximum ${selectedItems.length}টি alternative item select করা যাবে!`,
@@ -103,34 +141,36 @@ const AddPackage = () => {
     }
   };
 
-  // ── Submit ───────────────────────────────────────────────────────
-  const onSubmit = async (data) => {
-    const payload = {
-      day: data.day,
-      package_title: data.title,
-      package_price: data.price,
-      items: data.items,
-      alternative_items: alternativeGroups,
-    };
-
-    console.log(payload);
-
-    await mutateAsync({ ...payload });
-
-    reset();
-    setAlternativeGroups([[]]);
-  };
-
-  // ── Error border helper ──────────────────────────────────────────
   const inputClass = (hasError) =>
     `w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500/20 focus:border-transparent outline-none transition-all ${
       hasError ? "border-red-500" : "border-gray-300"
     }`;
 
+  // ── Submit ───────────────────────────────────────────────────────────────
+  const onSubmit = async (formData) => {
+    const payload = {
+      day: formData.day,
+      package_title: formData.title,
+      package_price: formData.price,
+      items: formData.items,
+      alternative_items: alternativeGroups,
+    };
+
+    await mutateAsync({ id, payload });
+  };
+
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center p-10 text-gray-500">
+        Loading...
+      </div>
+    );
+  }
+
   return (
     <div className="mx-auto p-4 bg-white rounded-xl shadow-lg border border-gray-100">
       <header className="mb-4">
-        <h2 className="text-2xl font-bold text-gray-800">Add Package</h2>
+        <h2 className="text-2xl font-bold text-gray-800">Update Package</h2>
       </header>
 
       <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4">
@@ -299,13 +339,13 @@ const AddPackage = () => {
         <button
           type="submit"
           disabled={isPending}
-          className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-lg shadow-md transform transition hover:-translate-y-0.5 active:scale-95 cursor-pointer"
+          className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-lg shadow-md transform transition hover:-translate-y-0.5 active:scale-95 cursor-pointer disabled:opacity-60"
         >
-          {isPending ? "Add Packaging.." : "Add Package"}
+          {isPending ? "Updating..." : "Update Package"}
         </button>
       </form>
     </div>
   );
 };
 
-export default AddPackage;
+export default UpdatePackage;
