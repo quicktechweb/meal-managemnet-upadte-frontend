@@ -11,6 +11,7 @@ const DayWiseUserMealSummary = ({
   guestSelectedGroupMap,
   isMealOn,
   getNext7DaysWithDates,
+  guestQuantityMap,
 }) => {
   return (
     <div className="bg-white/90 backdrop-blur-xl rounded-3xl shadow-lg p-6 mt-4 w-full">

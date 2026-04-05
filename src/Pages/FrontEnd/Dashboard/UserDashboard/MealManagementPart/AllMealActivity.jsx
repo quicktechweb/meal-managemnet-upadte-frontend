@@ -6,6 +6,8 @@ import { ChevronDown, Plus, X } from "lucide-react";
 import UserMealSummary from "../../../../../Components/UserMealSummary";
 import ItemsSelector from "../../../../../Components/ItemsSelector";
 
+export const getKey = (meal) => `${meal?.day}-${meal?.meal_type}`;
+
 export default function AllMealActivity({ allWise }) {
   const { user } = useInstituteAuth();
   const { data } = useInstituteUserAdminData(user?.user?.institute_id);
@@ -41,8 +43,6 @@ export default function AllMealActivity({ allWise }) {
   const selectedMeals = sortedMeals?.filter(
     (item) => item?.day === activeDayView,
   );
-
-  const getKey = (meal) => `${meal.day}-${meal.meal_type}`;
 
   // Regular Meal State
   const [openKey, setOpenKey] = useState(null);
@@ -284,7 +284,6 @@ export default function AllMealActivity({ allWise }) {
                     className={`mt-2 ${!isOn ? "opacity-40 pointer-events-none" : ""}`}
                   >
                     <ItemsSelector
-                      getKey={getKey}
                       meal={meal}
                       isGuest={false}
                       useAlternativeMap={useAlternativeMap}
@@ -292,7 +291,6 @@ export default function AllMealActivity({ allWise }) {
                       selectedGroupMap={selectedGroupMap}
                       guestSelectedGroupMap={guestSelectedGroupMap}
                       setGuestUseAlternativeMap={setGuestUseAlternativeMap}
-                      setGuestSelectedGroupMap={setGuestSelectedGroupMap}
                       setUseAlternativeMap={setUseAlternativeMap}
                       setSelectedGroupMap={setSelectedGroupMap}
                       openKey={openKey}
@@ -302,6 +300,7 @@ export default function AllMealActivity({ allWise }) {
                       guestOpenKey={guestOpenKey}
                       handleSelect={handleSelect}
                       handleCheckboxToggle={handleCheckboxToggle}
+                      setGuestOpenKey={setGuestOpenKey}
                     />
                   </div>
 
@@ -313,7 +312,7 @@ export default function AllMealActivity({ allWise }) {
                   )}
 
                   {/* ── Guest Section ── */}
-                  <div className="mt-3 border-t border-gray-100 pt-3">
+                  <div className="mt-3 border-t border-gray-100 pt-3 w-full">
                     {!isGuestAdded ? (
                       // Guest  button
                       <button
@@ -325,21 +324,39 @@ export default function AllMealActivity({ allWise }) {
                       </button>
                     ) : (
                       // Guest card
-                      <div className="bg-orange-50 rounded-xl p-2">
-                        <div className="flex items-center justify-between mb-2">
-                          <span className="text-xs font-bold text-orange-600">
+                      <div className="bg-orange-50 rounded-xl p-2 w-full">
+                        <div cItemSelectorlassName="flex items-center justify-between w-full">
+                          <div className="text-xs w-[90%] inline-block font-bold text-orange-600">
                             Guest Meal
-                          </span>
+                          </div>
                           {/* Guest remove button */}
                           <button
                             onClick={() => handleRemoveGuest(key)}
-                            className="text-gray-400 hover:text-red-500 transition-colors"
+                            className="text-gray-400 cursor-pointer hover:text-red-500 transition-colors"
                           >
                             <X size={14} />
                           </button>
                         </div>
 
-                        <ItemSelector meal={meal} isGuest={true} />
+                        <ItemsSelector
+                          meal={meal}
+                          isGuest={true}
+                          useAlternativeMap={useAlternativeMap}
+                          guestUseAlternativeMap={guestUseAlternativeMap}
+                          selectedGroupMap={selectedGroupMap}
+                          guestSelectedGroupMap={guestSelectedGroupMap}
+                          setGuestUseAlternativeMap={setGuestUseAlternativeMap}
+                          setUseAlternativeMap={setUseAlternativeMap}
+                          setSelectedGroupMap={setSelectedGroupMap}
+                          openKey={openKey}
+                          setOpenKey={setOpenKey}
+                          handleGuestSelect={handleGuestSelect}
+                          handleGuestCheckboxToggle={handleGuestCheckboxToggle}
+                          guestOpenKey={guestOpenKey}
+                          handleSelect={handleSelect}
+                          handleCheckboxToggle={handleCheckboxToggle}
+                          setGuestOpenKey={setGuestOpenKey}
+                        />
 
                         {/* Quantity */}
                         <div className="flex items-center gap-2 mt-2">
@@ -409,6 +426,7 @@ export default function AllMealActivity({ allWise }) {
         getNext7Days={getNext7Days}
         guestSelectedGroupMap={guestSelectedGroupMap}
         isMealOn={isMealOn}
+        guestQuantityMap={guestQuantityMap}
       />
     </div>
   );

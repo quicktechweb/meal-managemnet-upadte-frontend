@@ -163,22 +163,12 @@ const MessForm = () => {
     return total + billPrice;
   }, 0);
 
-  console.log(utilityBills, "utility bills");
-
-  console.log(totalUtilityPrice, "total service feature price");
-
   const totalServiceFeaturePrice = serviceFeatures?.reduce(
     (total, feature) => total + +feature?.price,
     0,
   );
 
-  console.log(serviceFeatures, "service features");
-
-  console.log(totalServiceFeaturePrice, "total service feature price");
-
   const totalPrice = +totalUtilityPrice + totalServiceFeaturePrice;
-
-  console.log(totalPrice, "total price");
 
   // step 3
 
