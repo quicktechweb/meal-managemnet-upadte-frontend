@@ -89,6 +89,7 @@ import InstituteAdminProfileUpdate from "../Pages/FrontEnd/institute/admin/Insti
 import InstituteAdminServiceUpdate from "../Pages/FrontEnd/institute/admin/InstituteAdminServiceUpdate";
 import HomeReview from "../Pages/FrontEnd/admin/HomeReview";
 import AddPackage from "../Components/admin/AddPackage";
+import Packages from "../Pages/FrontEnd/admin/Packages";
 
 const router = createBrowserRouter([
   {
@@ -514,6 +515,10 @@ const router = createBrowserRouter([
       {
         path: "add-package",
         element: <AddPackage />,
+      },
+      {
+        path: "packages",
+        element: <Packages />,
       },
     ],
   },

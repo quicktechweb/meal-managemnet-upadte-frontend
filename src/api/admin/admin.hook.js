@@ -288,3 +288,8 @@ export const allServiceTypeFunction = async () => {
   const { data } = await axiosPublic.get("/api/service-type");
   return data?.data;
 };
+
+export const createPackageFunction = async (payload) => {
+  const { data } = await axiosPublic.post("/api/create-packages",payload);
+  return data;
+};

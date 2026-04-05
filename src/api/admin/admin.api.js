@@ -18,6 +18,7 @@ import {
   chooseusBannerFunction,
   chooseusListsFunction,
   createItemFunction,
+  createPackageFunction,
   createWebsiteSetting,
   deleteAppDataSectionFunction,
   deletebannerFunction,
@@ -793,11 +794,27 @@ export const useUpdateItem = () => {
   });
 };
 
-
 export const useServiceType = () => {
-   return useQuery({
-     queryKey: "all-service-type",
-     queryFn: allServiceTypeFunction,
-     retry: false,
-   });
-}
+  return useQuery({
+    queryKey: "all-service-type",
+    queryFn: allServiceTypeFunction,
+    retry: false,
+  });
+};
+
+export const useAddPackage = () => {
+  const query = useQueryClient();
+  const navigate = useNavigate();
+  return useMutation({
+    mutationKey: ["add-package"],
+    mutationFn: (payload) => createPackageFunction(payload),
+    onSuccess: (data) => {
+      toast.success(data?.message);
+      query.invalidateQueries(["get-packages"]);
+      navigate("/admin/dashboard/packages");
+    },
+    onError: (err) => {
+      toast.error(err?.response?.data?.message);
+    },
+  });
+};

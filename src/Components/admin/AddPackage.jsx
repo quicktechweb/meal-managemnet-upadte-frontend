@@ -5,7 +5,7 @@ import { FaMinus, FaMoneyBill, FaPlus } from "react-icons/fa";
 import { MdRestaurantMenu } from "react-icons/md";
 import Select from "react-select";
 import { components } from "react-select";
-import { useGetItems } from "../../api/admin/admin.api";
+import { useAddPackage, useGetItems } from "../../api/admin/admin.api";
 import toast from "react-hot-toast";
 
 const dayNames = ["Sat", "Sun", "Mon", "Tue", "Wed", "Thu", "Fri"];
@@ -45,6 +45,11 @@ const CustomMultiValueLabel = (props) => (
 
 const AddPackage = () => {
   const { data: items = [] } = useGetItems();
+
+  console.log(items);
+
+  const { mutateAsync, isPending } = useAddPackage();
+
   const [alternativeGroups, setAlternativeGroups] = useState([[]]);
 
   const {
@@ -71,9 +76,12 @@ const AddPackage = () => {
   const buildOptions = (list) =>
     list.map((item) => ({
       value: item,
+      title: item.title,
       label: item.title,
       price: +item.price,
       image: item.image,
+      video: item.video,
+      ingridents: item.ingridents,
     }));
 
   const itemOptions = buildOptions(items);
@@ -97,15 +105,18 @@ const AddPackage = () => {
   };
 
   // ── Submit ───────────────────────────────────────────────────────
-  const onSubmit = (data) => {
+  const onSubmit = async (data) => {
     const payload = {
       day: data.day,
-      title: data.title,
-      price: data.price,
+      package_title: data.title,
+      package_price: data.price,
       items: data.items,
-      alternativeGroups,
+      alternative_items: alternativeGroups,
     };
-    console.log("Submitted:", payload);
+
+    console.log(payload);
+
+    await mutateAsync({ ...payload });
 
     reset();
     setAlternativeGroups([[]]);
@@ -276,7 +287,7 @@ const AddPackage = () => {
                 <button
                   type="button"
                   onClick={() => setAlternativeGroups((prev) => [...prev, []])}
-                  className="w-8 h-8 rounded-full bg-orange-500 text-white flex items-center justify-center"
+                  className="w-8 h-8 rounded-full bg-blue-500 text-white flex items-center justify-center"
                 >
                   <FaPlus />
                 </button>
@@ -288,9 +299,10 @@ const AddPackage = () => {
         {/* ── Submit ── */}
         <button
           type="submit"
+          disabled={isPending}
           className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-lg shadow-md transform transition hover:-translate-y-0.5 active:scale-95 cursor-pointer"
         >
-          Add Package
+          {isPending ? "Add Packaging.." : "Add Package"}
         </button>
       </form>
     </div>
