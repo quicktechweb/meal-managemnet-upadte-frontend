@@ -12,6 +12,7 @@ import {
   addscheduleFunction,
   addutilitiesFunction,
   allCostFunction,
+  allPackageFunction,
   allServiceTypeFunction,
   approvedInstituteUserFunction,
   bannerListFunction,
@@ -816,5 +817,13 @@ export const useAddPackage = () => {
     onError: (err) => {
       toast.error(err?.response?.data?.message);
     },
+  });
+};
+
+export const useAllPackage = () => {
+  return useQuery({
+    queryKey: "all-packages",
+    queryFn: allPackageFunction,
+    retry: false,
   });
 };
