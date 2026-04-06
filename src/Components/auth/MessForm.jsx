@@ -171,11 +171,22 @@ const MessForm = () => {
   const totalPrice = +totalUtilityPrice + totalServiceFeaturePrice;
 
   // step 3
-
+  const mealRoutineOption = [
+    {
+      id: 1,
+      title: "Routine",
+    },
+    {
+      id: 2,
+      title: "Package",
+    },
+  ];
   const [mealTypeLists, setMealTypeLists] = useState([]);
   const [scheduleList, setScheduleList] = useState([]);
 
-  const [selectedRoutineOption, setSelectedRoutineOption] = useState(null);
+  const [selectedRoutineOption, setSelectedRoutineOption] = useState(
+    mealRoutineOption[0],
+  );
 
   // step 4
   const [selected, setSelected] = useState([]);
@@ -482,6 +493,7 @@ const MessForm = () => {
           prevStep={prevStep}
           selectedRoutineOption={selectedRoutineOption}
           setSelectedRoutineOption={setSelectedRoutineOption}
+          mealRoutineOption={mealRoutineOption}
         />
       )}
 

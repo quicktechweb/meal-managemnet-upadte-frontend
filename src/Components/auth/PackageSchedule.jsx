@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useAllPackage } from "../../api/admin/admin.api";
 import { FaCheckCircle } from "react-icons/fa";
-import { ChevronDown } from "lucide-react";
+import { ChevronDown, Clock } from "lucide-react";
 
 const PackageSchedule = () => {
   const days = ["Sat", "Sun", "Mon", "Tue", "Wed", "Thu", "Fri"];
@@ -80,193 +80,159 @@ const PackageSchedule = () => {
 
   const handleSubmit = () => {
     const payload = getSelectedPayload();
-    
     setPreviewData(payload);
   };
 
-  if (isLoading) return <p>Loading...</p>;
+  if (isLoading) return <p className="text-center text-lg">Loading...</p>;
 
   const groupedPreview = previewData ? groupPreviewData(previewData) : null;
 
   return (
-    <div className="space-y-8">
-      {/* ── Main Schedule Table ── */}
-      <div className="max-w-7xl mx-auto overflow-x-auto border border-gray-200 rounded-xl shadow-lg">
-        <table className="w-full text-left border-collapse bg-white">
-          <thead className="bg-orange-600 text-white sticky top-0">
-            <tr>
-              <th className="p-4 border border-orange-700 w-32">Day</th>
-              {packageTypes.map((type) => (
-                <th key={type} className="p-4 border border-orange-700 w-48">
-                  <p className="mb-2">{type}</p>
-                  {/* Time inputs inside header */}
-                  <div className="flex flex-col gap-1.5">
-                    <div className="flex items-center gap-1.5">
-                      <label className="text-xs text-orange-100 w-10 shrink-0">
-                        Start
-                      </label>
-                      <input
-                        type="time"
-                        value={packageTimes[type]?.start || ""}
-                        onChange={(e) =>
-                          handleTimeChange(type, "start", e.target.value)
-                        }
-                        onClick={(e) => e.stopPropagation()}
-                        className="w-full bg-orange-500 border border-orange-400 text-white text-xs rounded-md px-2 py-1 focus:outline-none focus:ring-2 focus:ring-white"
-                      />
-                    </div>
-                    <div className="flex items-center gap-1.5">
-                      <label className="text-xs text-orange-100 w-10 shrink-0">
-                        End
-                      </label>
-                      <input
-                        type="time"
-                        value={packageTimes[type]?.end || ""}
-                        onChange={(e) =>
-                          handleTimeChange(type, "end", e.target.value)
-                        }
-                        onClick={(e) => e.stopPropagation()}
-                        className="w-full bg-orange-500 border border-orange-400 text-white text-xs rounded-md px-2 py-1 focus:outline-none focus:ring-2 focus:ring-white"
-                      />
-                    </div>
-                  </div>
-                </th>
-              ))}
-            </tr>
-          </thead>
+    <div className="space-y-5">
+      {/* Main Schedule Table */}
+      <div className="max-w-7xl mx-auto">
+        <div className="border border-gray-100 shadow-xl rounded-3xl overflow-hidden bg-white">
+          <table className="w-full text-left">
+            <tbody>
+              {days.map((day) => {
+                const dayData = groupedData[day] || {};
+                return (
+                  <tr
+                    key={day}
+                    className=" transition-all border-b border-gray-100 last:border-none"
+                  >
+                    <td className="p-6 font-bold text-xl text-gray-800 border-r border-gray-100 bg-gray-50 w-32">
+                      {day}
+                    </td>
 
-          <tbody>
-            {days.map((day) => {
-              const dayData = groupedData[day] || {};
+                    {packageTypes.map((type) => {
+                      const pkg = dayData[type];
+                      const key = `${day}-${type}`;
+                      const isAlternative = !!alternativeChecked[key];
 
-              return (
-                <tr key={day} className="hover:bg-gray-50">
-                  <td className="p-4 border border-gray-200 font-semibold">
-                    {day}
-                  </td>
-
-                  {packageTypes.map((type) => {
-                    const pkg = dayData[type];
-                    const key = `${day}-${type}`;
-
-                    const isAlternative = !!alternativeChecked[key];
-
-                    return (
-                      <td key={type} className="p-4 border border-gray-200">
-                        {pkg ? (
-                          <div>
-                            <p className="text-sm text-gray-500">
-                              Package Price - {pkg.package_price}
-                            </p>
-
-                            {/* Default Items Button */}
-                            <button
-                              type="button"
-                              onClick={() => {
-                                setAlternativeChecked((prev) => ({
-                                  ...prev,
-                                  [key]: false,
-                                }));
-                                setSelectedAlternative((prev) => {
-                                  const next = { ...prev };
-                                  delete next[key];
-                                  return next;
-                                });
-                                setOpenDropdown((prev) =>
-                                  prev === key ? null : prev,
-                                );
-                              }}
-                              className={`px-2 w-full flex cursor-pointer items-center gap-2.5 my-2 rounded-2xl py-2 transition-all ${
-                                isAlternative
-                                  ? "bg-gray-50 opacity-50"
-                                  : "bg-gray-100"
-                              }`}
-                            >
-                              <FaCheckCircle
-                                className={`text-sm flex-shrink-0 transition-colors ${
-                                  isAlternative
-                                    ? "text-gray-300"
-                                    : "text-green-600"
-                                }`}
-                              />
-                              <div className="flex flex-wrap gap-1">
-                                {pkg?.items?.map((foodItem, i) => (
-                                  <div
-                                    key={i}
-                                    className="flex items-center gap-1"
-                                  >
-                                    <span className="font-semibold text-xs">
-                                      {foodItem.title}
-                                    </span>
-                                    {pkg.items.length - 1 !== i && ","}
-                                  </div>
-                                ))}
+                      return (
+                        <td
+                          key={type}
+                          className="p-3 border-r border-gray-100 last:border-none"
+                        >
+                          {pkg ? (
+                            <div className="space-y-5">
+                              {/* Package Price */}
+                              <div className="flex items-center gap-3">
+                                <div className="w-10 h-10 bg-gradient-to-br from-orange-500 to-amber-500 rounded-2xl flex items-center justify-center text-white text-xl shadow-inner">
+                                  ৳
+                                </div>
+                                <div>
+                                  <p className="text-xs text-gray-500 font-medium">
+                                    PACKAGE PRICE
+                                  </p>
+                                  <p className="text-2xl font-bold text-gray-800">
+                                    ৳{pkg.package_price}
+                                  </p>
+                                </div>
                               </div>
-                            </button>
 
-                            {/* Alternative Dropdown */}
-                            <div className="flex items-start gap-2.5 my-2">
-                              <input
-                                type="checkbox"
-                                className="cursor-pointer w-4 h-4 mt-2"
-                                checked={isAlternative}
-                                onChange={(e) => {
+                              {/* Default Items */}
+                              <button
+                                onClick={() => {
                                   setAlternativeChecked((prev) => ({
                                     ...prev,
-                                    [key]: e.target.checked,
+                                    [key]: false,
                                   }));
-                                  if (!e.target.checked) {
-                                    setOpenDropdown((prev) =>
-                                      prev === key ? null : prev,
-                                    );
-                                    setSelectedAlternative((prev) => {
-                                      const next = { ...prev };
-                                      delete next[key];
-                                      return next;
-                                    });
-                                  }
+                                  setSelectedAlternative((prev) => {
+                                    const next = { ...prev };
+                                    delete next[key];
+                                    return next;
+                                  });
+                                  setOpenDropdown((prev) =>
+                                    prev === key ? null : prev,
+                                  );
                                 }}
-                              />
-
-                              <div className="relative w-full">
-                                <button
-                                  type="button"
-                                  disabled={!isAlternative}
-                                  onClick={() =>
-                                    setOpenDropdown(
-                                      openDropdown === key ? null : key,
-                                    )
-                                  }
-                                  className={`py-1 px-2 shadow-md w-full rounded-md flex items-center justify-between border transition-all ${
+                                type="button"
+                                className={`w-full p-1.5 rounded-2xl transition-all duration-300 flex items-start gap-2 border ${
+                                  isAlternative
+                                    ? "bg-gray-50 border-gray-200"
+                                    : "bg-gradient-to-br from-green-50 to-emerald-50 border-emerald-200 shadow-sm"
+                                }`}
+                              >
+                                <FaCheckCircle
+                                  className={`mt-0.5 text-2xl flex-shrink-0 transition-all ${
                                     isAlternative
-                                      ? "bg-gray-50 border-gray-200 cursor-pointer"
-                                      : "bg-gray-100 border-gray-100 cursor-not-allowed opacity-50"
+                                      ? "text-gray-300"
+                                      : "text-emerald-600"
                                   }`}
-                                >
-                                  <span className="text-sm truncate">
-                                    {selectedAlternative[key] !== undefined
-                                      ? pkg?.alternative_items?.[
-                                          selectedAlternative[key]
-                                        ]
-                                          ?.map((i) => i.title)
-                                          .join(", ")
-                                      : "Select Alternatives"}
-                                  </span>
-                                  <ChevronDown
-                                    className={`transition-transform duration-300 flex-shrink-0 ${
-                                      openDropdown === key ? "rotate-180" : ""
-                                    }`}
-                                    size={18}
-                                  />
-                                </button>
+                                />
+                                <div>
+                                  <p className="font-semibold text-gray-700 ">
+                                    Default Items
+                                  </p>
+                                  <p className="text-sm text-gray-600 text-start leading-snug">
+                                    {pkg?.items
+                                      ?.map((item) => item.title)
+                                      .join(", ")}
+                                  </p>
+                                </div>
+                              </button>
 
-                                {isAlternative && openDropdown === key && (
-                                  <div className="absolute w-full z-50 mt-1 rounded-md p-2 bg-white border border-gray-200 shadow-md max-h-60 overflow-y-auto">
-                                    {pkg?.alternative_items?.map(
-                                      (group, gIndex) => {
-                                        const isSelected =
-                                          selectedAlternative[key] === gIndex;
-                                        return (
+                              {/* Alternative Section */}
+                              <div className="flex items-start gap-3">
+                                <input
+                                  type="checkbox"
+                                  className="mt-3 w-5 h-5 accent-orange-600 cursor-pointer"
+                                  checked={isAlternative}
+                                  onChange={(e) => {
+                                    setAlternativeChecked((prev) => ({
+                                      ...prev,
+                                      [key]: e.target.checked,
+                                    }));
+                                    if (!e.target.checked) {
+                                      setOpenDropdown((prev) =>
+                                        prev === key ? null : prev,
+                                      );
+                                      setSelectedAlternative((prev) => {
+                                        const next = { ...prev };
+                                        delete next[key];
+                                        return next;
+                                      });
+                                    }
+                                  }}
+                                />
+
+                                <div className="relative flex-1">
+                                  <button
+                                    disabled={!isAlternative}
+                                    onClick={() =>
+                                      setOpenDropdown(
+                                        openDropdown === key ? null : key,
+                                      )
+                                    }
+                                    type="button"
+                                    className={`w-full px-5 py-4 rounded-2xl border flex items-center justify-between transition-all duration-300 shadow-sm ${
+                                      isAlternative
+                                        ? "bg-white border-orange-300 hover:border-orange-400 cursor-pointer"
+                                        : "bg-gray-100 border-gray-200 cursor-not-allowed opacity-60"
+                                    }`}
+                                  >
+                                    <span className="text-sm font-medium text-gray-700 truncate">
+                                      {selectedAlternative[key] !== undefined
+                                        ? pkg?.alternative_items?.[
+                                            selectedAlternative[key]
+                                          ]
+                                            ?.map((i) => i.title)
+                                            .join(", ")
+                                        : "Select Alternative Items"}
+                                    </span>
+                                    <ChevronDown
+                                      className={`transition-transform ${openDropdown === key ? "rotate-180" : ""}`}
+                                      size={20}
+                                    />
+                                  </button>
+
+                                  {/* Dropdown */}
+                                  {isAlternative && openDropdown === key && (
+                                    <div className="absolute z-50 w-full mt-2 bg-white rounded-2xl border border-gray-200 shadow-xl max-h-72 overflow-y-auto py-2">
+                                      {pkg?.alternative_items?.map(
+                                        (group, gIndex) => (
                                           <div
                                             key={gIndex}
                                             onClick={() => {
@@ -278,79 +244,120 @@ const PackageSchedule = () => {
                                               );
                                               setOpenDropdown(null);
                                             }}
-                                            className={`mb-2 p-1 rounded-md cursor-pointer border transition-all ${
-                                              isSelected
-                                                ? "bg-orange-50 border-orange-400"
-                                                : "border-transparent hover:bg-gray-50"
+                                            className={`mx-2 my-1 p-4 rounded-xl cursor-pointer transition-all ${
+                                              selectedAlternative[key] ===
+                                              gIndex
+                                                ? "bg-orange-50 border border-orange-400"
+                                                : "hover:bg-gray-50"
                                             }`}
                                           >
-                                            <p className="text-xs font-semibold text-gray-400 mb-1">
-                                              Alternative {gIndex + 1}
+                                            <p className="text-xs font-bold text-orange-600 mb-2">
+                                              ALTERNATIVE {gIndex + 1}
                                             </p>
-                                            <div className="flex items-center flex-wrap gap-1">
-                                              {group?.map((item, index) => (
-                                                <div
-                                                  key={index}
-                                                  className="flex items-center gap-1"
-                                                >
-                                                  <span className="text-sm">
-                                                    {item?.title}
-                                                  </span>
-                                                  {group.length - 1 !== index &&
-                                                    ","}
-                                                </div>
-                                              ))}
-                                            </div>
+                                            <p className="text-sm text-gray-700">
+                                              {group
+                                                .map((item) => item.title)
+                                                .join(", ")}
+                                            </p>
                                           </div>
-                                        );
-                                      },
-                                    )}
-                                  </div>
-                                )}
+                                        ),
+                                      )}
+                                    </div>
+                                  )}
+                                </div>
                               </div>
                             </div>
-                          </div>
-                        ) : (
-                          "-"
-                        )}
-                      </td>
-                    );
-                  })}
-                </tr>
-              );
-            })}
-          </tbody>
-        </table>
+                          ) : (
+                            <div className="h-40 flex items-center justify-center text-gray-300 text-4xl font-light">
+                              —
+                            </div>
+                          )}
+                        </td>
+                      );
+                    })}
+                  </tr>
+                );
+              })}
+            </tbody>
+
+            {/* Time Inputs Footer */}
+            <tfoot className="bg-gradient-to-r from-orange-600 to-amber-600">
+              <tr>
+                <th className="p-2 text-white font-semibold text-lg ">
+                  Schedule Time
+                </th>
+                {packageTypes.map((type) => (
+                  <th key={type} className="p-1.5">
+                    <div className="flex items-center gap-2 text-white mb-1.5">
+                      <Clock size={20} />
+                      <span className="font-semibold">{type}</span>
+                    </div>
+
+                    <div className="flex gap-1">
+                      <div className="flex-1">
+                        <label className="text-xs text-orange-100 block mb-1">
+                          Start Time
+                        </label>
+                        <input
+                          type="time"
+                          value={packageTimes[type]?.start || ""}
+                          onChange={(e) =>
+                            handleTimeChange(type, "start", e.target.value)
+                          }
+                          className="w-full bg-white/20 border border-white/30 text-white rounded-2xl px-4 py-1.5 focus:outline-none focus:border-white backdrop-blur-sm"
+                        />
+                      </div>
+                      <div className="flex-1">
+                        <label className="text-xs text-orange-100 block mb-1">
+                          End Time
+                        </label>
+                        <input
+                          type="time"
+                          value={packageTimes[type]?.end || ""}
+                          onChange={(e) =>
+                            handleTimeChange(type, "end", e.target.value)
+                          }
+                          className="w-full bg-white/20 border border-white/30 text-white rounded-2xl px-4 py-1.5 focus:outline-none focus:border-white backdrop-blur-sm"
+                        />
+                      </div>
+                    </div>
+                  </th>
+                ))}
+              </tr>
+            </tfoot>
+          </table>
+        </div>
       </div>
 
       {/* Submit Button */}
       <div className="flex justify-end">
         <button
-          type="button"
           onClick={handleSubmit}
-          className="bg-orange-600 hover:bg-orange-700 text-white font-semibold px-6 py-2 rounded-lg transition-all"
+          className="bg-gradient-to-r from-orange-600 to-amber-600 hover:from-orange-700 hover:to-amber-700 text-white font-semibold px-10 py-4 rounded-2xl text-lg shadow-xl hover:shadow-2xl transition-all duration-300 flex items-center gap-3"
         >
           Submit Schedule
+          <span className="text-xl">→</span>
         </button>
       </div>
 
-      {/* ── Preview Table ── */}
+      {/* Preview Section */}
       {groupedPreview && (
         <div className="max-w-7xl mx-auto">
-          <h2 className="text-lg font-bold text-gray-700 mb-3">
-            Selected Schedule Preview
+          <h2 className="text-2xl font-bold text-gray-800 mb-6 flex items-center gap-3">
+            <span className="text-green-600">📋</span> Selected Schedule Preview
           </h2>
-          <div className="overflow-x-auto border border-gray-200 rounded-xl shadow-lg">
-            <table className="w-full text-left border-collapse bg-white">
+
+          <div className="overflow-x-auto rounded-3xl border border-gray-100 shadow-xl bg-white">
+            <table className="w-full">
               <thead className="bg-green-600 text-white sticky top-0">
                 <tr>
-                  <th className="p-4 border border-green-700 w-32">Day</th>
+                  <th className="p-6 text-left w-32">Day</th>
                   {packageTypes.map((type) => (
-                    <th key={type} className="p-4 border border-green-700 w-48">
-                      <p>{type}</p>
+                    <th key={type} className="p-6 text-left">
+                      <p className="font-semibold">{type}</p>
                       {(packageTimes[type]?.start ||
                         packageTimes[type]?.end) && (
-                        <p className="text-xs font-normal text-green-100 mt-1">
+                        <p className="text-sm text-green-100 mt-1 font-medium">
                           {packageTimes[type]?.start || "--:--"} →{" "}
                           {packageTimes[type]?.end || "--:--"}
                         </p>
@@ -363,37 +370,29 @@ const PackageSchedule = () => {
               <tbody>
                 {days.map((day) => {
                   const dayPreview = groupedPreview[day] || {};
-
                   return (
-                    <tr key={day} className="hover:bg-gray-50">
-                      <td className="p-4 border border-gray-200 font-semibold">
-                        {day}
-                      </td>
-
+                    <tr
+                      key={day}
+                      className="border-b last:border-none hover:bg-green-50/50 transition-colors"
+                    >
+                      <td className="p-6 font-bold text-lg border-r">{day}</td>
                       {packageTypes.map((type) => {
                         const pkg = dayPreview[type];
-
                         return (
                           <td
                             key={type}
-                            className="p-4 border border-gray-200 text-sm"
+                            className="p-6 border-r last:border-none"
                           >
                             {pkg ? (
-                              <div className="space-y-1">
-                                <p className="text-xs text-gray-400">
-                                  Price: {pkg.package_price}
+                              <div>
+                                <p className="text-green-700 font-semibold mb-2">
+                                  ৳{pkg.package_price}
                                 </p>
-                                {/* {(pkg.start_time || pkg.end_time) && (
-                                  <p className="text-xs text-blue-500">
-                                    {pkg.start_time || "--:--"} →{" "}
-                                    {pkg.end_time || "--:--"}
-                                  </p>
-                                )} */}
-                                <div className="flex flex-wrap gap-1">
+                                <div className="flex flex-wrap gap-2">
                                   {pkg.package_item?.map((item, i) => (
                                     <span
                                       key={i}
-                                      className="bg-green-50 border border-green-200 text-green-700 text-xs font-medium px-2 py-0.5 rounded-full"
+                                      className="bg-green-100 text-green-700 text-xs font-medium px-4 py-2 rounded-2xl"
                                     >
                                       {item.title}
                                     </span>
@@ -401,7 +400,7 @@ const PackageSchedule = () => {
                                 </div>
                               </div>
                             ) : (
-                              <span className="text-gray-300">-</span>
+                              <span className="text-gray-300 text-2xl">—</span>
                             )}
                           </td>
                         );

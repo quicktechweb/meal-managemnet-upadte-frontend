@@ -3,16 +3,7 @@ import MealScheduleTable from "../MealTable";
 import { ChevronDown } from "lucide-react";
 import PackageSchedule from "./PackageSchedule";
 
-const mealRoutineOption = [
-  {
-    id: 1,
-    title: "Routine",
-  },
-  {
-    id: 2,
-    title: "Package",
-  },
-];
+
 
 const StepThree = ({
   prevStep,
@@ -26,6 +17,7 @@ const StepThree = ({
   isPending,
   selectedRoutineOption,
   setSelectedRoutineOption,
+  mealRoutineOption,
 }) => {
   const [activeDropdown, setActiveDropdown] = useState(null);
 
