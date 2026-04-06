@@ -175,6 +175,8 @@ const MessForm = () => {
   const [mealTypeLists, setMealTypeLists] = useState([]);
   const [scheduleList, setScheduleList] = useState([]);
 
+  const [selectedRoutineOption, setSelectedRoutineOption] = useState(null);
+
   // step 4
   const [selected, setSelected] = useState([]);
 
@@ -478,6 +480,8 @@ const MessForm = () => {
           form={form}
           nextStep={nextStep}
           prevStep={prevStep}
+          selectedRoutineOption={selectedRoutineOption}
+          setSelectedRoutineOption={setSelectedRoutineOption}
         />
       )}
 

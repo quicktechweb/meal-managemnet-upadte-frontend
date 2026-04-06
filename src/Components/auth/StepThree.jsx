@@ -24,12 +24,15 @@ const StepThree = ({
   scheduleList,
   setScheduleList,
   isPending,
+  selectedRoutineOption,
+  setSelectedRoutineOption,
 }) => {
   const [activeDropdown, setActiveDropdown] = useState(null);
-  const [selectedOption, setSelectedOption] = useState(null);
 
   const toggleDropdown = (name) => {
     setActiveDropdown(activeDropdown === name ? null : name);
+    setMealTypeLists([]);
+    setScheduleList([]);
   };
 
   return (
@@ -45,7 +48,9 @@ const StepThree = ({
             onClick={() => toggleDropdown("option")}
           >
             <span>
-              {selectedOption ? selectedOption?.title : "Select the option"}
+              {selectedRoutineOption
+                ? selectedRoutineOption?.title
+                : "Select the option"}
             </span>
 
             <ChevronDown
@@ -62,12 +67,12 @@ const StepThree = ({
                 <div
                   key={opt.id}
                   className={`px-4 py-2 cursor-pointer rounded-xl ${
-                    selectedOption?.id === opt.id
+                    selectedRoutineOption?.id === opt.id
                       ? "bg-orange-500 text-white"
                       : "hover:bg-slate-100"
                   }`}
                   onClick={() => {
-                    setSelectedOption(opt);
+                    setSelectedRoutineOption(opt);
                     setActiveDropdown(null);
                   }}
                 >
@@ -79,7 +84,7 @@ const StepThree = ({
         </div>
       </div>
 
-      {selectedOption?.title === "Routine" && (
+      {selectedRoutineOption?.title === "Routine" && (
         <MealScheduleTable
           mealTypeLists={mealTypeLists}
           setMealTypeLists={setMealTypeLists}
@@ -89,7 +94,7 @@ const StepThree = ({
         />
       )}
 
-      {selectedOption?.title === "Package" && <PackageSchedule />}
+      {selectedRoutineOption?.title === "Package" && <PackageSchedule />}
 
       <div className="flex gap-2">
         <button
