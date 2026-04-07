@@ -90,10 +90,10 @@ const PackageMenuRoutine = () => {
             const value = info.getValue();
 
             return (
-              <div className="bg-white shadow-md rounded-2xl p-4 border border-gray-100 hover:shadow-lg transition-all duration-300">
+              <div className="bg-white shadow-md rounded-2xl p-2 border border-gray-100 hover:shadow-lg transition-all duration-300">
                 <div className="flex items-center ">
                   <h4 className="text-lg font-semibold ">Package Items - </h4>
-                  <span className="block font-semibold text-gray-500 ">
+                  <span className="block text-sm font-semibold text-gray-500 ">
                     {value?.items || "-"}
                   </span>
                 </div>

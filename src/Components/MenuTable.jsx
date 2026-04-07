@@ -28,7 +28,6 @@ const MenuTable = () => {
         end: m.end_time,
       })) || [];
 
-
     const weekDays = ["Sat", "Sun", "Mon", "Tue", "Wed", "Thu", "Fri"];
     const sorted = [
       ...weekDays.slice(
@@ -49,8 +48,6 @@ const MenuTable = () => {
       const row = { day };
       types.forEach((meal) => {
         const found = meals.find((m) => m.meal_type === meal.type);
-
-        console.log(found, "found alternative");
 
         row[meal.type] = {
           items:
