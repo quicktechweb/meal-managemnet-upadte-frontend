@@ -58,6 +58,9 @@ const DayWiseUserPackageMealSummary = ({
 
           const days = getNext7DaysWithDates;
 
+          console.log(days);
+          
+
           return (
             <table className="w-full text-sm border-collapse">
               <thead>
@@ -65,11 +68,11 @@ const DayWiseUserPackageMealSummary = ({
                   <th className="px-4 py-3 text-left rounded-tl-xl font-semibold">
                     Date
                   </th>
-                  {mealTypes.map((type, i) => (
+                  {mealTypes?.map((type, i) => (
                     <th
                       key={type}
                       className={`px-4 py-3 text-left font-semibold capitalize ${
-                        i === mealTypes.length - 1 ? "rounded-tr-xl" : ""
+                        i === mealTypes?.length - 1 ? "rounded-tr-xl" : ""
                       }`}
                     >
                       {type}
@@ -79,7 +82,7 @@ const DayWiseUserPackageMealSummary = ({
               </thead>
 
               <tbody>
-                {days.map((day, rowIndex) => {
+                {days?.map((day, rowIndex) => {
                   console.log(day);
 
                   const dayData = groupedByDay[day?.day];

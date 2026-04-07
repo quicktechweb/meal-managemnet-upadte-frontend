@@ -138,7 +138,7 @@ const PackageMenuRoutine = () => {
 
         <div
           className={`transition-all duration-300 ease-in-out overflow-hidden ${
-            isExpanded ? "max-h-[1100px] border border-gray-300" : "max-h-0"
+            isExpanded ? "max-h-[1200px] border border-gray-300" : "max-h-0"
           }`}
         >
           <div className="overflow-x-auto">

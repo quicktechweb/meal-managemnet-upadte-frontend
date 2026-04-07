@@ -7,7 +7,7 @@ import { Plus, X } from "lucide-react";
 import DayWiseUserMealSummary from "./DayWiseUserMealSummary";
 import ItemsSelector from "./ItemsSelector";
 import PackageItemSelector from "./PackageItemSelector";
-import DayWiseUserPackageMealSummary from "./DayWiseUserMealSummary copy";
+import DayWiseUserPackageMealSummary from "./DayWiseUserPackageMealSummary";
 
 const DayWisePackageMealActivity = () => {
   const { user } = useInstituteAuth();

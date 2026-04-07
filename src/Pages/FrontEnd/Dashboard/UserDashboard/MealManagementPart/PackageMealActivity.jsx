@@ -2,6 +2,7 @@ import React, { useState } from "react";
 
 import AllMealActivity from "./AllMealActivity";
 import DayWisePackageMealActivity from "../../../../../Components/DayWisePackageMealActivity";
+import AllPackageMealActivity from "./AllPackageMealActivity";
 
 const PackageMealActivity = () => {
   const [daywiseSelect, setDaywiseSelect] = useState("show-all");
@@ -41,7 +42,7 @@ const PackageMealActivity = () => {
       )}
 
       {daywiseSelect === "show-all" && (
-        <AllMealActivity allWise={daywiseSelect} />
+        <AllPackageMealActivity allWise={daywiseSelect} />
       )}
     </div>
   );
