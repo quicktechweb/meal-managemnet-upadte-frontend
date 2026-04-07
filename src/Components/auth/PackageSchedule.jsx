@@ -1,9 +1,13 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useAllPackage } from "../../api/admin/admin.api";
 import { FaCheckCircle } from "react-icons/fa";
 import { ChevronDown, Clock } from "lucide-react";
 
-const PackageSchedule = ({ setPackageMealRoutine }) => {
+const PackageSchedule = ({
+  setPackageMealRoutine,
+  setPackageTypes,
+  packageTypes,
+}) => {
   const days = ["Sat", "Sun", "Mon", "Tue", "Wed", "Thu", "Fri"];
 
   const { data: packages = [], isLoading } = useAllPackage();
@@ -12,11 +16,22 @@ const PackageSchedule = ({ setPackageMealRoutine }) => {
   const [alternativeChecked, setAlternativeChecked] = useState({});
   const [selectedAlternative, setSelectedAlternative] = useState({});
   const [previewData, setPreviewData] = useState(null);
-  const [packageTimes, setPackageTimes] = useState({});
 
-  const packageTypes = [
-    ...new Set(packages.map((item) => item.package_title)),
-  ].reverse();
+  useEffect(() => {
+    if (packages.length > 0) {
+      const uniqueTitles = [
+        ...new Set(packages.map((item) => item.package_title)),
+      ].reverse();
+
+      setPackageTypes(
+        uniqueTitles.map((title) => ({
+          package_type: title,
+          start_time: "",
+          end_time: "",
+        })),
+      );
+    }
+  }, [packages]);
 
   const groupedData = packages?.reduce((acc, item) => {
     if (!acc[item.day]) acc[item.day] = {};
@@ -24,14 +39,12 @@ const PackageSchedule = ({ setPackageMealRoutine }) => {
     return acc;
   }, {});
 
-  const handleTimeChange = (type, field, value) => {
-    setPackageTimes((prev) => ({
-      ...prev,
-      [type]: {
-        ...prev[type],
-        [field]: value,
-      },
-    }));
+  const handleTimeChange = (package_type, field, value) => {
+    setPackageTypes((prev) =>
+      prev.map((pkg) =>
+        pkg.package_type === package_type ? { ...pkg, [field]: value } : pkg,
+      ),
+    );
   };
 
   const getSelectedPayload = () => {
@@ -40,11 +53,11 @@ const PackageSchedule = ({ setPackageMealRoutine }) => {
     days.forEach((day) => {
       const dayData = groupedData[day] || {};
 
-      packageTypes.forEach((type) => {
-        const pkg = dayData[type];
+      packageTypes.forEach(({ package_type, start_time, end_time }) => {
+        const pkg = dayData[package_type];
         if (!pkg) return;
 
-        const key = `${day}-${type}`;
+        const key = `${day}-${package_type}`;
         const isAlternative = !!alternativeChecked[key];
         const selectedAltIndex = selectedAlternative[key];
 
@@ -60,8 +73,8 @@ const PackageSchedule = ({ setPackageMealRoutine }) => {
           day,
           package_title: pkg.package_title,
           package_price: pkg.package_price,
-          start_time: packageTimes[type]?.start || "",
-          end_time: packageTimes[type]?.end || "",
+          start_time,
+          end_time,
           package_item: selectedItems.map((item) => ({ title: item.title })),
         });
       });
@@ -80,8 +93,8 @@ const PackageSchedule = ({ setPackageMealRoutine }) => {
 
   const handleSubmit = () => {
     const payload = getSelectedPayload();
-
     setPackageMealRoutine(payload);
+
     setPreviewData(payload);
   };
 
@@ -101,20 +114,20 @@ const PackageSchedule = ({ setPackageMealRoutine }) => {
                 return (
                   <tr
                     key={day}
-                    className=" transition-all border-b border-gray-100 last:border-none"
+                    className="transition-all border-b border-gray-100 last:border-none"
                   >
                     <td className="p-6 font-bold text-xl text-gray-800 border-r border-gray-100 bg-gray-50 w-32">
                       {day}
                     </td>
 
-                    {packageTypes.map((type) => {
-                      const pkg = dayData[type];
-                      const key = `${day}-${type}`;
+                    {packageTypes.map(({ package_type }) => {
+                      const pkg = dayData[package_type];
+                      const key = `${day}-${package_type}`;
                       const isAlternative = !!alternativeChecked[key];
 
                       return (
                         <td
-                          key={type}
+                          key={package_type}
                           className="p-3 border-r border-gray-100 last:border-none"
                         >
                           {pkg ? (
@@ -165,7 +178,7 @@ const PackageSchedule = ({ setPackageMealRoutine }) => {
                                   }`}
                                 />
                                 <div>
-                                  <p className="font-semibold text-gray-700 ">
+                                  <p className="font-semibold text-gray-700">
                                     Items
                                   </p>
                                   <p className="text-sm text-gray-600 text-start leading-snug">
@@ -225,7 +238,9 @@ const PackageSchedule = ({ setPackageMealRoutine }) => {
                                         : "Select Alternative Items"}
                                     </span>
                                     <ChevronDown
-                                      className={`transition-transform ${openDropdown === key ? "rotate-180" : ""}`}
+                                      className={`transition-transform ${
+                                        openDropdown === key ? "rotate-180" : ""
+                                      }`}
                                       size={20}
                                     />
                                   </button>
@@ -285,14 +300,14 @@ const PackageSchedule = ({ setPackageMealRoutine }) => {
             {/* Time Inputs Footer */}
             <tfoot className="bg-gradient-to-r from-orange-600 to-amber-600">
               <tr>
-                <th className="p-2 text-white font-semibold text-lg ">
+                <th className="p-2 text-white font-semibold text-lg">
                   Schedule Time
                 </th>
-                {packageTypes.map((type) => (
-                  <th key={type} className="p-1.5">
+                {packageTypes.map(({ package_type, start_time, end_time }) => (
+                  <th key={package_type} className="p-1.5">
                     <div className="flex items-center gap-2 text-white mb-1.5">
                       <Clock size={20} />
-                      <span className="font-semibold">{type}</span>
+                      <span className="font-semibold">{package_type}</span>
                     </div>
 
                     <div className="flex gap-1">
@@ -302,9 +317,13 @@ const PackageSchedule = ({ setPackageMealRoutine }) => {
                         </label>
                         <input
                           type="time"
-                          value={packageTimes[type]?.start || ""}
+                          value={start_time}
                           onChange={(e) =>
-                            handleTimeChange(type, "start", e.target.value)
+                            handleTimeChange(
+                              package_type,
+                              "start_time",
+                              e.target.value,
+                            )
                           }
                           className="w-full bg-white/20 border border-white/30 text-white rounded-2xl px-4 py-1.5 focus:outline-none focus:border-white backdrop-blur-sm"
                         />
@@ -315,9 +334,13 @@ const PackageSchedule = ({ setPackageMealRoutine }) => {
                         </label>
                         <input
                           type="time"
-                          value={packageTimes[type]?.end || ""}
+                          value={end_time}
                           onChange={(e) =>
-                            handleTimeChange(type, "end", e.target.value)
+                            handleTimeChange(
+                              package_type,
+                              "end_time",
+                              e.target.value,
+                            )
                           }
                           className="w-full bg-white/20 border border-white/30 text-white rounded-2xl px-4 py-1.5 focus:outline-none focus:border-white backdrop-blur-sm"
                         />
@@ -355,18 +378,18 @@ const PackageSchedule = ({ setPackageMealRoutine }) => {
               <thead className="bg-green-600 text-white sticky top-0">
                 <tr>
                   <th className="p-6 text-left w-32">Day</th>
-                  {packageTypes.map((type) => (
-                    <th key={type} className="p-6 text-left">
-                      <p className="font-semibold">{type}</p>
-                      {(packageTimes[type]?.start ||
-                        packageTimes[type]?.end) && (
-                        <p className="text-sm text-green-100 mt-1 font-medium">
-                          {packageTimes[type]?.start || "--:--"} →{" "}
-                          {packageTimes[type]?.end || "--:--"}
-                        </p>
-                      )}
-                    </th>
-                  ))}
+                  {packageTypes.map(
+                    ({ package_type, start_time, end_time }) => (
+                      <th key={package_type} className="p-6 text-left">
+                        <p className="font-semibold">{package_type}</p>
+                        {(start_time || end_time) && (
+                          <p className="text-sm text-green-100 mt-1 font-medium">
+                            {start_time || "--:--"} → {end_time || "--:--"}
+                          </p>
+                        )}
+                      </th>
+                    ),
+                  )}
                 </tr>
               </thead>
 
@@ -381,11 +404,11 @@ const PackageSchedule = ({ setPackageMealRoutine }) => {
                       <td className="p-6 font-bold text-lg border-r border-gray-200">
                         {day}
                       </td>
-                      {packageTypes.map((type) => {
-                        const pkg = dayPreview[type];
+                      {packageTypes.map(({ package_type }) => {
+                        const pkg = dayPreview[package_type];
                         return (
                           <td
-                            key={type}
+                            key={package_type}
                             className="p-6 border-r border-gray-200 last:border-none"
                           >
                             {pkg ? (

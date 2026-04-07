@@ -184,8 +184,7 @@ const MessForm = () => {
   const [mealTypeLists, setMealTypeLists] = useState([]);
   const [scheduleList, setScheduleList] = useState([]);
   const [packageMealRoutine, setPackageMealRoutine] = useState([]);
-
-  console.log(packageMealRoutine);
+  const [packageTypes, setPackageTypes] = useState([]);
 
   const [selectedRoutineOption, setSelectedRoutineOption] = useState(
     mealRoutineOption[0],
@@ -275,13 +274,14 @@ const MessForm = () => {
 
       if (step === 3) {
         const payload = {
-          userId: userId,
+          
           meal_type_lists: mealTypeLists,
           schedule_lists: scheduleList,
         };
 
         const packageRoutine = {
           package_routine: packageMealRoutine,
+          package_type_lists: packageTypes,
         };
 
         await mutateAsync(
@@ -508,6 +508,8 @@ const MessForm = () => {
           setSelectedRoutineOption={setSelectedRoutineOption}
           mealRoutineOption={mealRoutineOption}
           setPackageMealRoutine={setPackageMealRoutine}
+          setPackageTypes={setPackageTypes}
+          packageTypes={packageTypes}
         />
       )}
 

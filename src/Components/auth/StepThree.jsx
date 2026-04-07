@@ -3,8 +3,6 @@ import MealScheduleTable from "../MealTable";
 import { ChevronDown } from "lucide-react";
 import PackageSchedule from "./PackageSchedule";
 
-
-
 const StepThree = ({
   prevStep,
   form,
@@ -19,6 +17,8 @@ const StepThree = ({
   setSelectedRoutineOption,
   mealRoutineOption,
   setPackageMealRoutine,
+  setPackageTypes,
+  packageTypes,
 }) => {
   const [activeDropdown, setActiveDropdown] = useState(null);
 
@@ -88,7 +88,11 @@ const StepThree = ({
       )}
 
       {selectedRoutineOption?.title === "Package" && (
-        <PackageSchedule setPackageMealRoutine={setPackageMealRoutine} />
+        <PackageSchedule
+          setPackageTypes={setPackageTypes}
+          packageTypes={packageTypes}
+          setPackageMealRoutine={setPackageMealRoutine}
+        />
       )}
 
       <div className="flex gap-2">
