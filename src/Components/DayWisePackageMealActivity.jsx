@@ -161,7 +161,7 @@ const DayWisePackageMealActivity = () => {
           is_on: true,
           selected_items: isAlternative
             ? (meal?.alternative_items?.[altGroupIndex] ?? [])
-            : (meal?.items ?? []),
+            : (meal?.package_item ?? []),
           is_alternative: isAlternative,
         };
       });
@@ -178,7 +178,7 @@ const DayWisePackageMealActivity = () => {
           meal_type: meal.meal_type,
           selected_items: isAlternative
             ? (meal?.alternative_items?.[altGroupIndex] ?? [])
-            : (meal?.items ?? []),
+            : (meal?.package_item ?? []),
           is_alternative: isAlternative,
           quantity: guestQuantityMap[key] ?? 1,
         };

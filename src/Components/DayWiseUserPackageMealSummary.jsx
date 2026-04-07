@@ -13,8 +13,6 @@ const DayWiseUserPackageMealSummary = ({
   getNext7DaysWithDates,
   guestQuantityMap,
 }) => {
-  console.log(sortedMeals);
-
   return (
     <div className="bg-white/90 backdrop-blur-xl rounded-3xl shadow-lg p-6 mt-4 w-full">
       <h1 className="text-xl xl:text-3xl font-extrabold text-gray-800 mb-4">
@@ -26,8 +24,6 @@ const DayWiseUserPackageMealSummary = ({
           const mealTypes = [
             ...new Set(sortedMeals?.map((m) => m.package_title) ?? []),
           ];
-
-          console.log(mealTypes);
 
           const groupedByDay = {};
           sortedMeals?.forEach((meal) => {
@@ -45,6 +41,7 @@ const DayWiseUserPackageMealSummary = ({
                 ? (meal?.alternative_items?.[altGroupIndex] ?? [])
                 : (meal?.package_item ?? []),
               is_alternative: isAlternative,
+              package_price: meal?.package_price,
               guest: isGuestAdded
                 ? {
                     selected_items: isGuestAlternative
@@ -57,9 +54,6 @@ const DayWiseUserPackageMealSummary = ({
           });
 
           const days = getNext7DaysWithDates;
-
-          console.log(days);
-          
 
           return (
             <table className="w-full text-sm border-collapse">
@@ -83,8 +77,6 @@ const DayWiseUserPackageMealSummary = ({
 
               <tbody>
                 {days?.map((day, rowIndex) => {
-                  console.log(day);
-
                   const dayData = groupedByDay[day?.day];
 
                   return (
@@ -128,35 +120,67 @@ const DayWiseUserPackageMealSummary = ({
                               {cell.is_on ? "ON" : "OFF"}
                             </span>
 
-                            <div className="flex flex-wrap gap-1 mt-1">
-                              {cell.selected_items?.map((item, i) => (
-                                <span
-                                  key={i}
-                                  className="bg-orange-50 text-orange-600 text-xs px-2 py-0.5 rounded-full"
-                                >
-                                  {item.title}
-                                </span>
-                              ))}
-                              {cell.is_alternative && (
-                                <span className="bg-blue-50 text-blue-500 text-[10px] px-2 py-0.5 rounded-full">
-                                  alt
-                                </span>
-                              )}
+                            <div className="flex items-center gap-2">
+                              <h3 className="text-sm font-semibold">
+                                Package Price -{" "}
+                              </h3>
+                              <p className="text-green-700 font-semibold">
+                                ৳{cell?.package_price}
+                              </p>
+                            </div>
+
+                            <div className="flex items-center gap-2">
+                              <h3 className="text-sm font-semibold">
+                                Items -{" "}
+                              </h3>
+                              <div className="flex flex-wrap gap-1">
+                                {cell.selected_items?.map((item, i) => (
+                                  <span
+                                    key={i}
+                                    className=" text-xs   rounded-full"
+                                  >
+                                    {item.title}{" "}
+                                    {cell.selected_items?.length - 1 !== i &&
+                                      ", "}
+                                  </span>
+                                ))}
+                              </div>
                             </div>
 
                             {cell.guest && (
-                              <div className="mt-1.5 flex flex-wrap items-center gap-1">
-                                <span className="text-[10px] text-purple-500 font-semibold">
-                                  Guest x{cell.guest.quantity}:
+                              <div className=" flex flex-wrap items-center gap-1">
+                                <span className="text-[12px]  text-orange-500 font-semibold ">
+                                  Guest x {cell.guest.quantity} :
                                 </span>
-                                {cell.guest.selected_items?.map((item, i) => (
+
+                                <div className="flex items-center gap-2">
+                                  <h3 className="text-sm font-semibold">
+                                    Items -{" "}
+                                  </h3>
+                                  <div className="flex flex-wrap gap-1">
+                                    {cell.guest.selected_items?.map(
+                                      (item, i) => (
+                                        <span
+                                          key={i}
+                                          className="text-black font-semibold text-[12px] py-0.5 rounded-full"
+                                        >
+                                          {item.title}
+                                          {cell.guest.selected_items?.length -
+                                            1 !==
+                                            i && ", "}
+                                        </span>
+                                      ),
+                                    )}
+                                  </div>
+                                </div>
+                                {/* {cell.guest.selected_items?.map((item, i) => (
                                   <span
                                     key={i}
-                                    className="bg-purple-50 text-purple-600 text-[10px] px-2 py-0.5 rounded-full"
+                                    className="text-black font-semibold text-[12px] py-0.5 rounded-full"
                                   >
                                     {item.title}
                                   </span>
-                                ))}
+                                ))} */}
                               </div>
                             )}
                           </td>
