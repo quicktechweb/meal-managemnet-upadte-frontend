@@ -7,6 +7,7 @@ import MealActivity from "../../../../../Components/MealActivity";
 import useInstituteAuth from "../../../../../Hooks/useInstituteAuth";
 import { useInstituteUserAdminData } from "../../../../../api/cms/user.hook";
 import PackageMenuRoutine from "../../../../../Components/PackageMenuRoutine";
+import PackageMealActivity from "./PackageMealActivity";
 
 // ----------------- MAIN COMPONENT -----------------
 export default function MealManagementPart() {
@@ -31,7 +32,10 @@ export default function MealManagementPart() {
       {data?.routine_type === "Package" && <PackageMenuRoutine />}
 
       {/*meal activity  */}
-      <MealActivity />
+
+      {data?.routine_type === "Routine" && <MealActivity />}
+
+      {data?.routine_type === "Package" && <PackageMealActivity />}
     </section>
   );
 }

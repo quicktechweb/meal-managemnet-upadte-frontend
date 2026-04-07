@@ -1,10 +1,9 @@
 import React, { useState } from "react";
 
-import AllMealActivity from "../Pages/FrontEnd/Dashboard/UserDashboard/MealManagementPart/AllMealActivity";
+import AllMealActivity from "./AllMealActivity";
+import DayWisePackageMealActivity from "../../../../../Components/DayWisePackageMealActivity";
 
-import DayWiseMealActivity from "./DayWiseMealActivity";
-
-const MealActivity = () => {
+const PackageMealActivity = () => {
   const [daywiseSelect, setDaywiseSelect] = useState("show-all");
 
   return (
@@ -36,7 +35,7 @@ const MealActivity = () => {
       {daywiseSelect === "day-wise" && (
         <div className="max-w-7xl flex flex-col xl:flex-row gap-y-4 xl:gap-3">
           <div className="flex flex-col gap-4">
-            {daywiseSelect === "day-wise" && <DayWiseMealActivity />}
+            {daywiseSelect === "day-wise" && <DayWisePackageMealActivity />}
           </div>
         </div>
       )}
@@ -48,4 +47,4 @@ const MealActivity = () => {
   );
 };
 
-export default MealActivity;
+export default PackageMealActivity;
