@@ -1,17 +1,18 @@
 import React from "react";
 import MealAdminScheduleTable from "./MealAdminScheduleTable";
 import useInstituteAuth from "../../../../Hooks/useInstituteAuth";
+import InstituteAdminPackageRoutine from "./InstituteAdminPackageRoutine";
 
 const InstituteAdminMealManagement = () => {
   const { user } = useInstituteAuth();
-
-  console.log(user?.user?.routine_type);
 
   return (
     <div>
       {user?.user?.routine_type === "Routine" && <MealAdminScheduleTable />}
 
-      {user?.user?.routine_type === "Package" && <p>Routine package</p>}
+      {user?.user?.routine_type === "Package" && (
+        <InstituteAdminPackageRoutine />
+      )}
     </div>
   );
 };

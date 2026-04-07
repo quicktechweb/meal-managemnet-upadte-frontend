@@ -11,23 +11,26 @@ import { useInstituteUserAdminData } from "../api/cms/user.hook";
 
 const columnHelper = createColumnHelper();
 
-const MenuTable = () => {
+const PackageMenuRoutine = () => {
   const [isExpanded, setIsExpanded] = useState(true);
   const { user, loading } = useInstituteAuth();
   const { data } = useInstituteUserAdminData(user?.user?.institute_id);
 
   console.log(data);
 
-  const routine = data?.routine;
+  const routine = data?.packages;
+
+  console.log(data?.packages?.package_type_lists);
 
   const { mealTypes, groupedSchedule } = React.useMemo(() => {
     const types =
-      routine?.meal_type_lists?.map((m) => ({
-        type: m.meal_type,
+      routine?.package_type_lists?.map((m) => ({
+        type: m.package_type,
         start: m.start_time,
         end: m.end_time,
       })) || [];
 
+    console.log(types);
 
     const weekDays = ["Sat", "Sun", "Mon", "Tue", "Wed", "Thu", "Fri"];
     const sorted = [
@@ -45,23 +48,17 @@ const MenuTable = () => {
     ];
 
     const schedule = sorted.map((day) => {
-      const meals = routine?.schedule_lists?.filter((s) => s.day === day) || [];
+      const meals =
+        routine?.package_routine?.filter((s) => s.day === day) || [];
+
       const row = { day };
       types.forEach((meal) => {
-        const found = meals.find((m) => m.meal_type === meal.type);
-
-        console.log(found, "found alternative");
+        const found = meals.find((m) => m.package_title === meal.type);
 
         row[meal.type] = {
           items:
-            found?.items?.map((i) => `${i.title} (৳${i.price})`).join(", ") ||
-            "-",
-          alternativeItems:
-            found?.alternative_items?.map((alternative_item) =>
-              alternative_item
-                ?.map((item) => `${item?.title} (৳${item?.price})`)
-                .join(", "),
-            ) || null,
+            found?.package_item?.map((i) => `${i.title}`).join(", ") || "-",
+          package_price: found?.package_price,
         };
       });
       return row;
@@ -91,15 +88,23 @@ const MenuTable = () => {
           ),
           cell: (info) => {
             const value = info.getValue();
+
             return (
-              <div>
-                <span>{value?.items || "-"}</span>
-                {value?.alternativeItems?.length > 0 && (
-                  <div className="text-xs text-gray-500 mt-1">
-                    <span className="font-semibold text-orange-400">Alt: </span>
-                    {value.alternativeItems.join(" | ")}
-                  </div>
-                )}
+              <div className="bg-white shadow-md rounded-2xl p-4 border border-gray-100 hover:shadow-lg transition-all duration-300">
+                <div className="flex items-center ">
+                  <h4 className="text-lg font-semibold ">Package Items - </h4>
+                  <span className="block font-semibold text-gray-500 ">
+                    {value?.items || "-"}
+                  </span>
+                </div>
+
+                <h4 className="text-sm font-semibold text-gray-800">
+                  Package Price
+                </h4>
+
+                <p className="text-2xl font-bold text-green-600 mt-1">
+                  ৳ {value?.package_price}
+                </p>
               </div>
             );
           },
@@ -133,7 +138,7 @@ const MenuTable = () => {
 
         <div
           className={`transition-all duration-300 ease-in-out overflow-hidden ${
-            isExpanded ? "max-h-[1000px] border border-gray-300" : "max-h-0"
+            isExpanded ? "max-h-[1100px] border border-gray-300" : "max-h-0"
           }`}
         >
           <div className="overflow-x-auto">
@@ -197,4 +202,4 @@ const MenuTable = () => {
   );
 };
 
-export default MenuTable;
+export default PackageMenuRoutine;
