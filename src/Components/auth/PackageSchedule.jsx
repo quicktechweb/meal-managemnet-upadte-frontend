@@ -3,7 +3,7 @@ import { useAllPackage } from "../../api/admin/admin.api";
 import { FaCheckCircle } from "react-icons/fa";
 import { ChevronDown, Clock } from "lucide-react";
 
-const PackageSchedule = () => {
+const PackageSchedule = ({ setPackageMealRoutine }) => {
   const days = ["Sat", "Sun", "Mon", "Tue", "Wed", "Thu", "Fri"];
 
   const { data: packages = [], isLoading } = useAllPackage();
@@ -80,6 +80,8 @@ const PackageSchedule = () => {
 
   const handleSubmit = () => {
     const payload = getSelectedPayload();
+
+    setPackageMealRoutine(payload);
     setPreviewData(payload);
   };
 
@@ -156,7 +158,7 @@ const PackageSchedule = () => {
                                 }`}
                               >
                                 <FaCheckCircle
-                                  className={`mt-0.5 text-2xl flex-shrink-0 transition-all ${
+                                  className={`mt-0.5 text-xl flex-shrink-0 transition-all ${
                                     isAlternative
                                       ? "text-gray-300"
                                       : "text-emerald-600"
@@ -164,7 +166,7 @@ const PackageSchedule = () => {
                                 />
                                 <div>
                                   <p className="font-semibold text-gray-700 ">
-                                    Default Items
+                                    Items
                                   </p>
                                   <p className="text-sm text-gray-600 text-start leading-snug">
                                     {pkg?.items
@@ -332,8 +334,9 @@ const PackageSchedule = () => {
       {/* Submit Button */}
       <div className="flex justify-end">
         <button
+          type="button"
           onClick={handleSubmit}
-          className="bg-gradient-to-r from-orange-600 to-amber-600 hover:from-orange-700 hover:to-amber-700 text-white font-semibold px-10 py-4 rounded-2xl text-lg shadow-xl hover:shadow-2xl transition-all duration-300 flex items-center gap-3"
+          className="bg-gradient-to-r from-orange-600 to-amber-600 hover:from-orange-700 hover:to-amber-700 text-white font-semibold px-10 py-4 rounded-2xl text-lg shadow-xl hover:shadow-2xl transition-all duration-300 flex items-center gap-3 cursor-pointer"
         >
           Submit Schedule
           <span className="text-xl">→</span>
@@ -344,7 +347,7 @@ const PackageSchedule = () => {
       {groupedPreview && (
         <div className="max-w-7xl mx-auto">
           <h2 className="text-2xl font-bold text-gray-800 mb-6 flex items-center gap-3">
-            <span className="text-green-600">📋</span> Selected Schedule Preview
+            Selected Schedule Preview
           </h2>
 
           <div className="overflow-x-auto rounded-3xl border border-gray-100 shadow-xl bg-white">
@@ -373,15 +376,17 @@ const PackageSchedule = () => {
                   return (
                     <tr
                       key={day}
-                      className="border-b last:border-none hover:bg-green-50/50 transition-colors"
+                      className="border-b border-gray-200 last:border-none hover:bg-green-50/50 transition-colors"
                     >
-                      <td className="p-6 font-bold text-lg border-r">{day}</td>
+                      <td className="p-6 font-bold text-lg border-r border-gray-200">
+                        {day}
+                      </td>
                       {packageTypes.map((type) => {
                         const pkg = dayPreview[type];
                         return (
                           <td
                             key={type}
-                            className="p-6 border-r last:border-none"
+                            className="p-6 border-r border-gray-200 last:border-none"
                           >
                             {pkg ? (
                               <div>

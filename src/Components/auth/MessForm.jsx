@@ -183,6 +183,9 @@ const MessForm = () => {
   ];
   const [mealTypeLists, setMealTypeLists] = useState([]);
   const [scheduleList, setScheduleList] = useState([]);
+  const [packageMealRoutine, setPackageMealRoutine] = useState([]);
+
+  console.log(packageMealRoutine);
 
   const [selectedRoutineOption, setSelectedRoutineOption] = useState(
     mealRoutineOption[0],
@@ -277,8 +280,18 @@ const MessForm = () => {
           schedule_lists: scheduleList,
         };
 
+        const packageRoutine = {
+          package_routine: packageMealRoutine,
+        };
+
         await mutateAsync(
-          { userId: userId, routine: { ...payload }, registration_step: step },
+          {
+            userId: userId,
+            routine: { ...payload },
+            packages: { ...packageRoutine },
+            registration_step: step,
+            routine_type: selectedRoutineOption?.title,
+          },
           {
             onSuccess: (data) => {
               if (data) {
@@ -494,6 +507,7 @@ const MessForm = () => {
           selectedRoutineOption={selectedRoutineOption}
           setSelectedRoutineOption={setSelectedRoutineOption}
           mealRoutineOption={mealRoutineOption}
+          setPackageMealRoutine={setPackageMealRoutine}
         />
       )}
 

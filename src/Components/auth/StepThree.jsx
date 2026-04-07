@@ -18,6 +18,7 @@ const StepThree = ({
   selectedRoutineOption,
   setSelectedRoutineOption,
   mealRoutineOption,
+  setPackageMealRoutine,
 }) => {
   const [activeDropdown, setActiveDropdown] = useState(null);
 
@@ -86,7 +87,9 @@ const StepThree = ({
         />
       )}
 
-      {selectedRoutineOption?.title === "Package" && <PackageSchedule />}
+      {selectedRoutineOption?.title === "Package" && (
+        <PackageSchedule setPackageMealRoutine={setPackageMealRoutine} />
+      )}
 
       <div className="flex gap-2">
         <button
