@@ -9,7 +9,10 @@ import CustomSelect from "../CustomSelect";
 import DynamicDropdown from "../DynamicSelect";
 import DocumentUpload from "../DocumentUpload";
 import { useInstituteUserRegistration } from "../../api/auth/auth.hook";
-import { useApprovedInstituteUser } from "../../api/cms/user.hook";
+import {
+  useAllLocation,
+  useApprovedInstituteUser,
+} from "../../api/cms/user.hook";
 import toast from "react-hot-toast";
 
 const InputField = ({ label, name, control, type = "text", rules = {} }) => (
@@ -51,52 +54,20 @@ const InputField = ({ label, name, control, type = "text", rules = {} }) => (
 const UserForm = () => {
   const navigate = useNavigate();
   const [formUploadData, setFormUploadData] = useState([]);
-  const [divisions, setDivisions] = useState([]);
-  const [districts, setDistricts] = useState([]);
 
-  const [divisionLoading, setDivisionLoading] = useState(false);
-  const [districtLoading, setDistrictLoading] = useState(false);
+  const { data: location } = useAllLocation();
 
   const { handleSubmit, control, watch } = useForm();
   const selectedCountry = watch("country");
   const selectedState = watch("state");
   const selectedDivision = watch("division");
+  const selectedDistrict = watch("district");
 
-  useEffect(() => {
-    if (!selectedState) return;
+  const districts = location?.find((loc) => loc.name === selectedDivision);
 
-    const loadDivisions = async () => {
-      try {
-        setDivisionLoading(true);
-        const res = await api.get("/divisions");
-        setDivisions(res?.data?.data || []);
-      } catch (err) {
-        setDivisions([]);
-      } finally {
-        setDivisionLoading(false);
-      }
-    };
-
-    loadDivisions();
-  }, [selectedState]);
-
-  useEffect(() => {
-    if (!selectedDivision) return;
-
-    const loadDistricts = async () => {
-      try {
-        setDistrictLoading(true);
-        const res = await api.get(`/division/${selectedDivision}`);
-        setDistricts(res?.data?.data || []);
-      } catch (err) {
-        setDistricts([]);
-      } finally {
-        setDistrictLoading(false);
-      }
-    };
-
-    loadDistricts();
-  }, [selectedDivision]);
+  const upazila = districts?.districts?.find(
+    (upa) => upa?.name === selectedDistrict,
+  );
 
   const uploadedDocs = watch("documents") || [];
 
@@ -365,16 +336,13 @@ const UserForm = () => {
                 render={({ field }) => (
                   <select
                     {...field}
-                    disabled={divisionLoading}
                     className="border border-gray-300 px-2 py-3 rounded w-full text-gray-600"
                   >
-                    <option value="">
-                      {divisionLoading ? "Loading..." : "Select Division"}
-                    </option>
+                    <option value="">Select Division</option>
 
-                    {divisions?.map((item) => (
-                      <option key={item.division} value={item.division}>
-                        {item.division}
+                    {location?.map((item) => (
+                      <option key={item._id} value={item.name}>
+                        {item.name}
                       </option>
                     ))}
                   </select>
@@ -394,13 +362,11 @@ const UserForm = () => {
                     disabled={districtLoading}
                     className="border border-gray-300 px-2 py-3 rounded w-full text-gray-600"
                   >
-                    <option value="">
-                      {districtLoading ? "Loading..." : "Select District"}
-                    </option>
+                    <option value="">Select District</option>
 
-                    {districts?.map((item) => (
-                      <option key={item.district} value={item.district}>
-                        {item.district}
+                    {districts?.districts?.map((item) => (
+                      <option key={item.name} value={item.name}>
+                        {item.name}
                       </option>
                     ))}
                   </select>

@@ -6,6 +6,7 @@ import {
   instituteUserAdminDataFunction,
   instituteUserListFunction,
   instituteUserMealTypeFunction,
+  locationFunction,
   updateInstituteProfileInfoFunction,
 } from "./user.api";
 import toast from "react-hot-toast";
@@ -72,6 +73,14 @@ export const useApprovedInstituteUsers = () => {
   return useQuery({
     queryKey: ["approved-user"],
     queryFn: instituteApprovedUsersFunction,
+    retry: false,
+  });
+};
+
+export const useAllLocation = () => {
+  return useQuery({
+    queryKey: ["location"],
+    queryFn: locationFunction,
     retry: false,
   });
 };
