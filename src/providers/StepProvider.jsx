@@ -4,7 +4,7 @@ export const StepContext = createContext(null);
 
 const StepProvider = ({ children }) => {
   // states:
-  const [step, setStep] = useState(1);
+  const [step, setStep] = useState(3);
   //  values:
   const allValues = {
     step,

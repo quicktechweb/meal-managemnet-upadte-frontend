@@ -28,7 +28,6 @@ const MealScheduleTable = ({
   const [selectedOptions, setSelectedOptions] = useState([]);
   const [alternativeGroups, setAlternativeGroups] = useState([[]]);
   const [activeAlternatives, setActiveAlternatives] = useState([]);
-  
 
   const [startTime, setStartTime] = useState("");
   const [endTime, setEndTime] = useState("");
@@ -369,13 +368,22 @@ const MealScheduleTable = ({
                   options={alternativeOptions}
                   value={group}
                   onChange={(newValues) => {
-                    if (newValues.length <= selectedOptions.length) {
+                    const selectedTotalPrice = selectedOptions.reduce(
+                      (sum, item) => sum + Number(item.price || 0),
+                      0,
+                    );
+                    const alternativeTotalPrice = newValues.reduce(
+                      (sum, item) => sum + Number(item.price || 0),
+                      0,
+                    );
+
+                    if (alternativeTotalPrice <= selectedTotalPrice) {
                       const updated = [...alternativeGroups];
                       updated[groupIndex] = newValues;
                       setAlternativeGroups(updated);
                     } else {
                       toast.error(
-                        `Maximum ${selectedOptions.length}টি alternative item select করা যাবে!`,
+                        `Alternative items total price (${alternativeTotalPrice}৳) main items (${selectedTotalPrice}৳) এর বেশি হতে পারবে না!`,
                         {
                           duration: 3000,
                           position: "top-right",
@@ -383,10 +391,6 @@ const MealScheduleTable = ({
                             background: "#f97316",
                             color: "#fff",
                             fontWeight: "600",
-                          },
-                          iconTheme: {
-                            primary: "#fff",
-                            secondary: "#f97316",
                           },
                         },
                       );
