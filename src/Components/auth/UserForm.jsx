@@ -115,13 +115,9 @@ const UserForm = () => {
 
   const selectedInstituteId = watch("institute_id");
 
-  console.log(selectedInstituteId);
-
   const selectedInstitute = data?.find(
     (item) => item._id === selectedInstituteId,
   );
-
-  console.log(selectedInstitute);
 
   const { mutateAsync, isPending } = useInstituteUserRegistration();
 

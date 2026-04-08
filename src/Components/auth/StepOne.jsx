@@ -4,6 +4,7 @@ import { api } from "../../utils/countryApi";
 import CustomSelect from "../CustomSelect";
 import DocumentUpload from "../DocumentUpload";
 import { Controller } from "react-hook-form";
+import { useAllLocation } from "../../api/cms/user.hook";
 
 const StepOne = ({
   form,
@@ -24,70 +25,32 @@ const StepOne = ({
     trigger,
     control,
   } = form;
+
   const uploadedDocs = watch("documents") || [];
 
+  const { data: location } = useAllLocation();
+
   const [divisions, setDivisions] = useState([]);
-  const [districts, setDistricts] = useState([]);
+
   const [thana, setThana] = useState([]);
   const [divisionLoading, setDivisionLoading] = useState(false);
   const [districtLoading, setDistrictLoading] = useState(false);
 
-
-
   const selectedCountry = watch("country");
   const selectedState = watch("state");
   const selectedDivision = watch("division");
+
   const selectedDistrict = watch("district");
-  const selectedThana = watch("thana");
 
-  useEffect(() => {
-    if (!selectedState) return;
+  const districts = location?.find((loc) => loc.name === selectedDivision);
 
-    const loadDivisions = async () => {
-      try {
-        setDivisionLoading(true);
-        const res = await api.get("/divisions");
-        setDivisions(res?.data?.data || []);
-      } catch (err) {
-        setDivisions([]);
-      } finally {
-        setDivisionLoading(false);
-      }
-    };
+  console.log(districts?.districts);
 
-    loadDivisions();
-  }, [selectedState]);
+  const upazila = districts?.districts?.find(
+    (upa) => upa?.name === selectedDistrict,
+  );
 
-  useEffect(() => {
-    if (!selectedDivision) return;
-
-    const loadDistricts = async () => {
-      try {
-        setDistrictLoading(true);
-        const res = await api.get(`/division/${selectedDivision}`);
-        setDistricts(res?.data?.data || []);
-      } catch (err) {
-        setDistricts([]);
-      } finally {
-        setDistrictLoading(false);
-      }
-    };
-
-    loadDistricts();
-  }, [selectedDivision]);
-
-  useEffect(() => {
-    if (!selectedDistrict) return;
-
-    const loadThana = () => {
-      const thana = districts?.find(
-        (district) => district.district === selectedDistrict,
-      );
-      setThana(thana?.upazilla);
-    };
-
-    loadThana();
-  }, [selectedDistrict]);
+  console.log(upazila?.upazilas);
 
   const passwordValue = watch("password");
   const [passwordShow, setPasswordShow] = useState(false);
@@ -413,25 +376,21 @@ const StepOne = ({
           />
         )}
 
-        {/* Division */}
         {selectedState && (
           <Controller
             name="division"
             control={control}
-            rules={{}}
+            rules={{ required: "Division is required" }}
             render={({ field }) => (
               <select
                 {...field}
-                disabled={divisionLoading}
                 className="border border-gray-300 px-2 py-3 rounded w-full text-gray-600"
               >
-                <option value="">
-                  {divisionLoading ? "Loading..." : "Select Division"}
-                </option>
+                <option value="">Select Division</option>
 
-                {divisions?.map((item) => (
-                  <option key={item.division} value={item.division}>
-                    {item.division}
+                {location?.map((item) => (
+                  <option key={item._id} value={item.name}>
+                    {item.name}
                   </option>
                 ))}
               </select>
@@ -444,20 +403,18 @@ const StepOne = ({
           <Controller
             name="district"
             control={control}
-            rules={{}}
+            rules={{ required: "District is required" }}
             render={({ field }) => (
               <select
                 {...field}
                 disabled={districtLoading}
                 className="border border-gray-300 px-2 py-3 rounded w-full text-gray-600"
               >
-                <option value="">
-                  {districtLoading ? "Loading..." : "Select District"}
-                </option>
+                <option value="">Select District</option>
 
-                {districts?.map((item) => (
-                  <option key={item.district} value={item.district}>
-                    {item.district}
+                {districts?.districts?.map((item) => (
+                  <option key={item.name} value={item.name}>
+                    {item.name}
                   </option>
                 ))}
               </select>
@@ -477,9 +434,9 @@ const StepOne = ({
               >
                 <option value="">Select upazilla</option>
 
-                {thana?.map((item, index) => (
-                  <option key={item.index} value={item}>
-                    {item}
+                {upazila?.upazilas?.map((item, index) => (
+                  <option key={item.index} value={item?.name}>
+                    {item?.name}
                   </option>
                 ))}
               </select>
