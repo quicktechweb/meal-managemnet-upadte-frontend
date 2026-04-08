@@ -32,7 +32,7 @@ const StepOne = ({
   const [divisionLoading, setDivisionLoading] = useState(false);
   const [districtLoading, setDistrictLoading] = useState(false);
 
-  console.log(thana);
+
 
   const selectedCountry = watch("country");
   const selectedState = watch("state");

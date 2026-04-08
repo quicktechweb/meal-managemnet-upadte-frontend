@@ -31,8 +31,6 @@ const CustomSelect = ({
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-
-
   useEffect(() => {
     setInputValue(value || "");
   }, [value]);
@@ -109,7 +107,7 @@ const CustomSelect = ({
                 <div
                   key={index}
                   onClick={() => {
-                    setSearchTerm(item);
+                    // setSearchTerm(item);
                     onChange && onChange(item);
                     setIsOpen(false);
                   }}
