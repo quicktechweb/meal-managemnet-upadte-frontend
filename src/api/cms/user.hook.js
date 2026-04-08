@@ -1,6 +1,7 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
 import {
   approvedInstituteUserFunction,
+  instituteApprovedUsersFunction,
   instituteCreateUserMealFunction,
   instituteUserAdminDataFunction,
   instituteUserListFunction,
@@ -64,5 +65,13 @@ export const useInstituteUserCreateMeal = (payload) => {
     onError: (err) => {
       toast.error(err?.response?.data?.message);
     },
+  });
+};
+
+export const useApprovedInstituteUsers = () => {
+  return useQuery({
+    queryKey: ["approved-user"],
+    queryFn: instituteApprovedUsersFunction,
+    retry: false,
   });
 };
