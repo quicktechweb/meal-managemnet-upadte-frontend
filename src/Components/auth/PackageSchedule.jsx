@@ -108,6 +108,59 @@ const PackageSchedule = ({
       <div className="max-w-7xl mx-auto">
         <div className="border border-gray-100 shadow-xl rounded-3xl overflow-hidden bg-white">
           <table className="w-full text-left">
+            {/* Time Inputs header */}
+            <thead className="bg-gradient-to-r from-orange-600 to-amber-600">
+              <tr>
+                <th className="p-2 text-white font-semibold text-lg">
+                  Schedule Time
+                </th>
+                {packageTypes.map(({ package_type, start_time, end_time }) => (
+                  <th key={package_type} className="p-1.5">
+                    <div className="flex items-center gap-2 text-white mb-1.5">
+                      <Clock size={20} />
+                      <span className="font-semibold">{package_type}</span>
+                    </div>
+
+                    <div className="flex gap-1">
+                      <div className="flex-1">
+                        <label className="text-xs text-orange-100 block mb-1">
+                          Start Time
+                        </label>
+                        <input
+                          type="time"
+                          value={start_time}
+                          onChange={(e) =>
+                            handleTimeChange(
+                              package_type,
+                              "start_time",
+                              e.target.value,
+                            )
+                          }
+                          className="w-full bg-white/20 border border-white/30 text-white rounded-2xl px-4 py-1.5 focus:outline-none focus:border-white backdrop-blur-sm"
+                        />
+                      </div>
+                      <div className="flex-1">
+                        <label className="text-xs text-orange-100 block mb-1">
+                          End Time
+                        </label>
+                        <input
+                          type="time"
+                          value={end_time}
+                          onChange={(e) =>
+                            handleTimeChange(
+                              package_type,
+                              "end_time",
+                              e.target.value,
+                            )
+                          }
+                          className="w-full bg-white/20 border border-white/30 text-white rounded-2xl px-4 py-1.5 focus:outline-none focus:border-white backdrop-blur-sm"
+                        />
+                      </div>
+                    </div>
+                  </th>
+                ))}
+              </tr>
+            </thead>
             <tbody>
               {days.map((day) => {
                 const dayData = groupedData[day] || {};
@@ -296,60 +349,6 @@ const PackageSchedule = ({
                 );
               })}
             </tbody>
-
-            {/* Time Inputs Footer */}
-            <tfoot className="bg-gradient-to-r from-orange-600 to-amber-600">
-              <tr>
-                <th className="p-2 text-white font-semibold text-lg">
-                  Schedule Time
-                </th>
-                {packageTypes.map(({ package_type, start_time, end_time }) => (
-                  <th key={package_type} className="p-1.5">
-                    <div className="flex items-center gap-2 text-white mb-1.5">
-                      <Clock size={20} />
-                      <span className="font-semibold">{package_type}</span>
-                    </div>
-
-                    <div className="flex gap-1">
-                      <div className="flex-1">
-                        <label className="text-xs text-orange-100 block mb-1">
-                          Start Time
-                        </label>
-                        <input
-                          type="time"
-                          value={start_time}
-                          onChange={(e) =>
-                            handleTimeChange(
-                              package_type,
-                              "start_time",
-                              e.target.value,
-                            )
-                          }
-                          className="w-full bg-white/20 border border-white/30 text-white rounded-2xl px-4 py-1.5 focus:outline-none focus:border-white backdrop-blur-sm"
-                        />
-                      </div>
-                      <div className="flex-1">
-                        <label className="text-xs text-orange-100 block mb-1">
-                          End Time
-                        </label>
-                        <input
-                          type="time"
-                          value={end_time}
-                          onChange={(e) =>
-                            handleTimeChange(
-                              package_type,
-                              "end_time",
-                              e.target.value,
-                            )
-                          }
-                          className="w-full bg-white/20 border border-white/30 text-white rounded-2xl px-4 py-1.5 focus:outline-none focus:border-white backdrop-blur-sm"
-                        />
-                      </div>
-                    </div>
-                  </th>
-                ))}
-              </tr>
-            </tfoot>
           </table>
         </div>
       </div>

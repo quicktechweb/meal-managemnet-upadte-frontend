@@ -282,6 +282,12 @@ const MealScheduleTable = ({
     return `${hour}:${min} ${ampm}`;
   };
 
+  const sortedActiveMeals = [...activeMeals].sort((a, b) => {
+    const timeA = mealTimes[a]?.startTime || "";
+    const timeB = mealTimes[b]?.startTime || "";
+    return timeA.localeCompare(timeB);
+  });
+
   return (
     <div className="p-8 bg-gray-50">
       {/* CREATE FORM */}
@@ -476,7 +482,7 @@ const MealScheduleTable = ({
       {/* MEAL TOGGLE */}
       {meals.length > 0 && (
         <div className="flex flex-wrap justify-center gap-4 mb-10">
-          {meals.map((meal) => (
+          {sortedActiveMeals.map((meal) => (
             <div
               key={meal}
               className="bg-white border flex flex-col items-center  border-gray-200 rounded-xl p-5 w-48 shadow hover:shadow-lg transition"
@@ -505,13 +511,13 @@ const MealScheduleTable = ({
       )}
 
       {/* DYNAMIC TABLE WITH TIMES */}
-      {activeMeals.length > 0 && (
+      {sortedActiveMeals.length > 0 && (
         <div className="max-w-7xl mx-auto overflow-x-auto border border-gray-200 rounded-xl shadow-lg">
           <table className="w-full text-left border-collapse bg-white">
             <thead className="bg-orange-600 text-white sticky top-0">
               <tr>
                 <th className="p-4 border border-orange-700 w-32">Day</th>
-                {activeMeals.map((meal) => (
+                {sortedActiveMeals.map((meal) => (
                   <th key={meal} className="p-4 border border-orange-700 w-32">
                     {meal}
                   </th>
