@@ -201,6 +201,7 @@ const MessForm = () => {
     if (isValid) {
       if (step === 1) {
         const payload = {
+          role:"institute",
           instituteType: currentData?.institute_type,
           name_of_institute: currentData?.institute_name,
           number_of_member: +currentData?.number_of_member,
@@ -322,12 +323,17 @@ const MessForm = () => {
       district_admin: data.district_admin,
       village_admin: data.village_admin,
       location_admin: data.location_admin,
-      permission: selected,
+      
       documents_admin: adminFormUploadData,
     };
 
     await mutateAsync(
-      { userId: userId, admin_info: { ...payload }, registration_step: step },
+      {
+        userId: userId,
+        admin_info: { ...payload },
+        registration_step: step,
+        roles: selected,
+      },
       {
         onSuccess: (data) => {
           if (data) {

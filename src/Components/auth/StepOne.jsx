@@ -380,7 +380,7 @@ const StepOne = ({
           <Controller
             name="division"
             control={control}
-            rules={{ required: "Division is required" }}
+            rules={{}}
             render={({ field }) => (
               <select
                 {...field}
@@ -403,7 +403,7 @@ const StepOne = ({
           <Controller
             name="district"
             control={control}
-            rules={{ required: "District is required" }}
+            rules={{}}
             render={({ field }) => (
               <select
                 {...field}
