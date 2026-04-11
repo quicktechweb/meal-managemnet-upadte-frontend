@@ -1,11 +1,11 @@
 import { ChevronDown } from "lucide-react";
 import React from "react";
 import { FaCheckCircle } from "react-icons/fa";
+import { getKey } from "../Pages/FrontEnd/Dashboard/UserDashboard/MealManagementPart/AllMealActivity";
 
 const ItemsSelector = ({
   meal,
   isGuest,
-  getKey,
   useAlternativeMap,
   guestUseAlternativeMap,
   selectedGroupMap,
@@ -21,9 +21,13 @@ const ItemsSelector = ({
   guestOpenKey,
   handleSelect,
   handleCheckboxToggle,
+  setGuestOpenKey,
 }) => {
   const key = getKey(meal);
-  const useAlt = isGuest ? guestUseAlternativeMap[key] : useAlternativeMap[key];
+
+  const useAlt = isGuest
+    ? guestUseAlternativeMap?.[key]
+    : useAlternativeMap?.[key];
   const selGroupMap = isGuest ? guestSelectedGroupMap : selectedGroupMap;
   const curOpenKey = isGuest ? guestOpenKey : openKey;
 
@@ -98,7 +102,7 @@ const ItemsSelector = ({
             }`}
           >
             <span className="text-sm">
-              {selGroupMap[key] !== undefined
+              {selGroupMap?.[key] !== undefined
                 ? meal?.alternative_items?.[selGroupMap[key]]
                     ?.map((food) => `${food.title} (৳${food.price})`)
                     .join(", ")

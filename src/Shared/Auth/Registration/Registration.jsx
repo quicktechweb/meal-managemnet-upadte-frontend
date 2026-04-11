@@ -37,14 +37,11 @@ const Registration = () => {
     setOpen(false);
   };
   return (
-    <div className="min-h-screen bg-[#FFFBF7] p-4 md:p-10 flex items-center justify-center w-full mt-14 md:mt-20 font-sans">
-      <div className="absolute top-20 left-20 w-72 h-72 bg-orange-200 rounded-full mix-blend-multiply filter blur-3xl opacity-40 animate-pulse"></div>
-      <div className="absolute bottom-20 right-20 w-80 h-80 bg-green-100 rounded-full mix-blend-multiply filter blur-3xl opacity-50 animate-pulse transition-delay-1000"></div>
-
+    <div className="min-h-screen p-4 md:p-10 flex items-center justify-center w-full mt-14 md:mt-20 font-sans">
       <div
-        className={`relative flex flex-row-reverse bg-white border border-orange-100
+        className={`relative flex flex-row-reverse bg-white 
         ${location?.pathname === "/register/user" ? "h-[850px]" : "h-auto"}
-        justify-center items-stretch shadow-[0_30px_60px_-15px_rgba(120,50,0,0.15)] rounded-[1rem] overflow-hidden max-w-6xl w-full transition-all duration-500`}
+        justify-center items-stretch shadow-xl rounded-[1rem] overflow-hidden max-w-6xl w-full transition-all duration-500`}
       >
         {step !== 3 && step !== 4 && (
           <div className="relative w-full lg:w-1/2 bg-white overflow-hidden hidden md:flex flex-col items-center justify-center px-4 text-black">

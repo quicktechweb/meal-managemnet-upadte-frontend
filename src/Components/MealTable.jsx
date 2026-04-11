@@ -28,7 +28,6 @@ const MealScheduleTable = ({
   const [selectedOptions, setSelectedOptions] = useState([]);
   const [alternativeGroups, setAlternativeGroups] = useState([[]]);
   const [activeAlternatives, setActiveAlternatives] = useState([]);
-  
 
   const [startTime, setStartTime] = useState("");
   const [endTime, setEndTime] = useState("");
@@ -283,6 +282,12 @@ const MealScheduleTable = ({
     return `${hour}:${min} ${ampm}`;
   };
 
+  const sortedActiveMeals = [...activeMeals].sort((a, b) => {
+    const timeA = mealTimes[a]?.startTime || "";
+    const timeB = mealTimes[b]?.startTime || "";
+    return timeA.localeCompare(timeB);
+  });
+
   return (
     <div className="p-8 bg-gray-50">
       {/* CREATE FORM */}
@@ -369,13 +374,22 @@ const MealScheduleTable = ({
                   options={alternativeOptions}
                   value={group}
                   onChange={(newValues) => {
-                    if (newValues.length <= selectedOptions.length) {
+                    const selectedTotalPrice = selectedOptions.reduce(
+                      (sum, item) => sum + Number(item.price || 0),
+                      0,
+                    );
+                    const alternativeTotalPrice = newValues.reduce(
+                      (sum, item) => sum + Number(item.price || 0),
+                      0,
+                    );
+
+                    if (alternativeTotalPrice <= selectedTotalPrice) {
                       const updated = [...alternativeGroups];
                       updated[groupIndex] = newValues;
                       setAlternativeGroups(updated);
                     } else {
                       toast.error(
-                        `Maximum ${selectedOptions.length}টি alternative item select করা যাবে!`,
+                        `Alternative items total price (${alternativeTotalPrice}৳) main items (${selectedTotalPrice}৳) এর বেশি হতে পারবে না!`,
                         {
                           duration: 3000,
                           position: "top-right",
@@ -383,10 +397,6 @@ const MealScheduleTable = ({
                             background: "#f97316",
                             color: "#fff",
                             fontWeight: "600",
-                          },
-                          iconTheme: {
-                            primary: "#fff",
-                            secondary: "#f97316",
                           },
                         },
                       );
@@ -472,7 +482,7 @@ const MealScheduleTable = ({
       {/* MEAL TOGGLE */}
       {meals.length > 0 && (
         <div className="flex flex-wrap justify-center gap-4 mb-10">
-          {meals.map((meal) => (
+          {sortedActiveMeals.map((meal) => (
             <div
               key={meal}
               className="bg-white border flex flex-col items-center  border-gray-200 rounded-xl p-5 w-48 shadow hover:shadow-lg transition"
@@ -501,13 +511,13 @@ const MealScheduleTable = ({
       )}
 
       {/* DYNAMIC TABLE WITH TIMES */}
-      {activeMeals.length > 0 && (
+      {sortedActiveMeals.length > 0 && (
         <div className="max-w-7xl mx-auto overflow-x-auto border border-gray-200 rounded-xl shadow-lg">
           <table className="w-full text-left border-collapse bg-white">
             <thead className="bg-orange-600 text-white sticky top-0">
               <tr>
                 <th className="p-4 border border-orange-700 w-32">Day</th>
-                {activeMeals.map((meal) => (
+                {sortedActiveMeals.map((meal) => (
                   <th key={meal} className="p-4 border border-orange-700 w-32">
                     {meal}
                   </th>

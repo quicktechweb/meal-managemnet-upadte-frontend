@@ -47,7 +47,7 @@ const StepTwo = ({
   members,
   service_type,
 }) => {
-  console.log(service_type);
+ 
 
   return (
     <div className="flex flex-col gap-8 p-4">

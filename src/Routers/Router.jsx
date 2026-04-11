@@ -88,6 +88,9 @@ import UpdateItem from "../Pages/FrontEnd/admin/UpdateItem";
 import InstituteAdminProfileUpdate from "../Pages/FrontEnd/institute/admin/InstituteAdminProfileUpdate";
 import InstituteAdminServiceUpdate from "../Pages/FrontEnd/institute/admin/InstituteAdminServiceUpdate";
 import HomeReview from "../Pages/FrontEnd/admin/HomeReview";
+import AddPackage from "../Components/admin/AddPackage";
+import Packages from "../Pages/FrontEnd/admin/Packages";
+import UpdatePackage from "../Pages/FrontEnd/admin/UpdatePackage";
 
 const router = createBrowserRouter([
   {
@@ -510,6 +513,18 @@ const router = createBrowserRouter([
         path: "home-review",
         element: <HomeReview />,
       },
+      {
+        path: "add-package",
+        element: <AddPackage />,
+      },
+      {
+        path: "packages",
+        element: <Packages />,
+      },
+      {
+        path: "update-package/:id",
+        element:<UpdatePackage/>
+      }
     ],
   },
 ]);

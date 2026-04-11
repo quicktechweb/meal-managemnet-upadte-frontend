@@ -14,10 +14,6 @@ const MealAdminScheduleTable = () => {
 
   const { user } = useInstituteAuth();
 
-  console.log(user?.user?.services?.total_amount);
-
-  console.log(user);
-
   const { data: items = [] } = useGetItems();
   const days = ["Sat", "Sun", "Mon", "Tue", "Wed", "Thu", "Fri"];
 

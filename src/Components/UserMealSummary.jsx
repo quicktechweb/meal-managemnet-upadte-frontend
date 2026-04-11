@@ -10,6 +10,7 @@ const UserMealSummary = ({
   getNext7Days,
   guestSelectedGroupMap,
   isMealOn,
+  guestQuantityMap,
 }) => {
   return (
     <div className="bg-white/90 backdrop-blur-xl rounded-3xl shadow-lg p-6 mt-4 w-full">

@@ -6,12 +6,7 @@ import { api } from "../../utils/countryApi";
 
 import AdminDocumentUpload from "../AdminDocumentUpload";
 
-const permissionsList = [
-  "Institute Admin Panel",
-  "Institute User Panel",
-  "Institute Staff Panel",
-  "Institute Management Panel",
-];
+const rolesList = ["admin", "user", "staff", "management"];
 
 const StepFour = ({
   prevStep,
@@ -400,7 +395,7 @@ const StepFour = ({
 
           {/* Permission Items */}
           <div className="p-5 flex flex-col gap-4">
-            {permissionsList.map((item, index) => {
+            {rolesList.map((item, index) => {
               const isActive = selected.includes(item);
 
               return (
