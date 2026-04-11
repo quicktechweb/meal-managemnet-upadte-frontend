@@ -1,72 +1,123 @@
 import React from "react";
+import { useForm } from "react-hook-form";
 import useInstituteAuth from "../../../../Hooks/useInstituteAuth";
-import { Edit3, Plus, Trash2, Shield } from "lucide-react";
+import { Plus, Trash2, Shield, Settings2 } from "lucide-react";
+import { useApprovedInstituteUsers } from "../../../../api/cms/user.hook";
 
 const UserSettings = () => {
   const { user } = useInstituteAuth();
-  const permissions = user?.user?.admin_info?.permission || [];
+  const { data } = useApprovedInstituteUsers();
+
+  const roles = user?.user?.admin_info?.roles || [];
+
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors },
+  } = useForm({
+    defaultValues: {
+      roleName: "",
+    },
+  });
+
+  const onSubmit = async (formData) => {
+    if (!formData.roleName) return;
+
+    const payload = {
+      name: formData.roleName,
+    };
+
+    try {
+      reset();
+    } catch (err) {
+      console.log(err);
+    }
+  };
 
   return (
-    <div className="p-6 bg-gray-50 min-h-screen">
-      {/* Header Section */}
-      <div className="mb-8">
-        <h2 className="text-2xl font-bold text-gray-800">
-          Permission Settings
-        </h2>
-        <p className="text-gray-500 text-sm">
-          Manage your administrative access and roles
-        </p>
+    <div className="p-8 bg-[#f8fafc] min-h-screen">
+      {/* Header */}
+      <div className="mb-8 flex justify-between items-end">
+        <div>
+          <div className="flex items-center gap-2 mb-1">
+            <Settings2 className="text-blue-600" size={24} />
+            <h2 className="text-3xl font-extrabold text-gray-900 tracking-tight">
+              Role Settings
+            </h2>
+          </div>
+          <p className="text-gray-500 text-base">
+            Manage roles and access levels
+          </p>
+        </div>
       </div>
 
-      {/* Permissions Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2  gap-6">
-        {permissions.map((permission, index) => (
-          <div
-            key={index}
-            className="group bg-white rounded-2xl shadow-sm hover:shadow-md transition-all duration-300 border border-gray-100 overflow-hidden"
-          >
-            <div className="p-6">
-              {/* Permission Header */}
-              <div className="flex items-center gap-3 mb-4">
-                <div className="p-2 bg-blue-50 text-blue-600 rounded-lg group-hover:bg-blue-600 group-hover:text-white transition-colors">
-                  <Shield size={20} />
-                </div>
-                <h4 className="font-semibold text-lg text-gray-700 capitalize">
-                  {permission.replace(/_/g, " ")}
-                </h4>
-              </div>
+      {/* Card */}
+      <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+        <div className="p-3 border-b border-gray-50 bg-white">
+          <h3 className="text-lg font-semibold text-gray-800 mb-4 flex items-center gap-2">
+            <Shield size={18} className="text-blue-500" />
+            Active Roles
+          </h3>
 
-              {/* Description Placeholder */}
-              <p className="text-sm text-gray-400 mb-6">
-                Grant or revoke access for this specific module within the
-                institute.
-              </p>
-
-              {/* Action Buttons */}
-              <div className="flex flex-wrap gap-2 pt-4 border-t border-gray-50">
-                {/* <button className="flex items-center gap-1 px-3 py-1.5 bg-indigo-50 text-indigo-600 rounded-md text-xs font-medium hover:bg-indigo-100 transition-colors cursor-pointer">
-                  <Edit3 size={14} /> Edit
-                </button> */}
-                <button className="flex items-center gap-1 px-3 py-1.5 bg-emerald-50 text-emerald-600 rounded-md text-xs font-medium hover:bg-emerald-100 transition-colors cursor-pointer">
-                  <Plus size={14} /> Add
-                </button>
-                <button className="flex items-center gap-1 px-3 py-1.5 bg-emerald-50 text-emerald-600 rounded-md text-xs font-medium hover:bg-emerald-100 transition-colors cursor-pointer">
-                  <Plus size={14} /> Create
-                </button>
-                <button className="flex items-center gap-1 px-3 py-1.5 bg-rose-50 text-rose-600 rounded-md text-xs font-medium hover:bg-rose-100 transition-colors cursor-pointer">
-                  <Trash2 size={14} /> Remove
-                </button>
-              </div>
+          {/* Form */}
+          <form onSubmit={handleSubmit(onSubmit)} className="flex gap-3">
+            <div className="relative flex-1">
+              <input
+                type="text"
+                placeholder="Enter new role name..."
+                className={`w-full pl-4 pr-4 py-2.5 bg-gray-50 border rounded-xl text-sm focus:outline-none focus:ring-2 ${
+                  errors.roleName
+                    ? "border-red-500"
+                    : "border-gray-200 focus:ring-blue-500/20"
+                }`}
+                {...register("roleName", {
+                  required: "Role name is required",
+                })}
+              />
+              {errors.roleName && (
+                <p className="text-red-500 text-xs mt-1">
+                  {errors.roleName.message}
+                </p>
+              )}
             </div>
-          </div>
-        ))}
 
-        {/* Empty State if no permissions */}
-        {permissions.length === 0 && (
-          <div className="col-span-full text-center py-20 bg-white rounded-2xl border-2 border-dashed border-gray-200">
-            <p className="text-gray-400">No permissions found.</p>
-          </div>
-        )}
+            <button
+              type="submit"
+              className="px-5 h-[50px] bg-blue-600 text-white rounded-xl flex items-center gap-2"
+            >
+              <Plus size={18} />
+              Add Role
+            </button>
+          </form>
+        </div>
+
+        {/* Role List */}
+        <div className="p-3">
+          {roles.length > 0 ? (
+            <ul className="grid grid-cols-1 md:grid-cols-2 gap-2">
+              {roles.map((role, i) => (
+                <li
+                  key={i}
+                  className="p-4 rounded-xl border flex justify-between items-center"
+                >
+                  <div className="flex items-center gap-3">
+                    <Shield size={16} />
+                    <span className="capitalize font-medium">
+                      {role?.name || role}
+                    </span>
+                  </div>
+
+                  <button className="text-red-500">
+                    <Trash2 size={16} />
+                  </button>
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <p className="text-center text-gray-400 py-10">No roles found</p>
+          )}
+        </div>
       </div>
     </div>
   );

@@ -12,12 +12,14 @@ import {
   addscheduleFunction,
   addutilitiesFunction,
   allCostFunction,
+  allPackageFunction,
   allServiceTypeFunction,
   approvedInstituteUserFunction,
   bannerListFunction,
   chooseusBannerFunction,
   chooseusListsFunction,
   createItemFunction,
+  createPackageFunction,
   createWebsiteSetting,
   deleteAppDataSectionFunction,
   deletebannerFunction,
@@ -44,6 +46,7 @@ import {
   getallutilitiesfunction,
   getItemsFunction,
   getWebsiteSetting,
+  packageDeleteFunction,
   pendingInstituteUserFunction,
   singlePageFunction,
   updateAppDataSectionFunction,
@@ -53,6 +56,7 @@ import {
   updateFeatureFunction,
   UpdateitemFunction,
   updatenoticeFunction,
+  updatePackageFunction,
   updatePageFunction,
   updateScheduleFunction,
   updateUtilitiesFunction,
@@ -793,11 +797,67 @@ export const useUpdateItem = () => {
   });
 };
 
-
 export const useServiceType = () => {
-   return useQuery({
-     queryKey: "all-service-type",
-     queryFn: allServiceTypeFunction,
-     retry: false,
-   });
-}
+  return useQuery({
+    queryKey: "all-service-type",
+    queryFn: allServiceTypeFunction,
+    retry: false,
+  });
+};
+
+export const useAddPackage = () => {
+  const query = useQueryClient();
+  const navigate = useNavigate();
+  return useMutation({
+    mutationKey: ["add-package"],
+    mutationFn: (payload) => createPackageFunction(payload),
+    onSuccess: (data) => {
+      toast.success(data?.message);
+      query.invalidateQueries(["get-packages"]);
+      navigate("/admin/dashboard/packages");
+    },
+    onError: (err) => {
+      toast.error(err?.response?.data?.message);
+    },
+  });
+};
+
+export const useAllPackage = () => {
+  return useQuery({
+    queryKey: "all-packages",
+    queryFn: allPackageFunction,
+    retry: false,
+  });
+};
+
+export const usePackageDelete = () => {
+  const query = useQueryClient();
+
+  return useMutation({
+    mutationKey: ["delete-package"],
+    mutationFn: (id) => packageDeleteFunction(id),
+    onSuccess: (data) => {
+      toast.success(data?.message);
+      query.invalidateQueries(["all-packages"]);
+    },
+    onError: (err) => {
+      toast.error(err?.response?.data?.message);
+    },
+  });
+};
+
+export const usePackageUpdate = () => {
+  const query = useQueryClient();
+  const navigate = useNavigate();
+  return useMutation({
+    mutationKey: ["update-package"],
+    mutationFn: (payload) => updatePackageFunction(payload),
+    onSuccess: (data) => {
+      if (data?.success) {
+        toast.success(data?.message);
+        query.invalidateQueries(["all-packages"]);
+        navigate("/admin/dashboard/packages");
+      }
+    },
+  });
+};

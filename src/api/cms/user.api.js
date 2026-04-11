@@ -30,3 +30,13 @@ export const instituteCreateUserMealFunction = async (payload) => {
   const { data } = await axiosPublic.post("/api/create-user-meal", payload);
   return data;
 };
+
+export const instituteApprovedUsersFunction = async () => {
+  const { data } = await axiosSecure.get("/api/instituteuser-approved-user");
+  return data?.users;
+};
+
+export const locationFunction = async () => {
+  const { data } = await axiosPublic.get("/api/all-location");
+  return data?.data
+}

@@ -39,6 +39,11 @@ const AdminDashboardSidebar = ({ setIsOpenSidebar }) => {
           icon: FaShoppingBag,
           path: "/admin/dashboard/item",
         },
+        {
+          title: "Packages",
+          icon: FaShoppingBag,
+          path: "/admin/dashboard/packages",
+        },
       ],
     },
     {

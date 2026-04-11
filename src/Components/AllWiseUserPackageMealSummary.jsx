@@ -1,6 +1,6 @@
 import React from "react";
 
-const DayWiseUserMealSummary = ({
+const AllWiseUserPackageMealSummary = ({
   sortedMeals,
   getKey,
   useAlternativeMap,
@@ -22,7 +22,7 @@ const DayWiseUserMealSummary = ({
       <div className="overflow-x-auto">
         {(() => {
           const mealTypes = [
-            ...new Set(sortedMeals?.map((m) => m.meal_type) ?? []),
+            ...new Set(sortedMeals?.map((m) => m.package_title) ?? []),
           ];
 
           const groupedByDay = {};
@@ -35,26 +35,25 @@ const DayWiseUserMealSummary = ({
             const isGuestAlternative = !!guestUseAlternativeMap[key];
             const guestAltGroupIndex = guestSelectedGroupMap[key];
 
-            groupedByDay[meal.day][meal.meal_type] = {
+            groupedByDay[meal.day][meal.package_title] = {
               is_on: isMealOn(key),
               selected_items: isAlternative
                 ? (meal?.alternative_items?.[altGroupIndex] ?? [])
-                : (meal?.items ?? []),
+                : (meal?.package_item ?? []),
               is_alternative: isAlternative,
+              package_price: meal?.package_price,
               guest: isGuestAdded
                 ? {
                     selected_items: isGuestAlternative
                       ? (meal?.alternative_items?.[guestAltGroupIndex] ?? [])
-                      : (meal?.items ?? []),
+                      : (meal?.package_item ?? []),
                     quantity: guestQuantityMap[key] ?? 1,
                   }
                 : null,
             };
           });
 
-          const days = getNext7DaysWithDates;
-
-          console.log(days);
+          const days = getNext7Days;
 
           return (
             <table className="w-full text-sm border-collapse">
@@ -63,11 +62,11 @@ const DayWiseUserMealSummary = ({
                   <th className="px-4 py-3 text-left rounded-tl-xl font-semibold">
                     Date
                   </th>
-                  {mealTypes.map((type, i) => (
+                  {mealTypes?.map((type, i) => (
                     <th
                       key={type}
                       className={`px-4 py-3 text-left font-semibold capitalize ${
-                        i === mealTypes.length - 1 ? "rounded-tr-xl" : ""
+                        i === mealTypes?.length - 1 ? "rounded-tr-xl" : ""
                       }`}
                     >
                       {type}
@@ -77,10 +76,8 @@ const DayWiseUserMealSummary = ({
               </thead>
 
               <tbody>
-                {days.map((day, rowIndex) => {
-                  console.log(day);
-
-                  const dayData = groupedByDay[day?.day];
+                {days?.map((day, rowIndex) => {
+                  const dayData = groupedByDay[day];
 
                   return (
                     <tr
@@ -90,12 +87,13 @@ const DayWiseUserMealSummary = ({
                       }`}
                     >
                       <td className="px-4 py-3 font-bold text-gray-700 flex items-center gap-1">
-                        {day?.date} {day?.month}{" "}
-                        <h5 className="text-xs">({day?.day})</h5>
+                        <h5 className="text-xs">{day}</h5>
                       </td>
 
                       {mealTypes.map((type) => {
                         const cell = dayData?.[type];
+
+                        console.log(cell);
 
                         if (!cell) {
                           return (
@@ -123,38 +121,67 @@ const DayWiseUserMealSummary = ({
                               {cell.is_on ? "ON" : "OFF"}
                             </span>
 
-                            <div className="flex flex-wrap gap-1 mt-1">
-                              {cell.selected_items?.map((item, i) => (
-                                <span
-                                  key={i}
-                                  className="bg-orange-50 text-orange-600 text-xs px-2 py-0.5 rounded-full"
-                                >
-                                  {item.title}
-                                  <span className="text-[10px] ml-1 text-orange-400">
-                                    ৳{item.price}
+                            <div className="flex items-center gap-2">
+                              <h3 className="text-sm font-semibold">
+                                Package Price -{" "}
+                              </h3>
+                              <p className="text-green-700 font-semibold">
+                                ৳{cell?.package_price}
+                              </p>
+                            </div>
+
+                            <div className="flex items-center gap-2">
+                              <h3 className="text-sm font-semibold">
+                                Items -{" "}
+                              </h3>
+                              <div className="flex flex-wrap gap-1">
+                                {cell.selected_items?.map((item, i) => (
+                                  <span
+                                    key={i}
+                                    className=" text-xs   rounded-full"
+                                  >
+                                    {item.title}{" "}
+                                    {cell.selected_items?.length - 1 !== i &&
+                                      ", "}
                                   </span>
-                                </span>
-                              ))}
-                              {cell.is_alternative && (
-                                <span className="bg-blue-50 text-blue-500 text-[10px] px-2 py-0.5 rounded-full">
-                                  alt
-                                </span>
-                              )}
+                                ))}
+                              </div>
                             </div>
 
                             {cell.guest && (
-                              <div className="mt-1.5 flex flex-wrap items-center gap-1">
-                                <span className="text-[10px] text-purple-500 font-semibold">
-                                  Guest x{cell.guest.quantity}:
+                              <div className=" flex flex-wrap items-center gap-1">
+                                <span className="text-[12px]  text-orange-500 font-semibold ">
+                                  Guest x {cell.guest.quantity} :
                                 </span>
-                                {cell.guest.selected_items?.map((item, i) => (
+
+                                <div className="flex items-center gap-2">
+                                  <h3 className="text-sm font-semibold">
+                                    Items -{" "}
+                                  </h3>
+                                  <div className="flex flex-wrap gap-1">
+                                    {cell.guest.selected_items?.map(
+                                      (item, i) => (
+                                        <span
+                                          key={i}
+                                          className="text-black font-semibold text-[12px] py-0.5 rounded-full"
+                                        >
+                                          {item.title}
+                                          {cell.guest.selected_items?.length -
+                                            1 !==
+                                            i && ", "}
+                                        </span>
+                                      ),
+                                    )}
+                                  </div>
+                                </div>
+                                {/* {cell.guest.selected_items?.map((item, i) => (
                                   <span
                                     key={i}
-                                    className="bg-purple-50 text-purple-600 text-[10px] px-2 py-0.5 rounded-full"
+                                    className="text-black font-semibold text-[12px] py-0.5 rounded-full"
                                   >
                                     {item.title}
                                   </span>
-                                ))}
+                                ))} */}
                               </div>
                             )}
                           </td>
@@ -172,4 +199,4 @@ const DayWiseUserMealSummary = ({
   );
 };
 
-export default DayWiseUserMealSummary;
+export default AllWiseUserPackageMealSummary;
