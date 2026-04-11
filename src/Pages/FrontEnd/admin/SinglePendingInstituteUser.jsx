@@ -155,7 +155,7 @@ const SinglePendingInstituteUser = () => {
                   Permissions
                 </p>
                 <div className="flex flex-wrap gap-1">
-                  {singlePendingInstituteUser?.admin_info.permission.map(
+                  {singlePendingInstituteUser?.roles?.map(
                     (p, i) => (
                       <span
                         key={i}

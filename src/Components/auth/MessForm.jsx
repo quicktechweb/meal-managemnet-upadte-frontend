@@ -201,7 +201,6 @@ const MessForm = () => {
     if (isValid) {
       if (step === 1) {
         const payload = {
-          role:"institute",
           instituteType: currentData?.institute_type,
           name_of_institute: currentData?.institute_name,
           number_of_member: +currentData?.number_of_member,
@@ -223,6 +222,7 @@ const MessForm = () => {
             email: currentData.email ? currentData?.email : null,
             phone: currentData?.phone ? currentData?.phone : null,
             information: payload,
+            role: "institute",
           },
           {
             onSuccess: (data) => {
@@ -275,7 +275,6 @@ const MessForm = () => {
 
       if (step === 3) {
         const payload = {
-          
           meal_type_lists: mealTypeLists,
           schedule_lists: scheduleList,
         };
@@ -323,7 +322,7 @@ const MessForm = () => {
       district_admin: data.district_admin,
       village_admin: data.village_admin,
       location_admin: data.location_admin,
-      
+
       documents_admin: adminFormUploadData,
     };
 
