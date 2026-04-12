@@ -27,7 +27,10 @@ const Bannerparts = ({ bannerData = [], isLoading }) => {
   }
 
   return (
-    <section className="relative h-[480px] md:h-[500px] lg:h-[720px] bg-gradient-to-r from-purple-700 to-indigo-700 overflow-hidden">
+    <section
+      id="home"
+      className="relative h-[480px] md:h-[500px] lg:h-[720px] bg-gradient-to-r from-purple-700 to-indigo-700 overflow-hidden"
+    >
       {/* BACKGROUND SLIDER */}
       {bannerData.map((slide, i) => (
         <div
