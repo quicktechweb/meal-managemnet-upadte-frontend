@@ -10,7 +10,7 @@ const MainLayout = () => {
   return (
     <div>
       <TopNavbar setHideSidebar={setHideSidebar} />
-      <div className={`flex  `}>
+      <div className={`flex `}>
         <HomeSidebar hideSidebar={hideSidebar} />
         {/* <div
           className={`side-bar ${hideSidebar ? "w-[250px]" : "w-0"}  duration-300 bg-white shadow-xl h-[calc(100vh-80px)] sticky top-20 self-start overflow-y-auto shrink-0`}

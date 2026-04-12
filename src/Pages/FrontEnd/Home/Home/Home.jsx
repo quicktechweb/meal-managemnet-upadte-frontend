@@ -29,12 +29,13 @@ const Home = () => {
       />
       <ProcessSection />
       <MealLanding />
-      {/* <LearningManagement /> */}
+
       <EcommerceLanding />
-      {/* <RideSharing /> */}
+
       <DownloadApp appData={data?.app} isLoading={isLoading} />
       <Testimonial />
-
+      {/* <RideSharing /> */}
+      {/* <LearningManagement /> */}
       {/* <HomeSlider/> */}
       {/* <TopSelling/> */}
       {/* <LatestProduct/> */}

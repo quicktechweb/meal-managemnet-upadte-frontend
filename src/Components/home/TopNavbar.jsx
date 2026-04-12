@@ -1,43 +1,57 @@
 import React, { useState } from "react";
 import { useGetWebsiteData } from "../../api/admin/admin.api";
-import useAuth from "../../Hooks/useAuth";
-import { FiMenu } from "react-icons/fi";
-import { Link, useNavigate } from "react-router-dom";
-import LanguageDropdown from "../../Shared/LanguageDropdown";
-import { GiMeal } from "react-icons/gi";
 
-const menuItems = [
-  { name: "Home", link: "/" },
-  { name: "Why Choose Us", link: "why-choose-us" },
-  { name: "Features", link: "features" },
-  // { name: "Meal", link: "/meal" },
-  // { name: "Ride", link: "/ride" },
-  { name: "Reviews", link: "testimonial" },
-  { name: "Food", link: "food" },
-  { name: "FAQ", link: "/faq" },
+import { FiMenu } from "react-icons/fi";
+
+import {
+  Search,
+  Camera,
+  PlusCircle,
+  Heart,
+  Scan,
+  Mic,
+  Bell,
+  MapPin,
+  DollarSign,
+  Globe,
+  Utensils,
+  Home,
+  Menu,
+  ShoppingCart,
+  User,
+} from "lucide-react";
+import HomePopover from "./HomePopover";
+
+const topIcons = [
+  { icon: <Search size={24} />, label: "search" },
+  { icon: <Camera size={24} />, label: "camera" },
+  { icon: <PlusCircle size={24} />, label: "" },
+  { icon: <Heart size={24} />, label: "for u" },
+  { icon: <Scan size={24} />, label: "scanner" },
+  { icon: <Mic size={24} />, label: "voice mode" },
+  { icon: <Bell size={24} />, label: "notification" },
+  { icon: <MapPin size={24} />, label: "location" },
+  { icon: <DollarSign size={24} />, label: "currency" },
+  { icon: <Globe size={24} />, label: "language" },
+];
+
+const bottomIcons = [
+  { icon: <Utensils size={24} />, label: "A FOOD" },
+  { icon: <Home size={24} />, label: "home" },
+  { icon: <Bell size={24} />, label: "notification" },
+  { icon: <Menu size={24} />, label: "menu" },
+  { icon: <ShoppingCart size={24} />, label: "add to cart" },
+  { icon: <Heart size={24} />, label: "for u" },
 ];
 
 const TopNavbar = ({ setHideSidebar }) => {
   const { data } = useGetWebsiteData();
-  const { user } = useAuth();
-  const navigate = useNavigate();
-
-  const handleClick = (item) => {
-    if (item.link.startsWith("/")) {
-      navigate(item.link);
-    } else {
-      const el = document.getElementById(item.link);
-      if (el) {
-        el.scrollIntoView({ behavior: "smooth" });
-      }
-    }
-  };
 
   const [open, setOpen] = useState(false);
 
   return (
-    <div className="top-navbar bg-white shadow h-20 sticky top-0 z-50 w-full">
-      <div className=" mx-auto px-6 py-2 flex justify-between items-center ">
+    <div className="top-navbar bg-white shadow h-auto sticky top-0 z-50 w-full">
+      <div className=" mx-auto px-6 py-2 flex gap-20 items-center ">
         {/* LOGO */}
 
         <div className="flex items-center gap-5">
@@ -57,98 +71,34 @@ const TopNavbar = ({ setHideSidebar }) => {
         </div>
 
         {/* Desktop Menu */}
-        <ul className="hidden lg:flex gap-8 text-md font-medium  items-center opacity-90">
-          {menuItems.map((item) =>
-            item.link === "/login" ? (
-              // <Link key={item.name} to={item.link}>
-              <li
-                onClick={handleClick}
-                className="hover:opacity-100 cursor-pointer"
-              >
-                {item.name}
-              </li>
-            ) : (
-              // </Link>
-              // <Link key={item.name} to={item.link}>
-              <li
-                onClick={() => handleClick(item)}
-                key={item.name}
-                className="hover:opacity-100 cursor-pointer"
-              >
-                {item.name}
-              </li>
-              // </Link>
-            ),
-          )}
 
-          {user ? (
-            <div className="flex items-center gap-3  px-4 py-2 rounded-xl shadow-sm hover:shadow-md transition">
-              {/* Avatar */}
-              <img
-                src={
-                  user?.user?.image ||
-                  "https://cdn.pixabay.com/photo/2017/02/23/13/05/avatar-2092113_640.png"
-                }
-                alt="User Avatar"
-                className="w-10 h-10 rounded-full object-cover border"
-              />
+        <div className="icon-container w-full flex justify-start mt-4">
+          <div className="flex gap-6 ">
+            {/* LEFT SIDE */}
+            <div className="flex flex-col gap-2">
+              {/* Top Row */}
+              <div className="flex flex-wrap gap-3">
+                {topIcons.map((item, index) => (
+                  <div className="text-gray-600 w-10 h-10 bg-gray-50 flex items-center justify-center rounded-xl group-hover:text-blue-600">
+                    {item.icon}
+                  </div>
+                ))}
+              </div>
 
-              {/* User Info */}
-              <div className="leading-tight">
-                <h4 className="text-sm font-semibold ">{user?.user?.name}</h4>
-                <p className="text-xs ">@{user?.user?.username}</p>
+              {/* Bottom Row */}
+              <div className="flex flex-wrap gap-3">
+                {bottomIcons.map((item, index) => (
+                  <div className="text-gray-600 bg-gray-50 flex items-center justify-center w-10 h-10  rounded-xl group-hover:text-green-600">
+                    {item.icon}
+                  </div>
+                ))}
               </div>
             </div>
-          ) : (
-            <Link
-              to={"#login"}
-              className="px-5 py-2 rounded-lg cursor-pointer bg-black text-white text-sm font-medium hover:bg-gray-800 transition shadow-sm"
-            >
-              Login
-            </Link>
-          )}
-          <LanguageDropdown />
-        </ul>
+          </div>
+        </div>
       </div>
 
-      {open && (
-        <div
-          className="absolute top-14 left-2 w-[340px] bg-white rounded-2xl shadow-2xl overflow-hidden z-50"
-          style={{
-            boxShadow: "0 4px 24px rgba(0,0,0,0.18)",
-            animation: "fadeDown 0.18s ease both",
-          }}
-        >
-          <style>{`
-            @keyframes fadeDown {
-              from { opacity: 0; transform: translateY(-8px) scale(0.97); }
-              to   { opacity: 1; transform: translateY(0) scale(1); }
-            }
-          `}</style>
-
-          {/* Header */}
-          <div className="flex items-center justify-between px-5 pt-5 pb-3">
-            <span className="text-[15px] font-medium text-[#202124]">
-              Website
-            </span>
-          </div>
-
-          {/* Favorites grid */}
-          <div className="grid grid-cols-3 px-2 pb-2">
-            <button className=" cursor-pointer flex flex-col items-center gap-1.5 py-4 rounded-xl transition-colors">
-              <div className="w-[52px] h-[52px] bg-gray-100 rounded-full flex items-center justify-center">
-                <GiMeal />
-              </div>
-              <span className="text-[12px] font-semibold text-[#202124]">
-                Meal
-              </span>
-            </button>
-          </div>
-
-          {/* Divider */}
-          <div className="h-px bg-[#e8eaed] mx-4 mb-2" />
-        </div>
-      )}
+      {open && <HomePopover />}
 
       {/* Click outside to close */}
       {open && (
