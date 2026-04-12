@@ -54,7 +54,7 @@ const Bannerparts = ({ bannerData = [], isLoading }) => {
 
       {/* CONTENT */}
       {isReady && (
-        <div className="relative z-10 max-w-7xl mx-auto px-5 lg:px-7 2xl:px-10 pt-28 2xl:pt-32 flex h-[560px] items-center text-white">
+        <div className="relative z-10  px-5 lg:px-7 2xl:px-10 pt-28 2xl:pt-32 flex h-[560px]  text-white">
           <div className="transition-all duration-700">
             <h1 className="text-2xl lg:text-3xl 2xl:text-5xl font-semibold leading-tight max-w-xl lg:mt-8 2xl:mt-16">
               {bannerData[active]?.title}
@@ -84,7 +84,7 @@ const Bannerparts = ({ bannerData = [], isLoading }) => {
             key={i}
             src={slide?.banner_image}
             alt="hero app"
-            className={`absolute top-0 left-0 w-[380px] h-[550px] transition-all duration-1000 ${
+            className={`absolute top-0 left-0 w-[350px] h-[550px] transition-all duration-1000 ${
               i === active
                 ? "opacity-100 translate-x-0"
                 : "opacity-0 translate-x-24"

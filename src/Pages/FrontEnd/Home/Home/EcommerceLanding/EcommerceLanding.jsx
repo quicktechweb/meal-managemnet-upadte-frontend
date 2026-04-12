@@ -35,7 +35,7 @@ const categories = [
 
 const EcommerceLanding = () => {
   return (
-    <section className="py-16 bg-white">
+    <section id="ecommerce" className="py-12 bg-white">
       <div>
         <h2 className=" text-center text-2xl lg:text-5xl font-bold mb-2 lg:mb-4">
           Ecommerce Management
@@ -56,7 +56,7 @@ const EcommerceLanding = () => {
           </Link>
         </div>
       </div>
-      <div className="max-w-6xl mx-auto px-4 lg:px-6 grid grid-cols-1 lg:grid-cols-3 gap-4 lg:gap-8">
+      <div className=" px-4 lg:px-6 grid grid-cols-1 lg:grid-cols-3 gap-4 ">
         {/* LEFT PROMO */}
         <div className="relative overflow-hidden group lg:col-span-1">
           <img

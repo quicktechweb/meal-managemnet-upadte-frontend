@@ -1,13 +1,9 @@
-"use client";
-
 import { useEffect, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { FaBars, FaTimes } from "react-icons/fa";
 import LanguageDropdown from "../LanguageDropdown";
 import useAuth from "../../Hooks/useAuth";
-import { IoMdClose } from "react-icons/io";
 
-import { FaUtensils, FaShoppingBag } from "react-icons/fa";
 import { useGetWebsiteData } from "../../api/admin/admin.api";
 
 export default function Navbar() {
@@ -15,8 +11,6 @@ export default function Navbar() {
 
   const [scrolled, setScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-
-  const [navbarModalOpen, setNavbarModalOpen] = useState(false);
 
   const { user } = useAuth();
 

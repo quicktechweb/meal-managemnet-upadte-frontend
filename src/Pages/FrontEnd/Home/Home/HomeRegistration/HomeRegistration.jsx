@@ -38,13 +38,13 @@ const HomeLogin = () => {
   return (
     <div
       id="login"
-      className="min-h-screen bg-[#fffcf5] mt-5 md:mt-10 lg:mt-20 bg-[radial-gradient(circle_at_top_right,_var(--tw-gradient-stops))] from-orange-100/40 via-[#fffcf5] to-red-50/40 flex items-center justify-center p-4 lg:p-12 overflow-hidden"
+      className=" bg-[#fffcf5] mt-5 bg-[radial-gradient(circle_at_top_right,_var(--tw-gradient-stops))] from-orange-100/40 via-[#fffcf5] to-red-50/40 flex items-center justify-center p-4 lg:p-12 overflow-hidden"
     >
-      <div className="lg:max-w-[1100px] w-full grid grid-cols-1 lg:grid-cols-2 gap-4 lg:gap-8 2xl:gap-16 items-center">
+      <div className=" w-full grid grid-cols-1 lg:grid-cols-2 gap-4 lg:gap-8 2xl:gap-16 items-center">
         <motion.div
           initial={{ opacity: 0, x: -30 }}
           animate={{ opacity: 1, x: 0 }}
-          className=" space-y-2 md:space-y-4 xl:space-y-8"
+          className=" space-y-2 md:space-y-4 "
         >
           <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/50 border border-orange-200/50 text-orange-600 font-semibold text-sm backdrop-blur-sm">
             <ChefHat className="w-4 h-4" />
@@ -75,7 +75,7 @@ const HomeLogin = () => {
           <div className="relative group">
             <div className="absolute inset-0 bg-white/20 rounded-[3rem] blur-xl group-hover:blur-2xl transition-all duration-500"></div>
 
-            <div className="relative bg-white/40 backdrop-blur-2xl p-5 md:p-10 xl:p-14 rounded-[3rem] border border-white/60 shadow-[0_25px_50px_-12px_rgba(0,0,0,0.08)] overflow-hidden">
+            <div className="relative bg-white/40 backdrop-blur-2xl p-5  rounded-[3rem] border border-white/60 shadow-[0_25px_50px_-12px_rgba(0,0,0,0.08)] overflow-hidden">
               {/* Glass Glint Effect (The "Shine") */}
               <div className="absolute -top-full -left-full w-[200%] h-[200%] bg-gradient-to-br from-white/40 via-transparent to-transparent rotate-45 pointer-events-none"></div>
 

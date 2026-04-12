@@ -91,11 +91,80 @@ import HomeReview from "../Pages/FrontEnd/admin/HomeReview";
 import AddPackage from "../Components/admin/AddPackage";
 import Packages from "../Pages/FrontEnd/admin/Packages";
 import UpdatePackage from "../Pages/FrontEnd/admin/UpdatePackage";
+import MainLayout from "../Layout/MainLayout";
+import HomePage from "../Pages/FrontEnd/Home/Home/HomePage";
 
 const router = createBrowserRouter([
+  // {
+  //   path: "/",
+  //   element: <Layouts />,
+  //   errorElement: (
+  //     <>
+  //       <ErrorPage />
+  //     </>
+  //   ),
+  //   children: [
+  //     {
+  //       path: "/main",
+  //       element: <Main />,
+  //     },
+  //     {
+  //       path: "/",
+  //       element: <Home />,
+  //     },
+
+  //     {
+  //       path: "/register",
+  //       element: <Registration />,
+  //       children: [
+  //         {
+  //           path: "user",
+  //           element: <UserForm />,
+  //         },
+  //         {
+  //           path: "mess",
+  //           element: <MessForm />,
+  //         },
+  //       ],
+  //     },
+
+  //     {
+  //       path: "/checkout",
+  //       element: <CheckoutPage />,
+  //     },
+
+  //     {
+  //       path: "/faq",
+  //       element: <Faq />,
+  //     },
+
+  //     {
+  //       path: "/contact-us",
+  //       element: <ContactPage />,
+  //     },
+
+  //     {
+  //       path: "/menu-details",
+  //       element: <MenuDetails />,
+  //     },
+  //     {
+  //       path: "/privecy-policy",
+  //       element: <PrivacyPolicy />,
+  //     },
+  //     {
+  //       path: "/terms-and-conditions",
+  //       element: <TermAndCondition />,
+  //     },
+  //     {
+  //       path: "/page/:slug",
+  //       element: <DynamicPage />,
+  //     },
+  //   ],
+  // },
+
   {
     path: "/",
-    element: <Layouts />,
+    element: <MainLayout />,
     errorElement: (
       <>
         <ErrorPage />
@@ -103,14 +172,9 @@ const router = createBrowserRouter([
     ),
     children: [
       {
-        path: "/main",
-        element: <Main />,
-      },
-      {
         path: "/",
         element: <Home />,
       },
-
       {
         path: "/register",
         element: <Registration />,
@@ -125,37 +189,9 @@ const router = createBrowserRouter([
           },
         ],
       },
-
-      {
-        path: "/checkout",
-        element: <CheckoutPage />,
-      },
-
       {
         path: "/faq",
         element: <Faq />,
-      },
-
-      {
-        path: "/contact-us",
-        element: <ContactPage />,
-      },
-
-      {
-        path: "/menu-details",
-        element: <MenuDetails />,
-      },
-      {
-        path: "/privecy-policy",
-        element: <PrivacyPolicy />,
-      },
-      {
-        path: "/terms-and-conditions",
-        element: <TermAndCondition />,
-      },
-      {
-        path: "/page/:slug",
-        element: <DynamicPage />,
       },
     ],
   },
@@ -523,8 +559,8 @@ const router = createBrowserRouter([
       },
       {
         path: "update-package/:id",
-        element:<UpdatePackage/>
-      }
+        element: <UpdatePackage />,
+      },
     ],
   },
 ]);

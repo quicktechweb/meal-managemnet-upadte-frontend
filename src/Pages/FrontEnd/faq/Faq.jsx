@@ -45,10 +45,9 @@ const FaqItem = ({ question, answer }) => {
 export default function Faq() {
   const { data: faqs = [], isLoading } = useGetAllFaq();
 
-  // ✅ Skeleton Loader
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-slate-50 px-6 py-6 lg:py-12 mt-20">
+      <div className="min-h-screen bg-slate-50 px-6 py-6 lg:py-12">
         <div className="mx-auto max-w-3xl animate-pulse">
           {/* Heading Skeleton */}
           <div className="h-8 bg-slate-200 rounded w-2/3 mx-auto mb-8"></div>
@@ -69,7 +68,7 @@ export default function Faq() {
   }
 
   return (
-    <div className="min-h-screen bg-slate-50 px-6 py-6 lg:py-12 mt-20">
+    <div className="min-h-screen bg-slate-50 px-6 py-6 ">
       <div className="mx-auto max-w-3xl">
         <h2 className="mb-4 lg:mb-8 text-center text-2xl md:text-3xl font-bold tracking-tight text-slate-900 lg:text-4xl">
           Frequently Asked Questions
