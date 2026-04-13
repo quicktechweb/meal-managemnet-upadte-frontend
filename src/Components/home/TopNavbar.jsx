@@ -29,7 +29,6 @@ const topIcons = [
   { icon: <Bell size={18} />, label: "Notifications", badge: true },
   { icon: <MapPin size={18} />, label: "Location" },
   { icon: "৳", label: "Currency" },
- 
 ];
 
 const bottomIcons = [
@@ -45,7 +44,7 @@ const bottomIcons = [
 const IconButton = ({ icon, label, special, active, badge }) => {
   return (
     <div
-      className={`relative w-34 h-14 rounded-xl flex items-center justify-center cursor-pointer transition-all duration-300 group
+      className={`relative w-36 h-14 rounded-xl flex items-center justify-center cursor-pointer transition-all duration-300 group
       ${
         special
           ? "bg-gradient-to-br from-blue-500 via-indigo-500 to-purple-500 text-white  hover:scale-105 hover:-translate-y-1"
@@ -57,7 +56,7 @@ const IconButton = ({ icon, label, special, active, badge }) => {
       {/* icon */}
       <div className="flex items-center gap-2 justify-center text-lg">
         <span>{icon}</span>
-        <h3>{label}</h3>
+        <h3 className="font-semibold">{label}</h3>
       </div>
 
       {/* notification badge */}
@@ -72,7 +71,7 @@ const TopNavbar = ({ setHideSidebar, open, setOpen }) => {
   const { data } = useGetWebsiteData();
 
   return (
-    <div className="bg-gradient-to-r from-white via-blue-50 to-white border-b border-gray-100 sticky top-0 z-50 w-full backdrop-blur-md">
+    <div className="bg-white border-b border-gray-100 sticky top-0 z-50 w-full ">
       <div className="mx-auto px-7 flex items-center gap-8 h-auto py-2">
         {/* LEFT */}
         <div className="flex items-center gap-5">
@@ -83,11 +82,14 @@ const TopNavbar = ({ setHideSidebar, open, setOpen }) => {
             <FiMenu />
           </div>
 
-          <div onClick={() => setOpen((v) => !v)} className="cursor-pointer">
+          <div
+            onClick={() => setOpen((v) => !v)}
+            className="cursor-pointer shrink-0"
+          >
             <img
               src={data?.logoUrl}
               alt={data?.siteName}
-              className="h-16 w-[100px] transition-all duration-300 hover:scale-110 "
+              className="h-16 w-[100px] shrink-0 transition-all duration-300 hover:scale-110 "
             />
           </div>
         </div>
@@ -96,8 +98,8 @@ const TopNavbar = ({ setHideSidebar, open, setOpen }) => {
         <div className="w-px h-9 bg-gradient-to-b from-transparent via-gray-200 to-transparent flex-shrink-0" />
 
         {/* CENTER */}
-        <div className="flex items-center gap-3.5 flex-1">
-          <div className="flex flex-col gap-2 flex-1">
+        <div className="flex items-center gap-6 ">
+          <div className="flex flex-col gap-2 ">
             {/* top icons */}
             <div className="flex gap-1">
               {topIcons.map((item, i) => (
@@ -115,7 +117,7 @@ const TopNavbar = ({ setHideSidebar, open, setOpen }) => {
 
           {/* RIGHT PROFILE */}
           <div>
-            <div className="w-28 bg-white/70 rounded-2xl p-4 flex flex-col items-center gap-2  hover:-translate-y-1 transition-all duration-300 border border-gray-100">
+            <div className="w-28  rounded-2xl p-4 flex flex-col items-center gap-2  hover:-translate-y-1 transition-all duration-300 ">
               <div className="relative">
                 <div className="p-[2px] rounded-full bg-gradient-to-tr from-blue-500 to-purple-500">
                   <img
@@ -124,9 +126,6 @@ const TopNavbar = ({ setHideSidebar, open, setOpen }) => {
                     className="w-14 h-14 rounded-full object-cover"
                   />
                 </div>
-
-                {/* online dot */}
-                <span className="absolute bottom-0 right-0 w-3 h-3 bg-green-500 border-2 border-white rounded-full" />
               </div>
 
               <div className="text-center">
