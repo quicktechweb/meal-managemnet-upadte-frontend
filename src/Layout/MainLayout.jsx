@@ -8,7 +8,7 @@ const MainLayout = () => {
   const [hideSidebar, setHideSidebar] = useState(true);
 
   return (
-    <div>
+    <div className="w-full">
       <TopNavbar setHideSidebar={setHideSidebar} />
       <div className={`flex `}>
         <HomeSidebar hideSidebar={hideSidebar} />
@@ -17,7 +17,7 @@ const MainLayout = () => {
         ></div> */}
 
         {/* Main content */}
-        <div className="grow">
+        <div className="grow w-full">
           <Outlet />
         </div>
       </div>

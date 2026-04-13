@@ -15,7 +15,7 @@ const Home = () => {
   const { data, isLoading } = useCmsData();
 
   return (
-    <div>
+    <>
       <Bannerparts bannerData={data?.banner} isLoading={isLoading} />
 
       <HomeLogin />
@@ -45,7 +45,7 @@ const Home = () => {
       {/* <LatestDeals/> */}
       {/* <CuponPart/> */}
       {/* <Brands/> */}
-    </div>
+    </>
   );
 };
 
