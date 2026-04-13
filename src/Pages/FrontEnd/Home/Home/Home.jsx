@@ -14,6 +14,8 @@ import Testimonial from "./Testimonial/Testimonial";
 const Home = () => {
   const { data, isLoading } = useCmsData();
 
+  console.log(data);
+
   return (
     <>
       <Bannerparts bannerData={data?.banner} isLoading={isLoading} />

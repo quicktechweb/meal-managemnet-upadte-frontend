@@ -114,9 +114,8 @@ export const useInstituteLogin = () => {
 
       setToken(data?.token);
 
-      data?.user?.role === "institute_user" &&
-        navigate("/dashboard/mealmanagement");
-      data?.user?.role === "institute_admin" && navigate("/institute");
+      data?.user?.role === "user" && navigate("/dashboard/mealmanagement");
+      data?.user?.role === "institute" && navigate("/institute");
 
       toast.success(data?.message);
     },
@@ -147,3 +146,6 @@ export const useAuthInstituteUser = (token) => {
     },
   });
 };
+
+
+

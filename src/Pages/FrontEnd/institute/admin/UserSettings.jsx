@@ -1,14 +1,19 @@
 import React from "react";
 import { useForm } from "react-hook-form";
-import useInstituteAuth from "../../../../Hooks/useInstituteAuth";
 import { Plus, Trash2, Shield, Settings2 } from "lucide-react";
-import { useApprovedInstituteUsers } from "../../../../api/cms/user.hook";
+import {
+  useCreateInstituteRole,
+  useDeleteInstituteRole,
+  useGetInstituteRole,
+} from "../../../../api/cms/user.hook";
 
 const UserSettings = () => {
-  const { user } = useInstituteAuth();
-  const { data } = useApprovedInstituteUsers();
+  const { data: roles } = useGetInstituteRole();
 
-  const roles = user?.user?.admin_info?.roles || [];
+  const { mutateAsync, isPending } = useCreateInstituteRole();
+
+  const { mutateAsync: deleteMutateAsync, isPending: isDeletePending } =
+    useDeleteInstituteRole();
 
   const {
     register,
@@ -29,14 +34,25 @@ const UserSettings = () => {
     };
 
     try {
+      await mutateAsync({ ...payload });
       reset();
     } catch (err) {
       console.log(err);
     }
   };
 
+  const handleInstituteRoleRemove = async (role) => {
+    console.log(role, "role");
+
+    try {
+      await deleteMutateAsync(role._id);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
   return (
-    <div className="p-8 bg-[#f8fafc] min-h-screen">
+    <div className="p-4 bg-[#f8fafc] min-h-screen">
       {/* Header */}
       <div className="mb-8 flex justify-between items-end">
         <div>
@@ -84,36 +100,71 @@ const UserSettings = () => {
 
             <button
               type="submit"
-              className="px-5 h-[50px] bg-blue-600 text-white rounded-xl flex items-center gap-2"
+              disabled={isPending}
+              className="px-5 h-[50px] bg-blue-600 text-white rounded-xl flex items-center gap-2 cursor-pointer"
             >
               <Plus size={18} />
-              Add Role
+              {isPending ? "Add..." : "Add Role"}
             </button>
           </form>
         </div>
 
         {/* Role List */}
-        <div className="p-3">
-          {roles.length > 0 ? (
-            <ul className="grid grid-cols-1 md:grid-cols-2 gap-2">
+        <div>
+          {roles?.length > 0 ? (
+            <div className="divide-y divide-gray-200 rounded-xl overflow-hidden">
               {roles.map((role, i) => (
-                <li
+                <div
                   key={i}
-                  className="p-4 rounded-xl border flex justify-between items-center"
+                  className="flex items-center justify-between px-4 py-3 hover:bg-gray-50 transition"
                 >
+                  {/* Left */}
                   <div className="flex items-center gap-3">
-                    <Shield size={16} />
-                    <span className="capitalize font-medium">
-                      {role?.name || role}
-                    </span>
+                    <div className="w-9 h-9 flex items-center justify-center rounded-lg bg-blue-50 text-blue-600">
+                      <Shield size={16} />
+                    </div>
+
+                    <div>
+                      <p className="text-sm font-semibold text-gray-800 capitalize">
+                        {role?.name || role}
+                      </p>
+                      <p className="text-xs text-gray-400">
+                        Role access control
+                      </p>
+                    </div>
                   </div>
 
-                  <button className="text-red-500">
-                    <Trash2 size={16} />
-                  </button>
-                </li>
+                  {/* Right */}
+                  <div className="flex items-center gap-2">
+                    {/* Remove */}
+                    <button className="px-3 py-1 text-xs bg-red-100 text-red-600 rounded-lg hover:bg-red-200 transition cursor-pointer">
+                      Remove User
+                    </button>
+
+                    {/* Create */}
+                    <button className="px-3 py-1 text-xs bg-green-100 text-green-600 rounded-lg hover:bg-green-200 transition cursor-pointer">
+                      Create User
+                    </button>
+
+                    {/* Add */}
+                    <button className="px-3 py-1 text-xs bg-yellow-100 text-yellow-700 rounded-lg hover:bg-yellow-200 transition cursor-pointer">
+                      Add User
+                    </button>
+
+                    {/* Permission (Primary Action) */}
+                    <button className="px-3 py-1 text-xs bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition cursor-pointer">
+                      Add Permission
+                    </button>
+                    <button
+                      onClick={() => handleInstituteRoleRemove(role)}
+                      className="p-2 text-red-500 hover:bg-red-50 rounded-lg transition cursor-pointer"
+                    >
+                      <Trash2 size={16} />
+                    </button>
+                  </div>
+                </div>
               ))}
-            </ul>
+            </div>
           ) : (
             <p className="text-center text-gray-400 py-10">No roles found</p>
           )}

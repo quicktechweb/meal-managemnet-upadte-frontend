@@ -1,6 +1,9 @@
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   approvedInstituteUserFunction,
+  createInstituteRoleFunction,
+  deleteInstituteRoleFunction,
+  getInstituteRoleFunction,
   instituteApprovedUsersFunction,
   instituteCreateUserMealFunction,
   instituteUserAdminDataFunction,
@@ -82,5 +85,42 @@ export const useAllLocation = () => {
     queryKey: ["location"],
     queryFn: locationFunction,
     retry: false,
+  });
+};
+
+export const useGetInstituteRole = () => {
+  return useQuery({
+    queryKey: ["institute-role"],
+    queryFn: getInstituteRoleFunction,
+    retry: false,
+  });
+};
+
+export const useCreateInstituteRole = () => {
+  const query = useQueryClient();
+  return useMutation({
+    mutationKey: ["create-institute-role"],
+    mutationFn: (payload) => createInstituteRoleFunction(payload),
+    onSuccess: (data) => {
+      toast.success(data?.message);
+      query.invalidateQueries(["institute-role"]);
+    },
+    onError: (err) => {
+      toast.error(err?.response?.data?.message);
+    },
+  });
+};
+
+export const useDeleteInstituteRole = () => {
+  const query = useQueryClient();
+  return useMutation({
+    mutationKey: ["delete-institue-role"],
+    mutationFn: (roleId) => deleteInstituteRoleFunction(roleId),
+    onSuccess: (data) => {
+      if (data?.success) {
+        toast.success(data?.message);
+        query.invalidateQueries(["institute-role"]);
+      }
+    },
   });
 };
