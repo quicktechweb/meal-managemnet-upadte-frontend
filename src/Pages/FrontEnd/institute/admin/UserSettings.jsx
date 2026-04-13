@@ -7,21 +7,26 @@ import {
   useGetInstituteRole,
   usePermissionFunction,
   useAssignRolePermission,
+  useApprovedInstituteUsers,
 } from "../../../../api/cms/user.hook";
 import PermissionModal from "../../../../Components/modal/PermissionModal";
+import AddUserModal from "../../../../Components/modal/AddUserModal";
 
 // ─── Main Component ─────────────────────────────────────────────────────────
 const UserSettings = () => {
   const { data: roles } = useGetInstituteRole();
   const { data: permissions } = usePermissionFunction();
 
-  console.log(permissions);
+  const { data: instituteUsers } = useApprovedInstituteUsers();
 
   const { mutateAsync, isPending } = useCreateInstituteRole();
   const { mutateAsync: deleteMutateAsync } = useDeleteInstituteRole();
 
   // Modal state
   const [selectedRole, setSelectedRole] = useState(null);
+
+  // add user modal
+  const [selectedUserRole, setSelectedUserRole] = useState(null);
 
   const {
     register,
@@ -135,7 +140,10 @@ const UserSettings = () => {
                     <button className="px-3 py-1 text-xs bg-green-100 text-green-600 rounded-lg hover:bg-green-200 transition cursor-pointer">
                       Create User
                     </button>
-                    <button className="px-3 py-1 text-xs bg-yellow-100 text-yellow-700 rounded-lg hover:bg-yellow-200 transition cursor-pointer">
+                    <button
+                      onClick={() => setSelectedUserRole(role)}
+                      className="px-3 py-1 text-xs bg-yellow-100 text-yellow-700 rounded-lg hover:bg-yellow-200 transition cursor-pointer"
+                    >
                       Add User
                     </button>
 
@@ -169,6 +177,14 @@ const UserSettings = () => {
           role={selectedRole}
           permissions={permissions}
           onClose={() => setSelectedRole(null)}
+        />
+      )}
+
+      {selectedUserRole && (
+        <AddUserModal
+          role={selectedUserRole}
+          users={instituteUsers}
+          onClose={() => setSelectedUserRole(null)}
         />
       )}
     </div>

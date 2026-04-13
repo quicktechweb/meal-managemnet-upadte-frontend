@@ -68,3 +68,11 @@ export const assignRolePermissionFunction = async (id, payload) => {
   );
   return data;
 };
+
+export const instituteUserRoleChangeFunction = async (payload) => {
+  const { data } = await axiosSecure.patch(
+    "/api/instituteuser-role-update",
+    payload,
+  );
+  return data;
+};

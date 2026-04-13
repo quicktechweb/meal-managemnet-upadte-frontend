@@ -11,6 +11,7 @@ import {
   instituteUserAdminDataFunction,
   instituteUserListFunction,
   instituteUserMealTypeFunction,
+  instituteUserRoleChangeFunction,
   locationFunction,
   updateInstituteProfileInfoFunction,
 } from "./user.api";
@@ -136,7 +137,6 @@ export const usePermissionFunction = () => {
 };
 
 export const useAssignRolePermission = () => {
-  const query = useQueryClient();
   return useMutation({
     mutationKey: ["update-roles"],
     mutationFn: ({ roleId, payload }) =>
@@ -145,6 +145,21 @@ export const useAssignRolePermission = () => {
       if (data?.success) {
         toast.success(data?.message);
       }
+    },
+  });
+};
+
+export const useInstituteUserRoleChange = () => {
+  return useMutation({
+    mutationKey: ["institute-user-role-change"],
+    mutationFn: (payload) => instituteUserRoleChangeFunction(payload),
+    onSuccess: (data) => {
+      if (data?.success) {
+        toast.success(data?.message);
+      }
+    },
+    onError: (error) => {
+      toast.error(error?.response?.data?.message || "Something went wrong");
     },
   });
 };
