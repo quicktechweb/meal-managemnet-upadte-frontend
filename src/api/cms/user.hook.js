@@ -1,9 +1,11 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   approvedInstituteUserFunction,
+  assignRolePermissionFunction,
   createInstituteRoleFunction,
   deleteInstituteRoleFunction,
   getInstituteRoleFunction,
+  getPermissionFunction,
   instituteApprovedUsersFunction,
   instituteCreateUserMealFunction,
   instituteUserAdminDataFunction,
@@ -120,6 +122,28 @@ export const useDeleteInstituteRole = () => {
       if (data?.success) {
         toast.success(data?.message);
         query.invalidateQueries(["institute-role"]);
+      }
+    },
+  });
+};
+
+export const usePermissionFunction = () => {
+  return useQuery({
+    queryKey: ["website-permission"],
+    queryFn: getPermissionFunction,
+    retry: false,
+  });
+};
+
+export const useAssignRolePermission = () => {
+  const query = useQueryClient();
+  return useMutation({
+    mutationKey: ["update-roles"],
+    mutationFn: ({ roleId, payload }) =>
+      assignRolePermissionFunction(roleId, payload),
+    onSuccess: (data) => {
+      if (data?.success) {
+        toast.success(data?.message);
       }
     },
   });

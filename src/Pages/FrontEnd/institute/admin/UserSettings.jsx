@@ -1,53 +1,50 @@
-import React from "react";
+import React, { useState } from "react";
 import { useForm } from "react-hook-form";
-import { Plus, Trash2, Shield, Settings2 } from "lucide-react";
+import { Plus, Trash2, Shield, Settings2, X, Check } from "lucide-react";
 import {
   useCreateInstituteRole,
   useDeleteInstituteRole,
   useGetInstituteRole,
+  usePermissionFunction,
+  useAssignRolePermission,
 } from "../../../../api/cms/user.hook";
+import PermissionModal from "../../../../Components/modal/PermissionModal";
 
+// ─── Main Component ─────────────────────────────────────────────────────────
 const UserSettings = () => {
   const { data: roles } = useGetInstituteRole();
+  const { data: permissions } = usePermissionFunction();
+
+  console.log(permissions);
 
   const { mutateAsync, isPending } = useCreateInstituteRole();
+  const { mutateAsync: deleteMutateAsync } = useDeleteInstituteRole();
 
-  const { mutateAsync: deleteMutateAsync, isPending: isDeletePending } =
-    useDeleteInstituteRole();
+  // Modal state
+  const [selectedRole, setSelectedRole] = useState(null);
 
   const {
     register,
     handleSubmit,
     reset,
     formState: { errors },
-  } = useForm({
-    defaultValues: {
-      roleName: "",
-    },
-  });
+  } = useForm({ defaultValues: { roleName: "" } });
 
   const onSubmit = async (formData) => {
     if (!formData.roleName) return;
-
-    const payload = {
-      name: formData.roleName,
-    };
-
     try {
-      await mutateAsync({ ...payload });
+      await mutateAsync({ name: formData.roleName });
       reset();
     } catch (err) {
-      console.log(err);
+      console.error(err);
     }
   };
 
   const handleInstituteRoleRemove = async (role) => {
-    console.log(role, "role");
-
     try {
       await deleteMutateAsync(role._id);
     } catch (err) {
-      console.log(err);
+      console.error(err);
     }
   };
 
@@ -87,9 +84,7 @@ const UserSettings = () => {
                     ? "border-red-500"
                     : "border-gray-200 focus:ring-blue-500/20"
                 }`}
-                {...register("roleName", {
-                  required: "Role name is required",
-                })}
+                {...register("roleName", { required: "Role name is required" })}
               />
               {errors.roleName && (
                 <p className="text-red-500 text-xs mt-1">
@@ -97,7 +92,6 @@ const UserSettings = () => {
                 </p>
               )}
             </div>
-
             <button
               type="submit"
               disabled={isPending}
@@ -123,7 +117,6 @@ const UserSettings = () => {
                     <div className="w-9 h-9 flex items-center justify-center rounded-lg bg-blue-50 text-blue-600">
                       <Shield size={16} />
                     </div>
-
                     <div>
                       <p className="text-sm font-semibold text-gray-800 capitalize">
                         {role?.name || role}
@@ -136,25 +129,24 @@ const UserSettings = () => {
 
                   {/* Right */}
                   <div className="flex items-center gap-2">
-                    {/* Remove */}
                     <button className="px-3 py-1 text-xs bg-red-100 text-red-600 rounded-lg hover:bg-red-200 transition cursor-pointer">
                       Remove User
                     </button>
-
-                    {/* Create */}
                     <button className="px-3 py-1 text-xs bg-green-100 text-green-600 rounded-lg hover:bg-green-200 transition cursor-pointer">
                       Create User
                     </button>
-
-                    {/* Add */}
                     <button className="px-3 py-1 text-xs bg-yellow-100 text-yellow-700 rounded-lg hover:bg-yellow-200 transition cursor-pointer">
                       Add User
                     </button>
 
-                    {/* Permission (Primary Action) */}
-                    <button className="px-3 py-1 text-xs bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition cursor-pointer">
+                    {/* ← Modal trigger */}
+                    <button
+                      onClick={() => setSelectedRole(role)}
+                      className="px-3 py-1 text-xs bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition cursor-pointer"
+                    >
                       Add Permission
                     </button>
+
                     <button
                       onClick={() => handleInstituteRoleRemove(role)}
                       className="p-2 text-red-500 hover:bg-red-50 rounded-lg transition cursor-pointer"
@@ -170,6 +162,15 @@ const UserSettings = () => {
           )}
         </div>
       </div>
+
+      {/* Permission Modal */}
+      {selectedRole && (
+        <PermissionModal
+          role={selectedRole}
+          permissions={permissions}
+          onClose={() => setSelectedRole(null)}
+        />
+      )}
     </div>
   );
 };

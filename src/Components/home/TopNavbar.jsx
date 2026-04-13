@@ -40,27 +40,28 @@ const bottomIcons = [
   { icon: <Heart size={18} />, label: "For you" },
 ];
 
-const IconButton = ({ icon, special, active, badge }) => {
+const IconButton = ({ icon, label, special, active, badge }) => {
   return (
     <div
       className={`relative w-34 h-14 rounded-xl flex items-center justify-center cursor-pointer transition-all duration-300 group
       ${
         special
-          ? "bg-gradient-to-br from-blue-500 via-indigo-500 to-purple-500 text-white shadow-lg hover:scale-105 hover:-translate-y-1"
+          ? "bg-gradient-to-br from-blue-500 via-indigo-500 to-purple-500 text-white  hover:scale-105 hover:-translate-y-1"
           : active
-            ? "bg-gradient-to-br from-blue-50 to-blue-100 text-blue-600 shadow-inner"
-            : "bg-white/60 backdrop-blur-md text-gray-600 hover:bg-blue-50 hover:text-blue-500 hover:-translate-y-1 hover:shadow-md"
+            ? " text-blue-600 "
+            : " text-gray-600 hover:bg-blue-50 hover:text-blue-500 hover:-translate-y-1 "
       }`}
     >
       {/* icon */}
-      <div className="flex items-center justify-center text-lg">{icon}</div>
+      <div className="flex items-center gap-2 justify-center text-lg">
+        <span>{icon}</span>
+        <h3>{label}</h3>
+      </div>
 
       {/* notification badge */}
       {badge && (
         <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-blue-500 rounded-full border-2 border-white animate-pulse" />
       )}
-
-    
     </div>
   );
 };
@@ -70,7 +71,7 @@ const TopNavbar = ({ setHideSidebar }) => {
   const [open, setOpen] = useState(false);
 
   return (
-    <div className="bg-gradient-to-r from-white via-blue-50 to-white border-b border-gray-100 sticky top-0 z-50 w-full shadow-sm backdrop-blur-md">
+    <div className="bg-gradient-to-r from-white via-blue-50 to-white border-b border-gray-100 sticky top-0 z-50 w-full backdrop-blur-md">
       <div className="mx-auto px-7 flex items-center gap-8 h-auto py-2">
         {/* LEFT */}
         <div className="flex items-center gap-5">
@@ -85,7 +86,7 @@ const TopNavbar = ({ setHideSidebar }) => {
             <img
               src={data?.logoUrl}
               alt={data?.siteName}
-              className="h-16 w-[100px] transition-all duration-300 hover:scale-110 hover:drop-shadow-md"
+              className="h-16 w-[100px] transition-all duration-300 hover:scale-110 "
             />
           </div>
         </div>
@@ -113,7 +114,7 @@ const TopNavbar = ({ setHideSidebar }) => {
 
           {/* RIGHT PROFILE */}
           <div>
-            <div className="w-28 bg-white/70 backdrop-blur-md rounded-2xl shadow-md p-4 flex flex-col items-center gap-2 hover:shadow-xl hover:-translate-y-1 transition-all duration-300 border border-gray-100">
+            <div className="w-28 bg-white/70 rounded-2xl p-4 flex flex-col items-center gap-2  hover:-translate-y-1 transition-all duration-300 border border-gray-100">
               <div className="relative">
                 <div className="p-[2px] rounded-full bg-gradient-to-tr from-blue-500 to-purple-500">
                   <img

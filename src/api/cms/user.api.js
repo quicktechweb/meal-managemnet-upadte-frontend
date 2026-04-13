@@ -55,3 +55,16 @@ export const deleteInstituteRoleFunction = async (roleId) => {
   const { data } = await axiosSecure.delete(`/api/roles/${roleId}`);
   return data;
 };
+
+export const getPermissionFunction = async () => {
+  const { data } = await axiosSecure.get("/api/permissions");
+  return data?.data;
+};
+
+export const assignRolePermissionFunction = async (id, payload) => {
+  const { data } = await axiosSecure.put(
+    `/api/roles/${id}/permissions`,
+    payload,
+  );
+  return data;
+};
