@@ -355,7 +355,6 @@ const UserForm = () => {
                 render={({ field }) => (
                   <select
                     {...field}
-                    disabled={districtLoading}
                     className="border border-gray-300 px-2 py-3 rounded w-full text-gray-600"
                   >
                     <option value="">Select District</option>

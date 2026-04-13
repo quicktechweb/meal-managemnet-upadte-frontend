@@ -21,14 +21,15 @@ import { MdOutlineDocumentScanner } from "react-icons/md";
 const topIcons = [
   { icon: <Search size={18} />, label: "Search" },
   { icon: <Camera size={18} />, label: "Camera" },
-  { icon: <PlusCircle size={18} />, label: "Add", special: true },
+
   { icon: <Heart size={18} />, label: "For you" },
   { icon: <MdOutlineDocumentScanner size={18} />, label: "Scanner" },
+  { icon: <PlusCircle size={18} />, label: "Add", special: true },
   { icon: <Mic size={18} />, label: "Voice" },
   { icon: <Bell size={18} />, label: "Notifications", badge: true },
   { icon: <MapPin size={18} />, label: "Location" },
   { icon: "৳", label: "Currency" },
-  { icon: <Globe size={18} />, label: "Language" },
+ 
 ];
 
 const bottomIcons = [
@@ -38,6 +39,7 @@ const bottomIcons = [
   { icon: <Menu size={18} />, label: "Menu" },
   { icon: <ShoppingCart size={18} />, label: "Cart" },
   { icon: <Heart size={18} />, label: "For you" },
+  { icon: <Globe size={18} />, label: "Language" },
 ];
 
 const IconButton = ({ icon, label, special, active, badge }) => {
@@ -66,9 +68,8 @@ const IconButton = ({ icon, label, special, active, badge }) => {
   );
 };
 
-const TopNavbar = ({ setHideSidebar }) => {
+const TopNavbar = ({ setHideSidebar, open, setOpen }) => {
   const { data } = useGetWebsiteData();
-  const [open, setOpen] = useState(false);
 
   return (
     <div className="bg-gradient-to-r from-white via-blue-50 to-white border-b border-gray-100 sticky top-0 z-50 w-full backdrop-blur-md">
@@ -144,7 +145,7 @@ const TopNavbar = ({ setHideSidebar }) => {
 
       {open && (
         <div
-          className="fixed inset-0 z-40 backdrop-blur-sm"
+          className="fixed inset-0 w-full h-full z-40 backdrop-blur-sm"
           onClick={() => setOpen(false)}
         />
       )}
