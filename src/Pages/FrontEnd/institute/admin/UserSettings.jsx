@@ -11,6 +11,7 @@ import {
 } from "../../../../api/cms/user.hook";
 import PermissionModal from "../../../../Components/modal/PermissionModal";
 import AddUserModal from "../../../../Components/modal/AddUserModal";
+import CreateUserModal from "../../../../Components/modal/CreateUserModal";
 
 // ─── Main Component ─────────────────────────────────────────────────────────
 const UserSettings = () => {
@@ -27,6 +28,9 @@ const UserSettings = () => {
 
   // add user modal
   const [selectedUserRole, setSelectedUserRole] = useState(null);
+
+  // create user modal
+  const [selectedCreateUser, setSelectedCreateUser] = useState(null);
 
   const {
     register,
@@ -137,7 +141,10 @@ const UserSettings = () => {
                     <button className="px-3 py-1 text-xs bg-red-100 text-red-600 rounded-lg hover:bg-red-200 transition cursor-pointer">
                       Remove User
                     </button>
-                    <button className="px-3 py-1 text-xs bg-green-100 text-green-600 rounded-lg hover:bg-green-200 transition cursor-pointer">
+                    <button
+                      onClick={() => setSelectedCreateUser(role)}
+                      className="px-3 py-1 text-xs bg-green-100 text-green-600 rounded-lg hover:bg-green-200 transition cursor-pointer"
+                    >
                       Create User
                     </button>
                     <button
@@ -185,6 +192,13 @@ const UserSettings = () => {
           role={selectedUserRole}
           users={instituteUsers}
           onClose={() => setSelectedUserRole(null)}
+        />
+      )}
+
+      {selectedCreateUser && (
+        <CreateUserModal
+          role={selectedCreateUser}
+          onClose={() => setSelectedCreateUser(null)}
         />
       )}
     </div>
