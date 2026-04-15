@@ -20,8 +20,15 @@ import CreateUserDocumentUpload from "../common/CreateUserDocumentUpload";
 import CustomSelect from "../CustomSelect";
 import { useAllLocation } from "../../api/cms/user.hook";
 import Err from "../common/Err";
+import { useInstituteUserRegistration } from "../../api/auth/auth.hook";
+import useInstituteAuth from "../../Hooks/useInstituteAuth";
+import toast from "react-hot-toast";
+import { useQueryClient } from "@tanstack/react-query";
 
 const CreateUserModal = ({ role, onClose }) => {
+  const { user } = useInstituteAuth();
+  console.log(user?.user?.information?.name_of_institute);
+
   const {
     register,
     handleSubmit,
@@ -53,8 +60,8 @@ const CreateUserModal = ({ role, onClose }) => {
       village: "",
       location: "",
       email: "",
-      phone_number: "",
-      name_of_the_institute: "",
+      phone: "",
+      name_of_institute: user?.user?.information?.name_of_institute,
       name_of_the_hall: "",
       name_of_the_mess: "",
       room_no: "",
@@ -101,12 +108,27 @@ const CreateUserModal = ({ role, onClose }) => {
 
   const password = watch("password");
   const uploadedDocs = watch("documents") || [];
-
-  const onSubmit = (data) => {
-    console.log("Form submitted:", data);
+  const query = useQueryClient();
+  // user create api
+  const { mutateAsync, isPending } = useInstituteUserRegistration();
+  const onSubmit = async (data) => {
+    await mutateAsync(
+      { institute_id: user?.user?._id, ...data, added_by: "admin" },
+      {
+        onSuccess: (data) => {
+          if (data) {
+            toast.success(data?.message);
+            query.invalidateQueries(["approved-user"]);
+            onClose();
+          }
+        },
+        onError: (err) => {
+          toast.error(err?.response?.data?.message);
+        },
+      },
+    );
   };
 
-  // Error border helper
   const errBorder = (name) =>
     errors[name]
       ? "border-red-300 focus:border-red-400 focus:ring-red-100"
@@ -633,9 +655,9 @@ const CreateUserModal = ({ role, onClose }) => {
                 <Field label="Phone Number" required>
                   <input
                     type="tel"
-                    className={`${inputCls} ${errBorder("phone_number")}`}
+                    className={`${inputCls} ${errBorder("phone")}`}
                     placeholder="+880 XXXXXXXXXX"
-                    {...register("phone_number", {
+                    {...register("phone", {
                       required: "Phone number is required",
                       pattern: {
                         value: /^[+]?[0-9\s\-()]{7,15}$/,
@@ -643,7 +665,7 @@ const CreateUserModal = ({ role, onClose }) => {
                       },
                     })}
                   />
-                  <Err errors={errors} name="phone_number" />
+                  <Err errors={errors} name="phone" />
                 </Field>
               </div>
             </div>
@@ -658,13 +680,14 @@ const CreateUserModal = ({ role, onClose }) => {
               <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
                 <Field label="Name of the Institute" required>
                   <input
-                    className={`${inputCls} ${errBorder("name_of_the_institute")}`}
+                    readOnly
+                    className={`${inputCls} ${errBorder("name_of_institute")}`}
                     placeholder="Institute name"
-                    {...register("name_of_the_institute", {
+                    {...register("name_of_institute", {
                       required: "Institute name is required",
                     })}
                   />
-                  <Err errors={errors} name="name_of_the_institute" />
+                  <Err errors={errors} name="name_of_institute" />
                 </Field>
 
                 <Field label="Name of the Hall">
@@ -798,9 +821,10 @@ const CreateUserModal = ({ role, onClose }) => {
             <button
               type="submit"
               form="create-user-form"
+              disabled={isPending}
               className="px-5 py-2 text-sm rounded-lg bg-blue-600 text-white font-medium hover:bg-blue-700 active:bg-blue-800 transition shadow-sm"
             >
-              Create User
+              {isPending ? "Creating..." : "Create User"}
             </button>
           </div>
         </div>

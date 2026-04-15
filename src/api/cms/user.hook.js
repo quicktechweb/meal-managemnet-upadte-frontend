@@ -107,6 +107,7 @@ export const useCreateInstituteRole = () => {
     onSuccess: (data) => {
       toast.success(data?.message);
       query.invalidateQueries(["institute-role"]);
+     
     },
     onError: (err) => {
       toast.error(err?.response?.data?.message);
