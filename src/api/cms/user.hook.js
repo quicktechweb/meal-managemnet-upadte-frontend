@@ -126,6 +126,9 @@ export const useDeleteInstituteRole = () => {
         query.invalidateQueries(["institute-role"]);
       }
     },
+    onError: (err) => {
+      toast.error(err?.response?.data?.message);
+    },
   });
 };
 

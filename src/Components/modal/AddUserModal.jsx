@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useEffect } from "react";
 import { Check, Shield, X, Search, User } from "lucide-react";
 import axios from "axios";
 import { useInstituteUserRoleChange } from "../../api/cms/user.hook";
@@ -6,9 +6,19 @@ import { useInstituteUserRoleChange } from "../../api/cms/user.hook";
 const AddUserModal = ({ role, users = [], onClose }) => {
   const [search, setSearch] = useState("");
   const [selected, setSelected] = useState(new Set());
-  const [loading, setLoading] = useState(false);
 
   const { mutateAsync, isPending } = useInstituteUserRoleChange();
+  useEffect(() => {
+    if (!role || !users.length) return;
+
+    const alreadyAssigned = users
+      .filter((u) => {
+        return u?.role === role?.name;
+      })
+      .map((u) => u._id);
+
+    setSelected(new Set(alreadyAssigned));
+  }, [users, role]);
 
   const filtered = useMemo(() => {
     const q = search.toLowerCase().trim();
@@ -49,7 +59,6 @@ const AddUserModal = ({ role, users = [], onClose }) => {
 
   const handleAssign = async () => {
     try {
-      setLoading(true);
       const user_ids = [...selected];
 
       await mutateAsync({
@@ -60,8 +69,6 @@ const AddUserModal = ({ role, users = [], onClose }) => {
       onClose();
     } catch (error) {
       console.error("Role assign failed:", error);
-    } finally {
-      setLoading(false);
     }
   };
 
@@ -210,15 +217,15 @@ const AddUserModal = ({ role, users = [], onClose }) => {
           </button>
           <button
             onClick={handleAssign}
-            disabled={selected.size === 0 || loading}
+            disabled={selected.size === 0 || isPending}
             className="px-4 py-2 text-sm text-white bg-blue-600 rounded-lg hover:bg-blue-700 transition disabled:opacity-40 disabled:cursor-not-allowed flex items-center gap-1.5"
           >
-            {loading ? (
+            {isPending ? (
               <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
             ) : (
               <Check size={14} />
             )}
-            {loading
+            {isPending
               ? "Assigning..."
               : `Assign ${selected.size > 0 ? `(${selected.size})` : ""}`}
           </button>

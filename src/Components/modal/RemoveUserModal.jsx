@@ -5,6 +5,8 @@ import { useInstituteUserDelete } from "../../api/cms/user.hook";
 import useInstituteAuth from "../../Hooks/useInstituteAuth";
 
 const RemoveUserModal = ({ role, users = [], onClose }) => {
+  console.log(role);
+
   const { user } = useInstituteAuth();
   const [search, setSearch] = useState("");
   const [selected, setSelected] = useState(new Set());
