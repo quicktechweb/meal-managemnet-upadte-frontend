@@ -83,3 +83,10 @@ export const instituteUserDeleteFunction = async (payload) => {
   });
   return data;
 };
+
+export const individualUserPermissionFunction = async () => {
+  const { data } = await axiosSecure.get(
+    "/api/individual-user-role-permission",
+  );
+  return data?.data;
+};

@@ -9,7 +9,12 @@ import { IoCartOutline } from "react-icons/io5";
 // import useFirebase from "../Hooks/useFirebase";
 import { motion, AnimatePresence } from "framer-motion";
 import useAuth from "../../../Hooks/useAuth";
+import { useIndividualUserPermission } from "../../../api/cms/user.hook";
 const Dashboard = () => {
+  const { data } = useIndividualUserPermission();
+
+  console.log(data);
+
   const [isOpenSidebar, setIsOpenSidebar] = useState(false);
   const [open, setOpen] = useState(false);
   const popupRef = useRef(null);

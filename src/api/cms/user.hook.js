@@ -6,6 +6,7 @@ import {
   deleteInstituteRoleFunction,
   getInstituteRoleFunction,
   getPermissionFunction,
+  individualUserPermissionFunction,
   instituteApprovedUsersFunction,
   instituteCreateUserMealFunction,
   instituteUserAdminDataFunction,
@@ -141,6 +142,7 @@ export const usePermissionFunction = () => {
 };
 
 export const useAssignRolePermission = () => {
+  const query = useQueryClient();
   return useMutation({
     mutationKey: ["update-roles"],
     mutationFn: ({ roleId, payload }) =>
@@ -148,6 +150,7 @@ export const useAssignRolePermission = () => {
     onSuccess: (data) => {
       if (data?.success) {
         toast.success(data?.message);
+        query.invalidateQueries(["individual-user-permission"]);
       }
     },
   });
@@ -182,5 +185,13 @@ export const useInstituteUserDelete = () => {
     onError: (error) => {
       toast.error(error?.response?.data?.message || "Something went wrong");
     },
+  });
+};
+
+export const useIndividualUserPermission = () => {
+  return useQuery({
+    queryKey: ["individual-user-permission"],
+    queryFn: individualUserPermissionFunction,
+    retry: false,
   });
 };
