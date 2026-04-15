@@ -146,6 +146,3 @@ export const useAuthInstituteUser = (token) => {
     },
   });
 };
-
-
-

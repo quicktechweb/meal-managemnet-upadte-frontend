@@ -6,12 +6,12 @@ import {
   useDeleteInstituteRole,
   useGetInstituteRole,
   usePermissionFunction,
-  useAssignRolePermission,
   useApprovedInstituteUsers,
 } from "../../../../api/cms/user.hook";
 import PermissionModal from "../../../../Components/modal/PermissionModal";
 import AddUserModal from "../../../../Components/modal/AddUserModal";
 import CreateUserModal from "../../../../Components/modal/CreateUserModal";
+import RemoveUserModal from "../../../../Components/modal/RemoveUserModal";
 
 // ─── Main Component ─────────────────────────────────────────────────────────
 const UserSettings = () => {
@@ -31,6 +31,8 @@ const UserSettings = () => {
 
   // create user modal
   const [selectedCreateUser, setSelectedCreateUser] = useState(null);
+
+  const [selectedRemoveUser, setSelectedRemoveUser] = useState(null);
 
   const {
     register,
@@ -138,7 +140,10 @@ const UserSettings = () => {
 
                   {/* Right */}
                   <div className="flex items-center gap-2">
-                    <button className="px-3 py-1 text-xs bg-red-100 text-red-600 rounded-lg hover:bg-red-200 transition cursor-pointer">
+                    <button
+                      onClick={() => setSelectedRemoveUser(role)}
+                      className="px-3 py-1 text-xs bg-red-100 text-red-600 rounded-lg hover:bg-red-200 transition cursor-pointer"
+                    >
                       Remove User
                     </button>
                     <button
@@ -199,6 +204,14 @@ const UserSettings = () => {
         <CreateUserModal
           role={selectedCreateUser}
           onClose={() => setSelectedCreateUser(null)}
+        />
+      )}
+
+      {selectedRemoveUser && (
+        <RemoveUserModal
+          role={selectedRemoveUser}
+          users={instituteUsers}
+          onClose={() => setSelectedRemoveUser(null)}
         />
       )}
     </div>

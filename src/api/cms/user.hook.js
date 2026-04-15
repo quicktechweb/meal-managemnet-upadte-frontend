@@ -9,6 +9,7 @@ import {
   instituteApprovedUsersFunction,
   instituteCreateUserMealFunction,
   instituteUserAdminDataFunction,
+  instituteUserDeleteFunction,
   instituteUserListFunction,
   instituteUserMealTypeFunction,
   instituteUserRoleChangeFunction,
@@ -107,7 +108,6 @@ export const useCreateInstituteRole = () => {
     onSuccess: (data) => {
       toast.success(data?.message);
       query.invalidateQueries(["institute-role"]);
-     
     },
     onError: (err) => {
       toast.error(err?.response?.data?.message);
@@ -157,6 +157,23 @@ export const useInstituteUserRoleChange = () => {
     onSuccess: (data) => {
       if (data?.success) {
         toast.success(data?.message);
+      }
+    },
+    onError: (error) => {
+      toast.error(error?.response?.data?.message || "Something went wrong");
+    },
+  });
+};
+
+export const useInstituteUserDelete = () => {
+  const query = useQueryClient();
+  return useMutation({
+    mutationKey: ["institute-user-delete"],
+    mutationFn: (payload) => instituteUserDeleteFunction(payload),
+    onSuccess: (data) => {
+      if (data?.success) {
+        toast.success(data?.message);
+        query.invalidateQueries(["approved-user"]);
       }
     },
     onError: (error) => {

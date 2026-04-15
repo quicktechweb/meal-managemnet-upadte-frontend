@@ -76,3 +76,10 @@ export const instituteUserRoleChangeFunction = async (payload) => {
   );
   return data;
 };
+
+export const instituteUserDeleteFunction = async (payload) => {
+  const { data } = await axiosSecure.delete("/api/instituteuser-delete", {
+    data: payload,
+  });
+  return data;
+};
