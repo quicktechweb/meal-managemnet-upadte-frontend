@@ -19,6 +19,7 @@ import SelectField, { inputCls } from "../common/SelectField";
 import CreateUserDocumentUpload from "../common/CreateUserDocumentUpload";
 import CustomSelect from "../CustomSelect";
 import { useAllLocation } from "../../api/cms/user.hook";
+import Err from "../common/Err";
 
 const CreateUserModal = ({ role, onClose }) => {
   const {
@@ -105,14 +106,6 @@ const CreateUserModal = ({ role, onClose }) => {
     console.log("Form submitted:", data);
   };
 
-  // Inline error message renderer
-  const Err = ({ name }) =>
-    errors[name] ? (
-      <p className="text-red-400 text-[10px] mt-0.5">
-        * {errors[name].message}
-      </p>
-    ) : null;
-
   // Error border helper
   const errBorder = (name) =>
     errors[name]
@@ -175,7 +168,7 @@ const CreateUserModal = ({ role, onClose }) => {
                       required: "Full name is required",
                     })}
                   />
-                  <Err name="full_name" />
+                  <Err errors={errors} name="full_name" />
                 </Field>
 
                 <Field label="Nickname">
@@ -199,7 +192,7 @@ const CreateUserModal = ({ role, onClose }) => {
                       },
                     })}
                   />
-                  <Err name="username" />
+                  <Err errors={errors} name="username" />
                 </Field>
 
                 <Controller
@@ -230,11 +223,7 @@ const CreateUserModal = ({ role, onClose }) => {
                         showOther
                       />
 
-                      {error && (
-                        <p className="text-red-500 text-sm mt-1">
-                          {error.message}
-                        </p>
-                      )}
+                      <Err errors={errors} name="gender" />
                     </div>
                   )}
                 />
@@ -267,11 +256,7 @@ const CreateUserModal = ({ role, onClose }) => {
                         showOther
                       />
 
-                      {error && (
-                        <p className="text-red-500 text-sm mt-1">
-                          {error.message}
-                        </p>
-                      )}
+                      <Err errors={errors} name="religion" />
                     </div>
                   )}
                 />
@@ -284,7 +269,7 @@ const CreateUserModal = ({ role, onClose }) => {
                       required: "Date of birth is required",
                     })}
                   />
-                  <Err name="dob" />
+                  <Err errors={errors} name="dob" />
                 </Field>
               </div>
             </div>
@@ -301,24 +286,33 @@ const CreateUserModal = ({ role, onClose }) => {
                   <input
                     className={inputCls}
                     placeholder="Enter father's name"
-                    {...register("father_name")}
+                    {...register("father_name", {
+                      required: "Father Name  is required",
+                    })}
                   />
+                  <Err errors={errors} name="father_name" />
                 </Field>
 
                 <Field label="Mother's Name">
                   <input
                     className={inputCls}
                     placeholder="Enter mother's name"
-                    {...register("mother_name")}
+                    {...register("mother_name", {
+                      required: "Mother Name is required",
+                    })}
                   />
+                  <Err errors={errors} name="mother_name" />
                 </Field>
 
                 <Field label="Guardian's Name">
                   <input
                     className={inputCls}
                     placeholder="Enter guardian's name"
-                    {...register("guardian_name")}
+                    {...register("guardian_name", {
+                      required: "Guardian Name is required",
+                    })}
                   />
+                  <Err errors={errors} name="guardian_name" />
                 </Field>
 
                 <Controller
@@ -346,22 +340,20 @@ const CreateUserModal = ({ role, onClose }) => {
                         allowCreate
                         showOther
                       />
+                      <Err errors={errors} name="relation_with_guardian" />
                     </div>
                   )}
                 />
 
                 <Field label="Guardian's Number">
                   <input
-                    className={`${inputCls} ${errBorder("guardian_number")}`}
+                    className={inputCls}
                     placeholder="+880 XXXXXXXXXX"
                     {...register("guardian_number", {
-                      pattern: {
-                        value: /^[+]?[0-9\s\-()]{7,15}$/,
-                        message: "Invalid phone number",
-                      },
+                      required: "Guardian Number is required",
                     })}
                   />
-                  <Err name="guardian_number" />
+                  <Err errors={errors} name="guardian_number" />
                 </Field>
               </div>
             </div>
@@ -430,7 +422,7 @@ const CreateUserModal = ({ role, onClose }) => {
                       max: { value: 2100, message: "Year must be before 2100" },
                     })}
                   />
-                  <Err name="occupation_year" />
+                  <Err errors={errors} name="occupation_year" />
                 </Field>
               </div>
             </div>
@@ -635,7 +627,7 @@ const CreateUserModal = ({ role, onClose }) => {
                       },
                     })}
                   />
-                  <Err name="email" />
+                  <Err errors={errors} name="email" />
                 </Field>
 
                 <Field label="Phone Number" required>
@@ -651,7 +643,7 @@ const CreateUserModal = ({ role, onClose }) => {
                       },
                     })}
                   />
-                  <Err name="phone_number" />
+                  <Err errors={errors} name="phone_number" />
                 </Field>
               </div>
             </div>
@@ -672,7 +664,7 @@ const CreateUserModal = ({ role, onClose }) => {
                       required: "Institute name is required",
                     })}
                   />
-                  <Err name="name_of_the_institute" />
+                  <Err errors={errors} name="name_of_the_institute" />
                 </Field>
 
                 <Field label="Name of the Hall">
@@ -734,11 +726,8 @@ const CreateUserModal = ({ role, onClose }) => {
                             formUploadData={formUploadData}
                             setFormUploadData={setFormUploadData}
                           />
-                          {error && (
-                            <p className="text-red-400 text-[10px] mt-0.5">
-                              * {error.message}
-                            </p>
-                          )}
+
+                          <Err errors={errors} name="documents" />
                         </>
                       )}
                     />
@@ -765,7 +754,7 @@ const CreateUserModal = ({ role, onClose }) => {
                       })}
                     />
                   </div>
-                  <Err name="password" />
+                  <Err errors={errors} name="password" />
                 </Field>
 
                 {/* Confirm Password */}
@@ -786,7 +775,7 @@ const CreateUserModal = ({ role, onClose }) => {
                       })}
                     />
                   </div>
-                  <Err name="confirm_password" />
+                  <Err errors={errors} name="confirm_password" />
                 </Field>
               </div>
             </div>
