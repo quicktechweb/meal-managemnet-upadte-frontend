@@ -103,30 +103,6 @@ const Dashboard = () => {
                 {cartItems?.length}
               </span>
             </div>
-            {/* Profile */}
-            {/* <div className="relative">
-              <img
-                src="https://cdn.pixabay.com/photo/2017/02/23/13/05/avatar-2092113_640.png"
-                className="w-10 h-10 rounded-full cursor-pointer"
-                onClick={() => setIsOpens(!isOpens)}
-              />
-
-              {isOpens && (
-                <div className="absolute right-0 mt-2 w-48 bg-white border rounded-lg shadow-lg">
-                  <ul>
-                    <Link
-                      to={"/"}
-                      className="px-4 py-2 block hover:bg-gray-100 cursor-pointer"
-                    >
-                      Profile Settings
-                    </Link>
-                    <li className="px-4 py-2 hover:bg-gray-100 cursor-pointer">
-                      Logout
-                    </li>
-                  </ul>
-                </div>
-              )}
-            </div> */}
 
             <div className="flex  relative items-center justify-center">
               {/* Container */}

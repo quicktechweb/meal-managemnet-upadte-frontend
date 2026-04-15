@@ -93,75 +93,9 @@ import Packages from "../Pages/FrontEnd/admin/Packages";
 import UpdatePackage from "../Pages/FrontEnd/admin/UpdatePackage";
 import MainLayout from "../Layout/MainLayout";
 import HomePage from "../Pages/FrontEnd/Home/Home/HomePage";
+import DashboardLayout from "../Layout/DashboardLayout";
 
 const router = createBrowserRouter([
-  // {
-  //   path: "/",
-  //   element: <Layouts />,
-  //   errorElement: (
-  //     <>
-  //       <ErrorPage />
-  //     </>
-  //   ),
-  //   children: [
-  //     {
-  //       path: "/main",
-  //       element: <Main />,
-  //     },
-  //     {
-  //       path: "/",
-  //       element: <Home />,
-  //     },
-
-  //     {
-  //       path: "/register",
-  //       element: <Registration />,
-  //       children: [
-  //         {
-  //           path: "user",
-  //           element: <UserForm />,
-  //         },
-  //         {
-  //           path: "mess",
-  //           element: <MessForm />,
-  //         },
-  //       ],
-  //     },
-
-  //     {
-  //       path: "/checkout",
-  //       element: <CheckoutPage />,
-  //     },
-
-  //     {
-  //       path: "/faq",
-  //       element: <Faq />,
-  //     },
-
-  //     {
-  //       path: "/contact-us",
-  //       element: <ContactPage />,
-  //     },
-
-  //     {
-  //       path: "/menu-details",
-  //       element: <MenuDetails />,
-  //     },
-  //     {
-  //       path: "/privecy-policy",
-  //       element: <PrivacyPolicy />,
-  //     },
-  //     {
-  //       path: "/terms-and-conditions",
-  //       element: <TermAndCondition />,
-  //     },
-  //     {
-  //       path: "/page/:slug",
-  //       element: <DynamicPage />,
-  //     },
-  //   ],
-  // },
-
   {
     path: "/",
     element: <MainLayout />,
@@ -562,6 +496,11 @@ const router = createBrowserRouter([
         element: <UpdatePackage />,
       },
     ],
+  },
+
+  {
+    path: "/dashboards",
+    element: <DashboardLayout />,
   },
 ]);
 

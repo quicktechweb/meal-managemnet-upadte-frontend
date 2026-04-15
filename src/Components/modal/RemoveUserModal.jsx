@@ -7,6 +7,8 @@ import useInstituteAuth from "../../Hooks/useInstituteAuth";
 const RemoveUserModal = ({ role, users = [], onClose }) => {
   console.log(role);
 
+  console.log(users);
+
   const { user } = useInstituteAuth();
   const [search, setSearch] = useState("");
   const [selected, setSelected] = useState(new Set());
@@ -19,7 +21,7 @@ const RemoveUserModal = ({ role, users = [], onClose }) => {
 
     return users.filter((u) => {
       if (typeof u.role === "string") {
-        return u.role === role.name.toLowerCase();
+        return u.role.toLowerCase() === role.name.toLowerCase();
       }
 
       return false;
