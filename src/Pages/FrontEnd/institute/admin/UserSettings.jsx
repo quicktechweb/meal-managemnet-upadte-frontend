@@ -60,7 +60,7 @@ const UserSettings = () => {
   };
 
   return (
-    <div className="p-4 bg-[#f8fafc] min-h-screen">
+    <div className=" min-h-screen">
       {/* Header */}
       <div className="mb-8 flex justify-between items-end">
         <div>

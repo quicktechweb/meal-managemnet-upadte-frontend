@@ -112,9 +112,7 @@ export const useInstituteLogin = () => {
     onSuccess: (data) => {
       setToken(data?.token);
 
-      data?.user?.role?.toLowerCase() === "user" &&
-        navigate("/dashboard/mealmanagement");
-      data?.user?.role?.toLowerCase() === "institute" && navigate("/institute");
+      data && navigate("/dashboards");
 
       toast.success(data?.message);
     },

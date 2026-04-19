@@ -151,7 +151,7 @@ const InstituteAdminPackageRoutine = () => {
       acc[item.day][item.package_title] = item;
       return acc;
     }, {});
- const query = useQueryClient();
+  const query = useQueryClient();
   const handleSubmit = async () => {
     const payload = getSelectedPayload();
     setPackageMealRoutine(payload);
@@ -190,251 +190,247 @@ const InstituteAdminPackageRoutine = () => {
       </h3>
 
       {/* ── Main Schedule Table ── */}
-      <div className="max-w-7xl mx-auto">
-        <div className="border border-gray-100 shadow-xl rounded-3xl overflow-hidden bg-white">
-          <table className="w-full text-left">
-            <tbody>
-              {days.map((day) => {
-                const dayData = groupedData[day] || {};
-                return (
-                  <tr
-                    key={day}
-                    className="transition-all border-b border-gray-100 last:border-none"
-                  >
-                    <td className="p-6 font-bold text-xl text-gray-800 border-r border-gray-100 bg-gray-50 w-32">
-                      {day}
-                    </td>
 
-                    {packageTypes.map(({ package_type }) => {
-                      const pkg = dayData[package_type];
-                      const key = `${day}-${package_type}`;
-                      const isAlternative = !!alternativeChecked[key];
+      <div className="border border-gray-100 shadow-xl rounded-3xl overflow-hidden bg-white">
+        <table className="w-full text-left">
+          <tbody>
+            {days.map((day) => {
+              const dayData = groupedData[day] || {};
+              return (
+                <tr
+                  key={day}
+                  className="transition-all border-b border-gray-100 last:border-none"
+                >
+                  <td className="p-6 font-bold text-xl text-gray-800 border-r border-gray-100 bg-gray-50 w-32">
+                    {day}
+                  </td>
 
-                      return (
-                        <td
-                          key={package_type}
-                          className="p-3 border-r border-gray-100 last:border-none"
-                        >
-                          {pkg ? (
-                            <div className="space-y-5">
-                              {/* Price */}
-                              <div className="flex items-center gap-3">
-                                <div className="w-10 h-10 bg-gradient-to-br from-orange-500 to-amber-500 rounded-2xl flex items-center justify-center text-white text-xl shadow-inner">
-                                  ৳
-                                </div>
-                                <div>
-                                  <p className="text-xs text-gray-500 font-medium">
-                                    PACKAGE PRICE
-                                  </p>
-                                  <p className="text-2xl font-bold text-gray-800">
-                                    ৳{pkg.package_price}
-                                  </p>
-                                </div>
+                  {packageTypes.map(({ package_type }) => {
+                    const pkg = dayData[package_type];
+                    const key = `${day}-${package_type}`;
+                    const isAlternative = !!alternativeChecked[key];
+
+                    return (
+                      <td
+                        key={package_type}
+                        className="p-3 border-r border-gray-100 last:border-none"
+                      >
+                        {pkg ? (
+                          <div className="space-y-5">
+                            {/* Price */}
+                            <div className="flex items-center gap-3">
+                              <div className="w-10 h-10 bg-gradient-to-br from-orange-500 to-amber-500 rounded-2xl flex items-center justify-center text-white text-xl shadow-inner">
+                                ৳
                               </div>
+                              <div>
+                                <p className="text-xs text-gray-500 font-medium">
+                                  PACKAGE PRICE
+                                </p>
+                                <p className="text-2xl font-bold text-gray-800">
+                                  ৳{pkg.package_price}
+                                </p>
+                              </div>
+                            </div>
 
-                              {/* Default Items */}
-                              <button
-                                onClick={() => {
+                            {/* Default Items */}
+                            <button
+                              onClick={() => {
+                                setAlternativeChecked((prev) => ({
+                                  ...prev,
+                                  [key]: false,
+                                }));
+                                setSelectedAlternative((prev) => {
+                                  const next = { ...prev };
+                                  delete next[key];
+                                  return next;
+                                });
+                                setOpenDropdown((prev) =>
+                                  prev === key ? null : prev,
+                                );
+                              }}
+                              type="button"
+                              className={`w-full p-1.5 rounded-2xl transition-all duration-300 flex items-start gap-2 border ${
+                                isAlternative
+                                  ? "bg-gray-50 border-gray-200"
+                                  : "bg-gradient-to-br from-green-50 to-emerald-50 border-emerald-200 shadow-sm"
+                              }`}
+                            >
+                              <FaCheckCircle
+                                className={`mt-0.5 text-xl flex-shrink-0 transition-all ${
+                                  isAlternative
+                                    ? "text-gray-300"
+                                    : "text-emerald-600"
+                                }`}
+                              />
+                              <div>
+                                <p className="font-semibold text-gray-700">
+                                  Items
+                                </p>
+                                <p className="text-sm text-gray-600 text-start leading-snug">
+                                  {pkg?.items
+                                    ?.map((item) => item.title)
+                                    .join(", ")}
+                                </p>
+                              </div>
+                            </button>
+
+                            {/* Alternative */}
+                            <div className="flex items-start gap-3">
+                              <input
+                                type="checkbox"
+                                className="mt-3 w-5 h-5 accent-orange-600 cursor-pointer"
+                                checked={isAlternative}
+                                onChange={(e) => {
                                   setAlternativeChecked((prev) => ({
                                     ...prev,
-                                    [key]: false,
+                                    [key]: e.target.checked,
                                   }));
-                                  setSelectedAlternative((prev) => {
-                                    const next = { ...prev };
-                                    delete next[key];
-                                    return next;
-                                  });
-                                  setOpenDropdown((prev) =>
-                                    prev === key ? null : prev,
-                                  );
+                                  if (!e.target.checked) {
+                                    setOpenDropdown((prev) =>
+                                      prev === key ? null : prev,
+                                    );
+                                    setSelectedAlternative((prev) => {
+                                      const next = { ...prev };
+                                      delete next[key];
+                                      return next;
+                                    });
+                                  }
                                 }}
-                                type="button"
-                                className={`w-full p-1.5 rounded-2xl transition-all duration-300 flex items-start gap-2 border ${
-                                  isAlternative
-                                    ? "bg-gray-50 border-gray-200"
-                                    : "bg-gradient-to-br from-green-50 to-emerald-50 border-emerald-200 shadow-sm"
-                                }`}
-                              >
-                                <FaCheckCircle
-                                  className={`mt-0.5 text-xl flex-shrink-0 transition-all ${
+                              />
+
+                              <div className="relative flex-1">
+                                <button
+                                  disabled={!isAlternative}
+                                  onClick={() =>
+                                    setOpenDropdown(
+                                      openDropdown === key ? null : key,
+                                    )
+                                  }
+                                  type="button"
+                                  className={`w-full px-5 py-4 rounded-2xl border flex items-center justify-between transition-all duration-300 shadow-sm ${
                                     isAlternative
-                                      ? "text-gray-300"
-                                      : "text-emerald-600"
+                                      ? "bg-white border-orange-300 hover:border-orange-400 cursor-pointer"
+                                      : "bg-gray-100 border-gray-200 cursor-not-allowed opacity-60"
                                   }`}
-                                />
-                                <div>
-                                  <p className="font-semibold text-gray-700">
-                                    Items
-                                  </p>
-                                  <p className="text-sm text-gray-600 text-start leading-snug">
-                                    {pkg?.items
-                                      ?.map((item) => item.title)
-                                      .join(", ")}
-                                  </p>
-                                </div>
-                              </button>
-
-                              {/* Alternative */}
-                              <div className="flex items-start gap-3">
-                                <input
-                                  type="checkbox"
-                                  className="mt-3 w-5 h-5 accent-orange-600 cursor-pointer"
-                                  checked={isAlternative}
-                                  onChange={(e) => {
-                                    setAlternativeChecked((prev) => ({
-                                      ...prev,
-                                      [key]: e.target.checked,
-                                    }));
-                                    if (!e.target.checked) {
-                                      setOpenDropdown((prev) =>
-                                        prev === key ? null : prev,
-                                      );
-                                      setSelectedAlternative((prev) => {
-                                        const next = { ...prev };
-                                        delete next[key];
-                                        return next;
-                                      });
-                                    }
-                                  }}
-                                />
-
-                                <div className="relative flex-1">
-                                  <button
-                                    disabled={!isAlternative}
-                                    onClick={() =>
-                                      setOpenDropdown(
-                                        openDropdown === key ? null : key,
-                                      )
-                                    }
-                                    type="button"
-                                    className={`w-full px-5 py-4 rounded-2xl border flex items-center justify-between transition-all duration-300 shadow-sm ${
-                                      isAlternative
-                                        ? "bg-white border-orange-300 hover:border-orange-400 cursor-pointer"
-                                        : "bg-gray-100 border-gray-200 cursor-not-allowed opacity-60"
+                                >
+                                  <span className="text-sm font-medium text-gray-700 truncate">
+                                    {selectedAlternative[key] !== undefined
+                                      ? pkg?.alternative_items?.[
+                                          selectedAlternative[key]
+                                        ]
+                                          ?.map((i) => i.title)
+                                          .join(", ")
+                                      : "Select Alternative Items"}
+                                  </span>
+                                  <ChevronDown
+                                    className={`transition-transform ${
+                                      openDropdown === key ? "rotate-180" : ""
                                     }`}
-                                  >
-                                    <span className="text-sm font-medium text-gray-700 truncate">
-                                      {selectedAlternative[key] !== undefined
-                                        ? pkg?.alternative_items?.[
-                                            selectedAlternative[key]
-                                          ]
-                                            ?.map((i) => i.title)
-                                            .join(", ")
-                                        : "Select Alternative Items"}
-                                    </span>
-                                    <ChevronDown
-                                      className={`transition-transform ${
-                                        openDropdown === key ? "rotate-180" : ""
-                                      }`}
-                                      size={20}
-                                    />
-                                  </button>
+                                    size={20}
+                                  />
+                                </button>
 
-                                  {isAlternative && openDropdown === key && (
-                                    <div className="absolute z-50 w-full mt-2 bg-white rounded-2xl border border-gray-200 shadow-xl max-h-72 overflow-y-auto py-2">
-                                      {pkg?.alternative_items?.map(
-                                        (group, gIndex) => (
-                                          <div
-                                            key={gIndex}
-                                            onClick={() => {
-                                              setSelectedAlternative(
-                                                (prev) => ({
-                                                  ...prev,
-                                                  [key]: gIndex,
-                                                }),
-                                              );
-                                              setOpenDropdown(null);
-                                            }}
-                                            className={`mx-2 my-1 p-4 rounded-xl cursor-pointer transition-all ${
-                                              selectedAlternative[key] ===
-                                              gIndex
-                                                ? "bg-orange-50 border border-orange-400"
-                                                : "hover:bg-gray-50"
-                                            }`}
-                                          >
-                                            <p className="text-xs font-bold text-orange-600 mb-2">
-                                              ALTERNATIVE {gIndex + 1}
-                                            </p>
-                                            <p className="text-sm text-gray-700">
-                                              {group
-                                                .map((item) => item.title)
-                                                .join(", ")}
-                                            </p>
-                                          </div>
-                                        ),
-                                      )}
-                                    </div>
-                                  )}
-                                </div>
+                                {isAlternative && openDropdown === key && (
+                                  <div className="absolute z-50 w-full mt-2 bg-white rounded-2xl border border-gray-200 shadow-xl max-h-72 overflow-y-auto py-2">
+                                    {pkg?.alternative_items?.map(
+                                      (group, gIndex) => (
+                                        <div
+                                          key={gIndex}
+                                          onClick={() => {
+                                            setSelectedAlternative((prev) => ({
+                                              ...prev,
+                                              [key]: gIndex,
+                                            }));
+                                            setOpenDropdown(null);
+                                          }}
+                                          className={`mx-2 my-1 p-4 rounded-xl cursor-pointer transition-all ${
+                                            selectedAlternative[key] === gIndex
+                                              ? "bg-orange-50 border border-orange-400"
+                                              : "hover:bg-gray-50"
+                                          }`}
+                                        >
+                                          <p className="text-xs font-bold text-orange-600 mb-2">
+                                            ALTERNATIVE {gIndex + 1}
+                                          </p>
+                                          <p className="text-sm text-gray-700">
+                                            {group
+                                              .map((item) => item.title)
+                                              .join(", ")}
+                                          </p>
+                                        </div>
+                                      ),
+                                    )}
+                                  </div>
+                                )}
                               </div>
                             </div>
-                          ) : (
-                            <div className="h-40 flex items-center justify-center text-gray-300 text-4xl font-light">
-                              —
-                            </div>
-                          )}
-                        </td>
-                      );
-                    })}
-                  </tr>
-                );
-              })}
-            </tbody>
+                          </div>
+                        ) : (
+                          <div className="h-40 flex items-center justify-center text-gray-300 text-4xl font-light">
+                            —
+                          </div>
+                        )}
+                      </td>
+                    );
+                  })}
+                </tr>
+              );
+            })}
+          </tbody>
 
-            {/* Time Footer */}
-            <tfoot className="bg-gradient-to-r from-orange-600 to-amber-600">
-              <tr>
-                <th className="p-2 text-white font-semibold text-lg">
-                  Schedule Time
+          {/* Time Footer */}
+          <tfoot className="bg-gradient-to-r from-orange-600 to-amber-600">
+            <tr>
+              <th className="p-2 text-white font-semibold text-lg">
+                Schedule Time
+              </th>
+              {packageTypes.map(({ package_type, start_time, end_time }) => (
+                <th key={package_type} className="p-1.5">
+                  <div className="flex items-center gap-2 text-white mb-1.5">
+                    <Clock size={20} />
+                    <span className="font-semibold">{package_type}</span>
+                  </div>
+                  <div className="flex gap-1">
+                    <div className="flex-1">
+                      <label className="text-xs text-orange-100 block mb-1">
+                        Start Time
+                      </label>
+                      <input
+                        type="time"
+                        value={start_time}
+                        onChange={(e) =>
+                          handleTimeChange(
+                            package_type,
+                            "start_time",
+                            e.target.value,
+                          )
+                        }
+                        className="w-full bg-white/20 border border-white/30 text-white rounded-2xl px-4 py-1.5 focus:outline-none focus:border-white backdrop-blur-sm"
+                      />
+                    </div>
+                    <div className="flex-1">
+                      <label className="text-xs text-orange-100 block mb-1">
+                        End Time
+                      </label>
+                      <input
+                        type="time"
+                        value={end_time}
+                        onChange={(e) =>
+                          handleTimeChange(
+                            package_type,
+                            "end_time",
+                            e.target.value,
+                          )
+                        }
+                        className="w-full bg-white/20 border border-white/30 text-white rounded-2xl px-4 py-1.5 focus:outline-none focus:border-white backdrop-blur-sm"
+                      />
+                    </div>
+                  </div>
                 </th>
-                {packageTypes.map(({ package_type, start_time, end_time }) => (
-                  <th key={package_type} className="p-1.5">
-                    <div className="flex items-center gap-2 text-white mb-1.5">
-                      <Clock size={20} />
-                      <span className="font-semibold">{package_type}</span>
-                    </div>
-                    <div className="flex gap-1">
-                      <div className="flex-1">
-                        <label className="text-xs text-orange-100 block mb-1">
-                          Start Time
-                        </label>
-                        <input
-                          type="time"
-                          value={start_time}
-                          onChange={(e) =>
-                            handleTimeChange(
-                              package_type,
-                              "start_time",
-                              e.target.value,
-                            )
-                          }
-                          className="w-full bg-white/20 border border-white/30 text-white rounded-2xl px-4 py-1.5 focus:outline-none focus:border-white backdrop-blur-sm"
-                        />
-                      </div>
-                      <div className="flex-1">
-                        <label className="text-xs text-orange-100 block mb-1">
-                          End Time
-                        </label>
-                        <input
-                          type="time"
-                          value={end_time}
-                          onChange={(e) =>
-                            handleTimeChange(
-                              package_type,
-                              "end_time",
-                              e.target.value,
-                            )
-                          }
-                          className="w-full bg-white/20 border border-white/30 text-white rounded-2xl px-4 py-1.5 focus:outline-none focus:border-white backdrop-blur-sm"
-                        />
-                      </div>
-                    </div>
-                  </th>
-                ))}
-              </tr>
-            </tfoot>
-          </table>
-        </div>
+              ))}
+            </tr>
+          </tfoot>
+        </table>
       </div>
 
       {/* Submit */}
@@ -451,7 +447,7 @@ const InstituteAdminPackageRoutine = () => {
 
       {/* Preview */}
       {groupedPreview && (
-        <div className="max-w-7xl mx-auto">
+        <div>
           <h2 className="text-2xl font-bold text-gray-800 mb-6">
             {previewData === existingRoutine
               ? "Current Schedule"

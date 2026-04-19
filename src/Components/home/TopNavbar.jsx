@@ -82,10 +82,7 @@ const TopNavbar = ({ setHideSidebar, open, setOpen }) => {
             <FiMenu />
           </div>
 
-          <div
-            onClick={() => setOpen((v) => !v)}
-            className="cursor-pointer shrink-0"
-          >
+          <div className="cursor-pointer shrink-0">
             <img
               src={data?.logoUrl}
               alt={data?.siteName}

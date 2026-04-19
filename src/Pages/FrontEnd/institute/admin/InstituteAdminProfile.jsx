@@ -21,8 +21,6 @@ const InstituteAdminProfile = () => {
 
   const me = user?.user;
 
-  console.log(me);
-
   const kitchenType = data?.find(
     (item) => item._id === me?.services?.kitchen_type,
   );
@@ -30,7 +28,7 @@ const InstituteAdminProfile = () => {
   if (!me) return null;
 
   return (
-    <div className="p-3 lg:p-6 bg-gray-50 min-h-screen antialiased text-gray-800">
+    <div className=" min-h-screen antialiased text-gray-800">
       {/* Header */}
       <div className=" mx-auto mb-4 flex justify-between items-center">
         <div>
