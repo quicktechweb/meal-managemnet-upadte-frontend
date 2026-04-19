@@ -1,11 +1,19 @@
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   approvedInstituteUserFunction,
+  assignRolePermissionFunction,
+  createInstituteRoleFunction,
+  deleteInstituteRoleFunction,
+  getInstituteRoleFunction,
+  getPermissionFunction,
+  individualUserPermissionFunction,
   instituteApprovedUsersFunction,
   instituteCreateUserMealFunction,
   instituteUserAdminDataFunction,
+  instituteUserDeleteFunction,
   instituteUserListFunction,
   instituteUserMealTypeFunction,
+  instituteUserRoleChangeFunction,
   locationFunction,
   updateInstituteProfileInfoFunction,
 } from "./user.api";
@@ -81,6 +89,109 @@ export const useAllLocation = () => {
   return useQuery({
     queryKey: ["location"],
     queryFn: locationFunction,
+    retry: false,
+  });
+};
+
+export const useGetInstituteRole = () => {
+  return useQuery({
+    queryKey: ["institute-role"],
+    queryFn: getInstituteRoleFunction,
+    retry: false,
+  });
+};
+
+export const useCreateInstituteRole = () => {
+  const query = useQueryClient();
+  return useMutation({
+    mutationKey: ["create-institute-role"],
+    mutationFn: (payload) => createInstituteRoleFunction(payload),
+    onSuccess: (data) => {
+      toast.success(data?.message);
+      query.invalidateQueries(["institute-role"]);
+    },
+    onError: (err) => {
+      toast.error(err?.response?.data?.message);
+    },
+  });
+};
+
+export const useDeleteInstituteRole = () => {
+  const query = useQueryClient();
+  return useMutation({
+    mutationKey: ["delete-institue-role"],
+    mutationFn: (roleId) => deleteInstituteRoleFunction(roleId),
+    onSuccess: (data) => {
+      if (data?.success) {
+        toast.success(data?.message);
+        query.invalidateQueries(["institute-role"]);
+      }
+    },
+    onError: (err) => {
+      toast.error(err?.response?.data?.message);
+    },
+  });
+};
+
+export const usePermissionFunction = () => {
+  return useQuery({
+    queryKey: ["website-permission"],
+    queryFn: getPermissionFunction,
+    retry: false,
+  });
+};
+
+export const useAssignRolePermission = () => {
+  const query = useQueryClient();
+  return useMutation({
+    mutationKey: ["update-roles"],
+    mutationFn: ({ roleId, payload }) =>
+      assignRolePermissionFunction(roleId, payload),
+    onSuccess: (data) => {
+      if (data?.success) {
+        toast.success(data?.message);
+        query.invalidateQueries(["individual-user-permission"]);
+      }
+    },
+  });
+};
+
+export const useInstituteUserRoleChange = () => {
+  return useMutation({
+    mutationKey: ["institute-user-role-change"],
+    mutationFn: (payload) => instituteUserRoleChangeFunction(payload),
+    onSuccess: (data) => {
+      if (data?.success) {
+        toast.success(data?.message);
+      }
+    },
+    onError: (error) => {
+      toast.error(error?.response?.data?.message || "Something went wrong");
+    },
+  });
+};
+
+export const useInstituteUserDelete = () => {
+  const query = useQueryClient();
+  return useMutation({
+    mutationKey: ["institute-user-delete"],
+    mutationFn: (payload) => instituteUserDeleteFunction(payload),
+    onSuccess: (data) => {
+      if (data?.success) {
+        toast.success(data?.message);
+        query.invalidateQueries(["approved-user"]);
+      }
+    },
+    onError: (error) => {
+      toast.error(error?.response?.data?.message || "Something went wrong");
+    },
+  });
+};
+
+export const useIndividualUserPermission = () => {
+  return useQuery({
+    queryKey: ["individual-user-permission"],
+    queryFn: individualUserPermissionFunction,
     retry: false,
   });
 };

@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from "react";
-import CustomSelect from "./CustomSelect";
+import CustomSelect from "../CustomSelect";
 import { FaRegIdCard } from "react-icons/fa";
-
-const DocumentUpload = ({
+const CreateUserDocumentUpload = ({
   onDocumentsChange,
   initialDocuments = [],
   setFormUploadData,
@@ -204,4 +203,4 @@ const DocumentUpload = ({
   );
 };
 
-export default DocumentUpload;
+export default CreateUserDocumentUpload;

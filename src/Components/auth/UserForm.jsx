@@ -62,12 +62,15 @@ const UserForm = () => {
   const selectedState = watch("state");
   const selectedDivision = watch("division");
   const selectedDistrict = watch("district");
+  const selectedUpazila = watch("upazila");
 
   const districts = location?.find((loc) => loc.name === selectedDivision);
 
   const upazila = districts?.districts?.find(
     (upa) => upa?.name === selectedDistrict,
   );
+
+  console.log(upazila);
 
   const uploadedDocs = watch("documents") || [];
 
@@ -84,11 +87,7 @@ const UserForm = () => {
 
   // dynamic dropdown
 
-  const [genderOptions, setGenderOptions] = useState([
-    "Male",
-    "Female",
-    "Children",
-  ]);
+  const [genderOptions, setGenderOptions] = useState(["Male", "Female"]);
 
   const [gurdianOptions, setGurdianOptions] = useState([
     "father",
@@ -355,7 +354,6 @@ const UserForm = () => {
                 render={({ field }) => (
                   <select
                     {...field}
-                    disabled={districtLoading}
                     className="border border-gray-300 px-2 py-3 rounded w-full text-gray-600"
                   >
                     <option value="">Select District</option>
@@ -370,8 +368,30 @@ const UserForm = () => {
               />
             )}
 
+            {selectedDistrict && (
+              <Controller
+                name="upazila"
+                control={control}
+                rules={{ required: "Upazila is required" }}
+                render={({ field }) => (
+                  <select
+                    {...field}
+                    className="border border-gray-300 px-2 py-3 rounded w-full text-gray-600"
+                  >
+                    <option value="">Select Upazila</option>
+
+                    {upazila?.upazilas?.map((item) => (
+                      <option key={item.name} value={item.name}>
+                        {item.name}
+                      </option>
+                    ))}
+                  </select>
+                )}
+              />
+            )}
+
             {/* Village + Location */}
-            {watch("district") && (
+            {selectedUpazila && (
               <>
                 <InputField label="Village" name="village" control={control} />
                 <InputField

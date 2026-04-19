@@ -73,7 +73,7 @@ const Features = ({ isLoading, chooseusData = [], chooseImage }) => {
   if (isLoading || !chooseusData?.length) {
     return (
       <section className="lg:py-7 bg-white">
-        <div className="max-w-6xl mx-auto px-4 md:px-6 text-center animate-pulse">
+        <div className=" px-4 md:px-6 text-center animate-pulse">
           {/* Heading Skeleton */}
           <div className="h-8 bg-gray-200 rounded w-1/3 mx-auto mb-4"></div>
           <div className="h-4 bg-gray-200 rounded w-2/3 mx-auto mb-10"></div>
@@ -119,7 +119,7 @@ const Features = ({ isLoading, chooseusData = [], chooseImage }) => {
 
   return (
     <section id="why-choose-us" className="lg:py-7 bg-white">
-      <div className="max-w-6xl mx-auto px-4 md:px-6 text-center">
+      <div className=" px-4 md:px-6 text-center">
         {/* HEADING */}
         <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-4">
           Why Choose Us
@@ -130,8 +130,8 @@ const Features = ({ isLoading, chooseusData = [], chooseImage }) => {
         </p>
 
         {/* CONTENT */}
-        <div className="mt-5 md:mt-10 lg:mt-20 grid grid-cols-1 lg:grid-cols-3 gap-2.5 md:gap-5 lg:gap-10 items-center">
-          <div className="space-y-3.5 md:space-y-7 lg:space-y-14 text-left">
+        <div className="mt-5  grid grid-cols-1 lg:grid-cols-3 gap-2.5 md:gap-5 lg:gap-10 items-center">
+          <div className="space-y-3.5  text-left">
             {leftFeatures.map(renderFeature)}
           </div>
 
@@ -143,7 +143,7 @@ const Features = ({ isLoading, chooseusData = [], chooseImage }) => {
             />
           </div>
 
-          <div className="space-y-3.5 md:space-y-7 lg:space-y-14 text-left">
+          <div className="space-y-3.5  text-left">
             {rightFeatures.map(renderFeature)}
           </div>
         </div>

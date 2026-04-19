@@ -110,13 +110,11 @@ export const useInstituteLogin = () => {
     mutationKey: ["institute-login"],
     mutationFn: (payload) => instituteLoginFunction(payload),
     onSuccess: (data) => {
-      console.log(data);
-
       setToken(data?.token);
 
-      data?.user?.role === "institute_user" &&
+      data?.user?.role?.toLowerCase() === "user" &&
         navigate("/dashboard/mealmanagement");
-      data?.user?.role === "institute_admin" && navigate("/institute");
+      data?.user?.role?.toLowerCase() === "institute" && navigate("/institute");
 
       toast.success(data?.message);
     },

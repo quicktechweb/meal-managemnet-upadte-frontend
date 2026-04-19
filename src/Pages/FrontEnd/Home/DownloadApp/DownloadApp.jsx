@@ -8,7 +8,7 @@ const DownloadApp = ({ appData, isLoading }) => {
   }
 
   return (
-    <section className="relative w-full overflow-visible mt-10 lg:mt-20">
+    <section id="app" className="relative w-full overflow-visible mt-10 ">
       <div className="relative h-[200px] md:h-[420px] w-full overflow-hidden">
         {/* Background image */}
         <div
@@ -27,7 +27,7 @@ const DownloadApp = ({ appData, isLoading }) => {
         />
 
         {/* Content */}
-        <div className="relative z-10 max-w-7xl mx-auto lg:px-6 px-3 h-full grid grid-cols-1 md:grid-cols-2 items-center">
+        <div className="relative z-10  lg:px-6 px-3 h-full grid grid-cols-1 md:grid-cols-2 items-center">
           {/* Left content */}
           <div className="text-white">
             <h2 className="text-2xl lg:text-5xl font-bold lg:mb-4">
