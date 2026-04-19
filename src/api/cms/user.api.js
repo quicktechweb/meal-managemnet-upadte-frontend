@@ -38,5 +38,55 @@ export const instituteApprovedUsersFunction = async () => {
 
 export const locationFunction = async () => {
   const { data } = await axiosPublic.get("/api/all-location");
-  return data?.data
-}
+  return data?.data;
+};
+
+export const getInstituteRoleFunction = async () => {
+  const { data } = await axiosSecure.get("/api/roles");
+  return data?.data;
+};
+
+export const createInstituteRoleFunction = async (payload) => {
+  const { data } = await axiosSecure.post("/api/roles", payload);
+  return data;
+};
+
+export const deleteInstituteRoleFunction = async (roleId) => {
+  const { data } = await axiosSecure.delete(`/api/roles/${roleId}`);
+  return data;
+};
+
+export const getPermissionFunction = async () => {
+  const { data } = await axiosSecure.get("/api/permissions");
+  return data?.data;
+};
+
+export const assignRolePermissionFunction = async (id, payload) => {
+  const { data } = await axiosSecure.put(
+    `/api/roles/${id}/permissions`,
+    payload,
+  );
+  return data;
+};
+
+export const instituteUserRoleChangeFunction = async (payload) => {
+  const { data } = await axiosSecure.patch(
+    "/api/instituteuser-role-update",
+    payload,
+  );
+  return data;
+};
+
+export const instituteUserDeleteFunction = async (payload) => {
+  const { data } = await axiosSecure.delete("/api/instituteuser-delete", {
+    data: payload,
+  });
+  return data;
+};
+
+export const individualUserPermissionFunction = async () => {
+  const { data } = await axiosSecure.get(
+    "/api/individual-user-role-permission",
+  );
+  return data?.data;
+};

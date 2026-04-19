@@ -37,11 +37,11 @@ const Registration = () => {
     setOpen(false);
   };
   return (
-    <div className="min-h-screen p-4 md:p-10 flex items-center justify-center w-full mt-14 md:mt-20 font-sans">
+    <div className="min-h-screen p-4 md:p-10 flex items-center  w-full font-sans">
       <div
         className={`relative flex flex-row-reverse bg-white 
         ${location?.pathname === "/register/user" ? "h-[850px]" : "h-auto"}
-        justify-center items-stretch shadow-xl rounded-[1rem] overflow-hidden max-w-6xl w-full transition-all duration-500`}
+        justify-center items-stretch overflow-hidden max-w-6xl w-full transition-all duration-500`}
       >
         {step !== 3 && step !== 4 && (
           <div className="relative w-full lg:w-1/2 bg-white overflow-hidden hidden md:flex flex-col items-center justify-center px-4 text-black">

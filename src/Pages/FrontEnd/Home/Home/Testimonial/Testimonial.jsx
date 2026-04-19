@@ -40,7 +40,7 @@ const testimonials = [
 const Testimonial = () => {
   return (
     <section id="testimonial" className="bg-white mt-7  mb-8 md:mb-16">
-      <div className="max-w-6xl mx-auto px-4 lg:px-6 text-center">
+      <div className="max-w-[1580px] mx-auto px-4 lg:px-6 text-center">
         {/* Heading */}
         <h2 className="text-2xl lg:text-4xl font-bold mb-2 lg:mb-4">
           Testimonials What Clients Say

@@ -3,10 +3,10 @@ import { Link } from "react-router-dom";
 
 const WalletProfileCard = () => {
   return (
-    <div className="max-w-6xl mx-auto px-3 mb-4">
-      <div className="relative flex flex-col sm:flex-row sm:items-center justify-between overflow-hidden rounded-3xl bg-white p-5 sm:p-10 text-black shadow">
-        <div className="absolute -top-16 -right-16 w-56 h-56 bg-black/10 rounded-full" />
-        <div className="absolute bottom-0 right-20 w-40 h-40 bg-black/5 rounded-full" />
+    <div className=" mt-4 mx-auto px-3 mb-4">
+      <div className="relative flex flex-col sm:flex-row sm:items-center justify-between overflow-hidden rounded-3xl bg-white p-6  text-black shadow">
+        <div className="absolute -top-16 -right-16 w-46 h-46 bg-black/10 rounded-full" />
+        <div className="absolute bottom-0 right-20 w-30 h-30 bg-black/5 rounded-full" />
 
         {/* Left: Wallet Info */}
         <div className="flex flex-col lg:flex-row  items-start lg:items-center gap-3 md:gap-6 z-10">

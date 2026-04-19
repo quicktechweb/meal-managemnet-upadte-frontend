@@ -126,9 +126,9 @@ const ProcessSection = () => {
   };
 
   return (
-    <section id="features" className="mt-5 bg-white max-w-6xl mx-auto">
+    <section id="features" className="mt-5 bg-white ">
       {/* HEADING */}
-      <div className="text-center mb-5 md:mb-10 lg:mb-20">
+      <div className="text-center mb-6 ">
         <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-4 px-4">
           Quick & Easy Process With Best Features
         </h2>
@@ -138,9 +138,9 @@ const ProcessSection = () => {
         </p>
       </div>
 
-      <div className="max-w-7xl mx-auto px-6">
+      <div className=" px-6">
         {/* STEPS */}
-        <div className="flex flex-wrap justify-center gap-4 md:gap-8 lg:gap-16 mb-5 md:mb-10">
+        <div className="flex flex-wrap justify-center gap-4 md:gap-8 lg:gap-16 mb-5">
           {steps.map((step) => {
             const isActive = active.id === step.id;
 
@@ -202,18 +202,18 @@ const ProcessSection = () => {
               {active.number}
             </span>
 
-            <h3 className="mt-3 lg:mt-6 text-2xl lg:text-5xl font-semibold text-gray-900">
+            <h3 className="mt-3  text-2xl lg:text-5xl font-semibold text-gray-900">
               {active.heading}
             </h3>
 
             <p
               id="menu"
-              className="mt-3 lg:mt-6 text-sm lg:text-base text-gray-500 max-w-md"
+              className="mt-3  text-sm lg:text-base text-gray-500 max-w-md"
             >
               {active.desc1}
             </p>
 
-            <p className="mt-2 lg:mt-4  text-sm lg:text-base text-gray-500 max-w-md">
+            <p className="mt-2   text-sm lg:text-base text-gray-500 max-w-md">
               {active.desc2}
             </p>
 

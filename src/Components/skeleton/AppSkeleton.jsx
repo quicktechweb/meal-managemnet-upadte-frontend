@@ -1,8 +1,8 @@
-import React from 'react'
+import React from "react";
 
 const AppSkeleton = () => {
   return (
-    <section className="relative w-full overflow-visible mt-10 lg:mt-20">
+    <section className="relative w-full overflow-visible mt-10 ">
       <div className="relative h-[200px] md:h-[420px] w-full overflow-hidden bg-gradient-to-l from-[#3264f5] via-[#4a54e0] to-[#7202bb]">
         <div className="relative z-10 max-w-7xl mx-auto lg:px-6 px-3 h-full grid grid-cols-1 md:grid-cols-2 items-center animate-pulse">
           {/* Left Skeleton */}
@@ -26,6 +26,6 @@ const AppSkeleton = () => {
       </div>
     </section>
   );
-}
+};
 
-export default AppSkeleton
+export default AppSkeleton;
