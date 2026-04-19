@@ -18,6 +18,8 @@ import {
   updateInstituteProfileInfoFunction,
 } from "./user.api";
 import toast from "react-hot-toast";
+import useInstituteAuth from "../../Hooks/useInstituteAuth";
+import useLocalStorage from "../../Hooks/useLocalStorage";
 
 export const useApprovedInstituteUser = () => {
   return useQuery({
@@ -189,9 +191,12 @@ export const useInstituteUserDelete = () => {
 };
 
 export const useIndividualUserPermission = () => {
+  const [token] = useLocalStorage("token", null);
+
   return useQuery({
     queryKey: ["individual-user-permission"],
     queryFn: individualUserPermissionFunction,
     retry: false,
+    enabled: !!token,
   });
 };
