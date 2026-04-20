@@ -48,6 +48,7 @@ const PackageSchedule = ({
     );
   };
 
+  // ── Payload builder ──────────────────────────────────────────────────────
   const getSelectedPayload = () => {
     const result = [];
 
@@ -62,33 +63,19 @@ const PackageSchedule = ({
         const isAlternative = !!alternativeChecked[key];
         const selectedAltIndex = selectedAlternative[key];
 
-        let selectedItems = [];
-
+        // items & alternative_items are now [{title: "ভাত,ডাল,ডিম"}] format
+        let selectedItemTitle = "";
         if (isAlternative && selectedAltIndex !== undefined) {
-          selectedItems = pkg?.alternative_items?.[selectedAltIndex] ?? [];
+          selectedItemTitle =
+            pkg?.alternative_items?.[selectedAltIndex]?.title ?? "";
         } else {
-          selectedItems = pkg?.items ?? [];
+          selectedItemTitle = pkg?.items?.[0]?.title ?? "";
         }
 
-        const formattedItems = selectedItems.map((item) => ({
-          item_id: item._id,
-          title: item.title,
-          image: item.image,
-          video: item.video,
-          ingridents: item.ingridents,
-        }));
-
-        // User alternatives format
         const userAltIndices = selectedUserAlternatives[key] || [];
-        const formattedUserAlternatives = userAltIndices.map((idx) =>
-          (pkg?.alternative_items?.[idx] ?? []).map((item) => ({
-            item_id: item._id,
-            title: item.title,
-            image: item.image,
-            video: item.video,
-            ingridents: item.ingridents,
-          })),
-        );
+        const formattedUserAlternatives = userAltIndices.map((idx) => ({
+          title: pkg?.alternative_items?.[idx]?.title ?? "",
+        }));
 
         result.push({
           day,
@@ -96,7 +83,7 @@ const PackageSchedule = ({
           package_price: pkg.package_price,
           start_time,
           end_time,
-          package_item: formattedItems,
+          package_item: [{ title: selectedItemTitle }],
           alternative_items: formattedUserAlternatives,
         });
       });
@@ -115,6 +102,7 @@ const PackageSchedule = ({
 
   const handleSubmit = () => {
     const payload = getSelectedPayload();
+
     setPackageMealRoutine(payload);
     setPreviewData(payload);
   };
@@ -255,10 +243,9 @@ const PackageSchedule = ({
                                   <p className="font-semibold text-gray-700">
                                     Items
                                   </p>
+                                  {/* items[0].title is "ভাত,ডাল,ডিম" */}
                                   <p className="text-sm text-gray-600 text-start leading-snug">
-                                    {pkg?.items
-                                      ?.map((item) => item.title)
-                                      .join(", ")}
+                                    {pkg?.items?.[0]?.title ?? "—"}
                                   </p>
                                 </div>
                               </button>
@@ -304,11 +291,9 @@ const PackageSchedule = ({
                                   >
                                     <span className="text-sm font-medium text-gray-700 truncate">
                                       {selectedAlternative[key] !== undefined
-                                        ? pkg?.alternative_items?.[
+                                        ? (pkg?.alternative_items?.[
                                             selectedAlternative[key]
-                                          ]
-                                            ?.map((i) => i.title)
-                                            .join(", ")
+                                          ]?.title ?? "—")
                                         : "Select Alternative Items"}
                                     </span>
                                     <ChevronDown
@@ -334,7 +319,6 @@ const PackageSchedule = ({
                                                 }),
                                               );
                                               setOpenDropdown(null);
-                                              // ✅ user alternatives থেকে এই index সরাও
                                               setSelectedUserAlternatives(
                                                 (prev) => ({
                                                   ...prev,
@@ -354,10 +338,9 @@ const PackageSchedule = ({
                                             <p className="text-xs font-bold text-orange-600 mb-2">
                                               ALTERNATIVE {gIndex + 1}
                                             </p>
+                                            {/* group = {title: "ভাত,ডাল,ডিম"} */}
                                             <p className="text-sm text-gray-700">
-                                              {group
-                                                .map((item) => item.title)
-                                                .join(", ")}
+                                              {group.title}
                                             </p>
                                           </div>
                                         ),
@@ -400,7 +383,7 @@ const PackageSchedule = ({
                                     />
                                   </button>
 
-                                  {/* User Dropdown — admin selected  */}
+                                  {/* User Dropdown */}
                                   {openDropdown === `user-${key}` && (
                                     <div className="absolute z-50 w-full mt-2 bg-white rounded-2xl border border-gray-200 shadow-xl max-h-72 overflow-y-auto py-2">
                                       {pkg?.alternative_items
@@ -470,10 +453,9 @@ const PackageSchedule = ({
                                                 <p className="text-xs font-bold text-orange-600 mb-1">
                                                   ALTERNATIVE {gIndex + 1}
                                                 </p>
+                                                {/* group = {title: "ভাত,ডাল,ডিম"} */}
                                                 <p className="text-sm text-gray-700">
-                                                  {group
-                                                    .map((item) => item.title)
-                                                    .join(", ")}
+                                                  {group.title}
                                                 </p>
                                               </div>
                                             </div>
@@ -522,7 +504,6 @@ const PackageSchedule = ({
       </div>
 
       {/* Preview Section */}
-
       {groupedPreview && (
         <div className="max-w-7xl mx-auto">
           <div className="flex items-center gap-3 mb-6">
@@ -587,43 +568,43 @@ const PackageSchedule = ({
                                   ৳{pkg.package_price}
                                 </p>
 
-                                {/* Items */}
+                                {/* Items — package_item = [{title: "ভাত,ডাল,ডিম"}] */}
                                 <p className="text-[10px] font-medium text-gray-400 uppercase tracking-wide mb-1.5">
                                   Items
                                 </p>
                                 <div className="flex flex-wrap gap-1.5">
-                                  {pkg.package_item?.map((item, i) => (
-                                    <span
-                                      key={i}
-                                      className="text-[11px] font-medium bg-gray-100 text-gray-600 px-2.5 py-1 rounded-full"
-                                    >
-                                      {item.title}
-                                    </span>
-                                  ))}
+                                  {pkg.package_item?.[0]?.title
+                                    ?.split(",")
+                                    .map((t, i) => (
+                                      <span
+                                        key={i}
+                                        className="text-[11px] font-medium bg-gray-100 text-gray-600 px-2.5 py-1 rounded-full"
+                                      >
+                                        {t.trim()}
+                                      </span>
+                                    ))}
                                 </div>
 
-                                {/* User Alternatives */}
+                                {/* User Alternatives — [{title: "খিচুড়ি,মাংস"}] */}
                                 {pkg.alternative_items?.length > 0 && (
                                   <div className="mt-2.5 space-y-2">
-                                    {pkg.alternative_items.map(
-                                      (altGroup, i) => (
-                                        <div key={i}>
-                                          <p className="text-[10px] font-medium text-amber-700 mb-1">
-                                            Alt {i + 1}
-                                          </p>
-                                          <div className="flex flex-wrap gap-1.5">
-                                            {altGroup.map((item, j) => (
-                                              <span
-                                                key={j}
-                                                className="text-[11px] font-medium bg-amber-50 text-amber-800 px-2.5 py-1 rounded-full"
-                                              >
-                                                {item.title}
-                                              </span>
-                                            ))}
-                                          </div>
+                                    {pkg.alternative_items.map((alt, i) => (
+                                      <div key={i}>
+                                        <p className="text-[10px] font-medium text-amber-700 mb-1">
+                                          Alt {i + 1}
+                                        </p>
+                                        <div className="flex flex-wrap gap-1.5">
+                                          {alt.title?.split(",").map((t, j) => (
+                                            <span
+                                              key={j}
+                                              className="text-[11px] font-medium bg-amber-50 text-amber-800 px-2.5 py-1 rounded-full"
+                                            >
+                                              {t.trim()}
+                                            </span>
+                                          ))}
                                         </div>
-                                      ),
-                                    )}
+                                      </div>
+                                    ))}
                                   </div>
                                 )}
                               </div>

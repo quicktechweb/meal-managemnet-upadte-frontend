@@ -22,6 +22,7 @@ const InstituteAdminPackageRoutine = () => {
   const [openDropdown, setOpenDropdown] = useState(null);
   const [alternativeChecked, setAlternativeChecked] = useState({});
   const [selectedAlternative, setSelectedAlternative] = useState({});
+  const [selectedUserAlternatives, setSelectedUserAlternatives] = useState({});
   const [previewData, setPreviewData] = useState(null);
 
   // ─── Step 1: packageTypes initialize ───────────────────
@@ -44,57 +45,59 @@ const InstituteAdminPackageRoutine = () => {
     );
   }, [packages]);
 
-  // ─── Step 2: existing routine ────────
+  // ─── Step 2: existing routine restore ────────────────────
   useEffect(() => {
     if (packages.length === 0 || existingRoutine.length === 0) return;
 
     const newAlternativeChecked = {};
     const newSelectedAlternative = {};
+    const newSelectedUserAlternatives = {};
 
-    existingRoutine.forEach(({ day, package_title, package_item }) => {
-      const key = `${day}-${package_title}`;
+    existingRoutine.forEach(
+      ({ day, package_title, package_item, alternative_items }) => {
+        const key = `${day}-${package_title}`;
 
-      const pkg = packages.find(
-        (p) => p.day === day && p.package_title === package_title,
-      );
-      if (!pkg) return;
-
-      const savedTitles = (package_item ?? [])
-        .map((i) => i.title)
-        .sort()
-        .join(",");
-      const defaultTitles = (pkg.items ?? [])
-        .map((i) => i.title)
-        .sort()
-        .join(",");
-
-      if (savedTitles === defaultTitles) {
-        newAlternativeChecked[key] = false;
-      } else {
-        const matchedIndex = (pkg.alternative_items ?? []).findIndex(
-          (group) => {
-            const groupTitles = group
-              .map((i) => i.title)
-              .sort()
-              .join(",");
-            return groupTitles === savedTitles;
-          },
+        const pkg = packages.find(
+          (p) => p.day === day && p.package_title === package_title,
         );
+        if (!pkg) return;
 
-        if (matchedIndex !== -1) {
-          newAlternativeChecked[key] = true;
-          newSelectedAlternative[key] = matchedIndex;
+        const savedTitle = (package_item ?? [])[0]?.title ?? "";
+        const defaultTitle = pkg?.items?.[0]?.title ?? "";
+
+        if (savedTitle === defaultTitle) {
+          newAlternativeChecked[key] = false;
+        } else {
+          const matchedIndex = (pkg.alternative_items ?? []).findIndex(
+            (group) => group.title === savedTitle,
+          );
+          if (matchedIndex !== -1) {
+            newAlternativeChecked[key] = true;
+            newSelectedAlternative[key] = matchedIndex;
+          }
         }
-      }
-    });
+
+        // restore user alternatives
+        if (alternative_items?.length > 0) {
+          const restoredIndices = alternative_items
+            .map(({ title }) =>
+              (pkg.alternative_items ?? []).findIndex(
+                (group) => group.title === title,
+              ),
+            )
+            .filter((i) => i !== -1);
+          newSelectedUserAlternatives[key] = restoredIndices;
+        }
+      },
+    );
 
     setAlternativeChecked(newAlternativeChecked);
     setSelectedAlternative(newSelectedAlternative);
-
+    setSelectedUserAlternatives(newSelectedUserAlternatives);
     setPreviewData(existingRoutine);
   }, [packages]);
 
-  // ─── Grouped raw packages ────────────────────────────
+  // ─── Grouped raw packages ─────────────────────────────
   const groupedData = packages?.reduce((acc, item) => {
     if (!acc[item.day]) acc[item.day] = {};
     acc[item.day][item.package_title] = item;
@@ -109,6 +112,7 @@ const InstituteAdminPackageRoutine = () => {
     );
   };
 
+  // ─── Payload builder ──────────────────────────────────
   const getSelectedPayload = () => {
     const result = [];
 
@@ -123,13 +127,18 @@ const InstituteAdminPackageRoutine = () => {
         const isAlternative = !!alternativeChecked[key];
         const selectedAltIndex = selectedAlternative[key];
 
-        let selectedItems = [];
-
+        let selectedTitle = "";
         if (isAlternative && selectedAltIndex !== undefined) {
-          selectedItems = pkg?.alternative_items?.[selectedAltIndex] ?? [];
+          selectedTitle =
+            pkg?.alternative_items?.[selectedAltIndex]?.title ?? "";
         } else {
-          selectedItems = pkg?.items ?? [];
+          selectedTitle = pkg?.items?.[0]?.title ?? "";
         }
+
+        const userAltIndices = selectedUserAlternatives[key] || [];
+        const formattedUserAlternatives = userAltIndices.map((idx) => ({
+          title: pkg?.alternative_items?.[idx]?.title ?? "",
+        }));
 
         result.push({
           day,
@@ -137,7 +146,8 @@ const InstituteAdminPackageRoutine = () => {
           package_price: pkg.package_price,
           start_time,
           end_time,
-          package_item: selectedItems.map((item) => ({ title: item.title })),
+          package_item: [{ title: selectedTitle }],
+          alternative_items: formattedUserAlternatives,
         });
       });
     });
@@ -151,13 +161,16 @@ const InstituteAdminPackageRoutine = () => {
       acc[item.day][item.package_title] = item;
       return acc;
     }, {});
+
   const query = useQueryClient();
+
   const handleSubmit = async () => {
     const payload = getSelectedPayload();
     setPackageMealRoutine(payload);
     setPreviewData(payload);
+
     const payloads = {
-      package_routine: packageMealRoutine,
+      package_routine: payload,
       package_type_lists: packageTypes,
       registration_step: 3,
     };
@@ -190,7 +203,6 @@ const InstituteAdminPackageRoutine = () => {
       </h3>
 
       {/* ── Main Schedule Table ── */}
-
       <div className="border border-gray-100 shadow-xl rounded-3xl overflow-hidden bg-white">
         <table className="w-full text-left">
           <tbody>
@@ -267,14 +279,12 @@ const InstituteAdminPackageRoutine = () => {
                                   Items
                                 </p>
                                 <p className="text-sm text-gray-600 text-start leading-snug">
-                                  {pkg?.items
-                                    ?.map((item) => item.title)
-                                    .join(", ")}
+                                  {pkg?.items?.[0]?.title ?? "—"}
                                 </p>
                               </div>
                             </button>
 
-                            {/* Alternative */}
+                            {/* Admin Alternative */}
                             <div className="flex items-start gap-3">
                               <input
                                 type="checkbox"
@@ -315,11 +325,9 @@ const InstituteAdminPackageRoutine = () => {
                                 >
                                   <span className="text-sm font-medium text-gray-700 truncate">
                                     {selectedAlternative[key] !== undefined
-                                      ? pkg?.alternative_items?.[
+                                      ? (pkg?.alternative_items?.[
                                           selectedAlternative[key]
-                                        ]
-                                          ?.map((i) => i.title)
-                                          .join(", ")
+                                        ]?.title ?? "—")
                                       : "Select Alternative Items"}
                                   </span>
                                   <ChevronDown
@@ -342,6 +350,14 @@ const InstituteAdminPackageRoutine = () => {
                                               [key]: gIndex,
                                             }));
                                             setOpenDropdown(null);
+                                            setSelectedUserAlternatives(
+                                              (prev) => ({
+                                                ...prev,
+                                                [key]: (prev[key] || []).filter(
+                                                  (i) => i !== gIndex,
+                                                ),
+                                              }),
+                                            );
                                           }}
                                           className={`mx-2 my-1 p-4 rounded-xl cursor-pointer transition-all ${
                                             selectedAlternative[key] === gIndex
@@ -353,12 +369,130 @@ const InstituteAdminPackageRoutine = () => {
                                             ALTERNATIVE {gIndex + 1}
                                           </p>
                                           <p className="text-sm text-gray-700">
-                                            {group
-                                              .map((item) => item.title)
-                                              .join(", ")}
+                                            {group.title}
                                           </p>
                                         </div>
                                       ),
+                                    )}
+                                  </div>
+                                )}
+                              </div>
+                            </div>
+
+                            {/* User Alternatives */}
+                            <div>
+                              <h4 className="font-semibold text-gray-700 mb-2">
+                                User Alternatives Items
+                              </h4>
+                              <div className="relative flex-1">
+                                <button
+                                  onClick={() => {
+                                    const userKey = `user-${key}`;
+                                    setOpenDropdown(
+                                      openDropdown === userKey ? null : userKey,
+                                    );
+                                  }}
+                                  type="button"
+                                  className="w-full px-5 py-4 rounded-2xl border flex items-center justify-between transition-all duration-300 shadow-sm bg-white border-orange-300 hover:border-orange-400 cursor-pointer"
+                                >
+                                  <span className="text-sm font-medium text-gray-700 truncate">
+                                    {selectedUserAlternatives[key]?.length > 0
+                                      ? `${selectedUserAlternatives[key].length} alternative(s) selected`
+                                      : "Select User Alternatives"}
+                                  </span>
+                                  <ChevronDown
+                                    className={`transition-transform ${
+                                      openDropdown === `user-${key}`
+                                        ? "rotate-180"
+                                        : ""
+                                    }`}
+                                    size={20}
+                                  />
+                                </button>
+
+                                {openDropdown === `user-${key}` && (
+                                  <div className="absolute z-50 w-full mt-2 bg-white rounded-2xl border border-gray-200 shadow-xl max-h-72 overflow-y-auto py-2">
+                                    {pkg?.alternative_items
+                                      ?.map((group, gIndex) => ({
+                                        group,
+                                        gIndex,
+                                      }))
+                                      .filter(
+                                        ({ gIndex }) =>
+                                          gIndex !== selectedAlternative[key],
+                                      )
+                                      .map(({ group, gIndex }) => {
+                                        const isSelected =
+                                          selectedUserAlternatives[
+                                            key
+                                          ]?.includes(gIndex);
+                                        return (
+                                          <div
+                                            key={gIndex}
+                                            onClick={() => {
+                                              setSelectedUserAlternatives(
+                                                (prev) => {
+                                                  const current =
+                                                    prev[key] || [];
+                                                  const updated = isSelected
+                                                    ? current.filter(
+                                                        (i) => i !== gIndex,
+                                                      )
+                                                    : [...current, gIndex];
+                                                  return {
+                                                    ...prev,
+                                                    [key]: updated,
+                                                  };
+                                                },
+                                              );
+                                            }}
+                                            className={`mx-2 my-1 p-4 rounded-xl cursor-pointer transition-all flex items-start gap-3 ${
+                                              isSelected
+                                                ? "bg-orange-50 border border-orange-400"
+                                                : "hover:bg-gray-50 border border-transparent"
+                                            }`}
+                                          >
+                                            <div
+                                              className={`w-5 h-5 mt-0.5 rounded flex items-center justify-center border-2 flex-shrink-0 ${
+                                                isSelected
+                                                  ? "bg-orange-500 border-orange-500"
+                                                  : "border-gray-300"
+                                              }`}
+                                            >
+                                              {isSelected && (
+                                                <svg
+                                                  className="w-3 h-3 text-white"
+                                                  fill="none"
+                                                  viewBox="0 0 24 24"
+                                                  stroke="currentColor"
+                                                >
+                                                  <path
+                                                    strokeLinecap="round"
+                                                    strokeLinejoin="round"
+                                                    strokeWidth={3}
+                                                    d="M5 13l4 4L19 7"
+                                                  />
+                                                </svg>
+                                              )}
+                                            </div>
+                                            <div>
+                                              <p className="text-xs font-bold text-orange-600 mb-1">
+                                                ALTERNATIVE {gIndex + 1}
+                                              </p>
+                                              <p className="text-sm text-gray-700">
+                                                {group.title}
+                                              </p>
+                                            </div>
+                                          </div>
+                                        );
+                                      })}
+
+                                    {pkg?.alternative_items?.filter(
+                                      (_, i) => i !== selectedAlternative[key],
+                                    ).length === 0 && (
+                                      <p className="text-center text-gray-400 text-sm py-4">
+                                        No alternatives available
+                                      </p>
                                     )}
                                   </div>
                                 )}
@@ -497,15 +631,40 @@ const InstituteAdminPackageRoutine = () => {
                                   ৳{pkg.package_price}
                                 </p>
                                 <div className="flex flex-wrap gap-2">
-                                  {pkg.package_item?.map((item, i) => (
-                                    <span
-                                      key={i}
-                                      className="bg-green-100 text-green-700 text-xs font-medium px-4 py-2 rounded-2xl"
-                                    >
-                                      {item.title}
-                                    </span>
-                                  ))}
+                                  {pkg.package_item?.[0]?.title
+                                    ?.split(",")
+                                    .map((t, i) => (
+                                      <span
+                                        key={i}
+                                        className="bg-green-100 text-green-700 text-xs font-medium px-4 py-2 rounded-2xl"
+                                      >
+                                        {t.trim()}
+                                      </span>
+                                    ))}
                                 </div>
+
+                                {/* User alternatives preview */}
+                                {pkg.alternative_items?.length > 0 && (
+                                  <div className="mt-2.5 space-y-2">
+                                    {pkg.alternative_items.map((alt, i) => (
+                                      <div key={i}>
+                                        <p className="text-[10px] font-medium text-amber-700 mb-1">
+                                          Alt {i + 1}
+                                        </p>
+                                        <div className="flex flex-wrap gap-1.5">
+                                          {alt.title?.split(",").map((t, j) => (
+                                            <span
+                                              key={j}
+                                              className="text-[11px] font-medium bg-amber-50 text-amber-800 px-2.5 py-1 rounded-full"
+                                            >
+                                              {t.trim()}
+                                            </span>
+                                          ))}
+                                        </div>
+                                      </div>
+                                    ))}
+                                  </div>
+                                )}
                               </div>
                             ) : (
                               <span className="text-gray-300 text-2xl">—</span>
