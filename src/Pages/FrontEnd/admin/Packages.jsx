@@ -85,11 +85,7 @@ const Packages = () => {
                     <div className="space-y-2 max-h-32 overflow-y-auto pr-1">
                       {pkg?.alternative_items?.map((group, gi) => (
                         <div key={gi} className="bg-slate-50 rounded-md p-2">
-                          {group?.map((it, i) => (
-                            <div key={i} className="text-xs text-slate-600">
-                              ({i + 1}) {it?.title}
-                            </div>
-                          ))}
+                          ({gi + 1}) {group.title}
                         </div>
                       ))}
                     </div>

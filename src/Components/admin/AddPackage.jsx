@@ -9,7 +9,7 @@ import { useAddPackage, useGetItems } from "../../api/admin/admin.api";
 import toast from "react-hot-toast";
 
 const dayNames = ["Sat", "Sun", "Mon", "Tue", "Wed", "Thu", "Fri"];
-// ── Custom Select components ─────────────────────────────────────
+
 const CustomOption = (props) => (
   <div
     {...props.innerProps}
@@ -45,9 +45,7 @@ const CustomMultiValueLabel = (props) => (
 
 const AddPackage = () => {
   const { data: items = [] } = useGetItems();
-
   const { mutateAsync, isPending } = useAddPackage();
-
   const [alternativeGroups, setAlternativeGroups] = useState([[]]);
 
   const {
@@ -70,7 +68,6 @@ const AddPackage = () => {
   const selectedItems = watch("items") || [];
   const selectedDay = watch("day");
 
-  // ── Option builders ──────────────────────────────────────────────
   const buildOptions = (list) =>
     list.map((item) => ({
       value: item,
@@ -85,15 +82,20 @@ const AddPackage = () => {
 
   const itemOptions = buildOptions(items);
 
-  // ── Alternative group handlers ───────────────────────────────────
   const handleAlternativeChange = (groupIndex, newValues) => {
-    if (newValues.length <= selectedItems.length) {
+    const selectedItemsTotalPrice = selectedItems.reduce(
+      (sum, opt) => sum + opt.price,
+      0,
+    );
+    const totalAltPrice = newValues.reduce((sum, opt) => sum + opt.price, 0);
+
+    if (totalAltPrice <= selectedItemsTotalPrice) {
       const updated = [...alternativeGroups];
       updated[groupIndex] = newValues;
       setAlternativeGroups(updated);
     } else {
       toast.error(
-        `Maximum ${selectedItems.length}টি alternative item select করা যাবে!`,
+        `Alternative items এর মোট দাম ৳${selectedItemsTotalPrice} এর বেশি হতে পারবে না!`,
         {
           duration: 3000,
           position: "top-right",
@@ -102,18 +104,18 @@ const AddPackage = () => {
       );
     }
   };
-
-  // ── Submit ───────────────────────────────────────────────────────
   const onSubmit = async (data) => {
     const payload = {
       day: data.day,
       package_title: data.title,
       package_price: data.price,
-      items: data.items,
-      alternative_items: alternativeGroups,
+      items: [{ title: data.items.map((opt) => opt.label).join(",") }],
+      alternative_items: alternativeGroups
+        .filter((group) => group.length > 0)
+        .map((group) => ({
+          title: group.map((opt) => opt.label).join(","),
+        })),
     };
-
-    console.log(payload);
 
     await mutateAsync({ ...payload });
 
@@ -121,7 +123,6 @@ const AddPackage = () => {
     setAlternativeGroups([[]]);
   };
 
-  // ── Error border helper ──────────────────────────────────────────
   const inputClass = (hasError) =>
     `w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500/20 focus:border-transparent outline-none transition-all ${
       hasError ? "border-red-500" : "border-gray-300"

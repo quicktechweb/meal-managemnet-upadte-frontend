@@ -90,40 +90,59 @@ const UpdatePackage = () => {
 
   const itemOptions = items.map(toOption);
 
-  // ── Populate form when package data is available ─────────────────────────
+  // ── title string থেকে options resolve করে ───────────────────────────────
+  // stored format: [{title: "ভাত,ডাল,ডিম"}]
+  const resolveOptionsFromTitleString = (storedList = []) => {
+    if (!storedList.length) return [];
+    const titles = storedList[0]?.title?.split(",") ?? [];
+    return titles
+      .map((t) => {
+        const match = items.find((i) => i.title === t.trim());
+        return match ? toOption(match) : null;
+      })
+      .filter(Boolean);
+  };
+
+  // alternative_items: [{title: "খিচুড়ি,মাংস"}, {title: "ভাত,ডিম"}]
+  const resolveAltGroups = (altItems = []) => {
+    if (!altItems.length) return [[]];
+    return altItems.map((group) => {
+      const titles = group?.title?.split(",") ?? [];
+      return titles
+        .map((t) => {
+          const match = items.find((i) => i.title === t.trim());
+          return match ? toOption(match) : null;
+        })
+        .filter(Boolean);
+    });
+  };
+
+  // ── Populate form ────────────────────────────────────────────────────────
   useEffect(() => {
     if (!allPackages.length || !items.length) return;
 
     const singlePackage = allPackages.find((pkg) => pkg?._id === id);
     if (!singlePackage) return;
 
-    const resolveOptions = (storedItems = []) =>
-      storedItems
-        .map((stored) => {
-          const match = items.find(
-            (i) => i._id === (stored?._id ?? stored?.value?._id ?? stored),
-          );
-          return match ? toOption(match) : null;
-        })
-        .filter(Boolean);
-
     reset({
       day: singlePackage.day ?? null,
       title: singlePackage.package_title ?? "",
       price: singlePackage.package_price ?? "",
-      items: resolveOptions(singlePackage.items),
+      items: resolveOptionsFromTitleString(singlePackage.items),
     });
 
-    const existingAltGroups = singlePackage.alternative_items?.length
-      ? singlePackage.alternative_items.map((group) => resolveOptions(group))
-      : [[]];
-
-    setAlternativeGroups(existingAltGroups);
+    setAlternativeGroups(resolveAltGroups(singlePackage.alternative_items));
   }, [allPackages, items, id, reset]);
 
   // ── Alternative group handlers ───────────────────────────────────────────
   const handleAlternativeChange = (groupIndex, newValues) => {
-    if (newValues.length <= selectedItems.length) {
+    const selectedItemsTotalPrice = selectedItems.reduce(
+      (sum, opt) => sum + opt.price,
+      0,
+    );
+    const totalAltPrice = newValues.reduce((sum, opt) => sum + opt.price, 0);
+
+    if (totalAltPrice <= selectedItemsTotalPrice) {
       setAlternativeGroups((prev) => {
         const updated = [...prev];
         updated[groupIndex] = newValues;
@@ -131,7 +150,7 @@ const UpdatePackage = () => {
       });
     } else {
       toast.error(
-        `Maximum ${selectedItems.length}টি alternative item select করা যাবে!`,
+        `Alternative items এর মোট দাম ৳${selectedItemsTotalPrice} এর বেশি হতে পারবে না!`,
         {
           duration: 3000,
           position: "top-right",
@@ -152,8 +171,12 @@ const UpdatePackage = () => {
       day: formData.day,
       package_title: formData.title,
       package_price: formData.price,
-      items: formData.items,
-      alternative_items: alternativeGroups,
+      items: [{ title: formData.items.map((opt) => opt.label).join(",") }],
+      alternative_items: alternativeGroups
+        .filter((group) => group.length > 0)
+        .map((group) => ({
+          title: group.map((opt) => opt.label).join(","),
+        })),
     };
 
     await mutateAsync({ id, payload });
