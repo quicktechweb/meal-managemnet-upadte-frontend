@@ -1,4 +1,4 @@
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   getInstituteUserDataFunction,
   getUserDataFunction,
@@ -104,6 +104,7 @@ export const useInstituteRegistration = () => {
 };
 
 export const useInstituteLogin = () => {
+  const queryClient = useQueryClient();
   const { setToken } = useInstituteAuth();
   const navigate = useNavigate();
   return useMutation({
@@ -111,7 +112,9 @@ export const useInstituteLogin = () => {
     mutationFn: (payload) => instituteLoginFunction(payload),
     onSuccess: (data) => {
       setToken(data?.token);
-
+      queryClient.invalidateQueries({
+        queryKey: ["individual-user-permission"],
+      });
       data && navigate("/dashboards");
 
       toast.success(data?.message);

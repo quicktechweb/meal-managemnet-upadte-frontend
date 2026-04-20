@@ -6,7 +6,6 @@ const PermissionContext = createContext();
 
 export const PermissionProvider = ({ children }) => {
   const [permissions, setPermissions] = useState([]);
-  const [loading, setLoading] = useState(true);
 
   const { data, isLoading } = useIndividualUserPermission();
 
@@ -14,7 +13,6 @@ export const PermissionProvider = ({ children }) => {
     if (data?.permissions) {
       const slugs = data.permissions.map((p) => p.slug);
       setPermissions(slugs);
-      setLoading(false);
     }
   }, [data]);
 
@@ -28,7 +26,7 @@ export const PermissionProvider = ({ children }) => {
         permissions,
         hasPermission,
         hasAnyPermission,
-        loading: isLoading,
+        loading: isLoading || (!data && permissions.length === 0), // ✅ ঠিক করা
       }}
     >
       {children}

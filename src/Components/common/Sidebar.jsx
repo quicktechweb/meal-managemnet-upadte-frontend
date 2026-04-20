@@ -13,8 +13,9 @@ import {
 } from "lucide-react";
 import { usePermission } from "../../Hooks/usePermission";
 import { SIDEBAR_ITEMS } from "../../data/sidebar";
-import useInstituteAuth from "../../Hooks/useInstituteAuth";
+
 import { useGetWebsiteData } from "../../api/admin/admin.api";
+import useInstituteAuth from "../../Hooks/useInstituteAuth";
 
 const ICON_MAP = {
   LayoutDashboard,
