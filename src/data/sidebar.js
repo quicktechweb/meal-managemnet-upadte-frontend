@@ -17,17 +17,13 @@ export const SIDEBAR_ITEMS = [
     path: "/dashboards/role",
     permission: "roles.view",
   },
-  // {
-  //   label: "Permissions",
-  //   icon: "Key",
-  //   path: "/permissions",
-  //   permission: "permissions.view",
-  // },
+
   {
     label: "Meal Orders",
     icon: "ShoppingCart",
     path: "/dashboards/meal-order",
     permission: "orders.view",
+    excludeRoles: ["user"],
   },
   {
     label: "Services",

@@ -52,7 +52,11 @@ const Sidebar = ({ isOpen, onClose }) => {
 
   const visibleItems = isInstitute
     ? SIDEBAR_ITEMS
-    : SIDEBAR_ITEMS.filter((item) => hasPermission(item.permission));
+    : SIDEBAR_ITEMS.filter((item) => {
+        if (item.excludeRoles?.includes(user?.user?.role)) return false;
+
+        return hasPermission(item.permission);
+      });
 
   return (
     <aside
