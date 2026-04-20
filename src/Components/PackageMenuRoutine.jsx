@@ -30,8 +30,6 @@ const PackageMenuRoutine = () => {
         end: m.end_time,
       })) || [];
 
-    console.log(types);
-
     const weekDays = ["Sat", "Sun", "Mon", "Tue", "Wed", "Thu", "Fri"];
     const sorted = [
       ...weekDays.slice(
@@ -59,6 +57,8 @@ const PackageMenuRoutine = () => {
           items:
             found?.package_item?.map((i) => `${i.title}`).join(", ") || "-",
           package_price: found?.package_price,
+          alternative_items:
+            found?.alternative_items?.map((i) => `${i.title}`) ?? [],
         };
       });
       return row;
@@ -97,7 +97,25 @@ const PackageMenuRoutine = () => {
                     {value?.items || "-"}
                   </span>
                 </div>
-
+                <div className="mt-1">
+                  {value?.alternative_items?.length > 0 ? (
+                    value.alternative_items.map((item, idx) => (
+                      <div
+                        key={idx}
+                        className="flex items-center gap-1 text-sm text-gray-500"
+                      >
+                        <span className="font-semibold text-orange-400">
+                          Alternative items {idx + 1}:
+                        </span>
+                        <span>{item}</span>
+                      </div>
+                    ))
+                  ) : (
+                    <p className="text-sm text-gray-400 italic">
+                      No alternative items added
+                    </p>
+                  )}
+                </div>
                 <h4 className="text-sm font-semibold text-gray-800">
                   Package Price
                 </h4>
