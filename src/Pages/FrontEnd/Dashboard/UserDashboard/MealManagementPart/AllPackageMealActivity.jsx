@@ -49,6 +49,9 @@ export default function AllPackageMealActivity({ allWise }) {
   const [openKey, setOpenKey] = useState(null);
   const [selectedGroupMap, setSelectedGroupMap] = useState({});
   const [useAlternativeMap, setUseAlternativeMap] = useState({});
+
+  console.log(useAlternativeMap);
+
   // ON/OFF toggle — defaultON (true)
   const [mealOnOffMap, setMealOnOffMap] = useState({});
 
@@ -58,6 +61,8 @@ export default function AllPackageMealActivity({ allWise }) {
   };
 
   const handleCheckboxToggle = (key) => {
+    console.log(key, "toggle checkbox");
+
     setUseAlternativeMap((prev) => ({ ...prev, [key]: !prev[key] }));
     setSelectedGroupMap((prev) => ({ ...prev, [key]: undefined }));
     setOpenKey(null);
@@ -140,6 +145,7 @@ export default function AllPackageMealActivity({ allWise }) {
         const key = getKey(meal);
         const isAlternative = !!useAlternativeMap[key];
         const altGroupIndex = selectedGroupMap[key];
+        console.log(altGroupIndex);
 
         return {
           day: meal.day,
@@ -243,6 +249,8 @@ export default function AllPackageMealActivity({ allWise }) {
               const isOn = isMealOn(key);
               const isGuestAdded = !!guestEnabledMap[key];
 
+              console.log(meal);
+
               return (
                 <div
                   key={key}
@@ -254,13 +262,13 @@ export default function AllPackageMealActivity({ allWise }) {
                   >
                     <div className="flex items-center gap-2">
                       <h3 className="font-semibold text-sm lg:text-lg">
-                        {meal?.meal_type}
+                        {meal?.package_title}
                       </h3>
                       <span className="text-xs bg-white/20 px-2 py-0.5 rounded-full">
                         {meal.day}
                       </span>
                       <span className="ml-auto bg-white/20 px-2 py-1 rounded-full text-xs">
-                        ৳0
+                        ৳{meal?.package_price}
                       </span>
 
                       {/* ON/OFF Toggle */}

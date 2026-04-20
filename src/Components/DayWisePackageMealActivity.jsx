@@ -281,7 +281,7 @@ const DayWisePackageMealActivity = () => {
                           {meal.day}
                         </span>
                         <span className="ml-auto bg-white/20 px-2 py-1 rounded-full text-xs">
-                          ৳0
+                          ৳{meal?.package_price}
                         </span>
 
                         {/* ON/OFF Toggle */}

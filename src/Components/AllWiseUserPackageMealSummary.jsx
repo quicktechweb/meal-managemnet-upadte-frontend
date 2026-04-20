@@ -29,8 +29,14 @@ const AllWiseUserPackageMealSummary = ({
           sortedMeals?.forEach((meal) => {
             if (!groupedByDay[meal.day]) groupedByDay[meal?.day] = {};
             const key = getKey(meal);
+
+            console.log(key);
+
             const isAlternative = !!useAlternativeMap[key];
             const altGroupIndex = selectedGroupMap[key];
+
+            console.log(altGroupIndex);
+
             const isGuestAdded = !!guestEnabledMap[key];
             const isGuestAlternative = !!guestUseAlternativeMap[key];
             const guestAltGroupIndex = guestSelectedGroupMap[key];
@@ -135,16 +141,20 @@ const AllWiseUserPackageMealSummary = ({
                                 Items -{" "}
                               </h3>
                               <div className="flex flex-wrap gap-1">
-                                {cell.selected_items?.map((item, i) => (
-                                  <span
-                                    key={i}
-                                    className=" text-xs   rounded-full"
-                                  >
-                                    {item.title}{" "}
-                                    {cell.selected_items?.length - 1 !== i &&
-                                      ", "}
+                                {Array.isArray(cell.selected_items) ? (
+                                  cell?.selected_items?.map((item, i) => (
+                                    <span
+                                      key={i}
+                                      className=" text-xs   rounded-full"
+                                    >
+                                      {item.title}
+                                    </span>
+                                  ))
+                                ) : (
+                                  <span className=" text-xs   rounded-full">
+                                    {cell?.selected_items?.title}
                                   </span>
-                                ))}
+                                )}
                               </div>
                             </div>
 
@@ -159,29 +169,26 @@ const AllWiseUserPackageMealSummary = ({
                                     Items -{" "}
                                   </h3>
                                   <div className="flex flex-wrap gap-1">
-                                    {cell.guest.selected_items?.map(
-                                      (item, i) => (
-                                        <span
-                                          key={i}
-                                          className="text-black font-semibold text-[12px] py-0.5 rounded-full"
-                                        >
-                                          {item.title}
-                                          {cell.guest.selected_items?.length -
-                                            1 !==
-                                            i && ", "}
-                                        </span>
-                                      ),
+                                    {Array.isArray(
+                                      cell?.guest?.selected_items,
+                                    ) ? (
+                                      cell?.guest?.selected_items?.map(
+                                        (item, i) => (
+                                          <span
+                                            key={i}
+                                            className=" text-xs   rounded-full"
+                                          >
+                                            {item.title}
+                                          </span>
+                                        ),
+                                      )
+                                    ) : (
+                                      <span className=" text-xs   rounded-full">
+                                        {cell?.guest?.selected_items?.title}
+                                      </span>
                                     )}
                                   </div>
                                 </div>
-                                {/* {cell.guest.selected_items?.map((item, i) => (
-                                  <span
-                                    key={i}
-                                    className="text-black font-semibold text-[12px] py-0.5 rounded-full"
-                                  >
-                                    {item.title}
-                                  </span>
-                                ))} */}
                               </div>
                             )}
                           </td>
