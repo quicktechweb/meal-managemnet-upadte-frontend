@@ -90,3 +90,19 @@ export const individualUserPermissionFunction = async () => {
   );
   return data?.data;
 };
+
+export const userAllwiseCreateMealFunction = async (payload) => {
+  const { data } = await axiosSecure.post(
+    "/api/create-user-meal-allwise",
+    payload,
+  );
+  return data;
+};
+
+export const userDaywiseCreateMealFunction = async (payload) => {
+  const { data } = await axiosSecure.post(
+    "/api/create-user-meal-daywise",
+    payload,
+  );
+  return data;
+};

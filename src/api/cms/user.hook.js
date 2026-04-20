@@ -16,6 +16,8 @@ import {
   instituteUserRoleChangeFunction,
   locationFunction,
   updateInstituteProfileInfoFunction,
+  userAllwiseCreateMealFunction,
+  userDaywiseCreateMealFunction,
 } from "./user.api";
 import toast from "react-hot-toast";
 import useInstituteAuth from "../../Hooks/useInstituteAuth";
@@ -198,5 +200,39 @@ export const useIndividualUserPermission = () => {
     queryFn: individualUserPermissionFunction,
     retry: false,
     enabled: !!token,
+  });
+};
+
+export const useAllwiseUserCreateMeal = () => {
+  return useMutation({
+    mutationKey: ["user-create-meal"],
+    mutationFn: (payload) => userAllwiseCreateMealFunction(payload),
+    onSuccess: (data) => {
+      console.log(data);
+
+      if (data?.success) {
+        toast.success(data?.message);
+      }
+    },
+    onError: (error) => {
+      toast.error(error?.response?.data?.message || "Something went wrong");
+    },
+  });
+};
+
+export const useDaywiseUserCreateMeal = () => {
+  return useMutation({
+    mutationKey: ["user-create-meal"],
+    mutationFn: (payload) => userDaywiseCreateMealFunction(payload),
+    onSuccess: (data) => {
+      console.log(data);
+
+      if (data?.success) {
+        toast.success(data?.message);
+      }
+    },
+    onError: (error) => {
+      toast.error(error?.response?.data?.message || "Something went wrong");
+    },
   });
 };

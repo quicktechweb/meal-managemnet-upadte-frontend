@@ -36,7 +36,9 @@ const PackageMealActivity = () => {
       {daywiseSelect === "day-wise" && (
         <div className="max-w-7xl flex flex-col xl:flex-row gap-y-4 xl:gap-3">
           <div className="flex flex-col gap-4">
-            {daywiseSelect === "day-wise" && <DayWisePackageMealActivity />}
+            {daywiseSelect === "day-wise" && (
+              <DayWisePackageMealActivity allWise={daywiseSelect} />
+            )}
           </div>
         </div>
       )}

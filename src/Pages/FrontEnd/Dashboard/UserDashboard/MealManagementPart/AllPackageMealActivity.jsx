@@ -1,6 +1,9 @@
 import React, { useState } from "react";
 import useInstituteAuth from "../../../../../Hooks/useInstituteAuth";
-import { useInstituteUserAdminData } from "../../../../../api/cms/user.hook";
+import {
+  useAllwiseUserCreateMeal,
+  useInstituteUserAdminData,
+} from "../../../../../api/cms/user.hook";
 import { FaCalendarAlt, FaCheckCircle } from "react-icons/fa";
 import { ChevronDown, Plus, X } from "lucide-react";
 
@@ -50,8 +53,6 @@ export default function AllPackageMealActivity({ allWise }) {
   const [selectedGroupMap, setSelectedGroupMap] = useState({});
   const [useAlternativeMap, setUseAlternativeMap] = useState({});
 
-  console.log(useAlternativeMap);
-
   // ON/OFF toggle — defaultON (true)
   const [mealOnOffMap, setMealOnOffMap] = useState({});
 
@@ -61,8 +62,6 @@ export default function AllPackageMealActivity({ allWise }) {
   };
 
   const handleCheckboxToggle = (key) => {
-    console.log(key, "toggle checkbox");
-
     setUseAlternativeMap((prev) => ({ ...prev, [key]: !prev[key] }));
     setSelectedGroupMap((prev) => ({ ...prev, [key]: undefined }));
     setOpenKey(null);
@@ -73,13 +72,14 @@ export default function AllPackageMealActivity({ allWise }) {
     setMealOnOffMap((prev) => ({
       ...prev,
 
-      // [key]: prev[key] === false ? true : false,
       [key]: prev[key] !== true,
     }));
   };
 
   // const isMealOn = (key) => mealOnOffMap[key] !== false;
   const isMealOn = (key) => mealOnOffMap[key] === true;
+
+  const { mutateAsync, isPending } = useAllwiseUserCreateMeal();
 
   // Guest Meal State
   const [guestOpenKey, setGuestOpenKey] = useState(null);
@@ -133,50 +133,46 @@ export default function AllPackageMealActivity({ allWise }) {
     }
   };
 
-  const handleUpdate = () => {
+  const handleUpdate = async () => {
     const allSelectedMeals = sortedMeals?.filter((item) =>
       selectedDays.includes(item?.day),
     );
 
     // Regular meals — OFF
-    const finalSelections = allSelectedMeals
-      // ?.filter((meal) => isMealOn(getKey(meal)))
-      ?.map((meal) => {
-        const key = getKey(meal);
-        const isAlternative = !!useAlternativeMap[key];
-        const altGroupIndex = selectedGroupMap[key];
-        console.log(altGroupIndex);
+    const finalSelections = allSelectedMeals?.map((meal) => {
+      const key = getKey(meal);
+      const isAlternative = !!useAlternativeMap[key];
+      const isGuestAlternative = !!guestUseAlternativeMap[key];
+      const altGuestGroupIndex = guestSelectedGroupMap[key];
+      const altGroupIndex = selectedGroupMap[key];
 
-        return {
-          day: meal.day,
-          meal_type: meal.meal_type,
-          is_on: isMealOn(getKey(meal)) ? true : false,
-          selected_items: isAlternative
-            ? (meal?.alternative_items?.[altGroupIndex] ?? [])
-            : (meal?.package_item ?? []),
-          is_alternative: isAlternative,
-        };
-      });
+      const isGuestEnabled = guestEnabledMap[getKey(meal)];
 
-    const finalGuestSelections = allSelectedMeals
-      ?.filter((meal) => guestEnabledMap[getKey(meal)])
-      ?.map((meal) => {
-        const key = getKey(meal);
-        const isAlternative = !!guestUseAlternativeMap[key];
-        const altGroupIndex = guestSelectedGroupMap[key];
+      return {
+        day: meal.day,
+        meal_type: meal.package_title,
+        package_price: meal.package_price,
+        is_on: isMealOn(getKey(meal)) ? true : false,
+        selected_items: isAlternative
+          ? ([meal?.alternative_items?.[altGroupIndex]] ?? [])
+          : (meal?.package_item ?? []),
+        guest_items: isGuestEnabled
+          ? isGuestAlternative
+            ? ([meal?.alternative_items?.[altGuestGroupIndex]] ?? [])
+            : (meal?.package_item ?? [])
+          : [],
+        is_alternative: isAlternative,
+        guest_quantity: guestQuantityMap[key] ? guestEnabledMap[key] : 0,
+      };
+    });
 
-        return {
-          day: meal.day,
-          meal_type: meal.meal_type,
-          selected_items: isAlternative
-            ? (meal?.alternative_items?.[altGroupIndex] ?? [])
-            : (meal?.package_item ?? []),
-          is_alternative: isAlternative,
-          quantity: guestQuantityMap[key] ?? 1,
-        };
-      });
+    const payload = {
+      type: allWise,
+      routine_type: "Package",
+      meals: finalSelections,
+    };
 
-    console.log(finalSelections);
+    await mutateAsync(payload);
   };
 
   return (
@@ -248,8 +244,6 @@ export default function AllPackageMealActivity({ allWise }) {
               const key = getKey(meal);
               const isOn = isMealOn(key);
               const isGuestAdded = !!guestEnabledMap[key];
-
-              console.log(meal);
 
               return (
                 <div
@@ -421,9 +415,10 @@ export default function AllPackageMealActivity({ allWise }) {
           {/* Update Button */}
           <button
             onClick={handleUpdate}
+            disabled={isPending}
             className="w-1/3 mx-auto block bg-gradient-to-r from-orange-400 to-pink-500 text-white py-3 rounded-2xl cursor-pointer"
           >
-            Update
+            {isPending ? "Updating" : "Update"}
           </button>
         </div>
       </div>

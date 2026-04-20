@@ -1,19 +1,23 @@
 import React, { useState } from "react";
 import useInstituteAuth from "../Hooks/useInstituteAuth";
-import { useInstituteUserAdminData } from "../api/cms/user.hook";
+import {
+  useDaywiseUserCreateMeal,
+  useInstituteUserAdminData,
+} from "../api/cms/user.hook";
 import { FaCalendarAlt } from "react-icons/fa";
 import { Plus, X } from "lucide-react";
 
-import DayWiseUserMealSummary from "./DayWiseUserMealSummary";
-import ItemsSelector from "./ItemsSelector";
 import PackageItemSelector from "./PackageItemSelector";
 import DayWiseUserPackageMealSummary from "./DayWiseUserPackageMealSummary";
 
-const DayWisePackageMealActivity = () => {
+const DayWisePackageMealActivity = ({ allWise }) => {
   const { user } = useInstituteAuth();
   const { data } = useInstituteUserAdminData(user?.user?.institute_id);
 
   const routine = data?.packages;
+
+  const { mutateAsync, isPending } = useDaywiseUserCreateMeal();
+
   const weekDays = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
   const sortByToday = (data) => {
@@ -60,8 +64,6 @@ const DayWisePackageMealActivity = () => {
   const selectedMeals = sortedMeals?.filter(
     (item) => item?.day === activeDayView,
   );
-
-  console.log(selectedMeals);
 
   const getKey = (meal) => `${meal.day}-${meal.package_title}`;
 
@@ -143,46 +145,48 @@ const DayWisePackageMealActivity = () => {
     }
   };
 
-  const handleUpdate = () => {
+  const handleUpdate = async () => {
     const allSelectedMeals = sortedMeals?.filter((item) =>
       selectedDays.includes(item?.day),
     );
 
+    // Regular meals — OFF
     const finalSelections = allSelectedMeals
-      ?.filter((meal) => isMealOn(getKey(meal)))
+      // ?.filter((meal) => isMealOn(getKey(meal)))
       ?.map((meal) => {
         const key = getKey(meal);
         const isAlternative = !!useAlternativeMap[key];
+        const isGuestAlternative = !!guestUseAlternativeMap[key];
+        const altGuestGroupIndex = guestSelectedGroupMap[key];
         const altGroupIndex = selectedGroupMap[key];
 
-        return {
-          day: meal.day,
-          meal_type: meal.meal_type,
-          is_on: true,
-          selected_items: isAlternative
-            ? (meal?.alternative_items?.[altGroupIndex] ?? [])
-            : (meal?.package_item ?? []),
-          is_alternative: isAlternative,
-        };
-      });
-
-    const finalGuestSelections = allSelectedMeals
-      ?.filter((meal) => guestEnabledMap[getKey(meal)])
-      ?.map((meal) => {
-        const key = getKey(meal);
-        const isAlternative = !!guestUseAlternativeMap[key];
-        const altGroupIndex = guestSelectedGroupMap[key];
+        const isGuestEnabled = guestEnabledMap[getKey(meal)];
 
         return {
           day: meal.day,
-          meal_type: meal.meal_type,
+          meal_type: meal.package_title,
+
+          is_on: isMealOn(getKey(meal)) ? true : false,
           selected_items: isAlternative
-            ? (meal?.alternative_items?.[altGroupIndex] ?? [])
+            ? ([meal?.alternative_items?.[altGroupIndex]] ?? [])
             : (meal?.package_item ?? []),
+          guest_items: isGuestEnabled
+            ? isGuestAlternative
+              ? ([meal?.alternative_items?.[altGuestGroupIndex]] ?? [])
+              : (meal?.package_item ?? [])
+            : [],
           is_alternative: isAlternative,
-          quantity: guestQuantityMap[key] ?? 1,
+          guest_quantity: guestQuantityMap[key] ?? 1,
         };
       });
+
+    const payload = {
+      type: allWise,
+      routine_type: "Package",
+      meals: finalSelections,
+    };
+
+    await mutateAsync(payload);
   };
 
   // Meal Item Selector
