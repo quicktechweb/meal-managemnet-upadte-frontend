@@ -106,3 +106,9 @@ export const userDaywiseCreateMealFunction = async (payload) => {
   );
   return data;
 };
+
+export const userAllWiseGetMealFunction = async () => {
+  const { data } = await axiosSecure.get("/api/allwise-user-meal-list");
+
+  return data?.data;
+};

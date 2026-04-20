@@ -17,6 +17,7 @@ import {
   locationFunction,
   updateInstituteProfileInfoFunction,
   userAllwiseCreateMealFunction,
+  userAllWiseGetMealFunction,
   userDaywiseCreateMealFunction,
 } from "./user.api";
 import toast from "react-hot-toast";
@@ -234,5 +235,16 @@ export const useDaywiseUserCreateMeal = () => {
     onError: (error) => {
       toast.error(error?.response?.data?.message || "Something went wrong");
     },
+  });
+};
+
+export const useAllwiseGetMealList = () => {
+  const [token] = useLocalStorage("token", null);
+
+  return useQuery({
+    queryKey: ["all-wise-get-meal"],
+    queryFn: userAllWiseGetMealFunction,
+    retry: false,
+    enabled: !!token,
   });
 };

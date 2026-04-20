@@ -1,6 +1,7 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import useInstituteAuth from "../../../../../Hooks/useInstituteAuth";
 import {
+  useAllwiseGetMealList,
   useAllwiseUserCreateMeal,
   useInstituteUserAdminData,
 } from "../../../../../api/cms/user.hook";
@@ -81,6 +82,10 @@ export default function AllPackageMealActivity({ allWise }) {
 
   const { mutateAsync, isPending } = useAllwiseUserCreateMeal();
 
+  const { data: allWiseMealData, isLoading } = useAllwiseGetMealList();
+
+  console.log(allWiseMealData);
+
   // Guest Meal State
   const [guestOpenKey, setGuestOpenKey] = useState(null);
   const [guestSelectedGroupMap, setGuestSelectedGroupMap] = useState({});
@@ -133,6 +138,46 @@ export default function AllPackageMealActivity({ allWise }) {
     }
   };
 
+  useEffect(() => {
+    if (!allWiseMealData?.meals?.length) return;
+
+    const savedDays = [
+      ...new Set(allWiseMealData.meals.map((meal) => meal.day)),
+    ];
+    const newMealOnOffMap = {};
+    const newUseAlternativeMap = {};
+    const newGuestEnabledMap = {};
+    const newGuestQuantityMap = {};
+
+    allWiseMealData.meals.forEach((meal) => {
+      const key = `${meal.day}-${meal.meal_type}`;
+
+      // is_on state
+      newMealOnOffMap[key] = meal.is_on;
+
+      // alternative state
+      newUseAlternativeMap[key] = meal.is_alternative;
+
+      // guest state
+      if (meal.guest_quantity > 0) {
+        newGuestEnabledMap[key] = true;
+        newGuestQuantityMap[key] = meal.guest_quantity;
+      }
+    });
+
+    setMealOnOffMap(newMealOnOffMap);
+    setUseAlternativeMap(newUseAlternativeMap);
+    setGuestEnabledMap(newGuestEnabledMap);
+    setGuestQuantityMap(newGuestQuantityMap);
+
+    // ✅ saved days set করো
+    setSelectedDays(savedDays);
+
+    // ✅ প্রথম saved day টা active করো
+    if (savedDays.length > 0) {
+      setActiveDayView(savedDays[0]);
+    }
+  }, [allWiseMealData]);
   const handleUpdate = async () => {
     const allSelectedMeals = sortedMeals?.filter((item) =>
       selectedDays.includes(item?.day),
