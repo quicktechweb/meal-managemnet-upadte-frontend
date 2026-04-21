@@ -20,14 +20,22 @@ const InstituteAdminMealManagement = () => {
     <>
       {!data && (
         <div>
-          <div className="mb-2">
-            <InstituteMealOnOff />
-          </div>
-
-          {user?.user?.routine_type === "Routine" && <MealAdminScheduleTable />}
+          {user?.user?.routine_type === "Routine" && (
+            <>
+              <div className="mb-2">
+                <InstituteMealOnOff />
+              </div>
+              <MealAdminScheduleTable />
+            </>
+          )}
 
           {user?.user?.routine_type === "Package" && (
-            <InstituteAdminPackageRoutine />
+            <>
+              <div className="mb-2">
+                <InstituteMealOnOff />
+              </div>
+              <InstituteAdminPackageRoutine />
+            </>
           )}
         </div>
       )}

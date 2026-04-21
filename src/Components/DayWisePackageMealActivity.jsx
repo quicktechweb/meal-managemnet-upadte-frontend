@@ -258,6 +258,9 @@ const DayWisePackageMealActivity = ({ allWise }) => {
             <div className="flex flex-col justify-center">
               {getNext7DaysWithDates().map(({ day, date, month }, index) => {
                 const isSelected = selectedDays.includes(day);
+
+                console.log("isSelected", isSelected);
+
                 const isViewing = activeDayView === day;
                 const isToday = index === 0;
 
