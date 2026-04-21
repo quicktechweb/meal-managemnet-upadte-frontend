@@ -168,12 +168,20 @@ const DayWisePackageMealActivity = ({ allWise }) => {
 
           is_on: isMealOn(getKey(meal)) ? true : false,
           selected_items: isAlternative
-            ? ([meal?.alternative_items?.[altGroupIndex]] ?? [])
-            : (meal?.package_item ?? []),
+            ? [meal?.alternative_items?.[altGroupIndex]]
+              ? [meal?.alternative_items?.[altGroupIndex]]
+              : []
+            : meal?.package_item
+              ? meal?.package_item
+              : [],
           guest_items: isGuestEnabled
             ? isGuestAlternative
-              ? ([meal?.alternative_items?.[altGuestGroupIndex]] ?? [])
-              : (meal?.package_item ?? [])
+              ? [meal?.alternative_items?.[altGuestGroupIndex]]
+                ? [meal?.alternative_items?.[altGuestGroupIndex]]
+                : []
+              : meal?.package_item
+                ? meal?.package_item
+                : []
             : [],
           is_alternative: isAlternative,
           guest_quantity: guestQuantityMap[key] ?? 1,

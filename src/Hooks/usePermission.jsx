@@ -9,9 +9,13 @@ export const PermissionProvider = ({ children }) => {
 
   const { data, isLoading } = useIndividualUserPermission();
 
+  console.log(data, "data");
+
+  console.log(permissions, "permissions");
+
   useEffect(() => {
     if (data?.permissions) {
-      const slugs = data.permissions.map((p) => p.slug);
+      const slugs = data?.permissions?.map((p) => p?.slug);
       setPermissions(slugs);
     }
   }, [data]);
@@ -26,7 +30,7 @@ export const PermissionProvider = ({ children }) => {
         permissions,
         hasPermission,
         hasAnyPermission,
-        loading: isLoading || (!data && permissions.length === 0), // ✅ ঠিক করা
+        loading: isLoading,
       }}
     >
       {children}

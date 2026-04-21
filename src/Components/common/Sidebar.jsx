@@ -29,7 +29,7 @@ const ICON_MAP = {
 };
 
 const Sidebar = ({ isOpen, onClose }) => {
-  const { hasPermission, loading, role } = usePermission();
+  const { hasPermission, loading,  } = usePermission();
 
   const { data } = useGetWebsiteData();
 
