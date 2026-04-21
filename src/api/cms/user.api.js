@@ -118,3 +118,9 @@ export const userDayWiseGetMealFunction = async () => {
 
   return data?.data;
 };
+
+export const getMealOnOffFunction = async () => {
+  const { data } = await axiosSecure.get("/api/meal-on-off-time");
+
+  return data;
+};

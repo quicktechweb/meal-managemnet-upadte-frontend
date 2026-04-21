@@ -5,6 +5,7 @@ import {
   createInstituteRoleFunction,
   deleteInstituteRoleFunction,
   getInstituteRoleFunction,
+  getMealOnOffFunction,
   getPermissionFunction,
   individualUserPermissionFunction,
   instituteApprovedUsersFunction,
@@ -240,7 +241,7 @@ export const useDaywiseUserCreateMeal = () => {
 };
 
 export const useAllwiseGetMealList = () => {
-  const [token] = useLocalStorage("token", null);
+  const { token } = useInstituteAuth();
 
   return useQuery({
     queryKey: ["all-wise-get-meal"],
@@ -251,10 +252,21 @@ export const useAllwiseGetMealList = () => {
 };
 
 export const useDaywiseGetMealList = () => {
-  const [token] = useLocalStorage("token", null);
+  const { token } = useInstituteAuth();
   return useQuery({
     queryKey: ["day-wise-get-meal"],
     queryFn: userDayWiseGetMealFunction,
+    retry: false,
+    enabled: !!token,
+  });
+};
+
+export const useGetMealOnOff = () => {
+  const { token } = useInstituteAuth();
+
+  return useQuery({
+    queryKey: ["meal-on-off-time"],
+    queryFn: getMealOnOffFunction,
     retry: false,
     enabled: !!token,
   });

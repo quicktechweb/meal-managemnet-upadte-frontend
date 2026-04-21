@@ -209,12 +209,12 @@ const DayWisePackageMealActivity = ({ allWise }) => {
 
         const isGuestEnabled = guestEnabledMap[getKey(meal)];
 
-        console.log(isGuestEnabled);
-
         return {
           day: meal.day,
           meal_type: meal.package_title,
           is_on: isMealOn(getKey(meal)),
+          start_time: meal.start_time,
+          end_time: meal.end_time,
           selected_items: isAlternative
             ? ([meal?.alternative_items?.[altGroupIndex]] ?? [])
             : (meal?.package_item ?? []),

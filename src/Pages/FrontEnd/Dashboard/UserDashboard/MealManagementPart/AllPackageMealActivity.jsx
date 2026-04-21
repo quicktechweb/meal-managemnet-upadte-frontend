@@ -84,7 +84,7 @@ export default function AllPackageMealActivity({ allWise }) {
 
   const { data: allWiseMealData, isLoading } = useAllwiseGetMealList();
 
-  console.log(allWiseMealData);
+
 
   // Guest Meal State
   const [guestOpenKey, setGuestOpenKey] = useState(null);
@@ -198,6 +198,8 @@ export default function AllPackageMealActivity({ allWise }) {
         meal_type: meal.package_title,
         package_price: meal.package_price,
         is_on: isMealOn(getKey(meal)) ? true : false,
+        start_time: meal?.start_time,
+        end_time: meal?.end_time,
         selected_items: isAlternative
           ? ([meal?.alternative_items?.[altGroupIndex]] ?? [])
           : (meal?.package_item ?? []),
