@@ -220,6 +220,7 @@ const DayWisePackageMealActivity = ({ allWise }) => {
               {getNext7DaysWithDates().map(({ day, date, month }, index) => {
                 const isSelected = selectedDays.includes(day);
                 const isViewing = activeDayView === day;
+                const isToday = index === 0;
 
                 return (
                   <div
@@ -232,26 +233,53 @@ const DayWisePackageMealActivity = ({ allWise }) => {
                           : [...prev, day],
                       );
                     }}
-                    className={`flex items-center justify-between border-b border-gray-100 py-2 px-3 rounded-md cursor-pointer transition-colors ${
-                      isViewing
-                        ? "bg-orange-500 text-white"
-                        : isSelected
-                          ? "bg-orange-100 text-orange-600"
-                          : "hover:bg-orange-50 text-gray-700"
-                    }`}
+                    className={`
+        flex items-center justify-between py-2 px-3 rounded-lg cursor-pointer
+        transition-all duration-200 border
+        ${
+          isViewing
+            ? "bg-orange-500 text-white border-orange-500 shadow-md scale-[1.02]"
+            : isSelected
+              ? "bg-orange-100 text-orange-700 border-orange-300 font-semibold"
+              : "hover:bg-gray-50 text-gray-600 border-transparent"
+        }
+      `}
                   >
-                    <span className="font-medium">{day}</span>
-                    {/* Date */}
-                    <span
-                      className={`text-xs ${
-                        isViewing ? "text-white/80" : "text-gray-400"
-                      }`}
-                    >
-                      {date} {month}
-                    </span>
-                    {isSelected && !isViewing && (
-                      <span className="w-2 h-2 rounded-full bg-orange-400 ml-1" />
-                    )}
+                    {/* Left: Day + Today badge */}
+                    <div className="flex items-center gap-1.5">
+                      <span className="font-semibold text-sm w-7">{day}</span>
+                      {isToday && (
+                        <span
+                          className={`text-[10px] px-1.5 py-0.5 rounded-full font-bold
+              ${isViewing ? "bg-white/25 text-white" : "bg-orange-200 text-orange-600"}
+            `}
+                        >
+                          Today
+                        </span>
+                      )}
+                    </div>
+
+                    {/* Right: Date + Checkmark */}
+                    <div className="flex items-center gap-1.5">
+                      <span
+                        className={`text-xs ${isViewing ? "text-white/80" : "text-gray-400"}`}
+                      >
+                        {date} {month}
+                      </span>
+
+                      {/* Selected checkmark — clearly visible */}
+                      {isSelected ? (
+                        <span
+                          className={`w-4 h-4 rounded-full flex items-center justify-center text-[10px] font-bold flex-shrink-0
+              ${isViewing ? "bg-white text-orange-500" : "bg-orange-400 text-white"}
+            `}
+                        >
+                          ✓
+                        </span>
+                      ) : (
+                        <span className="w-4 h-4 rounded-full border border-gray-300 flex-shrink-0" />
+                      )}
+                    </div>
                   </div>
                 );
               })}

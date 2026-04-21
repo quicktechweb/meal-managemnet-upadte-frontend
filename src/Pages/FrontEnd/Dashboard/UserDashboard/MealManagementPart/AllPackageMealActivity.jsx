@@ -240,31 +240,56 @@ export default function AllPackageMealActivity({ allWise }) {
             {getNext7Days().map((plan, index) => {
               const isSelected = selectedDays.includes(plan);
               const isViewing = activeDayView === plan;
+              const isToday = index === 0;
 
               return (
                 <div
                   key={index}
                   onClick={() => {
                     setActiveDayView(plan);
-
                     setSelectedDays((prev) =>
                       prev.includes(plan)
                         ? prev.filter((d) => d !== plan)
                         : [...prev, plan],
                     );
                   }}
-                  className={`flex items-center justify-between border-b border-gray-100 py-2 px-3 rounded-md cursor-pointer transition-colors ${
+                  className={`flex items-center justify-between border-b border-gray-100 py-2 px-3 rounded-md cursor-pointer transition-all duration-200 border ${
                     isViewing
-                      ? "bg-orange-500 text-white"
+                      ? "bg-orange-500 text-white border-orange-500 shadow-md scale-[1.02]"
                       : isSelected
-                        ? "bg-orange-100 text-orange-600"
-                        : "hover:bg-orange-50 text-gray-700"
+                        ? "bg-orange-100 text-orange-700 border-orange-300 font-semibold"
+                        : "hover:bg-orange-50 text-gray-700 border-transparent"
                   }`}
                 >
-                  <span>{plan}</span>
+                  {/* Left: Day + Today badge */}
+                  <div className="flex items-center gap-1.5">
+                    <span className="font-semibold text-sm w-7">{plan}</span>
+                    {isToday && (
+                      <span
+                        className={`text-[10px] px-1.5 py-0.5 rounded-full font-bold ${
+                          isViewing
+                            ? "bg-white/25 text-white"
+                            : "bg-orange-200 text-orange-600"
+                        }`}
+                      >
+                        Today
+                      </span>
+                    )}
+                  </div>
 
-                  {isSelected && !isViewing && (
-                    <span className="w-2 h-2 rounded-full bg-orange-400" />
+                  {/* Right: Checkmark */}
+                  {isSelected ? (
+                    <span
+                      className={`w-4 h-4 rounded-full flex items-center justify-center text-[10px] font-bold flex-shrink-0 ${
+                        isViewing
+                          ? "bg-white text-orange-500"
+                          : "bg-orange-400 text-white"
+                      }`}
+                    >
+                      ✓
+                    </span>
+                  ) : (
+                    <span className="w-4 h-4 rounded-full border border-gray-300 flex-shrink-0" />
                   )}
                 </div>
               );
