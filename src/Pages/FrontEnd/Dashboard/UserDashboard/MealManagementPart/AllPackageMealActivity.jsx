@@ -3,6 +3,7 @@ import useInstituteAuth from "../../../../../Hooks/useInstituteAuth";
 import {
   useAllwiseGetMealList,
   useAllwiseUserCreateMeal,
+  useGetMealOnOffTime,
   useInstituteUserAdminData,
 } from "../../../../../api/cms/user.hook";
 import { FaCalendarAlt, FaCheckCircle } from "react-icons/fa";
@@ -16,7 +17,7 @@ export const getKey = (meal) => `${meal?.day}-${meal?.package_title}`;
 export default function AllPackageMealActivity({ allWise }) {
   const { user } = useInstituteAuth();
   const { data } = useInstituteUserAdminData(user?.user?.institute_id);
-
+  const { data: mealOnOffTime } = useGetMealOnOffTime();
   const routine = data?.packages;
   const weekDays = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
@@ -83,8 +84,6 @@ export default function AllPackageMealActivity({ allWise }) {
   const { mutateAsync, isPending } = useAllwiseUserCreateMeal();
 
   const { data: allWiseMealData, isLoading } = useAllwiseGetMealList();
-
-
 
   // Guest Meal State
   const [guestOpenKey, setGuestOpenKey] = useState(null);
@@ -308,6 +307,13 @@ export default function AllPackageMealActivity({ allWise }) {
             <p className="text-sm text-gray-500 mt-1">
               Select your preferred meals for the selected date(s)
             </p>
+            <h6 className="bg-yellow-100 mt-2 text-yellow-800 px-3 py-2 rounded-md font-medium inline-block">
+              ⏰ Meals can be turned on or off up to{" "}
+              <span className="font-bold">
+                {mealOnOffTime?.meal_on_off_time} hours
+              </span>{" "}
+              before the start time.
+            </h6>
           </div>
 
           {/* Regular Meal Cards */}

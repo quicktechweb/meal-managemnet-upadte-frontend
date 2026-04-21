@@ -261,7 +261,7 @@ export const useDaywiseGetMealList = () => {
   });
 };
 
-export const useGetMealOnOff = () => {
+export const useGetMealOnOffTime = () => {
   const { token } = useInstituteAuth();
 
   return useQuery({
