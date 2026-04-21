@@ -20,7 +20,9 @@ const InstituteAdminMealManagement = () => {
     <>
       {!data && (
         <div>
-          {/* <InstituteMealOnOff /> */}
+          <div className="mb-2">
+            <InstituteMealOnOff />
+          </div>
 
           {user?.user?.routine_type === "Routine" && <MealAdminScheduleTable />}
 

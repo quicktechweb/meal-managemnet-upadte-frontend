@@ -2,8 +2,10 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   approvedInstituteUserFunction,
   assignRolePermissionFunction,
+  createInstituteMealOnOffTimeFunction,
   createInstituteRoleFunction,
   deleteInstituteRoleFunction,
+  getInstituteMealOnOffFunction,
   getInstituteRoleFunction,
   getMealOnOffFunction,
   getPermissionFunction,
@@ -269,5 +271,30 @@ export const useGetMealOnOffTime = () => {
     queryFn: getMealOnOffFunction,
     retry: false,
     enabled: !!token,
+  });
+};
+
+export const useGetInstituteMealOnOffTime = () => {
+  const { token } = useInstituteAuth();
+  return useQuery({
+    queryKey: ["meal-on-off-time"],
+    queryFn: getInstituteMealOnOffFunction,
+    retry: false,
+    enabled: !!token,
+  });
+};
+
+export const useInstituteMealOnOffTime = () => {
+  return useMutation({
+    mutationKey: ["institute-meal-onoff-time"],
+    mutationFn: (payload) => createInstituteMealOnOffTimeFunction(payload),
+    onSuccess: (data) => {
+      if (data?.success) {
+        toast.success(data?.message);
+      }
+    },
+    onError: (error) => {
+      toast.error(error?.response?.data?.message || "Something went wrong");
+    },
   });
 };
