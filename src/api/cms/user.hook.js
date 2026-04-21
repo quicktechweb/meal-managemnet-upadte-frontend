@@ -195,10 +195,10 @@ export const useInstituteUserDelete = () => {
 };
 
 export const useIndividualUserPermission = () => {
-  const [token] = useLocalStorage("token", null);
+  const { token } = useInstituteAuth();
 
   return useQuery({
-    queryKey: ["individual-user-permission"],
+    queryKey: ["individual-user-permission", token],
     queryFn: individualUserPermissionFunction,
     retry: false,
     enabled: !!token,

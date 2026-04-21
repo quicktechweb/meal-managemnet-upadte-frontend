@@ -7,6 +7,7 @@ import { TiTick } from "react-icons/ti";
 import { useInstituteLogin } from "../../../api/auth/auth.hook";
 import { useForm } from "react-hook-form";
 import { useGetWebsiteData } from "../../../api/admin/admin.api";
+import toast from "react-hot-toast";
 
 const Login = () => {
   const { data: siteData } = useGetWebsiteData();

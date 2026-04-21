@@ -9,6 +9,7 @@ import MenuTable from "../../../../Components/MenuTable";
 import PackageMenuRoutine from "../../../../Components/PackageMenuRoutine";
 import MealActivity from "../../../../Components/MealActivity";
 import PackageMealActivity from "../../Dashboard/UserDashboard/MealManagementPart/PackageMealActivity";
+import InstituteMealOnOff from "../../../../Components/InstituteMealOnOff";
 
 const InstituteAdminMealManagement = () => {
   const { user } = useInstituteAuth();
@@ -19,6 +20,8 @@ const InstituteAdminMealManagement = () => {
     <>
       {!data && (
         <div>
+          {/* <InstituteMealOnOff /> */}
+
           {user?.user?.routine_type === "Routine" && <MealAdminScheduleTable />}
 
           {user?.user?.routine_type === "Package" && (
