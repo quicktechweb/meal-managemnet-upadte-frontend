@@ -19,6 +19,7 @@ import {
   userAllwiseCreateMealFunction,
   userAllWiseGetMealFunction,
   userDaywiseCreateMealFunction,
+  userDayWiseGetMealFunction,
 } from "./user.api";
 import toast from "react-hot-toast";
 import useInstituteAuth from "../../Hooks/useInstituteAuth";
@@ -244,6 +245,16 @@ export const useAllwiseGetMealList = () => {
   return useQuery({
     queryKey: ["all-wise-get-meal"],
     queryFn: userAllWiseGetMealFunction,
+    retry: false,
+    enabled: !!token,
+  });
+};
+
+export const useDaywiseGetMealList = () => {
+  const [token] = useLocalStorage("token", null);
+  return useQuery({
+    queryKey: ["day-wise-get-meal"],
+    queryFn: userDayWiseGetMealFunction,
     retry: false,
     enabled: !!token,
   });

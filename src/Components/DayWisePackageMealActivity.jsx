@@ -1,6 +1,7 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import useInstituteAuth from "../Hooks/useInstituteAuth";
 import {
+  useDaywiseGetMealList,
   useDaywiseUserCreateMeal,
   useInstituteUserAdminData,
 } from "../api/cms/user.hook";
@@ -17,6 +18,10 @@ const DayWisePackageMealActivity = ({ allWise }) => {
   const routine = data?.packages;
 
   const { mutateAsync, isPending } = useDaywiseUserCreateMeal();
+
+  const { data: daywiseMealData, isLoading } = useDaywiseGetMealList();
+
+  console.log(daywiseMealData);
 
   const weekDays = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
@@ -145,6 +150,48 @@ const DayWisePackageMealActivity = ({ allWise }) => {
     }
   };
 
+  useEffect(() => {
+    if (!daywiseMealData?.meals?.length) return;
+
+    const savedDays = [
+      ...new Set(daywiseMealData?.meals.map((meal) => meal.day)),
+    ];
+
+    const newMealOnOffMap = {};
+    const newUseAlternativeMap = {};
+    const newGuestEnabledMap = {};
+    const newGuestQuantityMap = {};
+
+    daywiseMealData.meals.forEach((meal) => {
+      const key = `${meal.day}-${meal.meal_type}`;
+
+      // is_on state
+      newMealOnOffMap[key] = meal.is_on;
+
+      // alternative state
+      newUseAlternativeMap[key] = meal.is_alternative;
+
+      // guest state
+      if (meal.guest_quantity > 0) {
+        newGuestEnabledMap[key] = true;
+        newGuestQuantityMap[key] = meal.guest_quantity;
+      }
+    });
+
+    setMealOnOffMap(newMealOnOffMap);
+    setUseAlternativeMap(newUseAlternativeMap);
+    setGuestEnabledMap(newGuestEnabledMap);
+    setGuestQuantityMap(newGuestQuantityMap);
+
+    //  saved days set করো
+    setSelectedDays(savedDays);
+
+    //  প্রথম saved day টা active করো
+    if (savedDays.length > 0) {
+      setActiveDayView(savedDays[0]);
+    }
+  }, [daywiseMealData]);
+
   const handleUpdate = async () => {
     const allSelectedMeals = sortedMeals?.filter((item) =>
       selectedDays.includes(item?.day),
@@ -162,29 +209,23 @@ const DayWisePackageMealActivity = ({ allWise }) => {
 
         const isGuestEnabled = guestEnabledMap[getKey(meal)];
 
+        console.log(isGuestEnabled);
+
         return {
           day: meal.day,
           meal_type: meal.package_title,
-
-          is_on: isMealOn(getKey(meal)) ? true : false,
+          is_on: isMealOn(getKey(meal)),
           selected_items: isAlternative
-            ? [meal?.alternative_items?.[altGroupIndex]]
-              ? [meal?.alternative_items?.[altGroupIndex]]
-              : []
-            : meal?.package_item
-              ? meal?.package_item
-              : [],
+            ? ([meal?.alternative_items?.[altGroupIndex]] ?? [])
+            : (meal?.package_item ?? []),
           guest_items: isGuestEnabled
             ? isGuestAlternative
-              ? [meal?.alternative_items?.[altGuestGroupIndex]]
-                ? [meal?.alternative_items?.[altGuestGroupIndex]]
-                : []
-              : meal?.package_item
-                ? meal?.package_item
-                : []
+              ? ([meal?.alternative_items?.[altGuestGroupIndex]] ?? [])
+              : (meal?.package_item ?? [])
             : [],
           is_alternative: isAlternative,
-          guest_quantity: guestQuantityMap[key] ?? 1,
+
+          guest_quantity: isGuestEnabled ? (guestQuantityMap[key] ?? 1) : 0,
         };
       });
 
@@ -477,9 +518,10 @@ const DayWisePackageMealActivity = ({ allWise }) => {
             {/* Update Button */}
             <button
               onClick={handleUpdate}
+              disabled={isPending}
               className="w-1/3 mx-auto block bg-gradient-to-r from-orange-400 to-pink-500 text-white py-3 rounded-2xl cursor-pointer"
             >
-              Update
+              {isPending ? "Updating.." : "Update"}
             </button>
           </div>
         </div>

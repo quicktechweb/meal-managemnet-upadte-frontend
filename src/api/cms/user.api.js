@@ -112,3 +112,9 @@ export const userAllWiseGetMealFunction = async () => {
 
   return data?.data;
 };
+
+export const userDayWiseGetMealFunction = async () => {
+  const { data } = await axiosSecure.get("/api/daywise-user-meal-list");
+
+  return data?.data;
+};
