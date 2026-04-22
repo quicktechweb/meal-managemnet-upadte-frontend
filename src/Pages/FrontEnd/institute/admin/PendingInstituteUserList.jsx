@@ -2,6 +2,8 @@ import React from "react";
 import { Link } from "react-router-dom";
 
 const PendingInstituteUserList = ({ users }) => {
+  console.log(users);
+
   return (
     <div className=" bg-white min-h-screen">
       <h2 className="text-2xl font-bold mb-6 text-gray-800 border-l-4 border-blue-600 pl-3">
@@ -12,10 +14,14 @@ const PendingInstituteUserList = ({ users }) => {
         <table className="min-w-full leading-normal">
           <thead>
             <tr className="bg-gray-100 text-gray-600 uppercase text-sm leading-normal">
+              <th className="py-3 px-6 text-left">s/n</th>
               <th className="py-3 px-6 text-left">Institute User Full Name</th>
+              <th className="py-3 px-6 text-left">Room Number</th>
               <th className="py-3 px-6 text-left">Email</th>
               <th className="py-3 px-6 text-left">Phone</th>
+
               {/* <th className="py-3 px-6 text-center">Institute Name</th> */}
+
               <th className="py-3 px-6 text-center">Status</th>
               <th className="py-3 px-6 text-center">Action</th>
             </tr>
@@ -26,12 +32,19 @@ const PendingInstituteUserList = ({ users }) => {
                 key={user._id}
                 className="border-b border-gray-200 hover:bg-gray-50 transition"
               >
+                <td className="py-3 px-6 text-left whitespace-nowrap font-semibold">
+                  {user?.uid}
+                </td>
                 <td className="py-3 px-6 text-left whitespace-nowrap">
                   <div className="font-medium text-gray-800">
                     {user.information.full_name}
                   </div>
-                  <div className="text-xs text-gray-500">
-                    {user.information.district}, {user.information.division}
+                </td>
+                <td className="py-3 px-6 text-left whitespace-nowrap">
+                  <div className="font-medium text-gray-800">
+                    {user.information.room_number
+                      ? user.information.room_number
+                      : "N/A"}
                   </div>
                 </td>
                 <td className="py-3 px-6 text-left">
