@@ -87,6 +87,9 @@ const DayWisePackageMealActivity = ({ allWise }) => {
   //  Default OFF (undefined/false = OFF)
   const [mealOnOffMap, setMealOnOffMap] = useState({});
 
+  // is_attendance
+  const [mealAttandence, setMealAttandence] = useState({});
+
   const handleSelect = (key, groupIndex) => {
     setSelectedGroupMap((prev) => ({ ...prev, [key]: groupIndex }));
     setOpenKey(null);
@@ -108,7 +111,7 @@ const DayWisePackageMealActivity = ({ allWise }) => {
 
   //  Default OFF — undefined/false
   const isMealOn = (key) => mealOnOffMap[key] === true;
-
+  const isMealAttendence = (key) => mealAttandence[key] === true;
   // Guest Meal State
   const [guestOpenKey, setGuestOpenKey] = useState(null);
   const [guestSelectedGroupMap, setGuestSelectedGroupMap] = useState({});
@@ -169,7 +172,7 @@ const DayWisePackageMealActivity = ({ allWise }) => {
     const newUseAlternativeMap = {};
     const newGuestEnabledMap = {};
     const newGuestQuantityMap = {};
-
+    const newMealAttendanceMap = {};
     daywiseMealData.meals.forEach((meal) => {
       const key = `${meal.day}-${meal.meal_type}`;
 
@@ -190,6 +193,7 @@ const DayWisePackageMealActivity = ({ allWise }) => {
     setUseAlternativeMap(newUseAlternativeMap);
     setGuestEnabledMap(newGuestEnabledMap);
     setGuestQuantityMap(newGuestQuantityMap);
+    setMealAttandence(newMealAttendanceMap);
 
     //  saved days set করো
     setSelectedDays(savedDays);
@@ -362,7 +366,7 @@ const DayWisePackageMealActivity = ({ allWise }) => {
                 const key = getKey(meal);
                 const isOn = isMealOn(key);
                 const isGuestAdded = !!guestEnabledMap[key];
-
+                const isMealAttendences = isMealAttendence(key);
                 return (
                   <div
                     key={key}
@@ -401,7 +405,23 @@ const DayWisePackageMealActivity = ({ allWise }) => {
                         <p>{meal?.start_time}</p>-<p>{meal?.end_time}</p>
                       </div>
                     </div>
-
+                    <div className="flex flex-col items-end gap-0.5">
+                      <h6 className="text-black font-semibold text-xs">
+                        Attendance Status
+                      </h6>
+                      <button
+                        disabled
+                        className={`relative w-12 h-6 rounded-full transition-colors flex-shrink-0 ${
+                          isMealAttendences ? "bg-green-400" : "bg-gray-400"
+                        }`}
+                      >
+                        <span
+                          className={`absolute top-0.5 w-5 h-5 bg-white rounded-full shadow transition-all duration-300 ${
+                            isMealAttendences ? "left-6" : "left-0.5"
+                          }`}
+                        />
+                      </button>
+                    </div>
                     {/* OFF overlay */}
                     <div
                       className={`mt-2 ${!isOn ? "opacity-40 pointer-events-none" : ""}`}

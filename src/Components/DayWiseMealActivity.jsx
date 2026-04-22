@@ -13,7 +13,15 @@ const DayWiseMealActivity = () => {
 
   const routine = data?.routine;
 
-  const weekDays = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+  const weekDays = [
+    "Sunday",
+    "Monday",
+    "Tuesday",
+    "Wednesday",
+    "Thursday",
+    "Friday",
+    "Saturday",
+  ];
 
   const sortByToday = (data) => {
     const today = new Date().getDay();
@@ -90,7 +98,8 @@ const DayWiseMealActivity = () => {
 
   //  Default OFF — undefined/false মানে OFF
   const isMealOn = (key) => mealOnOffMap[key] === true;
-
+  // is_attendance
+  const [mealAttandence, setMealAttandence] = useState({});
   // Guest Meal State
   const [guestOpenKey, setGuestOpenKey] = useState(null);
   const [guestSelectedGroupMap, setGuestSelectedGroupMap] = useState({});
@@ -183,7 +192,7 @@ const DayWiseMealActivity = () => {
   };
 
   // Meal Item Selector
-
+  const isMealAttendence = (key) => mealAttandence[key] === true;
   return (
     <>
       <div className="space-y-4">
@@ -250,7 +259,7 @@ const DayWiseMealActivity = () => {
                 Choose Your Meals
               </h1>
               <p className="text-sm text-gray-500 mt-1">
-                Select your preferred meals for the selected date(s)
+                Select your preferred meals for the selected date (s)
               </p>
             </div>
 
@@ -262,6 +271,7 @@ const DayWiseMealActivity = () => {
 
                     const key = getKey(meal);
                     const isOn = isMealOn(key);
+                    const isMealAttendences = isMealAttendence(key);
                     const isGuestAdded = !!guestEnabledMap[key];
 
                     return (
