@@ -28,17 +28,41 @@ const MenuTable = () => {
         end: m.end_time,
       })) || [];
 
-    const weekDays = ["Sat", "Sun", "Mon", "Tue", "Wed", "Thu", "Fri"];
+    const weekDays = [
+      "Sunday",
+      "Monday",
+      "Tuesday",
+      "Wednesday",
+      "Thursday",
+      "Friday",
+      "Saturday",
+    ];
     const sorted = [
       ...weekDays.slice(
         weekDays.indexOf(
-          ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri"][new Date().getDay()],
+          [
+            "Sunday",
+            "Monday",
+            "Tuesday",
+            "Wednesday",
+            "Thursday",
+            "Friday",
+            "Saturday",
+          ][new Date().getDay()],
         ),
       ),
       ...weekDays.slice(
         0,
         weekDays.indexOf(
-          ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri"][new Date().getDay()],
+          [
+            "Sunday",
+            "Monday",
+            "Tuesday",
+            "Wednesday",
+            "Thursday",
+            "Friday",
+            "Saturday",
+          ][new Date().getDay()],
         ),
       ),
     ];

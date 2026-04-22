@@ -13,7 +13,15 @@ export default function AllMealActivity({ allWise }) {
   const { data } = useInstituteUserAdminData(user?.user?.institute_id);
 
   const routine = data?.routine;
-  const weekDays = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+  const weekDays = [
+    "Sunday",
+    "Monday",
+    "Tuesday",
+    "Wednesday",
+    "Thursday",
+    "Friday",
+    "Saturday",
+  ];
 
   const sortByToday = (data) => {
     const today = new Date().getDay();

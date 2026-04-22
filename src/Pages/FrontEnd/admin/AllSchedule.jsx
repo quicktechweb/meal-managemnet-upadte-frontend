@@ -9,7 +9,7 @@ import { Coffee, Sun, Moon, Plus, UtensilsCrossed } from "lucide-react";
 import { FiEdit } from "react-icons/fi";
 import { MdDelete } from "react-icons/md";
 
-const dayOrder = ["Sat", "Sun", "Mon", "Tue", "Wed", "Thu", "Fri"];
+const dayOrder = ["Saturday", "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday"];
 
 const AllSchedule = () => {
   const { data, isLoading } = useScheduleAdminData();

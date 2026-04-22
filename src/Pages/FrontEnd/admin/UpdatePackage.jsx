@@ -13,7 +13,7 @@ import Select from "react-select";
 import { components } from "react-select";
 import toast from "react-hot-toast";
 
-const dayNames = ["Sat", "Sun", "Mon", "Tue", "Wed", "Thu", "Fri"];
+const dayNames = ["Saturday", "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday"];
 
 const CustomOption = (props) => (
   <div

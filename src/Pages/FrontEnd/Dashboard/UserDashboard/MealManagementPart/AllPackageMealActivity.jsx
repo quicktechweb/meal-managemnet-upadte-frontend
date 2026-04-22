@@ -19,7 +19,15 @@ export default function AllPackageMealActivity({ allWise }) {
   const { data } = useInstituteUserAdminData(user?.user?.institute_id);
   const { data: mealOnOffTime } = useGetMealOnOffTime();
   const routine = data?.packages;
-  const weekDays = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+  const weekDays = [
+    "Sunday",
+    "Monday",
+    "Tuesday",
+    "Wednesday",
+    "Thursday",
+    "Friday",
+    "Saturday",
+  ];
 
   const sortByToday = (data) => {
     const today = new Date().getDay();
@@ -32,19 +40,30 @@ export default function AllPackageMealActivity({ allWise }) {
 
   const sortedMeals = sortByToday(routine?.package_routine);
 
+  console.log(sortedMeals);
+
   const getNext7Days = () => {
     const days = [];
     const today = new Date();
+
     for (let i = 0; i < 7; i++) {
-      const d = new Date(today);
-      d.setDate(today.getDate() + i);
-      days.push(weekDays[d.getDay()]);
+      const currentDate = new Date(today);
+      currentDate.setDate(today.getDate() + i);
+      days.push(weekDays[currentDate.getDay()]);
     }
+
     return days;
   };
 
+  console.log(getNext7Days());
+
   const [selectedDays, setSelectedDays] = useState([getNext7Days()[0]]);
+
+  console.log(selectedDays);
+
   const [activeDayView, setActiveDayView] = useState(getNext7Days()[0]);
+
+  console.log(activeDayView);
 
   const selectedMeals = sortedMeals?.filter(
     (item) => item?.day === activeDayView,
@@ -84,6 +103,8 @@ export default function AllPackageMealActivity({ allWise }) {
   const { mutateAsync, isPending } = useAllwiseUserCreateMeal();
 
   const { data: allWiseMealData, isLoading } = useAllwiseGetMealList();
+
+  console.log(allWiseMealData);
 
   // Guest Meal State
   const [guestOpenKey, setGuestOpenKey] = useState(null);
@@ -264,7 +285,7 @@ export default function AllPackageMealActivity({ allWise }) {
                 >
                   {/* Left: Day + Today badge */}
                   <div className="flex items-center gap-1.5">
-                    <span className="font-semibold text-sm w-7">{plan}</span>
+                    <span className="font-semibold text-sm w-auto">{plan}</span>
                     {isToday && (
                       <span
                         className={`text-[10px] px-1.5 py-0.5 rounded-full font-bold ${

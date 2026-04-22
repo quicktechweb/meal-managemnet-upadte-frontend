@@ -15,7 +15,15 @@ const InstituteAdminPackageRoutine = () => {
 
   const [packageMealRoutine, setPackageMealRoutine] = useState([]);
   const [packageTypes, setPackageTypes] = useState([]);
-  const days = ["Sat", "Sun", "Mon", "Tue", "Wed", "Thu", "Fri"];
+  const days = [
+    "Saturday",
+    "Sunday",
+    "Monday",
+    "Tuesday",
+    "Wednesday",
+    "Thursday",
+    "Friday",
+  ];
 
   const { data: packages = [], isLoading } = useAllPackage();
 

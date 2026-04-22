@@ -13,7 +13,7 @@ const MealScheduleTable = ({
   setScheduleList,
 }) => {
   const { data: items = [] } = useGetItems();
-  const days = ["Sat", "Sun", "Mon", "Tue", "Wed", "Thu", "Fri"];
+  const days = ["Saturday", "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday"];
 
   // States
 

@@ -8,7 +8,15 @@ import { components } from "react-select";
 import { useAddPackage, useGetItems } from "../../api/admin/admin.api";
 import toast from "react-hot-toast";
 
-const dayNames = ["Sat", "Sun", "Mon", "Tue", "Wed", "Thu", "Fri"];
+const dayNames = [
+  "Saturday",
+  "Sunday",
+  "Monday",
+  "Tuesday",
+  "Wednesday",
+  "Thursday",
+  "Friday",
+];
 
 const CustomOption = (props) => (
   <div
@@ -105,6 +113,8 @@ const AddPackage = () => {
     }
   };
   const onSubmit = async (data) => {
+    console.log(data);
+
     const payload = {
       day: data.day,
       package_title: data.title,

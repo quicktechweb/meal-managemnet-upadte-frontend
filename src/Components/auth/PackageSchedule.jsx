@@ -8,9 +8,19 @@ const PackageSchedule = ({
   setPackageTypes,
   packageTypes,
 }) => {
-  const days = ["Sat", "Sun", "Mon", "Tue", "Wed", "Thu", "Fri"];
+  const days = [
+    "Saturday",
+    "Sunday",
+    "Monday",
+    "Tuesday",
+    "Wednesday",
+    "Thursday",
+    "Friday",
+  ];
 
   const { data: packages = [], isLoading } = useAllPackage();
+
+  console.log(packages);
 
   const [openDropdown, setOpenDropdown] = useState(null);
   const [alternativeChecked, setAlternativeChecked] = useState({});

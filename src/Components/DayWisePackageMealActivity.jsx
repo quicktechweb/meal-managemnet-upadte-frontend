@@ -23,7 +23,15 @@ const DayWisePackageMealActivity = ({ allWise }) => {
 
   const { data: daywiseMealData, isLoading } = useDaywiseGetMealList();
 
-  const weekDays = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+  const weekDays = [
+    "Sunday",
+    "Monday",
+    "Tuesday",
+    "Wednesday",
+    "Thursday",
+    "Friday",
+    "Saturday",
+  ];
 
   const sortByToday = (data) => {
     const today = new Date().getDay();
@@ -289,7 +297,9 @@ const DayWisePackageMealActivity = ({ allWise }) => {
                   >
                     {/* Left: Day + Today badge */}
                     <div className="flex items-center gap-1.5">
-                      <span className="font-semibold text-sm w-7">{day}</span>
+                      <span className="font-semibold text-sm w-auto">
+                        {day}
+                      </span>
                       {isToday && (
                         <span
                           className={`text-[10px] px-1.5 py-0.5 rounded-full font-bold
