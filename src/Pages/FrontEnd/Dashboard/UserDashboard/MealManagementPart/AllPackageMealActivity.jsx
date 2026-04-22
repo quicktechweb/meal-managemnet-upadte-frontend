@@ -77,6 +77,9 @@ export default function AllPackageMealActivity({ allWise }) {
   // ON/OFF toggle — defaultON (true)
   const [mealOnOffMap, setMealOnOffMap] = useState({});
 
+  // is_attendance
+  const [mealAttandence, setMealAttandence] = useState({});
+
   const handleSelect = (key, groupIndex) => {
     setSelectedGroupMap((prev) => ({ ...prev, [key]: groupIndex }));
     setOpenKey(null);
@@ -100,17 +103,18 @@ export default function AllPackageMealActivity({ allWise }) {
   // const isMealOn = (key) => mealOnOffMap[key] !== false;
   const isMealOn = (key) => mealOnOffMap[key] === true;
 
+  const isMealAttendence = (key) => mealAttandence[key] === true;
+
   const { mutateAsync, isPending } = useAllwiseUserCreateMeal();
 
   const { data: allWiseMealData, isLoading } = useAllwiseGetMealList();
-
-  console.log(allWiseMealData);
 
   // Guest Meal State
   const [guestOpenKey, setGuestOpenKey] = useState(null);
   const [guestSelectedGroupMap, setGuestSelectedGroupMap] = useState({});
   const [guestUseAlternativeMap, setGuestUseAlternativeMap] = useState({});
   const [guestQuantityMap, setGuestQuantityMap] = useState({});
+
   //  which meal a add guest
   const [guestEnabledMap, setGuestEnabledMap] = useState({});
 
@@ -168,12 +172,16 @@ export default function AllPackageMealActivity({ allWise }) {
     const newUseAlternativeMap = {};
     const newGuestEnabledMap = {};
     const newGuestQuantityMap = {};
+    const newMealAttendanceMap = {};
 
     allWiseMealData.meals.forEach((meal) => {
       const key = `${meal.day}-${meal.meal_type}`;
 
       // is_on state
       newMealOnOffMap[key] = meal.is_on;
+
+      // attendance state
+      newMealAttendanceMap[key] = meal.is_attendance;
 
       // alternative state
       newUseAlternativeMap[key] = meal.is_alternative;
@@ -189,6 +197,7 @@ export default function AllPackageMealActivity({ allWise }) {
     setUseAlternativeMap(newUseAlternativeMap);
     setGuestEnabledMap(newGuestEnabledMap);
     setGuestQuantityMap(newGuestQuantityMap);
+    setMealAttandence(newMealAttendanceMap);
 
     // ✅ saved days set করো
     setSelectedDays(savedDays);
@@ -342,6 +351,7 @@ export default function AllPackageMealActivity({ allWise }) {
             {selectedMeals?.map((meal) => {
               const key = getKey(meal);
               const isOn = isMealOn(key);
+              const isMealAttendences = isMealAttendence(key);
               const isGuestAdded = !!guestEnabledMap[key];
 
               return (
@@ -378,11 +388,29 @@ export default function AllPackageMealActivity({ allWise }) {
                         />
                       </button>
                     </div>
+
                     <div className="flex font-semibold justify-center mt-1">
                       <p>{meal?.start_time}</p>-<p>{meal?.end_time}</p>
                     </div>
                   </div>
 
+                  <div className="flex flex-col items-end gap-0.5">
+                    <h6 className="text-black font-semibold text-xs">
+                      Attendance Status
+                    </h6>
+                    <button
+                      disabled
+                      className={`relative w-12 h-6 rounded-full transition-colors flex-shrink-0 ${
+                        isMealAttendences ? "bg-green-400" : "bg-gray-400"
+                      }`}
+                    >
+                      <span
+                        className={`absolute top-0.5 w-5 h-5 bg-white rounded-full shadow transition-all duration-300 ${
+                          isMealAttendences ? "left-6" : "left-0.5"
+                        }`}
+                      />
+                    </button>
+                  </div>
                   {/* OFF overlay */}
                   <div
                     className={`mt-2 ${!isOn ? "opacity-40 pointer-events-none" : ""}`}
