@@ -7,6 +7,7 @@ import {
   deleteInstituteRoleFunction,
   getInstituteMealOnOffFunction,
   getInstituteRoleFunction,
+  getInstituteUserMealOrderListsFunction,
   getMealOnOffFunction,
   getPermissionFunction,
   individualUserPermissionFunction,
@@ -226,6 +227,7 @@ export const useAllwiseUserCreateMeal = () => {
 };
 
 export const useDaywiseUserCreateMeal = () => {
+  const query = useQueryClient();
   return useMutation({
     mutationKey: ["user-create-meal"],
     mutationFn: (payload) => userDaywiseCreateMealFunction(payload),
@@ -234,6 +236,7 @@ export const useDaywiseUserCreateMeal = () => {
 
       if (data?.success) {
         toast.success(data?.message);
+        query.invalidateQueries(["institute-user-meal-lists"]);
       }
     },
     onError: (error) => {
@@ -296,5 +299,15 @@ export const useInstituteMealOnOffTime = () => {
     onError: (error) => {
       toast.error(error?.response?.data?.message || "Something went wrong");
     },
+  });
+};
+
+export const useAllwiseInstituteUserOrderLists = () => {
+  const { token } = useInstituteAuth();
+  return useQuery({
+    queryKey: ["institute-user-meal-lists"],
+    queryFn: getInstituteUserMealOrderListsFunction,
+    retry: false,
+    enabled: !!token,
   });
 };

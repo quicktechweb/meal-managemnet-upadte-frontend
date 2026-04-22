@@ -125,13 +125,19 @@ export const getMealOnOffFunction = async () => {
 };
 
 export const getInstituteMealOnOffFunction = async () => {
-  const { data } = await axiosSecure.get(
-    "/api/institute-meal-on-off-time",
-  );
+  const { data } = await axiosSecure.get("/api/institute-meal-on-off-time");
   return data?.data;
 };
 
 export const createInstituteMealOnOffTimeFunction = async (payload) => {
   const { data } = await axiosSecure.post("/api/meal-on-off-time", payload);
   return data;
+};
+
+export const getInstituteUserMealOrderListsFunction = async () => {
+  const { data } = await axiosSecure.get(
+    "/api/allwise-institute-user-meal-order",
+  );
+
+  return data?.data;
 };
