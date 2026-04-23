@@ -184,3 +184,8 @@ export const getInstituteUserMealOrderListsFunction = async () => {
 
   return data?.data;
 };
+
+export const addBalanceFunction = async (payload) => {
+  const { data } = await axiosSecure.post("/api/add-balance", payload);
+  return data;
+};

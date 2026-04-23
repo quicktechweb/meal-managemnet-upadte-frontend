@@ -1,5 +1,9 @@
 import React, { useState } from "react";
-import { useApprovedInstituteUsers } from "../../api/cms/user.hook";
+import { useForm } from "react-hook-form";
+import {
+  useAddBalance,
+  useApprovedInstituteUsers,
+} from "../../api/cms/user.hook";
 
 const avatarColors = [
   "bg-violet-100 text-violet-700",
@@ -17,12 +21,27 @@ const getInitials = (fullName = "") => {
 
 const AddBalance = () => {
   const { data: instituteUsers } = useApprovedInstituteUsers();
+  const { mutateAsync, isPending } = useAddBalance();
 
   const [selectedUser, setSelectedUser] = useState(null);
-  const [amount, setAmount] = useState("");
-  const [note, setNote] = useState("");
-  const [success, setSuccess] = useState(false);
   const [search, setSearch] = useState("");
+  const [success, setSuccess] = useState(false);
+
+  const {
+    register,
+    handleSubmit,
+    setValue,
+    watch,
+    reset,
+    formState: { errors, isSubmitting },
+  } = useForm({
+    defaultValues: {
+      amount: "",
+      note: "",
+    },
+  });
+
+  const amountValue = watch("amount");
 
   const filteredUsers = (instituteUsers ?? []).filter(
     (u) =>
@@ -30,16 +49,20 @@ const AddBalance = () => {
       u.email?.toLowerCase().includes(search.toLowerCase()) ||
       String(u.uid).includes(search),
   );
+  console.log(selectedUser?._id);
+  const onSubmit = async (data) => {
+    if (!selectedUser) return;
+    console.log(data);
 
-  const handleSubmit = () => {
-    if (!selectedUser || !amount || isNaN(amount) || Number(amount) <= 0)
-      return;
-    // TODO: call your API here to add balance
-    // e.g. addBalanceMutation({ userId: selectedUser._id, amount: Number(amount), note })
-    setSuccess(true);
-    setAmount("");
-    setNote("");
-    setTimeout(() => setSuccess(false), 3000);
+    try {
+      await mutateAsync({ user: selectedUser?._id, ...data });
+
+      setSuccess(true);
+      reset();
+      setTimeout(() => setSuccess(false), 3000);
+    } catch (error) {
+      console.error("Add balance failed:", error);
+    }
   };
 
   return (
@@ -77,7 +100,6 @@ const AddBalance = () => {
                   Loading users...
                 </li>
               )}
-
               {instituteUsers && filteredUsers.length === 0 && (
                 <li className="px-5 py-8 text-center text-sm text-slate-400">
                   No users found
@@ -94,8 +116,7 @@ const AddBalance = () => {
                     onClick={() => {
                       setSelectedUser(user);
                       setSuccess(false);
-                      setAmount("");
-                      setNote("");
+                      reset();
                     }}
                     className={`flex items-center gap-4 px-5 py-4 cursor-pointer transition-all duration-150 ${
                       isSelected
@@ -103,7 +124,6 @@ const AddBalance = () => {
                         : "hover:bg-slate-50 border-l-4 border-transparent"
                     }`}
                   >
-                    {/* Avatar */}
                     <div
                       className={`w-10 h-10 rounded-full flex items-center justify-center text-sm font-semibold flex-shrink-0 ${
                         avatarColors[i % avatarColors.length]
@@ -112,7 +132,6 @@ const AddBalance = () => {
                       {getInitials(fullName)}
                     </div>
 
-                    {/* Info */}
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-2">
                         <p className="text-sm font-medium text-slate-800 truncate capitalize">
@@ -127,7 +146,6 @@ const AddBalance = () => {
                       </p>
                     </div>
 
-                    {/* Room */}
                     <div className="text-right flex-shrink-0">
                       {user.information?.room_number ? (
                         <>
@@ -178,7 +196,6 @@ const AddBalance = () => {
                   </div>
                 </div>
 
-                {/* Detail rows */}
                 <div className="rounded-xl bg-slate-50 border border-slate-100 divide-y divide-slate-100">
                   {[
                     ["Phone", selectedUser.phone],
@@ -230,7 +247,7 @@ const AddBalance = () => {
               </div>
             )}
 
-            {/* Add Balance Form */}
+            {/* ── Add Balance Form ── */}
             <div
               className={`bg-white rounded-2xl border border-slate-200 shadow-sm p-5 transition-opacity duration-300 ${
                 selectedUser ? "opacity-100" : "opacity-50 pointer-events-none"
@@ -240,77 +257,173 @@ const AddBalance = () => {
                 Add Balance
               </p>
 
-              <div className="mb-4">
-                <label className="block text-xs font-medium text-slate-600 mb-1.5">
-                  Amount (৳)
-                </label>
-                <div className="relative">
-                  <span className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-sm font-medium">
-                    ৳
-                  </span>
-                  <input
-                    type="number"
-                    min="0"
-                    placeholder="0.00"
-                    value={amount}
-                    onChange={(e) => setAmount(e.target.value)}
-                    className="w-full pl-8 pr-4 py-2.5 text-sm border border-slate-200 rounded-lg bg-slate-50 text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-violet-400 focus:border-transparent transition"
-                  />
-                </div>
-              </div>
-
-              {/* Quick preset chips */}
-              <div className="flex gap-2 flex-wrap mb-4">
-                {[500, 1000, 5000, 10000].map((preset) => (
-                  <button
-                    key={preset}
-                    onClick={() => setAmount(String(preset))}
-                    className="text-xs px-3 py-1.5 rounded-full border border-slate-200 text-slate-600 hover:bg-violet-50 hover:border-violet-300 hover:text-violet-700 transition"
-                  >
-                    +৳{preset.toLocaleString()}
-                  </button>
-                ))}
-              </div>
-
-              <div className="mb-5">
-                <label className="block text-xs font-medium text-slate-600 mb-1.5">
-                  Note (optional)
-                </label>
-                <textarea
-                  rows={2}
-                  placeholder="Reason for adding balance..."
-                  value={note}
-                  onChange={(e) => setNote(e.target.value)}
-                  className="w-full px-3 py-2.5 text-sm border border-slate-200 rounded-lg bg-slate-50 text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-violet-400 focus:border-transparent transition resize-none"
-                />
-              </div>
-
-              {success && (
-                <div className="mb-4 flex items-center gap-2 bg-green-50 border border-green-200 text-green-700 text-sm px-4 py-2.5 rounded-lg">
-                  <svg
-                    className="w-4 h-4 flex-shrink-0"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M5 13l4 4L19 7"
+              <form onSubmit={handleSubmit(onSubmit)} noValidate>
+                {/* Amount */}
+                <div className="mb-4">
+                  <label className="block text-xs font-medium text-slate-600 mb-1.5">
+                    Amount (৳)
+                  </label>
+                  <div className="relative">
+                    <span className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-sm font-medium">
+                      ৳
+                    </span>
+                    <input
+                      type="number"
+                      placeholder="0.00"
+                      {...register("amount", {
+                        required: "Amount is required",
+                        min: { value: 1, message: "Minimum amount is ৳1" },
+                        validate: (v) =>
+                          !isNaN(Number(v)) || "Enter a valid number",
+                      })}
+                      className={`w-full pl-8 pr-4 py-2.5 text-sm border rounded-lg bg-slate-50 text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-violet-400 focus:border-transparent transition ${
+                        errors.amount
+                          ? "border-red-300 bg-red-50"
+                          : "border-slate-200"
+                      }`}
                     />
-                  </svg>
-                  Balance added successfully!
+                  </div>
+                  {errors.amount && (
+                    <p className="mt-1 text-xs text-red-500 flex items-center gap-1">
+                      <svg
+                        className="w-3 h-3"
+                        fill="currentColor"
+                        viewBox="0 0 20 20"
+                      >
+                        <path
+                          fillRule="evenodd"
+                          d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z"
+                          clipRule="evenodd"
+                        />
+                      </svg>
+                      {errors.amount.message}
+                    </p>
+                  )}
                 </div>
-              )}
 
-              <button
-                onClick={handleSubmit}
-                disabled={!amount || isNaN(amount) || Number(amount) <= 0}
-                className="w-full py-2.5 rounded-xl bg-violet-600 text-white text-sm font-semibold hover:bg-violet-700 active:scale-95 transition-all disabled:opacity-40 disabled:cursor-not-allowed"
-              >
-                Add Balance
-              </button>
+                {/* Quick preset chips */}
+                <div className="flex gap-2 flex-wrap mb-4">
+                  {[500, 1000, 5000, 10000].map((preset) => (
+                    <button
+                      type="button"
+                      key={preset}
+                      onClick={() =>
+                        setValue("amount", String(preset), {
+                          shouldValidate: true,
+                        })
+                      }
+                      className={`text-xs px-3 py-1.5 rounded-full border transition ${
+                        Number(amountValue) === preset
+                          ? "bg-violet-100 border-violet-400 text-violet-700"
+                          : "border-slate-200 text-slate-600 hover:bg-violet-50 hover:border-violet-300 hover:text-violet-700"
+                      }`}
+                    >
+                      +৳{preset.toLocaleString()}
+                    </button>
+                  ))}
+                </div>
+
+                {/* Note */}
+                <div className="mb-5">
+                  <label className="block text-xs font-medium text-slate-600 mb-1.5">
+                    Note{" "}
+                    <span className="text-slate-400 font-normal">
+                      (optional)
+                    </span>
+                  </label>
+                  <textarea
+                    rows={2}
+                    placeholder="Reason for adding balance..."
+                    {...register("note", {
+                      maxLength: {
+                        value: 200,
+                        message: "Note cannot exceed 200 characters",
+                      },
+                    })}
+                    className={`w-full px-3 py-2.5 text-sm border rounded-lg bg-slate-50 text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-violet-400 focus:border-transparent transition resize-none ${
+                      errors.note
+                        ? "border-red-300 bg-red-50"
+                        : "border-slate-200"
+                    }`}
+                  />
+                  <div className="flex justify-between mt-1">
+                    {errors.note ? (
+                      <p className="text-xs text-red-500 flex items-center gap-1">
+                        <svg
+                          className="w-3 h-3"
+                          fill="currentColor"
+                          viewBox="0 0 20 20"
+                        >
+                          <path
+                            fillRule="evenodd"
+                            d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z"
+                            clipRule="evenodd"
+                          />
+                        </svg>
+                        {errors.note.message}
+                      </p>
+                    ) : (
+                      <span />
+                    )}
+                    <p className="text-xs text-slate-400">
+                      {watch("note")?.length ?? 0}/200
+                    </p>
+                  </div>
+                </div>
+
+                {/* Success */}
+                {success && (
+                  <div className="mb-4 flex items-center gap-2 bg-green-50 border border-green-200 text-green-700 text-sm px-4 py-2.5 rounded-lg">
+                    <svg
+                      className="w-4 h-4 flex-shrink-0"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M5 13l4 4L19 7"
+                      />
+                    </svg>
+                    Balance added successfully!
+                  </div>
+                )}
+
+                <button
+                  type="submit"
+                  disabled={isSubmitting || !selectedUser}
+                  className="w-full py-2.5 rounded-xl bg-violet-600 text-white text-sm font-semibold hover:bg-violet-700 active:scale-95 transition-all disabled:opacity-40 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                >
+                  {isSubmitting ? (
+                    <>
+                      <svg
+                        className="w-4 h-4 animate-spin"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                      >
+                        <circle
+                          className="opacity-25"
+                          cx="12"
+                          cy="12"
+                          r="10"
+                          stroke="currentColor"
+                          strokeWidth="4"
+                        />
+                        <path
+                          className="opacity-75"
+                          fill="currentColor"
+                          d="M4 12a8 8 0 018-8v8H4z"
+                        />
+                      </svg>
+                      Processing...
+                    </>
+                  ) : (
+                    "Add Balance"
+                  )}
+                </button>
+              </form>
             </div>
           </div>
         </div>

@@ -1,5 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
+  addBalanceFunction,
   approvedInstituteUserFunction,
   assignRolePermissionFunction,
   createInstituteMealOnOffTimeFunction,
@@ -382,5 +383,20 @@ export const useAllwiseInstituteUserOrderLists = () => {
     queryFn: getInstituteUserMealOrderListsFunction,
     retry: false,
     enabled: !!token,
+  });
+};
+
+export const useAddBalance = () => {
+  return useMutation({
+    mutationKey: ["add-balance"],
+    mutationFn: (payload) => addBalanceFunction(payload),
+    onSuccess: (data) => {
+      if (data?.success) {
+        toast.success(data?.message);
+      }
+    },
+    onError: (error) => {
+      toast.error(error?.response?.data?.message || "Something went wrong");
+    },
   });
 };

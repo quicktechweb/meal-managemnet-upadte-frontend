@@ -1,11 +1,26 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Outlet } from "react-router-dom";
 import Sidebar from "../Components/common/Sidebar";
 import { Bell, Search, Menu } from "lucide-react";
+import useInstituteAuth from "../Hooks/useInstituteAuth";
+import { motion, AnimatePresence } from "framer-motion";
 
 const DashboardLayout = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [showBalance, setShowBalance] = useState(false);
 
+  const { user } = useInstituteAuth();
+
+  console.log(user);
+
+  useEffect(() => {
+    if (showBalance) {
+      const timer = setTimeout(() => {
+        setShowBalance(false);
+      }, 4000);
+      return () => clearTimeout(timer);
+    }
+  }, [showBalance]);
   return (
     <div className="flex h-screen overflow-hidden">
       {/* ── Mobile backdrop overlay ── */}
@@ -39,9 +54,67 @@ const DashboardLayout = () => {
             </button>
 
             {/* Avatar */}
-            <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-blue-400 to-blue-600 flex items-center justify-center cursor-pointer shrink-0">
+            {/* <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-blue-400 to-blue-600 flex items-center justify-center cursor-pointer shrink-0">
               <span className="text-white text-sm font-semibold">U</span>
-            </div>
+            </div> */}
+            {user?.user?.role === "user" && (
+              <div className="flex flex-col">
+                <h4 className="text-[15px] font-bold text-gray-800 leading-tight">
+                  {user?.user?.information?.full_name}
+                </h4>
+
+                {/* Animated Balance Pill */}
+                <div
+                  onClick={() => setShowBalance(!showBalance)}
+                  className="relative mt-1 cursor-pointer overflow-hidden bg-white border border-pink-100 rounded-full flex items-center px-2"
+                >
+                  {/* The Currency Symbol (Static) */}
+                  <span className="text-orange-600 font-bold text-xs mr-2 z-10">
+                    ৳
+                  </span>
+
+                  <AnimatePresence mode="wait">
+                    {showBalance ? (
+                      <motion.span
+                        key="balance"
+                        initial={{ opacity: 0, x: 20 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        exit={{ opacity: 0, x: -20 }}
+                        transition={{ duration: 0.3, ease: "easeOut" }}
+                        className="text-sm font-bold text-orange-600"
+                      >
+                        {user?.user?.balance}
+                      </motion.span>
+                    ) : (
+                      <motion.span
+                        key="tap"
+                        initial={{ opacity: 0, x: 20 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        exit={{ opacity: 0, x: -20 }}
+                        transition={{ duration: 0.3, ease: "easeOut" }}
+                        className="text-[11px] font-medium text-orange-600 whitespace-nowrap"
+                      >
+                        Tap for balance
+                      </motion.span>
+                    )}
+                  </AnimatePresence>
+
+                  {!showBalance && (
+                    <motion.div
+                      initial={{ x: "-100%" }}
+                      animate={{ x: "200%" }}
+                      transition={{
+                        repeat: Infinity,
+                        duration: 1.5,
+                        repeatDelay: 1,
+                        ease: "linear",
+                      }}
+                      className="absolute inset-0 w-1/2 bg-gradient-to-r from-transparent via-white/60 to-transparent skew-x-[-20deg]"
+                    />
+                  )}
+                </div>
+              </div>
+            )}
           </div>
         </header>
 
