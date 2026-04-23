@@ -26,6 +26,7 @@ import {
   userAllWiseRoutineGetMealFunction,
   userDaywiseCreateMealFunction,
   userDayWiseGetMealFunction,
+  userDayWiseRoutineGetMealFunction,
 } from "./user.api";
 import toast from "react-hot-toast";
 import useInstituteAuth from "../../Hooks/useInstituteAuth";
@@ -247,6 +248,8 @@ export const useAllwiseRoutineUserCreateMeal = () => {
   });
 };
 
+// daywise user package meal create order
+
 export const useDaywiseUserCreateMeal = () => {
   const query = useQueryClient();
   return useMutation({
@@ -266,6 +269,29 @@ export const useDaywiseUserCreateMeal = () => {
   });
 };
 
+//daywise user routine meal create order
+
+export const useDaywiseRoutineUserCreateMeal = () => {
+  const query = useQueryClient();
+  return useMutation({
+    mutationKey: ["user-create-meal"],
+    mutationFn: (payload) => userDaywiseCreateMealFunction(payload),
+    onSuccess: (data) => {
+      console.log(data);
+
+      if (data?.success) {
+        toast.success(data?.message);
+        query.invalidateQueries(["institute-user-meal-lists"]);
+      }
+    },
+    onError: (error) => {
+      toast.error(error?.response?.data?.message || "Something went wrong");
+    },
+  });
+};
+
+// /create-user-routine-meal-daywise
+
 // all wise get meal list for user package system
 
 export const useAllwiseGetMealList = () => {
@@ -278,6 +304,8 @@ export const useAllwiseGetMealList = () => {
     enabled: !!token,
   });
 };
+
+// userDayWiseRoutineGetMealFunction;
 
 export const useAllwiseRoutineGetMealList = () => {
   const { token } = useInstituteAuth();
@@ -295,6 +323,17 @@ export const useDaywiseGetMealList = () => {
   return useQuery({
     queryKey: ["day-wise-get-meal"],
     queryFn: userDayWiseGetMealFunction,
+    retry: false,
+    enabled: !!token,
+  });
+};
+
+export const useDaywiseRoutineGetMealList = () => {
+  const { token } = useInstituteAuth();
+
+  return useQuery({
+    queryKey: ["all-wise-routine-get-meal"],
+    queryFn: userDayWiseRoutineGetMealFunction,
     retry: false,
     enabled: !!token,
   });

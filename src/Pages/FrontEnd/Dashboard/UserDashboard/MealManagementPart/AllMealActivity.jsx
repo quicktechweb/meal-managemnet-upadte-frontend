@@ -10,7 +10,7 @@ import { ChevronDown, Plus, X } from "lucide-react";
 import UserMealSummary from "../../../../../Components/UserMealSummary";
 import ItemsSelector from "../../../../../Components/ItemsSelector";
 
-const getKey = (meal) => `${meal?.day}-${meal?.meal_type}`;
+export const getKey = (meal) => `${meal?.day}-${meal?.meal_type}`;
 
 export default function AllMealActivity({ allWise }) {
   const { user } = useInstituteAuth();

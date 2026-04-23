@@ -111,9 +111,21 @@ export const userAllwiseRoutineCreateMealFunction = async (payload) => {
   return data;
 };
 
+// daywise user package meal order
+
 export const userDaywiseCreateMealFunction = async (payload) => {
   const { data } = await axiosSecure.post(
     "/api/create-user-meal-daywise",
+    payload,
+  );
+  return data;
+};
+
+//day wise user routine meal order
+
+export const userDaywiseRoutineCreateMealFunction = async (payload) => {
+  const { data } = await axiosSecure.post(
+    "/api/create-user-routine-meal-daywise",
     payload,
   );
   return data;
@@ -135,8 +147,19 @@ export const userAllWiseRoutineGetMealFunction = async () => {
   return data?.data;
 };
 
+// day wise get user package meal order list
 export const userDayWiseGetMealFunction = async () => {
   const { data } = await axiosSecure.get("/api/daywise-user-meal-list");
+
+  return data?.data;
+};
+
+// day wise get user routine meal order list
+
+export const userDayWiseRoutineGetMealFunction = async () => {
+  const { data } = await axiosSecure.get(
+    "/api//daywise-user-routine-meal-list",
+  );
 
   return data?.data;
 };
