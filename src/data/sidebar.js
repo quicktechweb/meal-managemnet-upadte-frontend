@@ -43,4 +43,10 @@ export const SIDEBAR_ITEMS = [
     path: "/dashboards/profile",
     permission: "profile.view",
   },
+  {
+    label: "Balance",
+    icon: "Wallet",
+    path: "/dashboards/balance",
+    parmission: "balance.view",
+  },
 ];

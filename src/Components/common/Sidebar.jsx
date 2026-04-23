@@ -10,6 +10,7 @@ import {
   Calendar,
   Settings,
   X,
+  Wallet,
 } from "lucide-react";
 import { usePermission } from "../../Hooks/usePermission";
 import { SIDEBAR_ITEMS } from "../../data/sidebar";
@@ -26,10 +27,11 @@ const ICON_MAP = {
   Wrench,
   Calendar,
   Settings,
+  Wallet,
 };
 
 const Sidebar = ({ isOpen, onClose }) => {
-  const { hasPermission, loading,  } = usePermission();
+  const { hasPermission, loading } = usePermission();
 
   const { data } = useGetWebsiteData();
 

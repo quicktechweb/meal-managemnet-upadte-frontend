@@ -101,6 +101,8 @@ import MealOrderPage from "../Pages/dashboard/MealOrderPage";
 import ServicePage from "../Pages/dashboard/ServicePage";
 import RoutinePage from "../Pages/dashboard/RoutinePage";
 import SettingsPage from "../Pages/dashboard/SettingsPage";
+import BalancePage from "../Pages/dashboard/BalancePage";
+import AddBalance from "../Pages/dashboard/AddBalance";
 
 const router = createBrowserRouter([
   {
@@ -540,6 +542,14 @@ const router = createBrowserRouter([
       {
         path: "/dashboards/profile",
         element: <InstituteAdminProfile />,
+      },
+      {
+        path: "/dashboards/balance",
+        element: <BalancePage />,
+      },
+      {
+        path: "/dashboards/add-balance",
+        element: <AddBalance />,
       },
     ],
   },
