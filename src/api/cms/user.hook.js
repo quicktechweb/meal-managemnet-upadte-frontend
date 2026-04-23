@@ -23,6 +23,7 @@ import {
   userAllwiseCreateMealFunction,
   userAllWiseGetMealFunction,
   userAllwiseRoutineCreateMealFunction,
+  userAllWiseRoutineGetMealFunction,
   userDaywiseCreateMealFunction,
   userDayWiseGetMealFunction,
 } from "./user.api";
@@ -236,8 +237,6 @@ export const useAllwiseRoutineUserCreateMeal = () => {
     mutationKey: ["user-create-meal-routine"],
     mutationFn: (payload) => userAllwiseRoutineCreateMealFunction(payload),
     onSuccess: (data) => {
-      console.log(data);
-
       if (data?.success) {
         toast.success(data?.message);
       }
@@ -267,12 +266,25 @@ export const useDaywiseUserCreateMeal = () => {
   });
 };
 
+// all wise get meal list for user package system
+
 export const useAllwiseGetMealList = () => {
   const { token } = useInstituteAuth();
 
   return useQuery({
     queryKey: ["all-wise-get-meal"],
     queryFn: userAllWiseGetMealFunction,
+    retry: false,
+    enabled: !!token,
+  });
+};
+
+export const useAllwiseRoutineGetMealList = () => {
+  const { token } = useInstituteAuth();
+
+  return useQuery({
+    queryKey: ["all-wise-get-meal"],
+    queryFn: userAllWiseRoutineGetMealFunction,
     retry: false,
     enabled: !!token,
   });

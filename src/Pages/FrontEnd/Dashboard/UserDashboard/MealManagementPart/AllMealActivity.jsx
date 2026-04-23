@@ -1,6 +1,7 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import useInstituteAuth from "../../../../../Hooks/useInstituteAuth";
 import {
+  useAllwiseRoutineGetMealList,
   useAllwiseRoutineUserCreateMeal,
   useInstituteUserAdminData,
 } from "../../../../../api/cms/user.hook";
@@ -9,13 +10,14 @@ import { ChevronDown, Plus, X } from "lucide-react";
 import UserMealSummary from "../../../../../Components/UserMealSummary";
 import ItemsSelector from "../../../../../Components/ItemsSelector";
 
-export const getKey = (meal) => `${meal?.day}-${meal?.package_title}`;
+const getKey = (meal) => `${meal?.day}-${meal?.meal_type}`;
 
 export default function AllMealActivity({ allWise }) {
   const { user } = useInstituteAuth();
   const { data } = useInstituteUserAdminData(user?.user?.institute_id);
 
   const { mutateAsync, isPending } = useAllwiseRoutineUserCreateMeal();
+  const { data: allwiseRoutineMealData } = useAllwiseRoutineGetMealList();
 
   const routine = data?.routine;
   const weekDays = [
@@ -64,6 +66,9 @@ export default function AllMealActivity({ allWise }) {
   // ON/OFF toggle — defaultON (true)
   const [mealOnOffMap, setMealOnOffMap] = useState({});
 
+  // is_attendance
+  const [mealAttandence, setMealAttandence] = useState({});
+
   const handleSelect = (key, groupIndex) => {
     setSelectedGroupMap((prev) => ({ ...prev, [key]: groupIndex }));
     setOpenKey(null);
@@ -85,6 +90,8 @@ export default function AllMealActivity({ allWise }) {
   };
 
   const isMealOn = (key) => mealOnOffMap[key] === true;
+
+  const isMealAttendence = (key) => mealAttandence[key] === true;
 
   // Guest Meal State
   const [guestOpenKey, setGuestOpenKey] = useState(null);
@@ -137,6 +144,56 @@ export default function AllMealActivity({ allWise }) {
         return "bg-gradient-to-r from-blue-400 to-orange-500";
     }
   };
+
+  useEffect(() => {
+    if (!allwiseRoutineMealData?.meals?.length) return;
+
+    const savedDays = [
+      ...new Set(allwiseRoutineMealData.meals.map((meal) => meal.day)),
+    ];
+    const newMealOnOffMap = {};
+    const newUseAlternativeMap = {};
+    const newGuestEnabledMap = {};
+    const newGuestQuantityMap = {};
+    const newMealAttendanceMap = {};
+
+    allwiseRoutineMealData.meals.forEach((meal) => {
+      console.log(meal);
+
+      const key = `${meal.day}-${meal.meal_type}`;
+
+      console.log(key);
+
+      // is_on state
+      newMealOnOffMap[key] = meal.is_on;
+
+      // attendance state
+      newMealAttendanceMap[key] = meal.is_attendance;
+
+      // alternative state
+      newUseAlternativeMap[key] = meal.is_alternative;
+
+      // guest state
+      if (meal.guest_quantity > 0) {
+        newGuestEnabledMap[key] = true;
+        newGuestQuantityMap[key] = meal.guest_quantity;
+      }
+    });
+
+    setMealOnOffMap(newMealOnOffMap);
+    setUseAlternativeMap(newUseAlternativeMap);
+    setGuestEnabledMap(newGuestEnabledMap);
+    setGuestQuantityMap(newGuestQuantityMap);
+    setMealAttandence(newMealAttendanceMap);
+
+    // ✅ saved days set করো
+    setSelectedDays(savedDays);
+
+    // ✅ প্রথম saved day টা active করো
+    if (savedDays.length > 0) {
+      setActiveDayView(savedDays[0]);
+    }
+  }, [allwiseRoutineMealData]);
 
   const handleUpdate = async () => {
     const allSelectedMeals = sortedMeals?.filter((item) =>
@@ -278,7 +335,7 @@ export default function AllMealActivity({ allWise }) {
                   const key = getKey(meal);
                   const isOn = isMealOn(key);
                   const isGuestAdded = !!guestEnabledMap[key];
-
+                  const isMealAttendences = isMealAttendence(key);
                   return (
                     <div
                       key={key}
@@ -318,6 +375,23 @@ export default function AllMealActivity({ allWise }) {
                         </div>
                       </div>
 
+                      <div className="flex flex-col items-end gap-0.5">
+                        <h6 className="text-black font-semibold text-xs">
+                          Attendance Status
+                        </h6>
+                        <button
+                          disabled
+                          className={`relative w-12 h-6 rounded-full transition-colors flex-shrink-0 ${
+                            isMealAttendences ? "bg-green-400" : "bg-gray-400"
+                          }`}
+                        >
+                          <span
+                            className={`absolute top-0.5 w-5 h-5 bg-white rounded-full shadow transition-all duration-300 ${
+                              isMealAttendences ? "left-6" : "left-0.5"
+                            }`}
+                          />
+                        </button>
+                      </div>
                       {/* OFF overlay */}
                       <div
                         className={`mt-2 ${!isOn ? "opacity-40 pointer-events-none" : ""}`}

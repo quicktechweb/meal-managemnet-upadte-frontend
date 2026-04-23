@@ -12,7 +12,7 @@ import { ChevronDown, Plus, X } from "lucide-react";
 import PackageItemSelector from "../../../../../Components/PackageItemSelector";
 import AllWiseUserPackageMealSummary from "../../../../../Components/AllWiseUserPackageMealSummary";
 
-export const getKey = (meal) => `${meal?.day}-${meal?.package_title}`;
+const getKey = (meal) => `${meal?.day}-${meal?.package_title}`;
 
 export default function AllPackageMealActivity({ allWise }) {
   const { user } = useInstituteAuth();
@@ -55,15 +55,9 @@ export default function AllPackageMealActivity({ allWise }) {
     return days;
   };
 
-  console.log(getNext7Days());
-
   const [selectedDays, setSelectedDays] = useState([getNext7Days()[0]]);
 
-  console.log(selectedDays);
-
   const [activeDayView, setActiveDayView] = useState(getNext7Days()[0]);
-
-  console.log(activeDayView);
 
   const selectedMeals = sortedMeals?.filter(
     (item) => item?.day === activeDayView,
@@ -207,6 +201,7 @@ export default function AllPackageMealActivity({ allWise }) {
       setActiveDayView(savedDays[0]);
     }
   }, [allWiseMealData]);
+
   const handleUpdate = async () => {
     const allSelectedMeals = sortedMeals?.filter((item) =>
       selectedDays.includes(item?.day),
