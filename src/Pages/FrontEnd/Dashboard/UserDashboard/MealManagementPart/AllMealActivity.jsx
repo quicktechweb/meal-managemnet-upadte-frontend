@@ -1,6 +1,9 @@
 import React, { useState } from "react";
 import useInstituteAuth from "../../../../../Hooks/useInstituteAuth";
-import { useInstituteUserAdminData } from "../../../../../api/cms/user.hook";
+import {
+  useAllwiseRoutineUserCreateMeal,
+  useInstituteUserAdminData,
+} from "../../../../../api/cms/user.hook";
 import { FaCalendarAlt, FaCheckCircle } from "react-icons/fa";
 import { ChevronDown, Plus, X } from "lucide-react";
 import UserMealSummary from "../../../../../Components/UserMealSummary";
@@ -11,6 +14,8 @@ export const getKey = (meal) => `${meal?.day}-${meal?.package_title}`;
 export default function AllMealActivity({ allWise }) {
   const { user } = useInstituteAuth();
   const { data } = useInstituteUserAdminData(user?.user?.institute_id);
+
+  const { mutateAsync, isPending } = useAllwiseRoutineUserCreateMeal();
 
   const routine = data?.routine;
   const weekDays = [
@@ -133,7 +138,7 @@ export default function AllMealActivity({ allWise }) {
     }
   };
 
-  const handleUpdate = () => {
+  const handleUpdate = async () => {
     const allSelectedMeals = sortedMeals?.filter((item) =>
       selectedDays.includes(item?.day),
     );
@@ -145,37 +150,35 @@ export default function AllMealActivity({ allWise }) {
         const key = getKey(meal);
         const isAlternative = !!useAlternativeMap[key];
         const altGroupIndex = selectedGroupMap[key];
+        const isGuestAlternative = !!guestUseAlternativeMap[key];
+        const altGuestGroupIndex = guestSelectedGroupMap[key];
 
+        const isGuestEnabled = guestEnabledMap[getKey(meal)];
         return {
           day: meal.day,
           meal_type: meal.meal_type,
           is_on: isMealOn(getKey(meal)) ? true : false,
+          start_time: meal?.start_time,
+          end_time: meal?.end_time,
           selected_items: isAlternative
             ? (meal?.alternative_items?.[altGroupIndex] ?? [])
             : (meal?.items ?? []),
+          guest_items: isGuestEnabled
+            ? isGuestAlternative
+              ? (meal?.alternative_items?.[altGuestGroupIndex] ?? [])
+              : (meal?.items ?? [])
+            : [],
           is_alternative: isAlternative,
         };
       });
 
-    const finalGuestSelections = allSelectedMeals
-      ?.filter((meal) => guestEnabledMap[getKey(meal)])
-      ?.map((meal) => {
-        const key = getKey(meal);
-        const isAlternative = !!guestUseAlternativeMap[key];
-        const altGroupIndex = guestSelectedGroupMap[key];
+    const payload = {
+      type: allWise,
+      routine_type: "Routine",
+      meals: finalSelections,
+    };
 
-        return {
-          day: meal.day,
-          meal_type: meal.meal_type,
-          selected_items: isAlternative
-            ? (meal?.alternative_items?.[altGroupIndex] ?? [])
-            : (meal?.items ?? []),
-          is_alternative: isAlternative,
-          quantity: guestQuantityMap[key] ?? 1,
-        };
-      });
-
-    console.log(finalSelections);
+    await mutateAsync(payload);
   };
 
   return (
@@ -450,9 +453,10 @@ export default function AllMealActivity({ allWise }) {
               {/* Update Button */}
               <button
                 onClick={handleUpdate}
+                disabled={isPending}
                 className="w-1/3 mx-auto block bg-gradient-to-r from-orange-400 to-pink-500 text-white py-3 rounded-2xl cursor-pointer"
               >
-                Update
+                {isPending ? "Updating.." : "Update"}
               </button>
             </>
           ) : (

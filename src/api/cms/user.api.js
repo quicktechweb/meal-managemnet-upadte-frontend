@@ -91,6 +91,9 @@ export const individualUserPermissionFunction = async () => {
   return data?.data;
 };
 
+
+//  all wise create meal
+
 export const userAllwiseCreateMealFunction = async (payload) => {
   const { data } = await axiosSecure.post(
     "/api/create-user-meal-allwise",
@@ -98,6 +101,17 @@ export const userAllwiseCreateMealFunction = async (payload) => {
   );
   return data;
 };
+
+// all wise routine create meal 
+
+export const userAllwiseRoutineCreateMealFunction = async (payload) => {
+  const { data } = await axiosSecure.post(
+    "/api/create-user-meal-allwise-routine",
+    payload,
+  );
+  return data;
+};
+
 
 export const userDaywiseCreateMealFunction = async (payload) => {
   const { data } = await axiosSecure.post(

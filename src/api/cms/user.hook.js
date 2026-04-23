@@ -22,6 +22,7 @@ import {
   updateInstituteProfileInfoFunction,
   userAllwiseCreateMealFunction,
   userAllWiseGetMealFunction,
+  userAllwiseRoutineCreateMealFunction,
   userDaywiseCreateMealFunction,
   userDayWiseGetMealFunction,
 } from "./user.api";
@@ -209,10 +210,31 @@ export const useIndividualUserPermission = () => {
   });
 };
 
+// user all wise create meal
+
 export const useAllwiseUserCreateMeal = () => {
   return useMutation({
     mutationKey: ["user-create-meal"],
     mutationFn: (payload) => userAllwiseCreateMealFunction(payload),
+    onSuccess: (data) => {
+      console.log(data);
+
+      if (data?.success) {
+        toast.success(data?.message);
+      }
+    },
+    onError: (error) => {
+      toast.error(error?.response?.data?.message || "Something went wrong");
+    },
+  });
+};
+
+// user all wise routine create meal
+
+export const useAllwiseRoutineUserCreateMeal = () => {
+  return useMutation({
+    mutationKey: ["user-create-meal-routine"],
+    mutationFn: (payload) => userAllwiseRoutineCreateMealFunction(payload),
     onSuccess: (data) => {
       console.log(data);
 
