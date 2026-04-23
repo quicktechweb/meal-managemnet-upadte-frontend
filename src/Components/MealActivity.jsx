@@ -34,7 +34,7 @@ const MealActivity = () => {
       </div>
 
       {daywiseSelect === "day-wise" && daywiseSelect === "day-wise" && (
-        <DayWiseMealActivity />
+        <DayWiseMealActivity allWise={daywiseSelect} />
       )}
 
       {daywiseSelect === "show-all" && (

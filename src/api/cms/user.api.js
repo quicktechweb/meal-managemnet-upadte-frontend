@@ -115,7 +115,7 @@ export const userAllwiseRoutineCreateMealFunction = async (payload) => {
 
 export const userDaywiseCreateMealFunction = async (payload) => {
   const { data } = await axiosSecure.post(
-    "/api/create-user-meal-daywise",
+    "/api/create-user-routine-meal-daywise",
     payload,
   );
   return data;
@@ -157,9 +157,7 @@ export const userDayWiseGetMealFunction = async () => {
 // day wise get user routine meal order list
 
 export const userDayWiseRoutineGetMealFunction = async () => {
-  const { data } = await axiosSecure.get(
-    "/api//daywise-user-routine-meal-list",
-  );
+  const { data } = await axiosSecure.get("/api/daywise-user-routine-meal-list");
 
   return data?.data;
 };
