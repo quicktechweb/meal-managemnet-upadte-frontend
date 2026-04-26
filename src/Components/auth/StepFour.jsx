@@ -37,6 +37,8 @@ const StepFour = ({
   const selectedState = watch("state_admin");
   const selectedDivision = watch("division_admin");
 
+  const permission = watch("permissions");
+
   useEffect(() => {
     if (!selectedState) return;
 
@@ -385,7 +387,6 @@ const StepFour = ({
         </div>
 
         <div className="w-full bg-white rounded-2xl shadow-md border border-slate-200 overflow-hidden h-[400px]">
-          {/* Header */}
           <div className="flex items-center gap-3 px-5 py-4 bg-gradient-to-r from-indigo-50 to-white border-b border-slate-200">
             <div className="w-1.5 h-6 bg-orange-600 rounded-full"></div>
             <h4 className="text-xl font-semibold text-slate-800">
@@ -393,26 +394,54 @@ const StepFour = ({
             </h4>
           </div>
 
-          {/* Permission Items */}
           <div className="p-5 flex flex-col gap-4">
-            {rolesList.map((item, index) => {
-              const isActive = selected.includes(item);
+            <Controller
+              name="permissions"
+              control={control}
+              rules={{
+                validate: (value) =>
+                  (value && value.length > 0) ||
+                  "At least one permission is required",
+              }}
+              render={({ field, fieldState: { error } }) => (
+                <>
+                  {rolesList.map((item, index) => {
+                    const currentValue = field.value || [];
+                    const isActive = currentValue.includes(item);
 
-              return (
-                <div
-                  key={index}
-                  onClick={() => togglePermission(item)}
-                  className={`cursor-pointer rounded-xl px-4 py-3 border transition-all duration-200
-              ${
-                isActive
-                  ? "bg-orange-600 text-white border-orange-600 shadow-md scale-[1.02]"
-                  : "bg-slate-50 text-slate-700 border-slate-200 hover:bg-indigo-50"
-              }`}
-                >
-                  {item}
-                </div>
-              );
-            })}
+                    const toggle = () => {
+                      const updated = isActive
+                        ? currentValue.filter((p) => p !== item)
+                        : [...currentValue, item];
+                      field.onChange(updated);
+                      setSelected(updated); // বাইরের state ও sync রাখুন
+                    };
+
+                    return (
+                      <div
+                        key={index}
+                        onClick={toggle}
+                        className={`cursor-pointer rounded-xl px-4 py-3 border transition-all duration-200
+                  ${
+                    isActive
+                      ? "bg-orange-600 text-white border-orange-600 shadow-md scale-[1.02]"
+                      : "bg-slate-50 text-slate-700 border-slate-200 hover:bg-indigo-50"
+                  }`}
+                      >
+                        {item}
+                      </div>
+                    );
+                  })}
+
+                  {/* Error message */}
+                  {error && (
+                    <p className="text-red-500 text-sm mt-1">
+                      * {error.message}
+                    </p>
+                  )}
+                </>
+              )}
+            />
           </div>
         </div>
       </div>
