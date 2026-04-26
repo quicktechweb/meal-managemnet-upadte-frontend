@@ -82,7 +82,13 @@ const TopNavbar = ({ setHideSidebar, open, setOpen }) => {
             <FiMenu />
           </div>
 
-          <div className="cursor-pointer shrink-0">
+          <div
+            onClick={() => {
+              setOpen((prev) => !prev);
+              document.body.style.overflow = "hidden";
+            }}
+            className="cursor-pointer shrink-0"
+          >
             <img
               src={data?.logoUrl}
               alt={data?.siteName}
@@ -142,7 +148,10 @@ const TopNavbar = ({ setHideSidebar, open, setOpen }) => {
       {open && (
         <div
           className="fixed inset-0 w-full h-full z-40 backdrop-blur-sm"
-          onClick={() => setOpen(false)}
+          onClick={() => {
+            setOpen(false);
+            document.body.style.overflow = "visible";
+          }}
         />
       )}
     </div>

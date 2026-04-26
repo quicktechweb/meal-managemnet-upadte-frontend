@@ -11,8 +11,6 @@ const DashboardLayout = () => {
 
   const { user } = useInstituteAuth();
 
-  console.log(user);
-
   useEffect(() => {
     if (showBalance) {
       const timer = setTimeout(() => {

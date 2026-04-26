@@ -6,20 +6,7 @@ import { GiMeal } from "react-icons/gi";
 
 const HomePopover = () => {
   return (
-    <div
-      className="absolute top-14 left-2 w-[340px] bg-white rounded-2xl shadow-2xl overflow-hidden z-50"
-      style={{
-        boxShadow: "0 4px 24px rgba(0,0,0,0.18)",
-        animation: "fadeDown 0.18s ease both",
-      }}
-    >
-      <style>{`
-              @keyframes fadeDown {
-                from { opacity: 0; transform: translateY(-8px) scale(0.97); }
-                to   { opacity: 1; transform: translateY(0) scale(1); }
-              }
-            `}</style>
-
+    <div className="absolute top-14 left-2 w-[340px] bg-white rounded-2xl shadow-2xl overflow-hidden z-50">
       {/* Header */}
       <div className="flex items-center justify-between px-5 pt-5 pb-3">
         <span className="text-[15px] font-medium text-[#202124]">Website</span>

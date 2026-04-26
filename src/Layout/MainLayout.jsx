@@ -8,6 +8,7 @@ import HomePopover from "../Components/home/HomePopover";
 const MainLayout = () => {
   const [hideSidebar, setHideSidebar] = useState(true);
   const [open, setOpen] = useState(false);
+
   return (
     <div className="w-full">
       <TopNavbar
