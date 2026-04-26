@@ -1,7 +1,6 @@
 import { ChevronDown } from "lucide-react";
 import React from "react";
 import { FaCheckCircle } from "react-icons/fa";
-import { getKey } from "../Pages/FrontEnd/Dashboard/UserDashboard/MealManagementPart/AllMealActivity";
 
 const PackageItemSelector = ({
   meal,
@@ -23,15 +22,12 @@ const PackageItemSelector = ({
   handleCheckboxToggle,
   setGuestOpenKey,
 }) => {
+  const getKey = (meal) => `${meal?.day}-${meal?.package_title}`;
   const key = getKey(meal);
-
-  console.log(key);
 
   const useAlt = isGuest
     ? guestUseAlternativeMap?.[key]
     : useAlternativeMap?.[key];
-
-  console.log(useAlt);
 
   const selGroupMap = isGuest ? guestSelectedGroupMap : selectedGroupMap;
   const curOpenKey = isGuest ? guestOpenKey : openKey;
