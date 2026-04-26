@@ -51,6 +51,8 @@ export default function AllMealActivity({ allWise }) {
     }
     return days;
   };
+  const calcItemsPrice = (items = []) =>
+    items.reduce((sum, item) => sum + (Number(item?.price) || 0), 0);
 
   const [selectedDays, setSelectedDays] = useState([getNext7Days()[0]]);
   const [activeDayView, setActiveDayView] = useState(getNext7Days()[0]);
@@ -58,6 +60,27 @@ export default function AllMealActivity({ allWise }) {
   const selectedMeals = sortedMeals?.filter(
     (item) => item?.day === activeDayView,
   );
+
+  // একটা meal এর selected items এর price
+  const getMealPrice = (meal, key) => {
+    const isAlt = !!useAlternativeMap[key];
+    const altIdx = selectedGroupMap[key];
+    const items = isAlt
+      ? (meal?.alternative_items?.[altIdx] ?? [])
+      : (meal?.items ?? []);
+    return calcItemsPrice(items);
+  };
+
+  // Guest meal price
+  const getGuestPrice = (meal, key) => {
+    const isAlt = !!guestUseAlternativeMap[key];
+    const altIdx = guestSelectedGroupMap[key];
+    const qty = guestQuantityMap[key] ?? 1;
+    const items = isAlt
+      ? (meal?.alternative_items?.[altIdx] ?? [])
+      : (meal?.items ?? []);
+    return calcItemsPrice(items) * qty;
+  };
 
   // Regular Meal State
   const [openKey, setOpenKey] = useState(null);
@@ -211,12 +234,26 @@ export default function AllMealActivity({ allWise }) {
         const altGuestGroupIndex = guestSelectedGroupMap[key];
 
         const isGuestEnabled = guestEnabledMap[getKey(meal)];
+
+        const selectedItems = isAlternative
+          ? (meal?.alternative_items?.[altGroupIndex] ?? [])
+          : (meal?.items ?? []);
+
+        const guestItems = isGuestEnabled
+          ? isGuestAlternative
+            ? (meal?.alternative_items?.[altGuestGroupIndex] ?? [])
+            : (meal?.items ?? [])
+          : [];
+
         return {
           day: meal.day,
           meal_type: meal.meal_type,
           is_on: isMealOn(getKey(meal)) ? true : false,
           start_time: meal?.start_time,
           end_time: meal?.end_time,
+          total_price:
+            calcItemsPrice(selectedItems) +
+            calcItemsPrice(guestItems) * (guestQuantityMap[key] ?? 1),
           selected_items: isAlternative
             ? (meal?.alternative_items?.[altGroupIndex] ?? [])
             : (meal?.items ?? []),
@@ -315,9 +352,9 @@ export default function AllMealActivity({ allWise }) {
           </div>
         </aside>
 
-        <div className="flex flex-col gap-3">
+        <div className="flex flex-col w-full gap-3">
           {/* Regular Meal Header */}
-          <div className="bg-white/90 backdrop-blur-xl rounded-3xl shadow-lg p-6">
+          <div className="bg-white/90 backdrop-blur-xl w-full rounded-3xl shadow-lg p-6">
             <h1 className="text-xl xl:text-3xl font-extrabold text-gray-800">
               Choose Your Meals
             </h1>
@@ -336,6 +373,7 @@ export default function AllMealActivity({ allWise }) {
                   const isOn = isMealOn(key);
                   const isGuestAdded = !!guestEnabledMap[key];
                   const isMealAttendences = isMealAttendence(key);
+
                   return (
                     <div
                       key={key}
@@ -352,8 +390,12 @@ export default function AllMealActivity({ allWise }) {
                           <span className="text-xs bg-white/20 px-2 py-0.5 rounded-full">
                             {meal.day}
                           </span>
+                          {/* meal price */}
+
                           <span className="ml-auto bg-white/20 px-2 py-1 rounded-full text-xs">
-                            ৳0
+                            ৳
+                            {getMealPrice(meal, key) +
+                              (isGuestAdded ? getGuestPrice(meal, key) : 0)}
                           </span>
 
                           {/* ON/OFF Toggle */}

@@ -21,6 +21,9 @@ const DayWiseMealActivity = ({ allWise }) => {
 
   console.log(daywiseRoutineGetMealList);
 
+  const calcItemsPrice = (items = []) =>
+    items.reduce((sum, item) => sum + (Number(item?.price) || 0), 0);
+
   const routine = data?.routine;
 
   const weekDays = [
@@ -225,11 +228,24 @@ const DayWiseMealActivity = ({ allWise }) => {
         const altGuestGroupIndex = guestSelectedGroupMap[key];
 
         const isGuestEnabled = guestEnabledMap[getKey(meal)];
+
+        const selectedItems = isAlternative
+          ? (meal?.alternative_items?.[altGroupIndex] ?? [])
+          : (meal?.items ?? []);
+
+        const guestItems = isGuestEnabled
+          ? isGuestAlternative
+            ? (meal?.alternative_items?.[altGuestGroupIndex] ?? [])
+            : (meal?.items ?? [])
+          : [];
         return {
           day: meal.day,
           meal_type: meal.meal_type,
           start_time: meal.start_time,
           end_time: meal.end_time,
+          total_price:
+            calcItemsPrice(selectedItems) +
+            calcItemsPrice(guestItems) * (guestQuantityMap[key] ?? 1),
           is_on: isMealOn(getKey(meal)) ? true : false,
           selected_items: isAlternative
             ? (meal?.alternative_items?.[altGroupIndex] ?? [])
@@ -250,6 +266,27 @@ const DayWiseMealActivity = ({ allWise }) => {
     };
 
     await mutateAsync(payload);
+  };
+
+  // একটা meal এর selected items এর price
+  const getMealPrice = (meal, key) => {
+    const isAlt = !!useAlternativeMap[key];
+    const altIdx = selectedGroupMap[key];
+    const items = isAlt
+      ? (meal?.alternative_items?.[altIdx] ?? [])
+      : (meal?.items ?? []);
+    return calcItemsPrice(items);
+  };
+
+  // Guest meal price
+  const getGuestPrice = (meal, key) => {
+    const isAlt = !!guestUseAlternativeMap[key];
+    const altIdx = guestSelectedGroupMap[key];
+    const qty = guestQuantityMap[key] ?? 1;
+    const items = isAlt
+      ? (meal?.alternative_items?.[altIdx] ?? [])
+      : (meal?.items ?? []);
+    return calcItemsPrice(items) * qty;
   };
 
   // Meal Item Selector
@@ -355,8 +392,6 @@ const DayWiseMealActivity = ({ allWise }) => {
               <>
                 <div className="flex flex-wrap gap-3">
                   {selectedMeals?.map((meal) => {
-                    console.log(meal);
-
                     const key = getKey(meal);
                     const isOn = isMealOn(key);
                     const isMealAttendences = isMealAttendence(key);
@@ -379,7 +414,9 @@ const DayWiseMealActivity = ({ allWise }) => {
                               {meal.day}
                             </span>
                             <span className="ml-auto bg-white/20 px-2 py-1 rounded-full text-xs">
-                              ৳0
+                              ৳
+                              {getMealPrice(meal, key) +
+                                (isGuestAdded ? getGuestPrice(meal, key) : 0)}
                             </span>
 
                             {/* ON/OFF Toggle */}

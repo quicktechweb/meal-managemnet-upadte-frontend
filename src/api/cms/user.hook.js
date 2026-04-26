@@ -27,6 +27,7 @@ import {
   userAllWiseRoutineGetMealFunction,
   userDaywiseCreateMealFunction,
   userDayWiseGetMealFunction,
+  userDaywiseRoutineCreateMealFunction,
   userDayWiseRoutineGetMealFunction,
 } from "./user.api";
 import toast from "react-hot-toast";
@@ -276,10 +277,8 @@ export const useDaywiseRoutineUserCreateMeal = () => {
   const query = useQueryClient();
   return useMutation({
     mutationKey: ["user-create-meal"],
-    mutationFn: (payload) => userDaywiseCreateMealFunction(payload),
+    mutationFn: (payload) => userDaywiseRoutineCreateMealFunction(payload),
     onSuccess: (data) => {
-      console.log(data);
-
       if (data?.success) {
         toast.success(data?.message);
         query.invalidateQueries(["institute-user-meal-lists"]);
