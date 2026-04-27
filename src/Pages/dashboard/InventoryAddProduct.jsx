@@ -1,25 +1,21 @@
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { FaSearch } from "react-icons/fa";
-import { useInventoryProductLists } from "../../api/cms/user.hook";
-
-const initialProducts = [
-  { id: 1, name: "Wireless Headphone", image: null },
-  { id: 2, name: "Leather Notebook", image: null },
-  { id: 3, name: "USB-C Hub", image: null },
-  { id: 4, name: "Desk Lamp", image: null },
-];
+import {
+  useInventoryProductAdd,
+  useInventoryProductLists,
+} from "../../api/cms/user.hook";
 
 const InventoryAddProduct = () => {
   const { data: initialProducts } = useInventoryProductLists();
 
-  console.log(initialProducts);
+  const { mutateAsync, isPending } = useInventoryProductAdd();
 
   const [search, setSearch] = useState("");
   const [showAddForm, setShowAddForm] = useState(false);
-  const [products, setProducts] = useState(initialProducts);
-  const [toast, setToast] = useState(null);
+
   const [imagePreview, setImagePreview] = useState(null);
+  const [image, setImage] = useState(null);
 
   const {
     register,
@@ -34,31 +30,29 @@ const InventoryAddProduct = () => {
     },
   });
 
-  const showToast = (msg, type = "success") => {
-    setToast({ msg, type });
-    setTimeout(() => setToast(null), 2500);
-  };
-
   const handleImageChange = (e) => {
     const file = e.target.files[0];
+
     if (file) {
+      setImage(e.target.files[0]);
       const imageUrl = URL.createObjectURL(file);
       setImagePreview(imageUrl);
-      setValue("image", imageUrl); // sync to RHF
+      setValue("image", imageUrl);
     }
   };
 
-  const onSubmit = (data) => {
-    const product = {
-      id: Date.now(),
-      name: data.name,
-      image: data.image ?? null,
-    };
+  const onSubmit = async (data) => {
+    const formData = new FormData();
+
+    formData.append("title", data?.name);
+
+    formData.append("image", image);
+
+    await mutateAsync(formData);
 
     reset();
     setImagePreview(null);
     setShowAddForm(false);
-    showToast(`${product.title} added successfully`);
   };
 
   const handleCancel = () => {
@@ -67,30 +61,12 @@ const InventoryAddProduct = () => {
     setShowAddForm(false);
   };
 
-  const filtered = products?.filter((p) =>
+  const filtered = initialProducts?.filter((p) =>
     p.title.toLowerCase().includes(search.toLowerCase()),
   );
 
-  console.log(filtered);
-
   return (
     <div className="min-h-screen text-slate-800 font-sans">
-      {/* Toast Notification */}
-      {toast && (
-        <div
-          className={`fixed bottom-6 right-6 z-50 flex items-center gap-3 px-5 py-3.5 rounded-xl text-sm font-medium shadow-2xl backdrop-blur-lg transition-all animate-[fadeIn_0.3s] ${
-            toast.type === "success"
-              ? "bg-emerald-100/90 text-emerald-800 border border-emerald-200"
-              : "bg-rose-100/90 text-rose-800 border border-rose-200"
-          }`}
-        >
-          <span className="text-xl">
-            {toast.type === "success" ? "✅" : "⚠️"}
-          </span>
-          {toast.msg}
-        </div>
-      )}
-
       {/* Header Section */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-6 gap-4">
         <div>
@@ -194,9 +170,10 @@ const InventoryAddProduct = () => {
             </button>
             <button
               type="submit"
+              disabled={isPending}
               className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2.5 rounded-xl text-sm font-medium shadow-sm transition"
             >
-              Save Product
+              {isPending ? "Saving" : "Save Product"}
             </button>
           </div>
         </form>

@@ -20,6 +20,7 @@ import {
   instituteUserListFunction,
   instituteUserMealTypeFunction,
   instituteUserRoleChangeFunction,
+  inventoryProductAddFunction,
   inventoryProductListsFunction,
   locationFunction,
   updateInstituteProfileInfoFunction,
@@ -414,5 +415,23 @@ export const useInventoryProductLists = () => {
   return useQuery({
     queryKey: ["inventory-product-lists"],
     queryFn: inventoryProductListsFunction,
+  });
+};
+
+export const useInventoryProductAdd = () => {
+  const reactQuery = useQueryClient();
+
+  return useMutation({
+    mutationKey: ["inventory-product-add"],
+    mutationFn: (payload) => inventoryProductAddFunction(payload),
+    onSuccess: (data) => {
+      if (data?.success) {
+        toast.success(data?.message);
+        reactQuery.invalidateQueries(["inventory-product-lists"]);
+      }
+    },
+    onError: (error) => {
+      toast.error(error?.response?.data?.message || "Something went wrong");
+    },
   });
 };
