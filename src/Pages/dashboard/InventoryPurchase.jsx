@@ -18,7 +18,6 @@ const InventoryPurchase = () => {
   // seller
 
   const { mutateAsync, isPending } = useSellerCreate();
-  
 
   const [sellers, setSellers] = useState([
     { id: 1, seller_name: "Mr. Rahim" },
@@ -149,7 +148,7 @@ const InventoryPurchase = () => {
               className="w-full bg-gray-50 border border-gray-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none px-3 py-2.5 rounded-lg text-sm transition-all"
             >
               <option value="">Select Product</option>
-              {products.map((p) => (
+              {products?.map((p) => (
                 <option key={p.id} value={p.id}>
                   {p.title}
                 </option>
