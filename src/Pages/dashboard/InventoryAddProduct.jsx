@@ -1,72 +1,80 @@
 import React, { useState } from "react";
+import { useForm } from "react-hook-form";
+import { FaSearch } from "react-icons/fa";
+import { useInventoryProductLists } from "../../api/cms/user.hook";
 
 const initialProducts = [
-  {
-    id: 1,
-    name: "Wireless Headphone",
-    // price: 1200,
-    // sell_price: 1500,
-    image: null,
-  },
+  { id: 1, name: "Wireless Headphone", image: null },
   { id: 2, name: "Leather Notebook", image: null },
   { id: 3, name: "USB-C Hub", image: null },
   { id: 4, name: "Desk Lamp", image: null },
 ];
 
 const InventoryAddProduct = () => {
+  const { data: initialProducts } = useInventoryProductLists();
+
+  console.log(initialProducts);
+
   const [search, setSearch] = useState("");
   const [showAddForm, setShowAddForm] = useState(false);
-  const [newProduct, setNewProduct] = useState({
-    name: "",
-    // price: "",
-    // sell_price: "",
-    image: null,
-  });
   const [products, setProducts] = useState(initialProducts);
   const [toast, setToast] = useState(null);
+  const [imagePreview, setImagePreview] = useState(null);
+
+  const {
+    register,
+    handleSubmit,
+    reset,
+    setValue,
+    formState: { errors },
+  } = useForm({
+    defaultValues: {
+      name: "",
+      image: null,
+    },
+  });
 
   const showToast = (msg, type = "success") => {
     setToast({ msg, type });
     setTimeout(() => setToast(null), 2500);
   };
 
-  // Handle Image Upload
   const handleImageChange = (e) => {
     const file = e.target.files[0];
     if (file) {
-      // Create a local URL for the uploaded image to display it immediately
       const imageUrl = URL.createObjectURL(file);
-      setNewProduct({ ...newProduct, image: imageUrl });
+      setImagePreview(imageUrl);
+      setValue("image", imageUrl); // sync to RHF
     }
   };
 
-  const handleAddProduct = (e) => {
-    e.preventDefault();
-
-    if (!newProduct.name || !newProduct.price || !newProduct.sell_price) {
-      showToast("Please fill all required fields", "error");
-      return;
-    }
-
+  const onSubmit = (data) => {
     const product = {
       id: Date.now(),
-      name: newProduct.name,
-
-      image: newProduct.image,
+      name: data.name,
+      image: data.image ?? null,
     };
 
-    setProducts([product, ...products]);
-    setNewProduct({ name: "", image: null });
+    reset();
+    setImagePreview(null);
     setShowAddForm(false);
-    showToast(`${product.name} added successfully`);
+    showToast(`${product.title} added successfully`);
   };
 
-  const filtered = products.filter((p) =>
-    p.name.toLowerCase().includes(search.toLowerCase()),
+  const handleCancel = () => {
+    reset();
+    setImagePreview(null);
+    setShowAddForm(false);
+  };
+
+  const filtered = products?.filter((p) =>
+    p.title.toLowerCase().includes(search.toLowerCase()),
   );
 
+  console.log(filtered);
+
   return (
-    <div className="  min-h-screen text-slate-800 font-sans">
+    <div className="min-h-screen text-slate-800 font-sans">
       {/* Toast Notification */}
       {toast && (
         <div
@@ -103,7 +111,7 @@ const InventoryAddProduct = () => {
       {/* Search Bar */}
       <div className="mb-6 relative">
         <span className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400">
-          🔍
+          <FaSearch />
         </span>
         <input
           className="w-full bg-white border border-slate-200 pl-11 pr-4 py-3 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-100 focus:border-blue-400 transition shadow-sm placeholder:text-slate-400"
@@ -116,7 +124,7 @@ const InventoryAddProduct = () => {
       {/* Add Product Form */}
       {showAddForm && (
         <form
-          onSubmit={handleAddProduct}
+          onSubmit={handleSubmit(onSubmit)}
           className="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 mb-8 animate-[fadeIn_0.2s]"
         >
           <h3 className="text-lg font-semibold mb-4 text-slate-700 border-b pb-3">
@@ -124,64 +132,32 @@ const InventoryAddProduct = () => {
           </h3>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5 items-start">
+            {/* Product Name */}
             <div className="lg:col-span-2">
               <label className="block text-xs font-medium text-slate-500 mb-1.5 uppercase tracking-wide">
                 Product Name <span className="text-rose-500">*</span>
               </label>
               <input
-                className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:bg-white focus:ring-2 focus:ring-blue-100 focus:border-blue-400 transition"
+                className={`w-full px-4 py-2.5 bg-slate-50 border rounded-xl text-sm focus:bg-white focus:ring-2 focus:ring-blue-100 focus:border-blue-400 transition ${
+                  errors.name ? "border-rose-400" : "border-slate-200"
+                }`}
                 placeholder="e.g. Wireless Mouse"
-                value={newProduct.name}
-                onChange={(e) =>
-                  setNewProduct({ ...newProduct, name: e.target.value })
-                }
+                {...register("name", {
+                  required: "Product name is required",
+                  minLength: {
+                    value: 2,
+                    message: "Name must be at least 2 characters",
+                  },
+                })}
               />
+              {errors.name && (
+                <p className="mt-1.5 text-xs text-rose-500 flex items-center gap-1">
+                  ⚠️ {errors.name.message}
+                </p>
+              )}
             </div>
 
-            {/* <div>
-              <label className="block text-xs font-medium text-slate-500 mb-1.5 uppercase tracking-wide">
-                Buy Price <span className="text-rose-500">*</span>
-              </label>
-              <div className="relative">
-                <span className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-sm font-medium">
-                  ৳
-                </span>
-                <input
-                  type="number"
-                  className="w-full pl-7 pr-3 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:bg-white focus:ring-2 focus:ring-blue-100 focus:border-blue-400 transition"
-                  placeholder="0.00"
-                  value={newProduct.price}
-                  onChange={(e) =>
-                    setNewProduct({ ...newProduct, price: e.target.value })
-                  }
-                />
-              </div>
-            </div> */}
-
-            {/* <div>
-              <label className="block text-xs font-medium text-slate-500 mb-1.5 uppercase tracking-wide">
-                Sell Price <span className="text-rose-500">*</span>
-              </label>
-              <div className="relative">
-                <span className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-sm font-medium">
-                  ৳
-                </span>
-                <input
-                  type="number"
-                  className="w-full pl-7 pr-3 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:bg-white focus:ring-2 focus:ring-blue-100 focus:border-blue-400 transition"
-                  placeholder="0.00"
-                  value={newProduct.sell_price}
-                  onChange={(e) =>
-                    setNewProduct({
-                      ...newProduct,
-                      sell_price: e.target.value,
-                    })
-                  }
-                />
-              </div>
-            </div> */}
-
-            {/* Product Image Input */}
+            {/* Product Image */}
             <div className="md:col-span-2 lg:col-span-4 flex items-center gap-4">
               <div className="flex-1">
                 <label className="block text-xs font-medium text-slate-500 mb-1.5 uppercase tracking-wide">
@@ -195,11 +171,11 @@ const InventoryAddProduct = () => {
                 />
               </div>
 
-              {/* Image Preview in Form */}
-              {newProduct.image && (
+              {/* Image Preview */}
+              {imagePreview && (
                 <div className="w-14 h-14 rounded-xl border border-slate-200 overflow-hidden shrink-0 mt-5">
                   <img
-                    src={newProduct.image}
+                    src={imagePreview}
                     alt="Preview"
                     className="w-full h-full object-cover"
                   />
@@ -211,7 +187,7 @@ const InventoryAddProduct = () => {
           <div className="mt-6 flex justify-end gap-3 pt-4 border-t border-slate-100">
             <button
               type="button"
-              onClick={() => setShowAddForm(false)}
+              onClick={handleCancel}
               className="bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 px-5 py-2.5 rounded-xl text-sm font-medium transition"
             >
               Cancel
@@ -235,47 +211,34 @@ const InventoryAddProduct = () => {
                 <th className="px-6 py-4 text-left font-semibold">
                   Product Lists
                 </th>
-                {/* <th className="px-6 py-4 text-left font-semibold">Buy Price</th>
-                <th className="px-6 py-4 text-left font-semibold">
-                  Sell Price
-                </th> */}
               </tr>
             </thead>
 
             <tbody className="divide-y divide-slate-100">
-              {filtered.length > 0 ? (
-                filtered.map((p) => {
-                  return (
-                    <tr
-                      key={p.id}
-                      className="hover:bg-slate-50 transition-colors group"
-                    >
-                      <td className="px-6 py-4 text-sm font-medium text-slate-800">
-                        <div className="flex items-center gap-4">
-                          {/* Product Image / Fallback Avatar */}
-                          <div className="w-12 h-12 rounded-xl bg-blue-50 border border-blue-100 flex items-center justify-center text-blue-600 font-bold text-lg overflow-hidden shrink-0">
-                            {p.image ? (
-                              <img
-                                src={p.image}
-                                alt={p.name}
-                                className="w-full h-full object-cover"
-                              />
-                            ) : (
-                              p.name.charAt(0)
-                            )}
-                          </div>
-                          <span className="font-semibold">{p.name}</span>
+              {filtered?.length > 0 ? (
+                filtered?.map((p) => (
+                  <tr
+                    key={p._id}
+                    className="hover:bg-slate-50 transition-colors group"
+                  >
+                    <td className="px-6 py-4 text-sm font-medium text-slate-800">
+                      <div className="flex items-center gap-4">
+                        <div className="w-12 h-12 rounded-xl bg-blue-50 border border-blue-100 flex items-center justify-center text-blue-600 font-bold text-lg overflow-hidden shrink-0">
+                          {p.image ? (
+                            <img
+                              src={p.image}
+                              alt={p.title}
+                              className="w-full h-full object-cover"
+                            />
+                          ) : (
+                            p.title.charAt(0)
+                          )}
                         </div>
-                      </td>
-                      {/* <td className="px-6 py-4 text-sm text-slate-600">
-                        ৳ {p.price}
-                      </td>
-                      <td className="px-6 py-4 text-sm font-medium text-slate-800">
-                        ৳ {p.sell_price}
-                      </td> */}
-                    </tr>
-                  );
-                })
+                        <span className="font-semibold">{p.title}</span>
+                      </div>
+                    </td>
+                  </tr>
+                ))
               ) : (
                 <tr>
                   <td colSpan="3" className="text-center py-12">

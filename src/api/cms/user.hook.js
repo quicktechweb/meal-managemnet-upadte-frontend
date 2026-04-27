@@ -20,6 +20,7 @@ import {
   instituteUserListFunction,
   instituteUserMealTypeFunction,
   instituteUserRoleChangeFunction,
+  inventoryProductListsFunction,
   locationFunction,
   updateInstituteProfileInfoFunction,
   userAllwiseCreateMealFunction,
@@ -406,5 +407,12 @@ export const useAddBalance = () => {
     onError: (error) => {
       toast.error(error?.response?.data?.message || "Something went wrong");
     },
+  });
+};
+
+export const useInventoryProductLists = () => {
+  return useQuery({
+    queryKey: ["inventory-product-lists"],
+    queryFn: inventoryProductListsFunction,
   });
 };
