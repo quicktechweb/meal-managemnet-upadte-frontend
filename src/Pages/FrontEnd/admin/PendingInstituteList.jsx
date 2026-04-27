@@ -3,8 +3,8 @@ import { Link } from "react-router-dom";
 
 const PendingInstituteList = ({ users }) => {
   return (
-    <div className="p-6 bg-gray-50 min-h-screen">
-      <div className="max-w-6xl mx-auto">
+    <div className="bg-white p-6 min-h-screen">
+      <div className=" mx-auto">
         <h2 className="text-2xl font-bold mb-6 text-gray-800 border-l-4 border-blue-600 pl-3">
           Institute Lists
         </h2>
@@ -12,7 +12,7 @@ const PendingInstituteList = ({ users }) => {
         <div className="bg-white shadow-md rounded-lg overflow-hidden">
           <table className="min-w-full leading-normal">
             <thead>
-              <tr className="bg-gray-100 text-gray-600 uppercase text-sm leading-normal">
+              <tr className="bg-white text-gray-600 uppercase text-sm leading-normal">
                 <th className="py-3 px-6 text-left">Institute Name</th>
                 <th className="py-3 px-6 text-left">Admin Email</th>
                 <th className="py-3 px-6 text-left">Admin Phone</th>

@@ -1,9 +1,9 @@
-import React from 'react'
+import React from "react";
 
 const BannerSkeleton = () => {
   return (
     <section className="relative h-[480px] md:h-[500px] lg:h-[720px] bg-gradient-to-r from-purple-700 to-indigo-700 overflow-hidden">
-      <div className="max-w-7xl h-full flex flex-col justify-center mx-auto px-5 lg:px-7 2xl:px-10 pt-28 animate-pulse">
+      <div className=" h-full flex flex-col justify-center mx-auto px-5 lg:px-7 2xl:px-10 pt-28 animate-pulse">
         <div className="h-8 bg-white/30 rounded w-1/2 mb-4"></div>
         <div className="h-4 bg-white/20 rounded w-1/3 mb-2"></div>
         <div className="h-4 bg-white/20 rounded w-1/4 mb-6"></div>
@@ -19,6 +19,6 @@ const BannerSkeleton = () => {
       </div>
     </section>
   );
-}
+};
 
-export default BannerSkeleton
+export default BannerSkeleton;

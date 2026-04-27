@@ -47,6 +47,24 @@ export const SIDEBAR_ITEMS = [
     label: "Balance",
     icon: "Wallet",
     path: "/dashboards/balance",
-    parmission: "balance.view",
+    permission: "balance.view",
+  },
+
+  {
+    label: "Inventory",
+    icon: "MdOutlineInventory2",
+    path: "/dashboards/inventory",
+    permission: "inventory.view",
+    excludeRoles: ["user"],
+    children: [
+      {
+        label: "Add Product",
+        path: "/dashboards/inventory-add-product",
+      },
+      {
+        label: "Purchase",
+        path: "/dashboards/inventory-purchase",
+      },
+    ],
   },
 ];

@@ -103,6 +103,9 @@ import RoutinePage from "../Pages/dashboard/RoutinePage";
 import SettingsPage from "../Pages/dashboard/SettingsPage";
 import BalancePage from "../Pages/dashboard/BalancePage";
 import AddBalance from "../Pages/dashboard/AddBalance";
+import InventoryPage from "../Pages/dashboard/InventoryPage";
+import InventoryAddProduct from "../Pages/dashboard/InventoryAddProduct";
+import InventoryPurchase from "../Pages/dashboard/InventoryPurchase";
 
 const router = createBrowserRouter([
   {
@@ -550,6 +553,14 @@ const router = createBrowserRouter([
       {
         path: "/dashboards/add-balance",
         element: <AddBalance />,
+      },
+      {
+        path: "/dashboards/inventory-add-product",
+        element: <InventoryAddProduct />,
+      },
+      {
+        path: "/dashboards/inventory-purchase",
+        element: <InventoryPurchase />,
       },
     ],
   },

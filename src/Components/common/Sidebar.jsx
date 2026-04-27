@@ -11,12 +11,16 @@ import {
   Settings,
   X,
   Wallet,
+  ChevronDown,
 } from "lucide-react";
+import { MdOutlineInventory2 } from "react-icons/md";
+
 import { usePermission } from "../../Hooks/usePermission";
 import { SIDEBAR_ITEMS } from "../../data/sidebar";
 
 import { useGetWebsiteData } from "../../api/admin/admin.api";
 import useInstituteAuth from "../../Hooks/useInstituteAuth";
+import { useState } from "react";
 
 const ICON_MAP = {
   LayoutDashboard,
@@ -28,6 +32,7 @@ const ICON_MAP = {
   Calendar,
   Settings,
   Wallet,
+  MdOutlineInventory2,
 };
 
 const Sidebar = ({ isOpen, onClose }) => {
@@ -36,6 +41,15 @@ const Sidebar = ({ isOpen, onClose }) => {
   const { data } = useGetWebsiteData();
 
   const { user } = useInstituteAuth();
+
+  const [openMenus, setOpenMenus] = useState({});
+
+  const toggleMenu = (label) => {
+    setOpenMenus((prev) => ({
+      ...prev,
+      [label]: !prev[label],
+    }));
+  };
 
   const isInstitute = user?.user?.role === "institute";
 
@@ -98,6 +112,83 @@ const Sidebar = ({ isOpen, onClose }) => {
         </p>
         {visibleItems.map((item) => {
           const Icon = ICON_MAP[item.icon];
+          const hasChildren = item.children && item.children.length > 0;
+          const isMenuOpen = openMenus[item.label];
+
+          // Check if any child route is active to keep parent highlighted
+          const isChildActive =
+            hasChildren &&
+            item.children.some((child) => location.pathname === child.path);
+
+          if (hasChildren) {
+            return (
+              <div key={item.label} className="flex flex-col gap-0.5">
+                <button
+                  onClick={() => toggleMenu(item.label)}
+                  className={`flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all duration-150 group w-full ${
+                    isChildActive
+                      ? "bg-blue-50 text-blue-600"
+                      : "text-gray-500 hover:bg-gray-50 hover:text-gray-800"
+                  }`}
+                >
+                  <span
+                    className={`flex items-center justify-center w-7 h-7 rounded-lg transition-all duration-150 shrink-0 ${
+                      isChildActive
+                        ? "bg-blue-100 text-blue-600"
+                        : "text-gray-400 group-hover:text-gray-600"
+                    }`}
+                  >
+                    {Icon && <Icon size={16} />}
+                  </span>
+                  <span>{item.label}</span>
+                  <ChevronDown
+                    size={16}
+                    className={`ml-auto transition-transform duration-200 ${
+                      isMenuOpen ? "rotate-180" : ""
+                    }`}
+                  />
+                </button>
+
+                {/* Dropdown Items */}
+                <div
+                  className={`grid transition-all duration-200 ease-in-out ${
+                    isMenuOpen
+                      ? "grid-rows-[1fr] opacity-100 mt-1"
+                      : "grid-rows-[0fr] opacity-0"
+                  }`}
+                >
+                  <div className="overflow-hidden flex flex-col gap-0.5 pl-11 pr-2">
+                    {item.children.map((child) => (
+                      <NavLink
+                        key={child.path}
+                        to={child.path}
+                        end
+                        onClick={onClose}
+                        className={({ isActive }) =>
+                          `flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-all duration-150 ${
+                            isActive
+                              ? "text-blue-600 bg-blue-50/50"
+                              : "text-gray-500 hover:text-gray-800 hover:bg-gray-50"
+                          }`
+                        }
+                      >
+                        {({ isActive }) => (
+                          <>
+                            <span
+                              className={`w-1.5 h-1.5 rounded-full ${isActive ? "bg-blue-600" : "bg-gray-300"}`}
+                            />
+                            <span>{child.label}</span>
+                          </>
+                        )}
+                      </NavLink>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            );
+          }
+
+          // Normal Item Rendering (No Dropdown)
           return (
             <NavLink
               key={item.path}
