@@ -204,3 +204,13 @@ export const inventoryProductAddFunction = async (payload) => {
   const { data } = await axiosPublic.post("/api/inventory-product", payload);
   return data;
 };
+
+export const sellerListFunction = async () => {
+  const { data } = await axiosPublic.get("/api/seller");
+  return data?.data;
+};
+
+export const sellerCreateFunction = async (payload) => {
+  const { data } = await axiosPublic.post("/api/seller", payload);
+  return data;
+};

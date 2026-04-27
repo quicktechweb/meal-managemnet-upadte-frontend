@@ -1,12 +1,9 @@
 import React, { useState } from "react";
 import { FaPlus } from "react-icons/fa";
-
-const products = [
-  { id: 1, name: "Wireless Headphone", image: null },
-  { id: 2, name: "Leather Notebook", image: null },
-  { id: 3, name: "USB-C Hub", image: null },
-  { id: 4, name: "Desk Lamp", image: null },
-];
+import {
+  useInventoryProductLists,
+  useSellerCreate,
+} from "../../api/cms/user.hook";
 
 const buyerLists = [
   { id: 1, buyer_name: "Mr. Rahim" },
@@ -16,15 +13,19 @@ const buyerLists = [
 ];
 
 const InventoryPurchase = () => {
-  // Converted sellerLists to state so we can add to it dynamically
+  const { data: products } = useInventoryProductLists();
+
+  // seller
+
+  const { mutateAsync, isPending } = useSellerCreate();
+  
+
   const [sellers, setSellers] = useState([
     { id: 1, seller_name: "Mr. Rahim" },
     { id: 2, seller_name: "Mr. Karim" },
     { id: 3, seller_name: "Mr. Malek" },
     { id: 4, seller_name: "Mr. Kuddush" },
   ]);
-
-  const [toast, setToast] = useState(null);
 
   // Modal states
   const [isSellerModalOpen, setIsSellerModalOpen] = useState(false);
@@ -40,11 +41,6 @@ const InventoryPurchase = () => {
     "Meter",
     "Box",
   ];
-
-  const showToast = (msg, type = "success") => {
-    setToast({ msg, type });
-    setTimeout(() => setToast(null), 2500);
-  };
 
   const [purchaseForm, setPurchaseForm] = useState({
     productId: "",
@@ -79,7 +75,6 @@ const InventoryPurchase = () => {
       return;
     }
 
-    // Purchase Entry logic here...
     setPurchaseForm({
       productId: "",
       seller: "",
@@ -98,10 +93,6 @@ const InventoryPurchase = () => {
   // Handle adding a new seller
   const handleAddSeller = (e) => {
     e.preventDefault();
-    if (!newSellerName.trim()) {
-      showToast("Seller name cannot be empty", "error");
-      return;
-    }
 
     const newSeller = {
       id: Date.now(),
@@ -110,14 +101,12 @@ const InventoryPurchase = () => {
 
     setSellers([...sellers, newSeller]);
 
-    // Auto-select the newly created seller in the form
     setPurchaseForm({ ...purchaseForm, seller: newSeller.id });
 
     // Reset and close modal
     setNewSellerName("");
     setIsSellerModalOpen(false);
     document.body.style.overflow = "visible";
-    showToast("New seller added ✓");
   };
 
   const openSellerModal = () => {
@@ -128,27 +117,11 @@ const InventoryPurchase = () => {
   const closeSellerModal = () => {
     setIsSellerModalOpen(false);
     document.body.style.overflow = "visible";
-    setNewSellerName(""); // clear input on close
+    setNewSellerName("");
   };
 
   return (
     <div className=" mx-auto p-4 relative">
-      {/* Toast Notification */}
-      {toast && (
-        <div
-          className={`fixed bottom-6 right-6 z-50 flex items-center gap-3 px-5 py-3 rounded-2xl text-sm font-medium shadow-xl border backdrop-blur-md transition-all duration-300 ease-in-out animate-[slideIn_0.3s_ease] ${
-            toast.type === "success"
-              ? "bg-green-100/80 text-green-800 border-green-300"
-              : "bg-red-100/80 text-red-700 border-red-300"
-          }`}
-        >
-          <span className="text-lg">
-            {toast.type === "success" ? "✅" : "❌"}
-          </span>
-          <span>{toast.msg}</span>
-        </div>
-      )}
-
       <form
         className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 space-y-6"
         onSubmit={handleSubmit}
@@ -178,7 +151,7 @@ const InventoryPurchase = () => {
               <option value="">Select Product</option>
               {products.map((p) => (
                 <option key={p.id} value={p.id}>
-                  {p.name}
+                  {p.title}
                 </option>
               ))}
             </select>

@@ -23,6 +23,8 @@ import {
   inventoryProductAddFunction,
   inventoryProductListsFunction,
   locationFunction,
+  sellerCreateFunction,
+  sellerListFunction,
   updateInstituteProfileInfoFunction,
   userAllwiseCreateMealFunction,
   userAllWiseGetMealFunction,
@@ -428,6 +430,30 @@ export const useInventoryProductAdd = () => {
       if (data?.success) {
         toast.success(data?.message);
         reactQuery.invalidateQueries(["inventory-product-lists"]);
+      }
+    },
+    onError: (error) => {
+      toast.error(error?.response?.data?.message || "Something went wrong");
+    },
+  });
+};
+
+export const useSellerList = () => {
+  return useQuery({
+    queryKey: ["seller-list"],
+    queryFn: sellerListFunction,
+  });
+};
+
+export const useSellerCreate = () => {
+  const reactQuery = useQueryClient();
+  return useMutation({
+    mutationKey: ["inventory-product-add"],
+    mutationFn: (payload) => sellerCreateFunction(payload),
+    onSuccess: (data) => {
+      if (data?.success) {
+        toast.success(data?.message);
+        reactQuery.invalidateQueries(["seller-list"]);
       }
     },
     onError: (error) => {
