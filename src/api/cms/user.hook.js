@@ -11,6 +11,7 @@ import {
   getInstituteUserMealOrderListsFunction,
   getMealOnOffFunction,
   getPermissionFunction,
+  globarDayWiseUserMealFunction,
   individualUserPermissionFunction,
   instituteApprovedUsersFunction,
   instituteCreateUserMealFunction,
@@ -347,6 +348,14 @@ export const useGetMealOnOffTime = () => {
     queryFn: getMealOnOffFunction,
     retry: false,
     enabled: !!token,
+  });
+};
+
+export const useGlobalDayWise = () => {
+  return useQuery({
+    queryKey: ["global-DayWise-user"],
+    queryFn: globarDayWiseUserMealFunction,
+    retry: false,
   });
 };
 

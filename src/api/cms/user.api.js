@@ -189,3 +189,8 @@ export const addBalanceFunction = async (payload) => {
   const { data } = await axiosSecure.post("/api/add-balance", payload);
   return data;
 };
+
+export const globarDayWiseUserMealFunction = async () => {
+  const { data } = await axiosPublic.get("/api/global-day-wise-user-meal");
+  return data;
+};
