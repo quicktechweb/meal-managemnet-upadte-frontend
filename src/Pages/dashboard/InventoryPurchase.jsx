@@ -32,6 +32,8 @@ const InventoryPurchase = () => {
 
   const [isSellerModalOpen, setIsSellerModalOpen] = useState(false);
 
+  const [isBuyerModalOpen, setIsBuyerModalOpen] = useState(false);
+
   // ─── Main purchase form ───────────────────────────────────────────────────
   const {
     register,
@@ -62,6 +64,14 @@ const InventoryPurchase = () => {
     formState: { errors: sellerErrors },
   } = useForm();
 
+  // ─── Buyer modal form ────────────────────────────────────────────────────
+  const {
+    register: registerBuyer,
+    handleSubmit: handleSubmitBuyer,
+    reset: resetBuyer,
+    formState: { errors: buyerErrors },
+  } = useForm();
+
   // ─── Live total calculation via watch ─────────────────────────────────────
   const price = parseFloat(watch("price")) || 0;
   const quantity = parseFloat(watch("quantity")) || 0;
@@ -73,7 +83,7 @@ const InventoryPurchase = () => {
   // ─── Submit handlers ──────────────────────────────────────────────────────
   const onSubmit = (data) => {
     console.log("Purchase data:", data);
-    // TODO: call your API here
+
     reset();
   };
 
@@ -86,6 +96,15 @@ const InventoryPurchase = () => {
     closeSellerModal();
   };
 
+  const onAddBuyer = async (data) => {
+    const newBuyer = { buyer_name: data.buyer_name.trim() };
+
+    mutateAsync(newBuyer);
+
+    resetBuyer();
+    closeBuyerModal();
+  };
+
   // ─── Modal helpers ────────────────────────────────────────────────────────
   const openSellerModal = () => {
     setIsSellerModalOpen(true);
@@ -96,6 +115,18 @@ const InventoryPurchase = () => {
     setIsSellerModalOpen(false);
     document.body.style.overflow = "visible";
     resetSeller();
+  };
+
+  // ─── Modal helpers ────────────────────────────────────────────────────────
+  const openBuyerModal = () => {
+    setIsBuyerModalOpen(true);
+    document.body.style.overflow = "hidden";
+  };
+
+  const closeBuyerModal = () => {
+    setIsBuyerModalOpen(false);
+    document.body.style.overflow = "visible";
+    resetBuyer();
   };
 
   return (
@@ -237,7 +268,16 @@ const InventoryPurchase = () => {
 
           {/* Buyer */}
           <div className="flex flex-col gap-1.5">
-            <label className="text-sm font-medium text-gray-700">Buyer</label>
+            <div className="flex items-center gap-1.5">
+              <label className="text-sm font-medium text-gray-700">Buyer</label>
+              <button
+                type="button"
+                onClick={openBuyerModal}
+                className="text-xs cursor-pointer text-white flex items-center justify-center font-semibold w-[16px] h-[16px] rounded-full bg-blue-600 hover:bg-blue-700 transition"
+              >
+                <FaPlus />
+              </button>
+            </div>
             <select
               {...register("buyer")}
               className="w-full bg-gray-50 border border-gray-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none px-3 py-2.5 rounded-lg text-sm transition-all"
@@ -331,6 +371,67 @@ const InventoryPurchase = () => {
                   className="px-4 py-2 text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 rounded-lg transition-colors"
                 >
                   {isPending ? "Saving" : "Save Seller"}
+                </button>
+              </div>
+            </form>
+          </div>
+        </>
+      )}
+
+      {/* ── Buyer Modal ─────────────────────────────────────────────────────── */}
+      {isBuyerModalOpen && (
+        <>
+          <div
+            className="fixed inset-0 w-full h-full z-40 bg-gray-900/40 backdrop-blur-sm"
+            onClick={closeBuyerModal}
+          />
+          <div className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-white rounded-2xl shadow-2xl z-50 w-11/12 max-w-sm p-6 animate-[slideIn_0.2s_ease]">
+            <h3 className="text-lg font-semibold text-gray-800 mb-4">
+              Add New Buyer
+            </h3>
+
+            <form
+              onSubmit={handleSubmitBuyer(onAddBuyer)}
+              className="space-y-4"
+            >
+              <div className="flex flex-col gap-1.5">
+                <label className="text-sm font-medium text-gray-700">
+                  Buyer Name
+                </label>
+                <input
+                  type="text"
+                  placeholder="e.g. Mr. Shafiq"
+                  autoFocus
+                  {...registerBuyer("buyer_name", {
+                    required: "Buyer name is required",
+                    minLength: {
+                      value: 2,
+                      message: "Name must be at least 2 characters",
+                    },
+                  })}
+                  className="w-full bg-gray-50 border border-gray-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none px-3 py-2.5 rounded-lg text-sm transition-all"
+                />
+                {buyerErrors.buyer_name && (
+                  <p className="text-xs text-red-500">
+                    {buyerErrors.buyer_name.message}
+                  </p>
+                )}
+              </div>
+
+              <div className="flex justify-end gap-3 mt-6">
+                <button
+                  type="button"
+                  onClick={closeBuyerModal}
+                  className="px-4 py-2 text-sm font-medium text-gray-600 bg-gray-100 hover:bg-gray-200 rounded-lg transition-colors"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  disabled={isPending}
+                  className="px-4 py-2 text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 rounded-lg transition-colors"
+                >
+                  {isPending ? "Saving" : "Save Buyer"}
                 </button>
               </div>
             </form>
