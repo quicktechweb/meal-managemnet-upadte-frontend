@@ -66,6 +66,10 @@ export const SIDEBAR_ITEMS = [
         path: "/dashboards/inventory-purchase",
       },
       {
+        label: "Purchase List",
+        path: "/dashboards/inventory-purchase-list",
+      },
+      {
         label: "Day wise",
         path: "/dashboards/inventory-day-wise",
       },
