@@ -448,7 +448,7 @@ export const useSellerList = () => {
 export const useSellerCreate = () => {
   const reactQuery = useQueryClient();
   return useMutation({
-    mutationKey: ["inventory-product-add"],
+    mutationKey: ["inventory-product-create"],
     mutationFn: (payload) => sellerCreateFunction(payload),
     onSuccess: (data) => {
       if (data?.success) {

@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useForm } from "react-hook-form";
 import { FaPlus } from "react-icons/fa";
 import {
   useInventoryProductLists,
@@ -12,11 +13,19 @@ const buyerLists = [
   { id: 4, buyer_name: "Mr. Kuddush" },
 ];
 
+const UNITS = [
+  "Pieces",
+  "Dozen",
+  "Gram",
+  "Kilogram",
+  "Liter",
+  "Milliliter",
+  "Meter",
+  "Box",
+];
+
 const InventoryPurchase = () => {
   const { data: products } = useInventoryProductLists();
-
-  // seller
-
   const { mutateAsync, isPending } = useSellerCreate();
 
   const [sellers, setSellers] = useState([
@@ -26,55 +35,18 @@ const InventoryPurchase = () => {
     { id: 4, seller_name: "Mr. Kuddush" },
   ]);
 
-  // Modal states
   const [isSellerModalOpen, setIsSellerModalOpen] = useState(false);
-  const [newSellerName, setNewSellerName] = useState("");
 
-  const UNITS = [
-    "Pieces",
-    "Dozen",
-    "Gram",
-    "Kilogram",
-    "Liter",
-    "Milliliter",
-    "Meter",
-    "Box",
-  ];
+  // ─── Main purchase form ───────────────────────────────────────────────────
+  const {
+    register,
+    handleSubmit,
+    watch,
+    reset,
 
-  const [purchaseForm, setPurchaseForm] = useState({
-    productId: "",
-    seller: "",
-    buyer: "",
-    transport_cost: "",
-    discount: "",
-    price: "",
-    selling_price: "",
-    quantity: "",
-    unit: "",
-  });
-
-  const calculateTotal = () => {
-    const price = parseFloat(purchaseForm.price) || 0;
-    const quantity = parseFloat(purchaseForm.quantity) || 0;
-    const discount = parseFloat(purchaseForm.discount) || 0;
-    const subtotal = price * quantity;
-    const total = subtotal - subtotal * (discount / 100);
-    return total > 0 ? total.toFixed(2) : "";
-  };
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-
-    if (!purchaseForm.productId) {
-      showToast("Select product", "error");
-      return;
-    }
-    if (!purchaseForm.price || !purchaseForm.quantity) {
-      showToast("Fill all required fields", "error");
-      return;
-    }
-
-    setPurchaseForm({
+    formState: { errors },
+  } = useForm({
+    defaultValues: {
       productId: "",
       seller: "",
       buyer: "",
@@ -84,30 +56,42 @@ const InventoryPurchase = () => {
       selling_price: "",
       quantity: "",
       unit: "",
-    });
+    },
+  });
 
-    showToast("Purchase added ✓");
+  // ─── Seller modal form ────────────────────────────────────────────────────
+  const {
+    register: registerSeller,
+    handleSubmit: handleSubmitSeller,
+    reset: resetSeller,
+    formState: { errors: sellerErrors },
+  } = useForm();
+
+  // ─── Live total calculation via watch ─────────────────────────────────────
+  const price = parseFloat(watch("price")) || 0;
+  const quantity = parseFloat(watch("quantity")) || 0;
+  const discount = parseFloat(watch("discount")) || 0;
+  const subtotal = price * quantity;
+  const total = subtotal - subtotal * (discount / 100);
+  const calculatedTotal = total > 0 ? total.toFixed(2) : "";
+
+  // ─── Submit handlers ──────────────────────────────────────────────────────
+  const onSubmit = (data) => {
+    console.log("Purchase data:", data);
+    // TODO: call your API here
+    reset();
   };
 
-  // Handle adding a new seller
-  const handleAddSeller = (e) => {
-    e.preventDefault();
+  const onAddSeller = async (data) => {
+    const newSeller = { seller_name: data.seller_name.trim() };
 
-    const newSeller = {
-      id: Date.now(),
-      seller_name: newSellerName.trim(),
-    };
+    mutateAsync(newSeller);
 
-    setSellers([...sellers, newSeller]);
-
-    setPurchaseForm({ ...purchaseForm, seller: newSeller.id });
-
-    // Reset and close modal
-    setNewSellerName("");
-    setIsSellerModalOpen(false);
-    document.body.style.overflow = "visible";
+    resetSeller();
+    closeSellerModal();
   };
 
+  // ─── Modal helpers ────────────────────────────────────────────────────────
   const openSellerModal = () => {
     setIsSellerModalOpen(true);
     document.body.style.overflow = "hidden";
@@ -116,14 +100,14 @@ const InventoryPurchase = () => {
   const closeSellerModal = () => {
     setIsSellerModalOpen(false);
     document.body.style.overflow = "visible";
-    setNewSellerName("");
+    resetSeller();
   };
 
   return (
-    <div className=" mx-auto p-4 relative">
+    <div className="mx-auto p-4 relative">
       <form
         className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 space-y-6"
-        onSubmit={handleSubmit}
+        onSubmit={handleSubmit(onSubmit)}
       >
         <div className="border-b border-gray-100 pb-4">
           <h3 className="text-xl font-semibold text-gray-800">
@@ -141,10 +125,7 @@ const InventoryPurchase = () => {
               Product <span className="text-red-500">*</span>
             </label>
             <select
-              value={purchaseForm.productId}
-              onChange={(e) =>
-                setPurchaseForm({ ...purchaseForm, productId: e.target.value })
-              }
+              {...register("productId", { required: "Product is required" })}
               className="w-full bg-gray-50 border border-gray-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none px-3 py-2.5 rounded-lg text-sm transition-all"
             >
               <option value="">Select Product</option>
@@ -154,6 +135,9 @@ const InventoryPurchase = () => {
                 </option>
               ))}
             </select>
+            {errors.productId && (
+              <p className="text-xs text-red-500">{errors.productId.message}</p>
+            )}
           </div>
 
           {/* Price */}
@@ -163,13 +147,16 @@ const InventoryPurchase = () => {
             </label>
             <input
               type="number"
-              value={purchaseForm.price}
-              onChange={(e) =>
-                setPurchaseForm({ ...purchaseForm, price: e.target.value })
-              }
               placeholder="e.g. 2345"
+              {...register("price", {
+                required: "Price is required",
+                min: { value: 0, message: "Price must be positive" },
+              })}
               className="w-full bg-gray-50 border border-gray-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none px-3 py-2.5 rounded-lg text-sm transition-all"
             />
+            {errors.price && (
+              <p className="text-xs text-red-500">{errors.price.message}</p>
+            )}
           </div>
 
           {/* Quantity */}
@@ -179,23 +166,23 @@ const InventoryPurchase = () => {
             </label>
             <input
               type="number"
-              value={purchaseForm.quantity}
-              onChange={(e) =>
-                setPurchaseForm({ ...purchaseForm, quantity: e.target.value })
-              }
               placeholder="e.g. 100"
+              {...register("quantity", {
+                required: "Quantity is required",
+                min: { value: 1, message: "Quantity must be at least 1" },
+              })}
               className="w-full bg-gray-50 border border-gray-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none px-3 py-2.5 rounded-lg text-sm transition-all"
             />
+            {errors.quantity && (
+              <p className="text-xs text-red-500">{errors.quantity.message}</p>
+            )}
           </div>
 
           {/* Unit */}
           <div className="flex flex-col gap-1.5">
             <label className="text-sm font-medium text-gray-700">Unit</label>
             <select
-              value={purchaseForm.unit}
-              onChange={(e) =>
-                setPurchaseForm({ ...purchaseForm, unit: e.target.value })
-              }
+              {...register("unit")}
               className="w-full bg-gray-50 border border-gray-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none px-3 py-2.5 rounded-lg text-sm transition-all"
             >
               <option value="">Select Unit</option>
@@ -214,16 +201,19 @@ const InventoryPurchase = () => {
             </label>
             <input
               type="number"
-              value={purchaseForm.discount}
-              onChange={(e) =>
-                setPurchaseForm({ ...purchaseForm, discount: e.target.value })
-              }
               placeholder="e.g. 10"
+              {...register("discount", {
+                min: { value: 0, message: "Discount can't be negative" },
+                max: { value: 100, message: "Discount can't exceed 100%" },
+              })}
               className="w-full bg-gray-50 border border-gray-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none px-3 py-2.5 rounded-lg text-sm transition-all"
             />
+            {errors.discount && (
+              <p className="text-xs text-red-500">{errors.discount.message}</p>
+            )}
           </div>
 
-          {/* Seller Name */}
+          {/* Seller */}
           <div className="flex flex-col gap-1.5">
             <div className="flex items-center gap-1.5">
               <label className="text-sm font-medium text-gray-700">
@@ -238,10 +228,7 @@ const InventoryPurchase = () => {
               </button>
             </div>
             <select
-              value={purchaseForm.seller}
-              onChange={(e) =>
-                setPurchaseForm({ ...purchaseForm, seller: e.target.value })
-              }
+              {...register("seller")}
               className="w-full bg-gray-50 border border-gray-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none px-3 py-2.5 rounded-lg text-sm transition-all"
             >
               <option value="">Select Seller</option>
@@ -253,14 +240,11 @@ const InventoryPurchase = () => {
             </select>
           </div>
 
-          {/* Buyer Name */}
+          {/* Buyer */}
           <div className="flex flex-col gap-1.5">
             <label className="text-sm font-medium text-gray-700">Buyer</label>
             <select
-              value={purchaseForm.buyer}
-              onChange={(e) =>
-                setPurchaseForm({ ...purchaseForm, buyer: e.target.value })
-              }
+              {...register("buyer")}
               className="w-full bg-gray-50 border border-gray-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none px-3 py-2.5 rounded-lg text-sm transition-all"
             >
               <option value="">Select Buyer</option>
@@ -272,14 +256,14 @@ const InventoryPurchase = () => {
             </select>
           </div>
 
-          {/* Total Price */}
+          {/* Total Price (read-only, derived) */}
           <div className="flex flex-col gap-1.5">
             <label className="text-sm font-medium text-gray-700">
               Total Price
             </label>
             <input
               type="text"
-              value={calculateTotal() ? `৳ ${calculateTotal()}` : ""}
+              value={calculatedTotal ? `৳ ${calculatedTotal}` : ""}
               placeholder="Calculated automatically"
               readOnly
               className="w-full bg-gray-100 border border-gray-200 px-3 py-2.5 rounded-lg text-sm font-semibold text-gray-700 cursor-not-allowed"
@@ -287,7 +271,7 @@ const InventoryPurchase = () => {
           </div>
         </div>
 
-        {/* Submit Button */}
+        {/* Submit */}
         <div className="flex justify-end pt-4 border-t border-gray-100">
           <button
             type="submit"
@@ -298,34 +282,44 @@ const InventoryPurchase = () => {
         </div>
       </form>
 
-      {/* --- Seller Add Modal --- */}
+      {/* ── Seller Modal ─────────────────────────────────────────────────────── */}
       {isSellerModalOpen && (
         <>
-          {/* Backdrop */}
           <div
             className="fixed inset-0 w-full h-full z-40 bg-gray-900/40 backdrop-blur-sm"
             onClick={closeSellerModal}
           />
-
-          {/* Modal Content */}
-          <div className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-white rounded-2xl shadow-2xl overflow-hidden z-50 w-11/12 max-w-sm p-6 animate-[slideIn_0.2s_ease]">
+          <div className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-white rounded-2xl shadow-2xl z-50 w-11/12 max-w-sm p-6 animate-[slideIn_0.2s_ease]">
             <h3 className="text-lg font-semibold text-gray-800 mb-4">
               Add New Seller
             </h3>
 
-            <form onSubmit={handleAddSeller} className="space-y-4">
+            <form
+              onSubmit={handleSubmitSeller(onAddSeller)}
+              className="space-y-4"
+            >
               <div className="flex flex-col gap-1.5">
                 <label className="text-sm font-medium text-gray-700">
                   Seller Name
                 </label>
                 <input
                   type="text"
-                  value={newSellerName}
-                  onChange={(e) => setNewSellerName(e.target.value)}
                   placeholder="e.g. Mr. Shafiq"
-                  className="w-full bg-gray-50 border border-gray-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none px-3 py-2.5 rounded-lg text-sm transition-all"
                   autoFocus
+                  {...registerSeller("seller_name", {
+                    required: "Seller name is required",
+                    minLength: {
+                      value: 2,
+                      message: "Name must be at least 2 characters",
+                    },
+                  })}
+                  className="w-full bg-gray-50 border border-gray-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none px-3 py-2.5 rounded-lg text-sm transition-all"
                 />
+                {sellerErrors.seller_name && (
+                  <p className="text-xs text-red-500">
+                    {sellerErrors.seller_name.message}
+                  </p>
+                )}
               </div>
 
               <div className="flex justify-end gap-3 mt-6">
@@ -338,9 +332,10 @@ const InventoryPurchase = () => {
                 </button>
                 <button
                   type="submit"
+                  disabled={isPending}
                   className="px-4 py-2 text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 rounded-lg transition-colors"
                 >
-                  Save Seller
+                  {isPending ? "Saving" : "Save Seller"}
                 </button>
               </div>
             </form>
