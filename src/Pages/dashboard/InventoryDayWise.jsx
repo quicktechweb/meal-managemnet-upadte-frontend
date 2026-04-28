@@ -20,15 +20,12 @@ const InventoryDayWise = () => {
   const [selectedMealType, setSelectedMealType] = useState(null);
   const [measures, setMeasures] = useState({});
   const [globalAmount, setGlobalAmount] = useState("");
+  const { data: getInventoryGlobalAmount } = useGetInventoryGlobalAmount();
   const [inputAmount, setInputAmount] = useState("");
 
   const { data } = useGlobalDayWise();
 
   const { mutateAsync, isPending } = useInventoryGlobalAmount();
-
-  const { data: getInventoryGlobalAmount } = useGetInventoryGlobalAmount();
-
-  console.log(getInventoryGlobalAmount);
 
   const instituteData = useMemo(() => {
     if (!data || !selectedDay || !selectedMealType) return [];
@@ -98,6 +95,7 @@ const InventoryDayWise = () => {
   useEffect(() => {
     if (getInventoryGlobalAmount?.global_amount !== undefined) {
       setGlobalAmount(String(getInventoryGlobalAmount.global_amount));
+      setInputAmount(String(getInventoryGlobalAmount.global_amount));
     }
   }, [getInventoryGlobalAmount]);
 
@@ -491,10 +489,7 @@ const InventoryDayWise = () => {
 
         {/* Overall Summary */}
         {summary.length > 0 && (
-          <div
-            style={{}}
-            className="bg-white rounded-xl border border-gray-100 overflow-hidden mt-4"
-          >
+          <div className="bg-white rounded-xl border border-gray-100 overflow-hidden mt-4">
             {/* Header */}
             <div className="px-5 py-3.5 border-b border-gray-100 flex items-center justify-between">
               <div className="flex items-center gap-2">
