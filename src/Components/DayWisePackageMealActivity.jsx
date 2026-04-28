@@ -211,8 +211,10 @@ const DayWisePackageMealActivity = ({ allWise }) => {
 
     // Regular meals — OFF
     const finalSelections = allSelectedMeals
-      // ?.filter((meal) => isMealOn(getKey(meal)))
+      ?.filter((meal) => isMealOn(getKey(meal)))
       ?.map((meal) => {
+        console.log(meal);
+
         const key = getKey(meal);
         const isAlternative = !!useAlternativeMap[key];
         const isGuestAlternative = !!guestUseAlternativeMap[key];
@@ -225,6 +227,7 @@ const DayWisePackageMealActivity = ({ allWise }) => {
           day: meal.day,
           meal_type: meal.package_title,
           is_on: isMealOn(getKey(meal)),
+          package_price: meal.package_price,
           start_time: meal.start_time,
           end_time: meal.end_time,
           selected_items: isAlternative
