@@ -4,6 +4,7 @@ import { FaPlus } from "react-icons/fa";
 import {
   useInventoryProductLists,
   useSellerCreate,
+  useSellerList,
 } from "../../api/cms/user.hook";
 
 const buyerLists = [
@@ -27,13 +28,7 @@ const UNITS = [
 const InventoryPurchase = () => {
   const { data: products } = useInventoryProductLists();
   const { mutateAsync, isPending } = useSellerCreate();
-
-  const [sellers, setSellers] = useState([
-    { id: 1, seller_name: "Mr. Rahim" },
-    { id: 2, seller_name: "Mr. Karim" },
-    { id: 3, seller_name: "Mr. Malek" },
-    { id: 4, seller_name: "Mr. Kuddush" },
-  ]);
+  const { data: sellers, isLoading } = useSellerList();
 
   const [isSellerModalOpen, setIsSellerModalOpen] = useState(false);
 
@@ -232,7 +227,7 @@ const InventoryPurchase = () => {
               className="w-full bg-gray-50 border border-gray-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none px-3 py-2.5 rounded-lg text-sm transition-all"
             >
               <option value="">Select Seller</option>
-              {sellers.map((u) => (
+              {sellers?.map((u) => (
                 <option key={u.id} value={u.id}>
                   {u.seller_name}
                 </option>
