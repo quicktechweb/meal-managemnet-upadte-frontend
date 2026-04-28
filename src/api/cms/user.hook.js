@@ -3,6 +3,8 @@ import {
   addBalanceFunction,
   approvedInstituteUserFunction,
   assignRolePermissionFunction,
+  buyerCreateFunction,
+  buyerListFunction,
   createInstituteMealOnOffTimeFunction,
   createInstituteRoleFunction,
   deleteInstituteRoleFunction,
@@ -448,8 +450,25 @@ export const useSellerList = () => {
 export const useSellerCreate = () => {
   const reactQuery = useQueryClient();
   return useMutation({
-    mutationKey: ["inventory-product-create"],
+    mutationKey: ["buyer-create"],
     mutationFn: (payload) => sellerCreateFunction(payload),
+    onSuccess: (data) => {
+      if (data?.success) {
+        toast.success(data?.message);
+        reactQuery.invalidateQueries(["buyer-list"]);
+      }
+    },
+    onError: (error) => {
+      toast.error(error?.response?.data?.message || "Something went wrong");
+    },
+  });
+};
+
+export const useBuyerCreate = () => {
+  const reactQuery = useQueryClient();
+  return useMutation({
+    mutationKey: ["buyer-create"],
+    mutationFn: (payload) => buyerCreateFunction(payload),
     onSuccess: (data) => {
       if (data?.success) {
         toast.success(data?.message);
@@ -459,5 +478,12 @@ export const useSellerCreate = () => {
     onError: (error) => {
       toast.error(error?.response?.data?.message || "Something went wrong");
     },
+  });
+};
+
+export const useBuyerList = () => {
+  return useQuery({
+    queryKey: ["buyer-list"],
+    queryFn: buyerListFunction,
   });
 };

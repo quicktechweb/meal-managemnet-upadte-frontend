@@ -214,3 +214,13 @@ export const sellerCreateFunction = async (payload) => {
   const { data } = await axiosPublic.post("/api/seller", payload);
   return data;
 };
+
+export const buyerCreateFunction = async (payload) => {
+  const { data } = await axiosPublic.post("/api/buyer", payload);
+  return data;
+};
+
+export const buyerListFunction = async () => {
+  const { data } = await axiosPublic.get("/api/buyer");
+  return data?.data;
+};

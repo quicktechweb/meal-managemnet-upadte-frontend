@@ -2,17 +2,12 @@ import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { FaPlus } from "react-icons/fa";
 import {
+  useBuyerCreate,
+  useBuyerList,
   useInventoryProductLists,
   useSellerCreate,
   useSellerList,
 } from "../../api/cms/user.hook";
-
-const buyerLists = [
-  { id: 1, buyer_name: "Mr. Rahim" },
-  { id: 2, buyer_name: "Mr. Karim" },
-  { id: 3, buyer_name: "Mr. Malek" },
-  { id: 4, buyer_name: "Mr. Kuddush" },
-];
 
 const UNITS = [
   "Pieces",
@@ -28,7 +23,12 @@ const UNITS = [
 const InventoryPurchase = () => {
   const { data: products } = useInventoryProductLists();
   const { mutateAsync, isPending } = useSellerCreate();
-  const { data: sellers, isLoading } = useSellerList();
+  const { mutateAsync: mutateBuyerAsync, isPending: isPendingBuyer } =
+    useBuyerCreate();
+  const { data: sellers } = useSellerList();
+  const { data: buyerLists } = useBuyerList();
+
+  console.log(buyerLists);
 
   const [isSellerModalOpen, setIsSellerModalOpen] = useState(false);
 
@@ -99,7 +99,7 @@ const InventoryPurchase = () => {
   const onAddBuyer = async (data) => {
     const newBuyer = { buyer_name: data.buyer_name.trim() };
 
-    mutateAsync(newBuyer);
+    mutateBuyerAsync(newBuyer);
 
     resetBuyer();
     closeBuyerModal();
@@ -283,7 +283,7 @@ const InventoryPurchase = () => {
               className="w-full bg-gray-50 border border-gray-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none px-3 py-2.5 rounded-lg text-sm transition-all"
             >
               <option value="">Select Buyer</option>
-              {buyerLists.map((u) => (
+              {buyerLists?.map((u) => (
                 <option key={u.id} value={u.id}>
                   {u.buyer_name}
                 </option>
@@ -428,10 +428,10 @@ const InventoryPurchase = () => {
                 </button>
                 <button
                   type="submit"
-                  disabled={isPending}
+                  disabled={isPendingBuyer}
                   className="px-4 py-2 text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 rounded-lg transition-colors"
                 >
-                  {isPending ? "Saving" : "Save Buyer"}
+                  {isPendingBuyer ? "Saving" : "Save Buyer"}
                 </button>
               </div>
             </form>
