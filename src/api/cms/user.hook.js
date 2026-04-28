@@ -11,6 +11,7 @@ import {
   getInstituteMealOnOffFunction,
   getInstituteRoleFunction,
   getInstituteUserMealOrderListsFunction,
+  getInventoryGlobalAmountFunction,
   getMealOnOffFunction,
   getPermissionFunction,
   globarDayWiseUserMealFunction,
@@ -22,6 +23,7 @@ import {
   instituteUserListFunction,
   instituteUserMealTypeFunction,
   instituteUserRoleChangeFunction,
+  inventoryGlobalAmountCreateFunction,
   inventoryProductAddFunction,
   inventoryProductListsFunction,
   inventoryPurchaseProductListFunction,
@@ -511,5 +513,29 @@ export const useInventoryPurchaseProductList = () => {
   return useQuery({
     queryKey: ["inventory-purchase-product"],
     queryFn: inventoryPurchaseProductListFunction,
+  });
+};
+
+export const useInventoryGlobalAmount = () => {
+  const reactQuery = useQueryClient(); 
+  return useMutation({
+    mutationKey: ["inventory-global-amount"],
+    mutationFn: (payload) => inventoryGlobalAmountCreateFunction(payload),
+    onSuccess: (data) => {
+      if (data?.success) {
+        toast.success(data?.message);
+        reactQuery.invalidateQueries(["inventory-global-amount"]);
+      }
+    },
+    onError: (error) => {
+      toast.error(error?.response?.data?.message || "Something went wrong");
+    },
+  });
+};
+
+export const useGetInventoryGlobalAmount = () => {
+  return useQuery({
+    queryKey: ["inventory-global-amount"],
+    queryFn: getInventoryGlobalAmountFunction,
   });
 };

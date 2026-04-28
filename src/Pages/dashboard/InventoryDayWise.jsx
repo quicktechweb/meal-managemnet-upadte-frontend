@@ -1,6 +1,10 @@
-import React, { useMemo, useState } from "react";
-import { useGlobalDayWise } from "../../api/cms/user.hook";
-import * as XLSX from "xlsx";
+import React, { useEffect, useMemo, useState } from "react";
+import {
+  useGetInventoryGlobalAmount,
+  useGlobalDayWise,
+  useInventoryGlobalAmount,
+} from "../../api/cms/user.hook";
+
 const InventoryDayWise = () => {
   const dayNames = [
     "Saturday",
@@ -16,8 +20,15 @@ const InventoryDayWise = () => {
   const [selectedMealType, setSelectedMealType] = useState(null);
   const [measures, setMeasures] = useState({});
   const [globalAmount, setGlobalAmount] = useState("");
+  const [inputAmount, setInputAmount] = useState("");
 
   const { data } = useGlobalDayWise();
+
+  const { mutateAsync, isPending } = useInventoryGlobalAmount();
+
+  const { data: getInventoryGlobalAmount } = useGetInventoryGlobalAmount();
+
+  console.log(getInventoryGlobalAmount);
 
   const instituteData = useMemo(() => {
     if (!data || !selectedDay || !selectedMealType) return [];
@@ -66,7 +77,7 @@ const InventoryDayWise = () => {
     return [...new Set(types)];
   }, [data, selectedDay]);
 
-  // Global amount set হলে সব items এ apply হবে, individual override থাকলে সেটা নেবে
+  // Global amount set
   const getEffectiveAmount = (key) => {
     if (measures[key] !== undefined && measures[key] !== "") {
       return parseFloat(measures[key]) || 0;
@@ -78,9 +89,17 @@ const InventoryDayWise = () => {
     setMeasures((prev) => ({ ...prev, [key]: value }));
   };
 
-  const handleGlobalAmountChange = (value) => {
-    setGlobalAmount(value);
+  const handleSaveGlobalAmount = async () => {
+    if (!inputAmount) return;
+    await mutateAsync({ global_amount: parseFloat(inputAmount) });
+    setGlobalAmount(inputAmount);
   };
+
+  useEffect(() => {
+    if (getInventoryGlobalAmount?.global_amount !== undefined) {
+      setGlobalAmount(String(getInventoryGlobalAmount.global_amount));
+    }
+  }, [getInventoryGlobalAmount]);
 
   const summary = useMemo(() => {
     if (instituteData?.length === 0) return [];
@@ -265,8 +284,8 @@ const InventoryDayWise = () => {
             <input
               type="number"
               min="0"
-              value={globalAmount}
-              onChange={(e) => handleGlobalAmountChange(e.target.value)}
+              value={inputAmount}
+              onChange={(e) => setInputAmount(e.target.value)}
               placeholder="0"
               className="w-32 text-center text-sm border border-gray-200 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent transition"
             />
@@ -277,7 +296,9 @@ const InventoryDayWise = () => {
             )}
             <button
               type="button"
-              className="inline-flex items-center gap-2 px-5 py-2.5 bg-blue-500 hover:bg-blue-600 active:scale-95 text-white text-sm font-semibold rounded-lg shadow-sm transition-all duration-200 cursor-pointer"
+              onClick={handleSaveGlobalAmount}
+              disabled={isPending}
+              className="inline-flex items-center gap-2 px-5 py-2.5 bg-blue-500 hover:bg-blue-600 active:scale-95 disabled:opacity-50 text-white text-sm font-semibold rounded-lg shadow-sm transition-all duration-200 cursor-pointer"
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -293,7 +314,7 @@ const InventoryDayWise = () => {
                 <polyline points="17 21 17 13 7 13 7 21" />
                 <polyline points="7 3 7 8 15 8" />
               </svg>
-              Save
+              {isPending ? "Saving..." : "Save"}
             </button>
           </div>
         </div>

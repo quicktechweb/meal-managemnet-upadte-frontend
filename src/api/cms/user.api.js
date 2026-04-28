@@ -238,3 +238,16 @@ export const inventoryPurchaseProductListFunction = async () => {
   return data?.data;
 };
 
+export const inventoryGlobalAmountCreateFunction = async (payload) => {
+  const { data } = await axiosPublic.post(
+    "/api/inventory-global-amount",
+    payload,
+  );
+
+  return data;
+};
+
+export const getInventoryGlobalAmountFunction = async () => {
+  const { data } = await axiosPublic.get("/api/inventory-global-amount");
+  return data;
+};
