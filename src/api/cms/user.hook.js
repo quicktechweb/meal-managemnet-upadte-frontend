@@ -24,6 +24,8 @@ import {
   instituteUserRoleChangeFunction,
   inventoryProductAddFunction,
   inventoryProductListsFunction,
+  inventoryPurchaseProductListFunction,
+  inventoryPurchaseProductsFunction,
   locationFunction,
   sellerCreateFunction,
   sellerListFunction,
@@ -485,5 +487,29 @@ export const useBuyerList = () => {
   return useQuery({
     queryKey: ["buyer-list"],
     queryFn: buyerListFunction,
+  });
+};
+
+export const useInventoryPurchaseProductCreate = () => {
+  const reactQuery = useQueryClient();
+  return useMutation({
+    mutationKey: ["inventory-purchase-product-create"],
+    mutationFn: (payload) => inventoryPurchaseProductsFunction(payload),
+    onSuccess: (data) => {
+      if (data?.success) {
+        toast.success(data?.message);
+        reactQuery.invalidateQueries(["inventory-purchase-product"]);
+      }
+    },
+    onError: (error) => {
+      toast.error(error?.response?.data?.message || "Something went wrong");
+    },
+  });
+};
+
+export const useInventoryPurchaseProductList = () => {
+  return useQuery({
+    queryKey: ["inventory-purchase-product"],
+    queryFn: inventoryPurchaseProductListFunction,
   });
 };

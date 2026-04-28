@@ -5,6 +5,8 @@ import {
   useBuyerCreate,
   useBuyerList,
   useInventoryProductLists,
+  useInventoryPurchaseProductCreate,
+  useInventoryPurchaseProductList,
   useSellerCreate,
   useSellerList,
 } from "../../api/cms/user.hook";
@@ -25,10 +27,14 @@ const InventoryPurchase = () => {
   const { mutateAsync, isPending } = useSellerCreate();
   const { mutateAsync: mutateBuyerAsync, isPending: isPendingBuyer } =
     useBuyerCreate();
+
+  const {
+    mutateAsync: mutateInventoryPurchaseProductAsync,
+    isPending: isPendingInventoryPurchaseProduct,
+  } = useInventoryPurchaseProductCreate();
+
   const { data: sellers } = useSellerList();
   const { data: buyerLists } = useBuyerList();
-
-  console.log(buyerLists);
 
   const [isSellerModalOpen, setIsSellerModalOpen] = useState(false);
 
@@ -44,13 +50,11 @@ const InventoryPurchase = () => {
     formState: { errors },
   } = useForm({
     defaultValues: {
-      productId: "",
+      product: "",
       seller: "",
       buyer: "",
-      transport_cost: "",
       discount: "",
       price: "",
-      selling_price: "",
       quantity: "",
       unit: "",
     },
@@ -81,8 +85,8 @@ const InventoryPurchase = () => {
   const calculatedTotal = total > 0 ? total.toFixed(2) : "";
 
   // ─── Submit handlers ──────────────────────────────────────────────────────
-  const onSubmit = (data) => {
-    console.log("Purchase data:", data);
+  const onSubmit = async (data) => {
+    await mutateInventoryPurchaseProductAsync(data);
 
     reset();
   };
@@ -151,18 +155,18 @@ const InventoryPurchase = () => {
               Product <span className="text-red-500">*</span>
             </label>
             <select
-              {...register("productId", { required: "Product is required" })}
+              {...register("product", { required: "Product is required" })}
               className="w-full bg-gray-50 border border-gray-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none px-3 py-2.5 rounded-lg text-sm transition-all"
             >
               <option value="">Select Product</option>
               {products?.map((p) => (
-                <option key={p.id} value={p.id}>
+                <option key={p._id} value={p._id}>
                   {p.title}
                 </option>
               ))}
             </select>
-            {errors.productId && (
-              <p className="text-xs text-red-500">{errors.productId.message}</p>
+            {errors.product && (
+              <p className="text-xs text-red-500">{errors.product.message}</p>
             )}
           </div>
 
@@ -259,7 +263,7 @@ const InventoryPurchase = () => {
             >
               <option value="">Select Seller</option>
               {sellers?.map((u) => (
-                <option key={u.id} value={u.id}>
+                <option key={u._id} value={u._id}>
                   {u.seller_name}
                 </option>
               ))}
@@ -284,7 +288,7 @@ const InventoryPurchase = () => {
             >
               <option value="">Select Buyer</option>
               {buyerLists?.map((u) => (
-                <option key={u.id} value={u.id}>
+                <option key={u._id} value={u._id}>
                   {u.buyer_name}
                 </option>
               ))}
@@ -310,9 +314,12 @@ const InventoryPurchase = () => {
         <div className="flex justify-end pt-4 border-t border-gray-100">
           <button
             type="submit"
+            disabled={isPendingInventoryPurchaseProduct}
             className="w-full md:w-auto bg-blue-600 hover:bg-blue-700 text-white font-medium px-8 py-2.5 rounded-lg text-sm transition-colors shadow-sm"
           >
-            Confirm Purchase
+            {isPendingInventoryPurchaseProduct
+              ? "Confirming"
+              : "Confirm Purchase"}
           </button>
         </div>
       </form>

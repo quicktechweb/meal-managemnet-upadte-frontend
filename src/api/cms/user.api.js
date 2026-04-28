@@ -224,3 +224,17 @@ export const buyerListFunction = async () => {
   const { data } = await axiosPublic.get("/api/buyer");
   return data?.data;
 };
+
+export const inventoryPurchaseProductsFunction = async (payload) => {
+  const { data } = await axiosPublic.post(
+    "/api/inventory-purchase-product",
+    payload,
+  );
+  return data;
+};
+
+export const inventoryPurchaseProductListFunction = async () => {
+  const { data } = await axiosPublic.get("/api/inventory-purchase-product");
+  return data?.data;
+};
+
