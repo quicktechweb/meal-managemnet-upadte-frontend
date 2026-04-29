@@ -29,7 +29,7 @@ const Bannerparts = ({ bannerData = [], isLoading }) => {
   return (
     <section
       id="home"
-      className="relative h-[480px] md:h-[500px] lg:h-[720px] bg-gradient-to-r from-purple-700 to-indigo-700 overflow-hidden"
+      className="relative h-[480px] md:h-[500px] lg:h-[620px] xl:h-[820px] bg-gradient-to-r from-purple-700 to-indigo-700 overflow-hidden"
     >
       {/* BACKGROUND SLIDER */}
       {bannerData.map((slide, i) => (
@@ -81,13 +81,13 @@ const Bannerparts = ({ bannerData = [], isLoading }) => {
       )}
 
       {/* RIGHT HERO IMAGE */}
-      <div className="absolute right-10 xl:right-60 top-24 z-20 hidden lg:block w-[480px] h-[520px]">
+      <div className="absolute right-10 lg:-right-50 xl:-right-10 2xl:right-60 top-24 z-20 hidden lg:block w-[480px] h-[520px]">
         {bannerData.map((slide, i) => (
           <img
             key={i}
             src={slide?.banner_image}
             alt="hero app"
-            className={`absolute top-0 left-0 w-[350px] h-[550px] transition-all duration-1000 ${
+            className={`absolute top-0 left-0 w-[250px] h-[450px] transition-all duration-1000 ${
               i === active
                 ? "opacity-100 translate-x-0"
                 : "opacity-0 translate-x-24"

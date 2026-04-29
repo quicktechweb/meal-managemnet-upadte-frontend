@@ -20,32 +20,32 @@ import { MdOutlineDocumentScanner } from "react-icons/md";
 import { useLayoutSwitch } from "../../providers/LayoutSwitchProvider";
 
 const topIcons = [
-  { icon: <Search size={18} />, label: "Search" },
-  { icon: <Camera size={18} />, label: "Camera" },
+  { icon: <Search size={16} />, label: "Search" },
+  { icon: <Camera size={16} />, label: "Camera" },
 
-  { icon: <Heart size={18} />, label: "For you" },
-  { icon: <MdOutlineDocumentScanner size={18} />, label: "Scanner" },
-  { icon: <PlusCircle size={18} />, label: "Add", special: true },
-  { icon: <Mic size={18} />, label: "Voice" },
-  { icon: <Bell size={18} />, label: "Notifications", badge: true },
-  { icon: <MapPin size={18} />, label: "Location" },
+  { icon: <Heart size={16} />, label: "For you" },
+  { icon: <MdOutlineDocumentScanner size={16} />, label: "Scanner" },
+  { icon: <PlusCircle size={16} />, label: "Add", special: true },
+  { icon: <Mic size={16} />, label: "Voice" },
+  { icon: <Bell size={16} />, label: "Notifications", badge: true },
+  { icon: <MapPin size={16} />, label: "Location" },
   { icon: "৳", label: "Currency" },
 ];
 
 const bottomIcons = [
-  { icon: <Utensils size={18} />, label: "A Food" },
-  { icon: <Home size={18} />, label: "Home", active: true },
-  { icon: <Bell size={18} />, label: "Notifications" },
-  { icon: <Menu size={18} />, label: "Menu" },
+  { icon: <Utensils size={16} />, label: "A Food" },
+  { icon: <Home size={16} />, label: "Home", active: true },
+  { icon: <Bell size={16} />, label: "Notifications" },
+  { icon: <Menu size={16} />, label: "Menu" },
   { icon: <ShoppingCart size={18} />, label: "Cart" },
-  { icon: <Heart size={18} />, label: "For you" },
-  { icon: <Globe size={18} />, label: "Language" },
+  { icon: <Heart size={16} />, label: "For you" },
+  { icon: <Globe size={16} />, label: "Language" },
 ];
 
 const IconButton = ({ icon, label, special, active, badge }) => {
   return (
     <div
-      className={`relative w-36 h-14 rounded-xl flex items-center justify-center cursor-pointer transition-all duration-300 group
+      className={`relative w-[70px] lg:w-[82px] xl:w-[108px] 2xl:w-30  h-10 2xl:h-14 rounded-xl flex items-center justify-center cursor-pointer transition-all duration-300 group 
       ${
         special
           ? "bg-gradient-to-br from-blue-500 via-indigo-500 to-purple-500 text-white  hover:scale-105 hover:-translate-y-1"
@@ -55,15 +55,10 @@ const IconButton = ({ icon, label, special, active, badge }) => {
       }`}
     >
       {/* icon */}
-      <div className="flex items-center gap-2 justify-center text-lg">
+      <div className="flex items-center gap-1 xl:gap-2 justify-center ">
         <span>{icon}</span>
-        <h3 className="font-semibold">{label}</h3>
+        <h3 className="font-semibold text-[12px] 2xl:text-base ">{label}</h3>
       </div>
-
-      {/* notification badge */}
-      {badge && (
-        <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-blue-500 rounded-full border-2 border-white animate-pulse" />
-      )}
     </div>
   );
 };
@@ -73,7 +68,7 @@ const TopNavbar = ({ setHideSidebar }) => {
   const { openPopup, setOpenPopup } = useLayoutSwitch();
   return (
     <div className="bg-white border-b border-gray-100 sticky top-0 z-50 w-full ">
-      <div className="mx-auto px-7 flex items-center gap-8 h-auto py-2">
+      <div className="mx-auto px-7 flex items-center gap-2 2xl:gap-8 h-auto py-2">
         {/* LEFT */}
         <div className="flex flex-col-reverse items-center gap-5">
           <div
@@ -88,12 +83,12 @@ const TopNavbar = ({ setHideSidebar }) => {
               setOpenPopup((prev) => !prev);
               document.body.style.overflow = "hidden";
             }}
-            className="cursor-pointer shrink-0"
+            className="cursor-pointer h-16 w-[80px] xl:w-[100px] shrink-0"
           >
             <img
               src={data?.logoUrl}
               alt={data?.siteName}
-              className="h-16 w-[100px] shrink-0 transition-all duration-300 hover:scale-110 "
+              className="w-full h-full shrink-0 transition-all duration-300 hover:scale-110 "
             />
           </div>
         </div>
@@ -102,8 +97,8 @@ const TopNavbar = ({ setHideSidebar }) => {
         <div className="w-px h-9 bg-gradient-to-b from-transparent via-gray-200 to-transparent flex-shrink-0" />
 
         {/* CENTER */}
-        <div className="flex items-center gap-6 ">
-          <div className="flex flex-col gap-2 ">
+        <div className="flex  items-center gap-2 2xl:gap-6 ">
+          <div className="flex flex-col gap-1 xl:gap-2 ">
             {/* top icons */}
             <div className="flex gap-1">
               {topIcons.map((item, i) => (
@@ -121,7 +116,7 @@ const TopNavbar = ({ setHideSidebar }) => {
 
           {/* RIGHT PROFILE */}
           <div>
-            <div className="w-28  rounded-2xl p-4 flex flex-col items-center gap-2  hover:-translate-y-1 transition-all duration-300 ">
+            <div className="w-20  rounded-2xl  flex flex-col items-center gap-2  hover:-translate-y-1 transition-all duration-300 ">
               <div className="relative">
                 <div className="p-[2px] rounded-full bg-gradient-to-tr from-blue-500 to-purple-500">
                   <img

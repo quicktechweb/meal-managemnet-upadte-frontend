@@ -30,23 +30,23 @@ const MealSystemLanding = () => {
       <div className="relative  px-6 grid grid-cols-1 lg:grid-cols-2 gap-5 md:gap-10 lg:gap-20 items-center">
         {/* LEFT CONTENT */}
         <div className="space-y-3">
-          <span className="inline-flex items-center gap-2 px-4 py-1 text-xs  lg:text-sm font-semibold text-orange-700 bg-orange-100 rounded-full ">
+          <span className="inline-flex items-center gap-2 px-4 py-1 text-xs  xl:text-sm font-semibold text-orange-700 bg-orange-100 rounded-full ">
             <FaUtensils /> Smart Meal Management System
           </span>
 
-          <h1 className="text-2xl lg:text-5xl font-extrabold text-gray-900 leading-tight tracking-tight">
+          <h1 className="text-2xl lg:text-3xl xl:text-5xl font-extrabold text-gray-900 leading-tight tracking-tight">
             Run Your Meal System <br />
             <span className="text-orange-600">Smarter, Clearer & Faster</span>
           </h1>
 
-          <p className="text-sm lg:text-lg text-gray-600 max-w-xl">
+          <p className="text-sm xl:text-lg text-gray-600 max-w-xl">
             A complete meal management solution for mess, hostel, office
             canteen, and meal services. Track meals daily, manage members,
             calculate costs automatically, and stay fully transparent.
           </p>
 
           {/* VALUE POINTS */}
-          <div className="mt-5 lg:mt-10 grid grid-cols-1 sm:grid-cols-3 gap-3 xl:gap-6">
+          <div className="mt-5 lg:mt-10 grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-3 xl:gap-6">
             {stats.map((stat, index) => (
               <motion.div
                 key={index}
@@ -55,12 +55,12 @@ const MealSystemLanding = () => {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: index * 0.2 }}
               >
-                <stat.icon className="text-orange-600 text-xl  shrink-0 lg:text-2xl mt-1" />
+                <stat.icon className="text-orange-600 text-xl  shrink-0 xl:text-2xl mt-1" />
                 <div>
-                  <p className="font-semibold text-sm lg:text-base  text-gray-800">
+                  <p className="font-semibold text-sm xl:text-base  text-gray-800">
                     {stat.title}
                   </p>
-                  <p className="text-xs lg:text-sm text-gray-500">
+                  <p className="text-xs xl:text-sm text-gray-500">
                     {stat.desc}
                   </p>
                 </div>
@@ -69,7 +69,7 @@ const MealSystemLanding = () => {
           </div>
 
           {/* CTA */}
-          <div className="mt-6 lg:mt-12 flex flex-wrap gap-2 lg:gap-4">
+          <div className="mt-6 xl:mt-12 flex flex-wrap gap-2 lg:gap-4">
             <Link to="/register/user">
               <button className="px-8 py-2 lg:py-3 bg-orange-600 text-white font-semibold rounded-xl shadow-lg hover:bg-orange-700 hover:scale-105 transform transition cursor-pointer text-sm lg:text-base">
                 Food

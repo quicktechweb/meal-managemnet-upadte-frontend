@@ -7,28 +7,28 @@ import { RiStarSmileLine } from "react-icons/ri";
 import { CiShop } from "react-icons/ci";
 
 const mainNav = [
-  { icon: <AiOutlineHome size={18} />, label: "Home", sectionId: "home" },
+  { icon: <AiOutlineHome size={16} />, label: "Home", sectionId: "home" },
   {
-    icon: <MdOutlineRestaurantMenu size={18} />,
+    icon: <MdOutlineRestaurantMenu size={16} />,
     label: "Meal",
     sectionId: "features",
     badge: "New",
   },
   {
-    icon: <BiDish size={18} />,
+    icon: <BiDish size={16} />,
     label: "Why Choose Us",
     sectionId: "why-choose-us",
 
     badgeRed: true,
   },
   {
-    icon: <RiStarSmileLine size={18} />,
+    icon: <RiStarSmileLine size={16} />,
     label: "Review",
     sectionId: "testimonial",
   },
-  { icon: <MdOutlineFoodBank size={18} />, label: "Food", sectionId: "food" },
-  { icon: <CiShop size={18} />, label: "E-Commerce", sectionId: "ecommerce" },
-  { icon: <CiShop size={18} />, label: "App", sectionId: "app" },
+  { icon: <MdOutlineFoodBank size={16} />, label: "Food", sectionId: "food" },
+  { icon: <CiShop size={16} />, label: "E-Commerce", sectionId: "ecommerce" },
+  { icon: <CiShop size={16} />, label: "App", sectionId: "app" },
 ];
 
 const HomeSidebar = ({ hideSidebar }) => {
@@ -42,7 +42,7 @@ const HomeSidebar = ({ hideSidebar }) => {
 
   return (
     <div
-      className={`${hideSidebar ? "w-[260px]" : "w-0"} 
+      className={`${hideSidebar ? "w-[200px] xl:w-[260px]" : "w-0"} 
       duration-300 bg-white border-r border-gray-100 shadow-sm
       h-[calc(100vh-80px)] sticky top-20 self-start shrink-0
       flex flex-col overflow-hidden transition-all`}
