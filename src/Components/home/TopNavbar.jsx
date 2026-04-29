@@ -86,7 +86,7 @@ const smmobilebottomIcons = [
 const IconButton = ({ icon, label, special, active, badge }) => {
   return (
     <div
-      className={`relative w-[45px] sm:w-[55px] md:w-[60px] lg:w-[82px] xl:w-[108px] 2xl:w-30  h-10 2xl:h-14 rounded-xl flex items-center justify-center cursor-pointer transition-all duration-300 group 
+      className={`relative w-[45px] sm:w-[55px] md:w-[60px] lg:w-[82px] xl:w-[108px] 2xl:w-40  h-10 2xl:h-14 rounded-xl flex items-center justify-center cursor-pointer transition-all duration-300 group 
       ${
         special
           ? "bg-gradient-to-br from-blue-500 via-indigo-500 to-purple-500 text-white  hover:scale-105 hover:-translate-y-1"
@@ -98,7 +98,7 @@ const IconButton = ({ icon, label, special, active, badge }) => {
       {/* icon */}
       <div className="flex flex-col lg:flex-row items-center gap-1 xl:gap-2 justify-center ">
         <span>{icon}</span>
-        <h3 className="font-semibold text-[10px] lg:text-[12px] 2xl:text-base ">
+        <h3 className="font-semibold text-[10px] lg:text-[12px] 2xl:text-lg ">
           {label}
         </h3>
       </div>
@@ -182,7 +182,7 @@ const TopNavbar = ({ setHideSidebar, setSidebarOpen }) => {
           {/* eikhane click korle side bar hbe */}
           <div
             onClick={() => setSidebarOpen(true)}
-            className="text-3xl font-bold"
+            className="text-3xl font-bold md:hidden"
           >
             <CiMenuFries />
           </div>

@@ -81,7 +81,7 @@ const MenuSidebar = ({ isOpen, setIsOpen }) => {
       <div
         className={`fixed top-0 left-0 h-full w-[260px] bg-white z-50 shadow-xl transition-all duration-300 flex flex-col
         ${isOpen ? "translate-x-0" : "-translate-x-full"}
-        md:translate-x-0 md:static md:shadow-none`}
+        md:translate-x-0 md:hidden md:shadow-none`}
       >
         {/* HEADER */}
         <div className="h-16 flex items-center justify-center border-b">
