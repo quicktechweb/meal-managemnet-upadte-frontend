@@ -3,8 +3,34 @@ import { CiShop } from "react-icons/ci";
 import { IoFastFood } from "react-icons/io5";
 import { RiRidingFill } from "react-icons/ri";
 import { GiMeal } from "react-icons/gi";
+import { useLayoutSwitch } from "../../providers/LayoutSwitchProvider";
+
+const menu = [
+  {
+    title: "Meal",
+    icon: GiMeal,
+    slug: "meal",
+  },
+  {
+    title: "E-commerce",
+    icon: CiShop,
+    slug: "e-commerce",
+  },
+  {
+    title: "Food",
+    icon: IoFastFood,
+    slug: "food",
+  },
+  {
+    title: "Ride",
+    icon: RiRidingFill,
+    slug: "ride",
+  },
+];
 
 const HomePopover = () => {
+  const { selectedMenu, setSelectedMenu, setOpenPopup } = useLayoutSwitch();
+
   return (
     <div className="absolute top-14 left-2 w-[340px] bg-white rounded-2xl shadow-2xl overflow-hidden z-50">
       {/* Header */}
@@ -14,13 +40,28 @@ const HomePopover = () => {
 
       {/* Favorites grid */}
       <div className="grid grid-cols-3 px-2 pb-2">
-        <button className=" cursor-pointer flex flex-col items-center gap-1.5 py-4 rounded-xl transition-colors">
-          <div className="w-[52px] h-[52px] bg-gray-100 rounded-full flex items-center justify-center">
-            <GiMeal />
-          </div>
-          <span className="text-[12px] font-semibold text-[#202124]">Meal</span>
-        </button>
-        <button className=" cursor-pointer flex flex-col items-center gap-1.5 py-4 rounded-xl transition-colors">
+        {menu?.map((m) => (
+          <button
+            type="button"
+            onClick={() => {
+              setSelectedMenu(m.slug);
+              setOpenPopup(false);
+              document.body.style.overflow = "visible";
+            }}
+            className=" cursor-pointer flex flex-col items-center gap-1.5 py-4 rounded-xl transition-colors"
+          >
+            <div
+              className={`w-[52px] h-[52px] ${selectedMenu === m.slug ? "bg-blue-200 " : "bg-gray-100"}  rounded-full flex items-center justify-center duration-300`}
+            >
+              {<m.icon />}
+            </div>
+            <span className="text-[12px] font-semibold text-[#202124]">
+              {m.title}
+            </span>
+          </button>
+        ))}
+
+        {/* <button className=" cursor-pointer flex flex-col items-center gap-1.5 py-4 rounded-xl transition-colors">
           <div className="w-[52px] h-[52px] bg-gray-100 rounded-full flex items-center justify-center">
             <CiShop />
           </div>
@@ -39,7 +80,7 @@ const HomePopover = () => {
             <RiRidingFill />
           </div>
           <span className="text-[12px] font-semibold text-[#202124]">Ride</span>
-        </button>
+        </button> */}
       </div>
 
       {/* Divider */}

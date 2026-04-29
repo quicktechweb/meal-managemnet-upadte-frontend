@@ -12,6 +12,7 @@ import { Toaster } from "react-hot-toast";
 import StepProvider from "./providers/StepProvider";
 import InstituteAuthProvider from "./providers/InstituteAuthProvider";
 import { PermissionProvider } from "./Hooks/usePermission";
+import LayoutSwitchProvider from "./providers/LayoutSwitchProvider";
 const queryClient = new QueryClient();
 
 createRoot(document.getElementById("root")).render(
@@ -21,8 +22,10 @@ createRoot(document.getElementById("root")).render(
         <StepProvider>
           <PermissionProvider>
             <Provider store={store}>
-              <RouterProvider router={router} />
-              <Toaster />
+              <LayoutSwitchProvider>
+                <RouterProvider router={router} />
+                <Toaster />
+              </LayoutSwitchProvider>
             </Provider>
           </PermissionProvider>
         </StepProvider>

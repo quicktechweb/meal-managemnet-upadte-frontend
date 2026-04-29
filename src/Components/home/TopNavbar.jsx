@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import { useGetWebsiteData } from "../../api/admin/admin.api";
 import {
   Search,
@@ -17,6 +17,7 @@ import {
 import { FiMenu } from "react-icons/fi";
 import HomePopover from "./HomePopover";
 import { MdOutlineDocumentScanner } from "react-icons/md";
+import { useLayoutSwitch } from "../../providers/LayoutSwitchProvider";
 
 const topIcons = [
   { icon: <Search size={18} />, label: "Search" },
@@ -67,14 +68,14 @@ const IconButton = ({ icon, label, special, active, badge }) => {
   );
 };
 
-const TopNavbar = ({ setHideSidebar, open, setOpen }) => {
+const TopNavbar = ({ setHideSidebar }) => {
   const { data } = useGetWebsiteData();
-
+  const { openPopup, setOpenPopup } = useLayoutSwitch();
   return (
     <div className="bg-white border-b border-gray-100 sticky top-0 z-50 w-full ">
       <div className="mx-auto px-7 flex items-center gap-8 h-auto py-2">
         {/* LEFT */}
-        <div className="flex items-center gap-5">
+        <div className="flex flex-col-reverse items-center gap-5">
           <div
             onClick={() => setHideSidebar((prev) => !prev)}
             className="text-3xl font-semibold cursor-pointer hover:text-blue-500 transition"
@@ -84,7 +85,7 @@ const TopNavbar = ({ setHideSidebar, open, setOpen }) => {
 
           <div
             onClick={() => {
-              setOpen((prev) => !prev);
+              setOpenPopup((prev) => !prev);
               document.body.style.overflow = "hidden";
             }}
             className="cursor-pointer shrink-0"
@@ -143,13 +144,13 @@ const TopNavbar = ({ setHideSidebar, open, setOpen }) => {
       </div>
 
       {/* popover */}
-      {open && <HomePopover />}
+      {openPopup && <HomePopover />}
 
-      {open && (
+      {openPopup && (
         <div
           className="fixed inset-0 w-full h-full z-40 backdrop-blur-sm"
           onClick={() => {
-            setOpen(false);
+            setOpenPopup(false);
             document.body.style.overflow = "visible";
           }}
         />

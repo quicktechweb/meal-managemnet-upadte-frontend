@@ -4,18 +4,15 @@ import { Outlet } from "react-router-dom";
 import TopNavbar from "../Components/home/TopNavbar";
 import HomeSidebar from "../Components/home/HomeSidebar";
 import HomePopover from "../Components/home/HomePopover";
+import { useLayoutSwitch } from "../providers/LayoutSwitchProvider";
 
 const MainLayout = () => {
   const [hideSidebar, setHideSidebar] = useState(true);
-  const [open, setOpen] = useState(false);
+  const { openPopup, setOpenPopup } = useLayoutSwitch();
 
   return (
     <div className="w-full">
-      <TopNavbar
-        open={open}
-        setOpen={setOpen}
-        setHideSidebar={setHideSidebar}
-      />
+      <TopNavbar setHideSidebar={setHideSidebar} />
       <div className={`flex `}>
         <HomeSidebar hideSidebar={hideSidebar} />
         {/* <div
@@ -29,12 +26,12 @@ const MainLayout = () => {
       </div>
 
       {/* popover */}
-      {open && <HomePopover />}
+      {openPopup && <HomePopover />}
 
-      {open && (
+      {openPopup && (
         <div
           className="fixed inset-0 w-full h-full z-40 backdrop-blur-sm"
-          onClick={() => setOpen(false)}
+          onClick={() => setOpenPopup(false)}
         />
       )}
     </div>
