@@ -106,7 +106,7 @@ const IconButton = ({ icon, label, special, active, badge }) => {
   );
 };
 
-const TopNavbar = ({ setHideSidebar }) => {
+const TopNavbar = ({ setHideSidebar, setSidebarOpen }) => {
   const { data } = useGetWebsiteData();
   const { openPopup, setOpenPopup } = useLayoutSwitch();
   return (
@@ -179,9 +179,11 @@ const TopNavbar = ({ setHideSidebar }) => {
             </div>
           </div>
 
-          
           {/* eikhane click korle side bar hbe */}
-          <div className="text-3xl font-bold">
+          <div
+            onClick={() => setSidebarOpen(true)}
+            className="text-3xl font-bold"
+          >
             <CiMenuFries />
           </div>
 

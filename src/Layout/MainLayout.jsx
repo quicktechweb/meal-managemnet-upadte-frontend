@@ -28,7 +28,11 @@ const MainLayout = () => {
 
   return (
     <div className="w-full">
-      <TopNavbar setHideSidebar={setHideSidebar} />
+      <TopNavbar
+        sidebarOpen={sidebarOpen}
+        setSidebarOpen={setSidebarOpen}
+        setHideSidebar={setHideSidebar}
+      />
       <div className={`flex `}>
         <HomeSidebar hideSidebar={hideSidebar} />
         {/* <div
