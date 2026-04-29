@@ -6,6 +6,8 @@ import {
 } from "../../api/cms/user.hook";
 import InventoryDayWiseTableList from "./InventoryDayWiseTableList";
 import InventoryDayWIseSummary from "./InventoryDayWIseSummary";
+import { FaFileCsv, FaFilePdf, FaPlus, FaPrint, FaTrash } from "react-icons/fa";
+import InventoryIngredients from "./InventoryIngredients";
 
 const InventoryDayWise = () => {
   const dayNames = [
@@ -22,13 +24,20 @@ const InventoryDayWise = () => {
   const [selectedMealType, setSelectedMealType] = useState(null);
   const [measures, setMeasures] = useState({});
   const [globalAmount, setGlobalAmount] = useState("");
+
   const { data: getInventoryGlobalAmount } = useGetInventoryGlobalAmount();
   const [inputAmount, setInputAmount] = useState("");
 
   const { data } = useGlobalDayWise();
 
   const { mutateAsync, isPending } = useInventoryGlobalAmount();
-
+  // Global amount set
+  const getEffectiveAmount = (key) => {
+    if (measures[key] !== undefined && measures[key] !== "") {
+      return parseFloat(measures[key]) || 0;
+    }
+    return parseFloat(globalAmount) || 0;
+  };
   const instituteData = useMemo(() => {
     if (!data || !selectedDay || !selectedMealType) return [];
 
@@ -65,6 +74,33 @@ const InventoryDayWise = () => {
       .filter((inst) => inst.items.length > 0);
   }, [data, selectedDay, selectedMealType]);
 
+  const summary = useMemo(() => {
+    if (instituteData?.length === 0) return [];
+
+    const summaryMap = {};
+
+    instituteData.forEach((institute) => {
+      institute.items.forEach((item) => {
+        const key = `${institute.instituteId}_${item.title}`;
+        const effectiveAmount = getEffectiveAmount(key);
+        const totalKg = (item.count * effectiveAmount) / 1000;
+
+        if (!summaryMap[item.title]) {
+          summaryMap[item.title] = { totalCount: 0, totalKg: 0 };
+        }
+        summaryMap[item.title].totalCount += item.count;
+        summaryMap[item.title].totalKg += totalKg;
+      });
+    });
+
+    return Object.entries(summaryMap).map(([title, values]) => ({
+      title,
+      ...values,
+    }));
+  }, [instituteData, measures, globalAmount]);
+
+  console.log(summary);
+
   const mealTypes = useMemo(() => {
     if (!data || !selectedDay) return [];
     const types = data.flatMap(
@@ -75,14 +111,6 @@ const InventoryDayWise = () => {
     );
     return [...new Set(types)];
   }, [data, selectedDay]);
-
-  // Global amount set
-  const getEffectiveAmount = (key) => {
-    if (measures[key] !== undefined && measures[key] !== "") {
-      return parseFloat(measures[key]) || 0;
-    }
-    return parseFloat(globalAmount) || 0;
-  };
 
   const handleSaveGlobalAmount = async () => {
     if (!inputAmount) return;
@@ -96,6 +124,8 @@ const InventoryDayWise = () => {
       setInputAmount(String(getInventoryGlobalAmount.global_amount));
     }
   }, [getInventoryGlobalAmount]);
+
+  // ────────────────────────────────────────────────────────────────
 
   return (
     <div className="min-h-screen p-6">
@@ -215,7 +245,18 @@ const InventoryDayWise = () => {
           measures={measures}
           globalAmount={globalAmount}
           getEffectiveAmount={getEffectiveAmount}
+          summary={summary}
         />
+
+        {/* day wise and meal type */}
+
+        {selectedDay && selectedMealType && (
+          <InventoryIngredients
+            selectedDay={selectedDay}
+            selectedMealType={selectedMealType}
+            summary={summary}
+          />
+        )}
       </div>
     </div>
   );

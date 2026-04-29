@@ -1,38 +1,10 @@
 import React, { useMemo } from "react";
 
 const InventoryDayWIseSummary = ({
-  instituteData,
+  summary,
   selectedDay,
   selectedMealType,
-  measures,
-  globalAmount,
-  getEffectiveAmount,
 }) => {
-  const summary = useMemo(() => {
-    if (instituteData?.length === 0) return [];
-
-    const summaryMap = {};
-
-    instituteData.forEach((institute) => {
-      institute.items.forEach((item) => {
-        const key = `${institute.instituteId}_${item.title}`;
-        const effectiveAmount = getEffectiveAmount(key);
-        const totalKg = (item.count * effectiveAmount) / 1000;
-
-        if (!summaryMap[item.title]) {
-          summaryMap[item.title] = { totalCount: 0, totalKg: 0 };
-        }
-        summaryMap[item.title].totalCount += item.count;
-        summaryMap[item.title].totalKg += totalKg;
-      });
-    });
-
-    return Object.entries(summaryMap).map(([title, values]) => ({
-      title,
-      ...values,
-    }));
-  }, [instituteData, measures, globalAmount]);
-
   // ── CSV ──────────────────────────────────────────────
   const handleCSVDownload = () => {
     const headers = ["#", "Item Name", "Total Quantity", "Total Amount (kg)"];
