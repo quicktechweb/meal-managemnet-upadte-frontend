@@ -44,8 +44,8 @@ const HomeSidebar = ({ hideSidebar }) => {
     <div
       className={`${hideSidebar ? "w-[200px] xl:w-[260px]" : "w-0"} 
       duration-300 bg-white border-r border-gray-100 shadow-sm
-      h-[calc(100vh-80px)] sticky top-20 self-start shrink-0
-      flex flex-col overflow-hidden transition-all`}
+      lg:h-[calc(100vh-80px)] fixed z-[9999] lg:sticky lg:top-20 self-start shrink-0
+      flex flex-col overflow-hidden min-h-screen transition-all`}
     >
       <div className="flex-1 overflow-y-auto px-2.5 py-2 scrollbar-thin">
         {mainNav.map((item) => (

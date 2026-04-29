@@ -19,6 +19,8 @@ import HomePopover from "./HomePopover";
 import { MdOutlineDocumentScanner } from "react-icons/md";
 import { useLayoutSwitch } from "../../providers/LayoutSwitchProvider";
 
+import { CiMenuFries } from "react-icons/ci";
+
 const topIcons = [
   { icon: <Search size={16} />, label: "Search" },
   { icon: <Camera size={16} />, label: "Camera" },
@@ -32,6 +34,25 @@ const topIcons = [
   { icon: "৳", label: "Currency" },
 ];
 
+const mobiletopIcons = [
+  { icon: <Search size={16} />, label: "Search" },
+  { icon: <Camera size={16} />, label: "Camera" },
+  { icon: <MdOutlineDocumentScanner size={16} />, label: "Scanner" },
+  { icon: <PlusCircle size={16} />, label: "Add", special: true },
+
+  { icon: <Mic size={16} />, label: "Voice" },
+  { icon: <Bell size={16} />, label: "Notifications", badge: true },
+
+  { icon: "৳", label: "Currency" },
+];
+
+const smmobiletopIcons = [
+  { icon: <Search size={16} /> },
+  { icon: <PlusCircle size={16} />, special: true },
+  { icon: <Heart size={16} /> },
+  { icon: <Search size={16} /> },
+];
+
 const bottomIcons = [
   { icon: <Utensils size={16} />, label: "A Food" },
   { icon: <Home size={16} />, label: "Home", active: true },
@@ -42,10 +63,30 @@ const bottomIcons = [
   { icon: <Globe size={16} />, label: "Language" },
 ];
 
+const mobilebottomIcons = [
+  { icon: <Utensils size={16} />, label: "A Food" },
+  { icon: <Home size={16} />, label: "Home", active: true },
+  { icon: <Bell size={16} />, label: "Notifications" },
+  { icon: <Menu size={16} />, label: "Menu" },
+  { icon: <ShoppingCart size={18} />, label: "Cart" },
+
+  { icon: <Globe size={16} />, label: "Language" },
+  { icon: <MapPin size={16} />, label: "Location" },
+];
+
+const smmobilebottomIcons = [
+  { icon: <Home size={16} />, active: true },
+
+  { icon: <ShoppingCart size={18} /> },
+
+  { icon: <Globe size={16} /> },
+  { icon: <MapPin size={16} /> },
+];
+
 const IconButton = ({ icon, label, special, active, badge }) => {
   return (
     <div
-      className={`relative w-[70px] lg:w-[82px] xl:w-[108px] 2xl:w-30  h-10 2xl:h-14 rounded-xl flex items-center justify-center cursor-pointer transition-all duration-300 group 
+      className={`relative w-[45px] sm:w-[55px] md:w-[60px] lg:w-[82px] xl:w-[108px] 2xl:w-30  h-10 2xl:h-14 rounded-xl flex items-center justify-center cursor-pointer transition-all duration-300 group 
       ${
         special
           ? "bg-gradient-to-br from-blue-500 via-indigo-500 to-purple-500 text-white  hover:scale-105 hover:-translate-y-1"
@@ -55,9 +96,11 @@ const IconButton = ({ icon, label, special, active, badge }) => {
       }`}
     >
       {/* icon */}
-      <div className="flex items-center gap-1 xl:gap-2 justify-center ">
+      <div className="flex flex-col lg:flex-row items-center gap-1 xl:gap-2 justify-center ">
         <span>{icon}</span>
-        <h3 className="font-semibold text-[12px] 2xl:text-base ">{label}</h3>
+        <h3 className="font-semibold text-[10px] lg:text-[12px] 2xl:text-base ">
+          {label}
+        </h3>
       </div>
     </div>
   );
@@ -68,12 +111,12 @@ const TopNavbar = ({ setHideSidebar }) => {
   const { openPopup, setOpenPopup } = useLayoutSwitch();
   return (
     <div className="bg-white border-b border-gray-100 sticky top-0 z-50 w-full ">
-      <div className="mx-auto px-7 flex items-center gap-2 2xl:gap-8 h-auto py-2">
+      <div className="mx-auto px-3.5 xl:px-7 flex items-center gap-2 2xl:gap-8 h-auto py-2">
         {/* LEFT */}
         <div className="flex flex-col-reverse items-center gap-5">
           <div
             onClick={() => setHideSidebar((prev) => !prev)}
-            className="text-3xl font-semibold cursor-pointer hover:text-blue-500 transition"
+            className="text-xl xl:text-3xl font-semibold cursor-pointer hover:text-blue-500 transition"
           >
             <FiMenu />
           </div>
@@ -83,7 +126,7 @@ const TopNavbar = ({ setHideSidebar }) => {
               setOpenPopup((prev) => !prev);
               document.body.style.overflow = "hidden";
             }}
-            className="cursor-pointer h-16 w-[80px] xl:w-[100px] shrink-0"
+            className="cursor-pointer h-16 w-[70px] lg:w-[80px] xl:w-[100px] shrink-0"
           >
             <img
               src={data?.logoUrl}
@@ -97,38 +140,66 @@ const TopNavbar = ({ setHideSidebar }) => {
         <div className="w-px h-9 bg-gradient-to-b from-transparent via-gray-200 to-transparent flex-shrink-0" />
 
         {/* CENTER */}
-        <div className="flex  items-center gap-2 2xl:gap-6 ">
+        <div className="flex  items-center w-full justify-between md:justify-normal  gap-2 2xl:gap-6 ">
           <div className="flex flex-col gap-1 xl:gap-2 ">
             {/* top icons */}
-            <div className="flex gap-1">
+            <div className="md:flex hidden gap-1">
               {topIcons.map((item, i) => (
+                <IconButton key={i} {...item} />
+              ))}
+            </div>
+            <div className="hidden sm:flex md:hidden gap-1">
+              {mobiletopIcons.map((item, i) => (
+                <IconButton key={i} {...item} />
+              ))}
+            </div>
+
+            <div className="flex sm:hidden gap-1">
+              {smmobiletopIcons.map((item, i) => (
+                <IconButton key={i} {...item} />
+              ))}
+            </div>
+
+            <div className="hidden sm:flex md:hidden gap-1">
+              {mobilebottomIcons.map((item, i) => (
+                <IconButton key={i} {...item} />
+              ))}
+            </div>
+            <div className="flex sm:hidden gap-1">
+              {smmobilebottomIcons.map((item, i) => (
                 <IconButton key={i} {...item} />
               ))}
             </div>
 
             {/* bottom icons */}
-            <div className="flex gap-1">
+            <div className="md:flex hidden gap-1">
               {bottomIcons.map((item, i) => (
                 <IconButton key={i} {...item} />
               ))}
             </div>
           </div>
 
+          
+          {/* eikhane click korle side bar hbe */}
+          <div className="text-3xl font-bold">
+            <CiMenuFries />
+          </div>
+
           {/* RIGHT PROFILE */}
-          <div>
-            <div className="w-20  rounded-2xl  flex flex-col items-center gap-2  hover:-translate-y-1 transition-all duration-300 ">
+          <div className="md:block hidden">
+            <div className="rounded-2xl  flex flex-col items-center gap-2  hover:-translate-y-1 transition-all duration-300 ">
               <div className="relative">
-                <div className="p-[2px] rounded-full bg-gradient-to-tr from-blue-500 to-purple-500">
+                <div className=" rounded-full bg-gradient-to-tr from-blue-500 to-purple-500">
                   <img
                     src="https://i.pravatar.cc/100"
                     alt="profile"
-                    className="w-14 h-14 rounded-full object-cover"
+                    className="w-10 h-10 lg:w-14 lg:h-14 rounded-full object-cover"
                   />
                 </div>
               </div>
 
-              <div className="text-center">
-                <h3 className="text-sm font-semibold text-gray-800">
+              <div className="text-center hidden sm:block">
+                <h3 className="text-sm whitespace-nowrap font-semibold text-gray-800">
                   Al abadan
                 </h3>
                 <p className="text-xs text-gray-500">Admin</p>
@@ -150,6 +221,8 @@ const TopNavbar = ({ setHideSidebar }) => {
           }}
         />
       )}
+
+      {/* mobile menu */}
     </div>
   );
 };

@@ -1,14 +1,30 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Outlet } from "react-router-dom";
 
 import TopNavbar from "../Components/home/TopNavbar";
 import HomeSidebar from "../Components/home/HomeSidebar";
 import HomePopover from "../Components/home/HomePopover";
 import { useLayoutSwitch } from "../providers/LayoutSwitchProvider";
+import MenuSidebar from "../Components/home/MenuSidebar";
 
 const MainLayout = () => {
   const [hideSidebar, setHideSidebar] = useState(true);
   const { openPopup, setOpenPopup } = useLayoutSwitch();
+
+  const [sidebarOpen, setSidebarOpen] = useState(false);
+
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth < 1024) {
+        setHideSidebar(false);
+      }
+    };
+
+    handleResize();
+
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
   return (
     <div className="w-full">
@@ -34,6 +50,8 @@ const MainLayout = () => {
           onClick={() => setOpenPopup(false)}
         />
       )}
+
+      <MenuSidebar isOpen={sidebarOpen} setIsOpen={setSidebarOpen} />
     </div>
   );
 };
