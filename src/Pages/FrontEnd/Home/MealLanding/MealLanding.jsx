@@ -70,7 +70,7 @@ const MealSystemLanding = () => {
 
           {/* CTA */}
           <div className="mt-6 lg:mt-12 flex flex-wrap gap-2 lg:gap-4">
-            <Link to="/dashboard/mealmanagement">
+            <Link to="/register/user">
               <button className="px-8 py-2 lg:py-3 bg-orange-600 text-white font-semibold rounded-xl shadow-lg hover:bg-orange-700 hover:scale-105 transform transition cursor-pointer text-sm lg:text-base">
                 Food
               </button>

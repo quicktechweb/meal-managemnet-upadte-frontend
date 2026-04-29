@@ -23,6 +23,7 @@ const Home = () => {
       {selectedMenu === "meal" && (
         <>
           <BannerSection />
+          <MealLanding />
         </>
       )}
 
