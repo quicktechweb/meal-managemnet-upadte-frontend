@@ -6,7 +6,6 @@ import {
 } from "../../api/cms/user.hook";
 import InventoryDayWiseTableList from "./InventoryDayWiseTableList";
 import InventoryDayWIseSummary from "./InventoryDayWIseSummary";
-import { FaFileCsv, FaFilePdf, FaPlus, FaPrint, FaTrash } from "react-icons/fa";
 import InventoryIngredients from "./InventoryIngredients";
 
 const InventoryDayWise = () => {
@@ -98,8 +97,6 @@ const InventoryDayWise = () => {
       ...values,
     }));
   }, [instituteData, measures, globalAmount]);
-
-  console.log(summary);
 
   const mealTypes = useMemo(() => {
     if (!data || !selectedDay) return [];

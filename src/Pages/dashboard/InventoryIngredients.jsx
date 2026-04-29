@@ -108,7 +108,7 @@ const InventoryIngredients = ({ selectedDay, selectedMealType, summary }) => {
     const rows = [
       tableHeaders,
       ...tableRows(currentIngredients),
-      ["", "Grand Total", "", "", `${grandTotalGm} gm`, `${grandTotalKg} kg`],
+      // ["", "Grand Total", "", "", `${grandTotalGm} gm`, `${grandTotalKg} kg`],
     ];
     const csvContent = rows
       .map((r) => r.map((cell) => `"${cell}"`).join(","))
@@ -137,7 +137,7 @@ const InventoryIngredients = ({ selectedDay, selectedMealType, summary }) => {
       head: [tableHeaders],
       body: [
         ...tableRows(currentIngredients),
-        ["", "Grand Total", "", "", `${grandTotalGm} gm`, `${grandTotalKg} kg`],
+        // ["", "Grand Total", "", "", `${grandTotalGm} gm`, `${grandTotalKg} kg`],
       ],
       headStyles: {
         fillColor: [59, 130, 246],
@@ -182,7 +182,6 @@ const InventoryIngredients = ({ selectedDay, selectedMealType, summary }) => {
     table { width: 100%; border-collapse: collapse; }
     th { background: #3b82f6; color: #fff; padding: 8px 12px; text-align: left; font-size: 12px; }
     td { padding: 8px 12px; }
-    .grand { background: #dbeafe; font-weight: bold; }
     @media print { button { display: none; } }
   </style>
 </head>
@@ -195,11 +194,6 @@ const InventoryIngredients = ({ selectedDay, selectedMealType, summary }) => {
     </thead>
     <tbody>
       ${rows}
-      <tr class="grand">
-        <td colspan="4">Grand Total</td>
-        <td>${grandTotalGm} gm</td>
-        <td>${grandTotalKg} kg</td>
-      </tr>
     </tbody>
   </table>
   <script>window.onload=()=>window.print();<\/script>
@@ -210,6 +204,7 @@ const InventoryIngredients = ({ selectedDay, selectedMealType, summary }) => {
     win.document.write(html);
     win.document.close();
   };
+
   return (
     <div className="mt-8">
       <div className="flex items-center justify-between mb-4">
@@ -401,33 +396,6 @@ const InventoryIngredients = ({ selectedDay, selectedMealType, summary }) => {
                 </tr>
               ))}
             </tbody>
-            {/* Total row */}
-            <tfoot>
-              <tr className="bg-blue-50 border-t-2 border-blue-200">
-                <td colSpan={4} className="px-4 py-3 font-bold text-gray-700">
-                  Grand Total
-                </td>
-                <td className="px-4 py-3 text-center font-bold text-blue-700">
-                  {currentIngredients
-                    .reduce(
-                      (acc, ing) => acc + ing.quantity * totalSummaryCount,
-                      0,
-                    )
-                    .toFixed(2)}{" "}
-                  gm
-                </td>
-                <td className="px-4 py-3 text-center font-bold text-green-700">
-                  {(
-                    currentIngredients.reduce(
-                      (acc, ing) => acc + ing.quantity * totalSummaryCount,
-                      0,
-                    ) / 1000
-                  ).toFixed(3)}{" "}
-                  kg
-                </td>
-                <td />
-              </tr>
-            </tfoot>
           </table>
         </div>
       ) : (
