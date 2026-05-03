@@ -16,7 +16,7 @@ const RideTestimonials = () => {
   ];
 
   return (
-    <section className="py-24 bg-white">
+    <section id="reviews" className="py-24 bg-white">
       <div className="max-w-7xl mx-auto px-8">
         <div className="text-center mb-16">
           <h2 className="text-4xl font-bold">What our riders say</h2>

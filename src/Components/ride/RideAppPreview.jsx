@@ -3,7 +3,7 @@ import { CheckCircle2 } from "lucide-react";
 
 const RideAppPreview = () => {
   return (
-    <section className=" bg-slate-50 overflow-hidden">
+    <section id="app" className=" bg-slate-50 overflow-hidden">
       <div className="py-8 mx-auto px-8 flex flex-col md:flex-row items-center gap-16">
         <div className="flex-1 space-y-8">
           <h2 className="text-4xl md:text-5xl font-bold text-slate-900 leading-tight">

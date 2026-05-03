@@ -4,7 +4,7 @@ import { ShieldCheck, Clock, Smartphone } from "lucide-react";
 
 const RideFeatures = () => {
   return (
-    <section className="py-24 px-8 max-w-7xl mx-auto">
+    <section id="features" className="py-24 px-8 max-w-7xl mx-auto">
       <div className="flex flex-col md:flex-row items-end justify-between mb-16 gap-6">
         <div className="max-w-xl">
           <h2 className="text-4xl font-bold mb-4">
