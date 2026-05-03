@@ -166,6 +166,28 @@ export const categories = [
   },
 ];
 
+const foodNav = [
+  {
+    icon: <MdOutlineRestaurantMenu size={16} />,
+    label: "Offers",
+    sectionId: "offers",
+    badge: "New",
+  },
+  {
+    icon: <BiDish size={16} />,
+    label: "How Its Works",
+    sectionId: "how-it-works",
+    badgeRed: true,
+  },
+  { icon: <MdOutlineFoodBank size={16} />, label: "Menu", sectionId: "menu" },
+  { icon: <MdOutlineFoodBank size={16} />, label: "App", sectionId: "app" },
+  {
+    icon: <RiStarSmileLine size={16} />,
+    label: "Review",
+    sectionId: "reviews",
+  },
+];
+
 const HomeSidebar = ({ hideSidebar }) => {
   const [active, setActive] = useState("Home");
 
@@ -269,6 +291,20 @@ const HomeSidebar = ({ hideSidebar }) => {
               />
             </div>
           )}
+        </div>
+      )}
+
+      {selectedMenu === "food" && (
+        <div className="flex-1 overflow-y-auto px-2.5 py-2 scrollbar-thin">
+          {foodNav.map((item) => (
+            <NavItem
+              key={item.label}
+              {...item}
+              active={active === item.label}
+              onClick={() => handleClick(item)}
+            />
+          ))}
+          <div className="h-px bg-gray-100 my-2 mx-2" />
         </div>
       )}
     </div>
