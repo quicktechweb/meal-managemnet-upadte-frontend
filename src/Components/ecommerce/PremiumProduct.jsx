@@ -5,7 +5,7 @@ import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import ProductDetailsModal from "./ProductDetailsModal";
 
-const HotDeals = () => {
+const PremiumProduct = () => {
   const cartItems = useSelector((state) => state.cart.cartItems);
   const getQty = (id) => {
     const item = cartItems.find((i) => i.id === id);
@@ -31,9 +31,9 @@ const HotDeals = () => {
   return (
     <div className="flex flex-col gap-2.5 mt-2.5">
       <div className="title flex items-center justify-between">
-        <h5 className="text-xl lg:text-3xl font-semibold ">Hot Deals</h5>
+        <h5 className="text-xl lg:text-3xl font-semibold ">Premium Products</h5>
 
-        <Link className="text-sm lg:text-[17px] text-white px-5 py-1.5 lg:py-3 rounded-2xl bg-blue-600 hover:underline hover:bg-blue-800 duration-300">
+        <Link className="text-sm lg:text-[17px] text-white px-5 py-1.5 lg:py-3 rounded-2xl bg-blue-600 hover:underline hover:bg-blue-800  duration-300">
           View All
         </Link>
       </div>
@@ -66,4 +66,4 @@ const HotDeals = () => {
   );
 };
 
-export default HotDeals;
+export default PremiumProduct;

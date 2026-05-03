@@ -22,6 +22,9 @@ import HomeLogin from "./HomeRegistration/HomeRegistration";
 import RideSharing from "./RideSharing/RideSharing";
 import Testimonial from "./Testimonial/Testimonial";
 import HotDeals from "../../../../Components/ecommerce/HotDeals";
+import TopSelling from "../../../../Components/ecommerce/TopSelling";
+import PremiumProduct from "../../../../Components/ecommerce/PremiumProduct";
+import LatestProduct from "../../../../Components/ecommerce/LatestProduct";
 
 const Home = () => {
   const { selectedMenu } = useLayoutSwitch();
@@ -46,6 +49,9 @@ const Home = () => {
           <BannerSlider />
           <Categories categories2={categories2} />
           <HotDeals />
+          <TopSelling />
+          <PremiumProduct />
+          <LatestProduct />
         </div>
       )}
 
