@@ -70,7 +70,10 @@ const HowItWorksSection = () => {
   ];
 
   return (
-    <section className="bg-white py-10 lg:py-24 px-6 overflow-hidden">
+    <section
+      id="how-its-works"
+      className="bg-white py-10 lg:py-24 px-6 overflow-hidden"
+    >
       <div className="max-w-7xl mx-auto">
         {/* Badge & Header */}
         <div className="text-center mb-5 lg:mb-20">

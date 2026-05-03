@@ -5,9 +5,9 @@ import { MdOutlineRestaurantMenu, MdOutlineFoodBank } from "react-icons/md";
 import { BiDish } from "react-icons/bi";
 import { RiStarSmileLine } from "react-icons/ri";
 import { CiShop } from "react-icons/ci";
+import { useLayoutSwitch } from "../../providers/LayoutSwitchProvider";
 
 const mainNav = [
-  { icon: <AiOutlineHome size={16} />, label: "Home", sectionId: "home" },
   {
     icon: <MdOutlineRestaurantMenu size={16} />,
     label: "Meal",
@@ -31,8 +31,33 @@ const mainNav = [
   { icon: <CiShop size={16} />, label: "App", sectionId: "app" },
 ];
 
+const mealNav = [
+  {
+    icon: <MdOutlineRestaurantMenu size={16} />,
+    label: "Features",
+    sectionId: "features",
+    badge: "New",
+  },
+  {
+    icon: <BiDish size={16} />,
+    label: "How Its Works",
+    sectionId: "how-its-works",
+    badgeRed: true,
+  },
+  { icon: <MdOutlineFoodBank size={16} />, label: "Meal", sectionId: "meal" },
+  {
+    icon: <RiStarSmileLine size={16} />,
+    label: "Review",
+    sectionId: "review",
+  },
+];
+
 const HomeSidebar = ({ hideSidebar }) => {
   const [active, setActive] = useState("Home");
+
+  const { selectedMenu } = useLayoutSwitch();
+
+  console.log(selectedMenu);
 
   const handleClick = (item) => {
     setActive(item.label);
@@ -47,17 +72,33 @@ const HomeSidebar = ({ hideSidebar }) => {
       lg:h-[calc(100vh-80px)] fixed z-[9999] lg:z-auto lg:sticky lg:top-20 self-start shrink-0
       flex flex-col overflow-hidden min-h-screen transition-all`}
     >
-      <div className="flex-1 overflow-y-auto px-2.5 py-2 scrollbar-thin">
-        {mainNav.map((item) => (
-          <NavItem
-            key={item.label}
-            {...item}
-            active={active === item.label}
-            onClick={() => handleClick(item)}
-          />
-        ))}
-        <div className="h-px bg-gray-100 my-2 mx-2" />
-      </div>
+      {!selectedMenu && (
+        <div className="flex-1 overflow-y-auto px-2.5 py-2 scrollbar-thin">
+          {mainNav.map((item) => (
+            <NavItem
+              key={item.label}
+              {...item}
+              active={active === item.label}
+              onClick={() => handleClick(item)}
+            />
+          ))}
+          <div className="h-px bg-gray-100 my-2 mx-2" />
+        </div>
+      )}
+
+      {selectedMenu === "meal" && (
+        <div className="flex-1 overflow-y-auto px-2.5 py-2 scrollbar-thin">
+          {mealNav.map((item) => (
+            <NavItem
+              key={item.label}
+              {...item}
+              active={active === item.label}
+              onClick={() => handleClick(item)}
+            />
+          ))}
+          <div className="h-px bg-gray-100 my-2 mx-2" />
+        </div>
+      )}
     </div>
   );
 };
