@@ -21,14 +21,14 @@ const RideHowItWorks = () => {
   ];
 
   return (
-    <section className="py-24 bg-slate-900 relative overflow-hidden">
+    <section className="py-12 lg:py-24 bg-slate-900 relative overflow-hidden">
       {/* Decorative Blur Orbs */}
       <div className="absolute top-20 left-10 w-72 h-72 bg-blue-600 rounded-full blur-[100px] opacity-30"></div>
       <div className="absolute bottom-20 right-10 w-96 h-96 bg-indigo-600 rounded-full blur-[120px] opacity-30"></div>
 
       <div className="max-w-7xl mx-auto px-6 md:px-12 relative z-10">
-        <div className="text-center mb-20">
-          <h2 className="text-4xl md:text-5xl font-black text-white mb-4">
+        <div className="text-center mb-10 lg:mb-20">
+          <h2 className="text-4xl md:text-5xl font-black text-white lg:mb-4">
             How QuickRide Works
           </h2>
           <p className="text-lg text-slate-400">
@@ -36,7 +36,7 @@ const RideHowItWorks = () => {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-12 relative">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-12 relative">
           {/* Connecting Line (Desktop Only) */}
           <div className="hidden md:block absolute top-12 left-[15%] right-[15%] h-[2px] bg-gradient-to-r from-transparent via-blue-500/50 to-transparent z-0"></div>
 

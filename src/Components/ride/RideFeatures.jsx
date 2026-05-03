@@ -4,13 +4,13 @@ import { ShieldCheck, Clock, Smartphone } from "lucide-react";
 
 const RideFeatures = () => {
   return (
-    <section id="features" className="py-24 px-8 max-w-7xl mx-auto">
-      <div className="flex flex-col md:flex-row items-end justify-between mb-16 gap-6">
+    <section id="features" className="py-10 lg:py-24 px-8 max-w-7xl mx-auto">
+      <div className="flex flex-col md:flex-row items-end justify-between mb-8 lg:mb-16 gap-6">
         <div className="max-w-xl">
-          <h2 className="text-4xl font-bold mb-4">
+          <h2 className="text-3xl lg:text-4xl font-bold mb-2 lg:mb-4">
             Redefining the way you travel
           </h2>
-          <p className="text-slate-500 text-lg">
+          <p className="text-slate-500 text-sm lg:text-lg">
             Safe, sustainable, and reliable transportation for everyone,
             everywhere.
           </p>
@@ -20,7 +20,7 @@ const RideFeatures = () => {
         </button>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 lg:gap-8">
         <RideFeatureCard
           icon={ShieldCheck}
           title="Safety Protocol"
