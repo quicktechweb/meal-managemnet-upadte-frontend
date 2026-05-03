@@ -25,6 +25,12 @@ import HotDeals from "../../../../Components/ecommerce/HotDeals";
 import TopSelling from "../../../../Components/ecommerce/TopSelling";
 import PremiumProduct from "../../../../Components/ecommerce/PremiumProduct";
 import LatestProduct from "../../../../Components/ecommerce/LatestProduct";
+import Hero from "../../../../Components/food/Hero";
+import HowItWorks from "../../../../Components/food/HowItWorks";
+import Menu from "../../../../Components/food/Menu";
+import AppDownload from "../../../../Components/food/AppDownload";
+import Review from "../../../../Components/food/Review";
+import SpecialOffers from "../../../../Components/food/SpecialOffers";
 
 const Home = () => {
   const { selectedMenu } = useLayoutSwitch();
@@ -55,35 +61,48 @@ const Home = () => {
         </div>
       )}
 
-      {selectedMenu !== "meal" && selectedMenu !== "e-commerce" && (
+      {selectedMenu === "food" && (
         <>
-          {" "}
-          <Bannerparts bannerData={data?.banner} isLoading={isLoading} />
-          <HomeLogin />
-          <WalletProfileCard />
-          <Features
-            chooseusData={data?.chooseUs}
-            chooseImage={data?.chooseImage}
-            isLoading={isLoading}
-          />
-          <ProcessSection />
-          <MealLanding />
-          <EcommerceLanding />
-          <DownloadApp appData={data?.app} isLoading={isLoading} />
-          <Testimonial />
-          {/* <RideSharing /> */}
-          {/* <LearningManagement /> */}
-          {/* <HomeSlider/> */}
-          {/* <TopSelling/> */}
-          {/* <LatestProduct/> */}
-          {/* <ProductCarousel/> */}
-          {/* <PremiumProduct/> */}
-          {/* <TopRatedProduct/> */}
-          {/* <LatestDeals/> */}
-          {/* <CuponPart/> */}
-          {/* <Brands/> */}
+          <Hero />
+          <SpecialOffers />
+          <HowItWorks />
+          <Menu />
+          <AppDownload />
+          <Review />
         </>
       )}
+
+      {selectedMenu !== "meal" &&
+        selectedMenu !== "e-commerce" &&
+        selectedMenu !== "food" && (
+          <>
+            {" "}
+            <Bannerparts bannerData={data?.banner} isLoading={isLoading} />
+            <HomeLogin />
+            <WalletProfileCard />
+            <Features
+              chooseusData={data?.chooseUs}
+              chooseImage={data?.chooseImage}
+              isLoading={isLoading}
+            />
+            <ProcessSection />
+            <MealLanding />
+            <EcommerceLanding />
+            <DownloadApp appData={data?.app} isLoading={isLoading} />
+            <Testimonial />
+            {/* <RideSharing /> */}
+            {/* <LearningManagement /> */}
+            {/* <HomeSlider/> */}
+            {/* <TopSelling/> */}
+            {/* <LatestProduct/> */}
+            {/* <ProductCarousel/> */}
+            {/* <PremiumProduct/> */}
+            {/* <TopRatedProduct/> */}
+            {/* <LatestDeals/> */}
+            {/* <CuponPart/> */}
+            {/* <Brands/> */}
+          </>
+        )}
     </>
   );
 };
