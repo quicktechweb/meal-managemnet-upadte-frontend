@@ -1,10 +1,14 @@
 import { useCmsData } from "../../../../api/admin/admin.api";
+import Categories from "../../../../Components/Categories";
+import BannerSlider from "../../../../Components/ecommerce/BannerSlider";
 import BannerSection from "../../../../Components/meal/BannerSection";
 import FeaturesSection from "../../../../Components/meal/FeaturesSection";
 import HowItWorksSection from "../../../../Components/meal/HowItWorksSection";
 import MealLandingSection from "../../../../Components/meal/MealLandingSection";
 import ReviewsSection from "../../../../Components/meal/ReviewSection";
+import SearchBar from "../../../../Components/SearchBar";
 import WalletProfileCard from "../../../../Components/WaletProfileCard";
+import { categories2 } from "../../../../data/categoryData";
 import { useLayoutSwitch } from "../../../../providers/LayoutSwitchProvider";
 import Bannerparts from "../Bannerparts/Bannerparts";
 import DownloadApp from "../DownloadApp/DownloadApp";
@@ -34,7 +38,15 @@ const Home = () => {
         </>
       )}
 
-      {selectedMenu !== "meal" && (
+      {selectedMenu === "e-commerce" && (
+        <div className="px-5 mt-4">
+          <SearchBar />
+          <BannerSlider />
+          <Categories categories2={categories2} />
+        </div>
+      )}
+
+      {selectedMenu !== "meal" && selectedMenu !== "e-commerce" && (
         <>
           {" "}
           <Bannerparts bannerData={data?.banner} isLoading={isLoading} />
