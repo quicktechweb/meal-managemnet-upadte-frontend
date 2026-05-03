@@ -1,14 +1,31 @@
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 
 import AllMealActivity from "./AllMealActivity";
 import DayWisePackageMealActivity from "../../../../../Components/DayWisePackageMealActivity";
 import AllPackageMealActivity from "./AllPackageMealActivity";
+import { useLayoutSwitch } from "../../../../../providers/LayoutSwitchProvider";
+import { useLocation } from "react-router-dom";
 
 const PackageMealActivity = () => {
-  const [daywiseSelect, setDaywiseSelect] = useState("show-all");
+  // const [daywiseSelect, setDaywiseSelect] = useState("show-all");
+  const { daywiseSelect, setDaywiseSelect } = useLayoutSwitch();
+  const location = useLocation();
+
+  const sectionRef = useRef(null);
+
+  useEffect(() => {
+    if (location.hash === "#meal-activity" && sectionRef.current) {
+      setTimeout(() => {
+        sectionRef.current.scrollIntoView({
+          behavior: "smooth",
+          block: "start",
+        });
+      }, 100);
+    }
+  }, [location.hash]);
 
   return (
-    <div className="flex flex-col gap-4">
+    <div id="meal-activity" ref={sectionRef} className="flex flex-col gap-4">
       {/* TOGGLE */}
       <div className="flex gap-2">
         <button

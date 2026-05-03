@@ -20,6 +20,8 @@ import { MdOutlineDocumentScanner } from "react-icons/md";
 import { useLayoutSwitch } from "../../providers/LayoutSwitchProvider";
 
 import { CiMenuFries } from "react-icons/ci";
+import { CalendarDays, List, ClipboardList, Wallet } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 const topIcons = [
   { icon: <Search size={16} />, label: "Search" },
@@ -83,9 +85,64 @@ const smmobilebottomIcons = [
   { icon: <MapPin size={16} /> },
 ];
 
-const IconButton = ({ icon, label, special, active, badge }) => {
+// meal
+const mealBottomIcons = [
+  { icon: <Home size={16} />, label: "Home", slug: "home", path: "/" },
+  {
+    icon: <CalendarDays size={16} />,
+    label: "Day Wise Meal",
+    slug: "day-wise-meal",
+    path: "/",
+  },
+  {
+    icon: <List size={16} />,
+    label: "All Wise Meal",
+    slug: "all-wise-meal",
+    path: "/",
+  },
+  {
+    icon: <ClipboardList size={18} />,
+    label: "Routine",
+    slug: "routine",
+    path: "/",
+  },
+  // { icon: <Wallet size={16} />, label: "Wallet", slug: "wallet", path: "/" },
+];
+
+const IconButton = ({
+  icon,
+  label,
+  special,
+  active,
+  slug,
+  path,
+  setSelectedMenu,
+  setDaywiseSelect,
+}) => {
+  const navigate = useNavigate();
+  const handleNavigation = (slug) => {
+    if (slug === "home") {
+      navigate(`/`);
+      setSelectedMenu("");
+    }
+
+    if (slug === "day-wise-meal") {
+      navigate("/dashboards/routines#meal-activity");
+      setDaywiseSelect("day-wise");
+    }
+
+    if (slug === "all-wise-meal") {
+      navigate("/dashboards/routines#meal-activity");
+      setDaywiseSelect("show-all");
+    }
+
+    if (slug === "routine") {
+      navigate("/dashboards/routines#package-menu-list");
+    }
+  };
   return (
-    <div
+    <button
+      onClick={() => handleNavigation(slug)}
       className={`relative w-[45px] sm:w-[55px] md:w-[60px] lg:w-[82px] xl:w-[108px] 2xl:w-40  h-10 2xl:h-14 rounded-xl flex items-center justify-center cursor-pointer transition-all duration-300 group 
       ${
         special
@@ -102,13 +159,20 @@ const IconButton = ({ icon, label, special, active, badge }) => {
           {label}
         </h3>
       </div>
-    </div>
+    </button>
   );
 };
 
 const TopNavbar = ({ setHideSidebar, setSidebarOpen }) => {
   const { data } = useGetWebsiteData();
-  const { openPopup, setOpenPopup } = useLayoutSwitch();
+  const {
+    openPopup,
+    setOpenPopup,
+    selectedMenu,
+    setSelectedMenu,
+    setDaywiseSelect,
+  } = useLayoutSwitch();
+
   return (
     <div className="bg-white border-b border-gray-100 sticky top-0 z-50 w-full ">
       <div className="mx-auto px-3.5 xl:px-7 flex items-center gap-2 2xl:gap-8 h-auto py-2">
@@ -160,11 +224,14 @@ const TopNavbar = ({ setHideSidebar, setSidebarOpen }) => {
               ))}
             </div>
 
-            <div className="hidden sm:flex md:hidden gap-1">
-              {mobilebottomIcons.map((item, i) => (
-                <IconButton key={i} {...item} />
-              ))}
-            </div>
+            {!selectedMenu && (
+              <div className="hidden sm:flex md:hidden gap-1">
+                {mobilebottomIcons.map((item, i) => (
+                  <IconButton key={i} {...item} />
+                ))}
+              </div>
+            )}
+
             <div className="flex sm:hidden gap-1">
               {smmobilebottomIcons.map((item, i) => (
                 <IconButton key={i} {...item} />
@@ -172,11 +239,27 @@ const TopNavbar = ({ setHideSidebar, setSidebarOpen }) => {
             </div>
 
             {/* bottom icons */}
-            <div className="md:flex hidden gap-1">
-              {bottomIcons.map((item, i) => (
-                <IconButton key={i} {...item} />
-              ))}
-            </div>
+            {!selectedMenu && (
+              <div className="md:flex hidden gap-1">
+                {bottomIcons.map((item, i) => (
+                  <IconButton key={i} {...item} />
+                ))}
+              </div>
+            )}
+
+            {/* bottom icons */}
+            {selectedMenu === "meal" && (
+              <div className="md:flex hidden gap-1">
+                {mealBottomIcons.map((item, i) => (
+                  <IconButton
+                    key={i}
+                    {...item}
+                    setSelectedMenu={setSelectedMenu}
+                    setDaywiseSelect={setDaywiseSelect}
+                  />
+                ))}
+              </div>
+            )}
           </div>
 
           <div

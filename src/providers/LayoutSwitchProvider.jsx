@@ -4,6 +4,7 @@ const LayoutSwitchContext = createContext();
 
 const LayoutSwitchProvider = ({ children }) => {
   const [selectedMenu, setSelectedMenu] = useState("");
+  const [daywiseSelect, setDaywiseSelect] = useState("show-all");
   const [openPopup, setOpenPopup] = useState(false);
 
   const value = {
@@ -11,6 +12,8 @@ const LayoutSwitchProvider = ({ children }) => {
     setSelectedMenu,
     setOpenPopup,
     openPopup,
+    setDaywiseSelect,
+    daywiseSelect,
   };
 
   return (

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { ChevronDown, ChevronUp } from "lucide-react";
 import {
   createColumnHelper,
@@ -8,6 +8,7 @@ import {
 } from "@tanstack/react-table";
 import useInstituteAuth from "../Hooks/useInstituteAuth";
 import { useInstituteUserAdminData } from "../api/cms/user.hook";
+import { useLocation } from "react-router-dom";
 
 const columnHelper = createColumnHelper();
 
@@ -165,8 +166,23 @@ const PackageMenuRoutine = () => {
     return <div className="p-4">Loading...</div>;
   }
 
+  const sectionRef = useRef(null);
+
+  const location = useLocation();
+
+  useEffect(() => {
+    if (location.hash === "#package-menu-list" && sectionRef.current) {
+      setTimeout(() => {
+        sectionRef.current.scrollIntoView({
+          behavior: "smooth",
+          block: "start",
+        });
+      }, 100);
+    }
+  }, [location.hash]);
+
   return (
-    <div className="shadow-xl">
+    <div id="package-menu-list" ref={sectionRef} className="shadow-xl">
       <h4 className="text-lg font-semibold mb-3">Menu Lists</h4>
 
       <div className="w-full">
