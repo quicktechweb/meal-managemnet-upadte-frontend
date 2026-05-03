@@ -111,6 +111,80 @@ const mealBottomIcons = [
   // { icon: <Wallet size={16} />, label: "Wallet", slug: "wallet", path: "/" },
 ];
 
+const rideBottomIcons = [
+  { icon: <Home size={16} />, label: "Home", slug: "home", path: "/" },
+
+  {
+    icon: <ClipboardList size={18} />,
+    label: "Feature",
+    slug: "feature",
+    path: "/",
+  },
+
+  {
+    icon: <ClipboardList size={18} />,
+    label: "Review",
+    slug: "review",
+    path: "/",
+  },
+
+  // { icon: <Wallet size={16} />, label: "Wallet", slug: "wallet", path: "/" },
+];
+const foodBottomIcons = [
+  { icon: <Home size={16} />, label: "Home", slug: "home", path: "/" },
+
+  {
+    icon: <ClipboardList size={18} />,
+    label: "Offers",
+    slug: "offers",
+    path: "/",
+  },
+  {
+    icon: <ClipboardList size={18} />,
+    label: "How it works",
+    slug: "how-its-works",
+    path: "/",
+  },
+  {
+    icon: <ClipboardList size={18} />,
+    label: "Menu",
+    slug: "menu",
+    path: "/",
+  },
+  {
+    icon: <ClipboardList size={18} />,
+    label: "Review",
+    slug: "review",
+    path: "/",
+  },
+
+  // { icon: <Wallet size={16} />, label: "Wallet", slug: "wallet", path: "/" },
+];
+
+const EcommerceBottomIcons = [
+  { icon: <Home size={16} />, label: "Home", slug: "home", path: "/" },
+
+  {
+    icon: <ClipboardList size={18} />,
+    label: "Offers",
+    slug: "offers",
+    path: "/",
+  },
+
+  {
+    icon: <ClipboardList size={18} />,
+    label: "Top Selling",
+    slug: "menu",
+    path: "/",
+  },
+  {
+    icon: <ClipboardList size={18} />,
+    label: "Latest Products",
+    slug: "review",
+    path: "/",
+  },
+];
+
 const IconButton = ({
   icon,
   label,
@@ -289,6 +363,50 @@ const TopNavbar = ({ setHideSidebar, setSidebarOpen }) => {
                       user={user?.user}
                     />
                   ))}
+              </div>
+            )}
+
+            {selectedMenu === "ride" && (
+              <div className="md:flex hidden gap-1">
+                {rideBottomIcons
+                  .filter((item) => {
+                    if (user?.user?.role === "institute") {
+                      return !["day-wise-meal", "all-wise-meal"].includes(
+                        item.slug,
+                      );
+                    }
+                    return true;
+                  })
+                  .map((item, i) => (
+                    <IconButton
+                      key={i}
+                      {...item}
+                      setSelectedMenu={setSelectedMenu}
+                      setDaywiseSelect={setDaywiseSelect}
+                      user={user?.user}
+                    />
+                  ))}
+              </div>
+            )}
+
+            {selectedMenu === "e-commerce" && (
+              <div className="md:flex hidden gap-1">
+                {EcommerceBottomIcons.filter((item) => {
+                  if (user?.user?.role === "institute") {
+                    return !["day-wise-meal", "all-wise-meal"].includes(
+                      item.slug,
+                    );
+                  }
+                  return true;
+                }).map((item, i) => (
+                  <IconButton
+                    key={i}
+                    {...item}
+                    setSelectedMenu={setSelectedMenu}
+                    setDaywiseSelect={setDaywiseSelect}
+                    user={user?.user}
+                  />
+                ))}
               </div>
             )}
           </div>
