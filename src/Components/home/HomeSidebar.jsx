@@ -250,10 +250,8 @@ const HomeSidebar = ({ hideSidebar }) => {
       )}
 
       {selectedMenu === "e-commerce" && (
-        <div className="w-full h-full overflow-y-auto pt-2 lg:pt-22 p-4">
-          <h3 className="text-xl font-bold mb-4 hidden lg:block">
-            Shop by Category
-          </h3>
+        <div className="w-full h-full overflow-y-auto  p-4">
+          <h3 className="text-xl font-bold mb-4 block">Shop by Category</h3>
 
           <ul className="space-y-2">
             {categories.map((cat) => {

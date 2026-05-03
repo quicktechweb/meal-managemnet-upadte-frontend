@@ -9,11 +9,11 @@ const AppDownload = () => {
         <div className="absolute bottom-[-20%] right-[-10%] w-96 h-96 bg-blue-500 rounded-full blur-[100px] opacity-20"></div>
 
         {/* Text Content */}
-        <div className="md:w-1/2 text-white z-10 text-center md:text-left mb-16 md:mb-0">
+        <div className="md:w-1/2 text-white z-10 text-center md:text-left mb-8 md:mb-0">
           <h2 className="text-4xl md:text-5xl lg:text-6xl font-extrabold mb-6 leading-tight">
             Get The <span className="text-blue-500">Alabadan Food</span> App
           </h2>
-          <p className="text-gray-400 mb-8 text-lg max-w-lg mx-auto md:mx-0">
+          <p className="text-gray-400 mb-4 lg:mb-8 text-sm lg:text-lg max-w-lg mx-auto md:mx-0">
             Order your favorite meals on the go. Download our app to get a **20%
             discount** on your first order and track your delivery in real-time!
           </p>

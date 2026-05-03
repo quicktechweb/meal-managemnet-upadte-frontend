@@ -31,6 +31,11 @@ import Menu from "../../../../Components/food/Menu";
 import AppDownload from "../../../../Components/food/AppDownload";
 import Review from "../../../../Components/food/Review";
 import SpecialOffers from "../../../../Components/food/SpecialOffers";
+import RideHero from "../../../../Components/ride/RideHero";
+import RideStats from "../../../../Components/ride/RideStat";
+import RideAppPreview from "../../../../Components/ride/RideAppPreview";
+import RideTestimonials from "../../../../Components/ride/RideTestimonials";
+import RideFeatures from "../../../../Components/ride/RideFeatures";
 
 const Home = () => {
   const { selectedMenu } = useLayoutSwitch();
@@ -72,9 +77,20 @@ const Home = () => {
         </>
       )}
 
+      {selectedMenu === "ride" && (
+        <>
+          <RideHero />
+          <RideStats />
+          <RideFeatures />
+          <RideAppPreview />
+          <RideTestimonials />
+        </>
+      )}
+
       {selectedMenu !== "meal" &&
         selectedMenu !== "e-commerce" &&
-        selectedMenu !== "food" && (
+        selectedMenu !== "food" &&
+        selectedMenu !== "ride" && (
           <>
             {" "}
             <Bannerparts bannerData={data?.banner} isLoading={isLoading} />

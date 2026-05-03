@@ -3,7 +3,7 @@ import React from "react";
 const Review = () => {
   return (
     <section id="reviews" className="py-8 px-6 lg:px-10 bg-white">
-      <div className="text-center mb-16">
+      <div className="text-center mb-8">
         <h2 className="text-orange-500 font-bold tracking-wider uppercase mb-2">
           Testimonials
         </h2>
@@ -12,7 +12,7 @@ const Review = () => {
         </h3>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 lg:gap-8">
         {[1, 2, 3].map((item) => (
           <div key={item} className="bg-orange-50 p-8 rounded-3xl relative">
             <div className="text-orange-300 text-6xl absolute top-4 left-4 opacity-50">
