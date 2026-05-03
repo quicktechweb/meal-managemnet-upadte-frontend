@@ -4,6 +4,7 @@ import { IoFastFood } from "react-icons/io5";
 import { RiRidingFill } from "react-icons/ri";
 import { GiMeal } from "react-icons/gi";
 import { useLayoutSwitch } from "../../providers/LayoutSwitchProvider";
+import { useNavigate } from "react-router-dom";
 
 const menu = [
   {
@@ -30,9 +31,9 @@ const menu = [
 
 const HomePopover = () => {
   const { selectedMenu, setSelectedMenu, setOpenPopup } = useLayoutSwitch();
-
+  const navigate = useNavigate();
   return (
-    <div className="absolute top-14 left-2 w-[340px] bg-white rounded-2xl shadow-2xl overflow-hidden z-50">
+    <div className="fixed top-14 left-2 w-[340px] bg-white rounded-2xl shadow-2xl overflow-hidden z-50">
       {/* Header */}
       <div className="flex items-center justify-between px-5 pt-5 pb-3">
         <span className="text-[15px] font-medium text-[#202124]">Website</span>
@@ -44,6 +45,7 @@ const HomePopover = () => {
           <button
             type="button"
             onClick={() => {
+              navigate(`/?menu=${m.slug}`);
               setSelectedMenu(m.slug);
               setOpenPopup(false);
               document.body.style.overflow = "visible";

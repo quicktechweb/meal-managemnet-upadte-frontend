@@ -27,7 +27,7 @@ const MainLayout = () => {
   }, []);
 
   return (
-    <div className="w-full">
+    <div className="w-full ">
       <TopNavbar
         sidebarOpen={sidebarOpen}
         setSidebarOpen={setSidebarOpen}
