@@ -2,6 +2,7 @@ import { useCmsData } from "../../../../api/admin/admin.api";
 import BannerSection from "../../../../Components/meal/BannerSection";
 import FeaturesSection from "../../../../Components/meal/FeaturesSection";
 import HowItWorksSection from "../../../../Components/meal/HowItWorksSection";
+import MealLandingSection from "../../../../Components/meal/MealLandingSection";
 import ReviewsSection from "../../../../Components/meal/ReviewSection";
 import WalletProfileCard from "../../../../Components/WaletProfileCard";
 import { useLayoutSwitch } from "../../../../providers/LayoutSwitchProvider";
@@ -28,7 +29,7 @@ const Home = () => {
           <BannerSection />
           <FeaturesSection />
           <HowItWorksSection />
-          <MealLanding />
+          <MealLandingSection />
           <ReviewsSection />
         </>
       )}

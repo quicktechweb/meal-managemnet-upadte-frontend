@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "react-router-dom";
 
 export default function BannerSection() {
   return (
@@ -13,7 +14,7 @@ export default function BannerSection() {
         <div className="absolute top-1/2 right-[10%] h-[400px] w-[400px] -translate-y-1/2 rounded-full bg-blue-200/50 blur-[80px]" />
       </div>
 
-      <div className="relative z-10 mx-auto w-full px-6 py-4 lg:px-8 xl:px-12 flex flex-col lg:flex-row gap-4 lg:gap-8">
+      <div className="relative max-w-7xl z-10 mx-auto w-full px-6 py-4 lg:px-8 xl:px-12 flex flex-col lg:flex-row gap-4 lg:gap-8">
         {/* ── LEFT COLUMN: TEXT CONTENT ── */}
         <div className="flex-1 w-full max-w-2xl text-left">
           {/* Trust Badge */}
@@ -58,7 +59,10 @@ export default function BannerSection() {
 
           {/* Buttons */}
           <div className="mb-4 lg:mb-8 flex flex-col sm:flex-row items-start gap-4">
-            <button className="flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 hover:from-blue-700 hover:via-indigo-700 hover:to-purple-700 px-3  lg:px-6 py-2 lg:py-3.5  font-bold text-white transition-all shadow-lg shadow-indigo-200 text-sm lg:text-base">
+            <Link
+              to={"/register/user"}
+              className="flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 hover:from-blue-700 hover:via-indigo-700 hover:to-purple-700 px-3  lg:px-6 py-2 lg:py-3.5  font-bold text-white transition-all shadow-lg shadow-indigo-200 text-sm lg:text-base"
+            >
               Get Started — It's Free
               <svg
                 className="w-4 h-4 lg:w-5 lg:h-5"
@@ -73,7 +77,7 @@ export default function BannerSection() {
                   d="M14 5l7 7m0 0l-7 7m7-7H3"
                 />
               </svg>
-            </button>
+            </Link>
           </div>
 
           {/* Social Proof */}

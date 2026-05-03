@@ -35,7 +35,7 @@ const categories = [
 
 const EcommerceLanding = () => {
   return (
-    <section id="ecommerce" className="py-12 bg-white">
+    <section id="ecommerce" className="lg:py-12 bg-white">
       <div>
         <h2 className=" text-center text-2xl lg:text-3xl xl:text-5xl font-bold mb-2 lg:mb-4">
           Ecommerce Management
