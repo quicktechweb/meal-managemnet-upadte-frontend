@@ -4,12 +4,13 @@ import { FiMinus, FiPlus } from "react-icons/fi";
 
 import { Link } from "react-router-dom";
 import { FiTrash2 } from "react-icons/fi";
-import ProductDetailsModal from "../../../Components/ProductDetailsModal";
+
 import SearchBar from "../../../Components/SearchBar";
 import Categories from "../../../Components/Categories";
 import { useDispatch, useSelector } from "react-redux";
 import { addtoCart, decreaseCart } from "../../../feature/cartSlice";
 import BannerSlider from "../../../Components/ecommerce/BannerSlider";
+import ProductDetailsModal from "../../../Components/ecommerce/ProductDetailsModal";
 
 const categories2 = [
   {

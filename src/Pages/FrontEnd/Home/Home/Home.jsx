@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import { useCmsData } from "../../../../api/admin/admin.api";
 import Categories from "../../../../Components/Categories";
 import BannerSlider from "../../../../Components/ecommerce/BannerSlider";
@@ -20,6 +21,7 @@ import EcommerceLanding from "./EcommerceLanding/EcommerceLanding";
 import HomeLogin from "./HomeRegistration/HomeRegistration";
 import RideSharing from "./RideSharing/RideSharing";
 import Testimonial from "./Testimonial/Testimonial";
+import HotDeals from "../../../../Components/ecommerce/HotDeals";
 
 const Home = () => {
   const { selectedMenu } = useLayoutSwitch();
@@ -43,6 +45,7 @@ const Home = () => {
           <SearchBar />
           <BannerSlider />
           <Categories categories2={categories2} />
+          <HotDeals />
         </div>
       )}
 
