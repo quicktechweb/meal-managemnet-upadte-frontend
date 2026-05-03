@@ -22,6 +22,7 @@ import { useLayoutSwitch } from "../../providers/LayoutSwitchProvider";
 import { CiMenuFries } from "react-icons/ci";
 import { CalendarDays, List, ClipboardList, Wallet } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import useInstituteAuth from "../../Hooks/useInstituteAuth";
 
 const topIcons = [
   { icon: <Search size={16} />, label: "Search" },
@@ -106,6 +107,7 @@ const mealBottomIcons = [
     slug: "routine",
     path: "/",
   },
+  {},
   // { icon: <Wallet size={16} />, label: "Wallet", slug: "wallet", path: "/" },
 ];
 
@@ -118,6 +120,7 @@ const IconButton = ({
   path,
   setSelectedMenu,
   setDaywiseSelect,
+  user,
 }) => {
   const navigate = useNavigate();
   const handleNavigation = (slug) => {
@@ -127,17 +130,31 @@ const IconButton = ({
     }
 
     if (slug === "day-wise-meal") {
-      navigate("/dashboards/routines#meal-activity");
-      setDaywiseSelect("day-wise");
+      if (!user) {
+        navigate("/register/user");
+      } else if (user?.role === "user") {
+        navigate("/dashboards/routines#meal-activity");
+        setDaywiseSelect("day-wise");
+      }
     }
 
     if (slug === "all-wise-meal") {
-      navigate("/dashboards/routines#meal-activity");
-      setDaywiseSelect("show-all");
+      if (!user) {
+        navigate("/register/user");
+      } else if (user?.role === "user") {
+        navigate("/dashboards/routines#meal-activity");
+        setDaywiseSelect("show-all");
+      }
     }
 
     if (slug === "routine") {
-      navigate("/dashboards/routines#package-menu-list");
+      if (!user) {
+        navigate("/register/user");
+      } else if (user?.role === "user") {
+        navigate("/dashboards/routines#package-menu-list");
+      } else if (user?.role === "institute") {
+        navigate("/dashboards/routines");
+      }
     }
   };
   return (
@@ -165,6 +182,10 @@ const IconButton = ({
 
 const TopNavbar = ({ setHideSidebar, setSidebarOpen }) => {
   const { data } = useGetWebsiteData();
+  const { user } = useInstituteAuth();
+
+  console.log();
+
   const {
     openPopup,
     setOpenPopup,
@@ -250,14 +271,24 @@ const TopNavbar = ({ setHideSidebar, setSidebarOpen }) => {
             {/* bottom icons */}
             {selectedMenu === "meal" && (
               <div className="md:flex hidden gap-1">
-                {mealBottomIcons.map((item, i) => (
-                  <IconButton
-                    key={i}
-                    {...item}
-                    setSelectedMenu={setSelectedMenu}
-                    setDaywiseSelect={setDaywiseSelect}
-                  />
-                ))}
+                {mealBottomIcons
+                  .filter((item) => {
+                    if (user?.user?.role === "institute") {
+                      return !["day-wise-meal", "all-wise-meal"].includes(
+                        item.slug,
+                      );
+                    }
+                    return true;
+                  })
+                  .map((item, i) => (
+                    <IconButton
+                      key={i}
+                      {...item}
+                      setSelectedMenu={setSelectedMenu}
+                      setDaywiseSelect={setDaywiseSelect}
+                      user={user?.user}
+                    />
+                  ))}
               </div>
             )}
           </div>
