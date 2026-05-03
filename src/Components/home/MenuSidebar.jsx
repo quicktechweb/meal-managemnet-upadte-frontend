@@ -38,11 +38,11 @@ const bottomIcons = [
   { icon: <Globe size={16} />, label: "Language" },
 ];
 
-const MenuSidebar = ({ isOpen, setIsOpen }) => {
+const MenuSidebar = ({ isOpen }) => {
   const IconItem = ({ icon, label, active, special, badge }) => {
     return (
       <div
-        className={`flex items-center gap-3 px-4 py-3 rounded-xl cursor-pointer transition-all duration-300 group
+        className={`flex items-center  gap-3 px-4 py-3 rounded-xl cursor-pointer transition-all duration-300 group
         ${
           special
             ? "bg-gradient-to-r from-blue-500 to-purple-500 text-white shadow-md"
@@ -68,7 +68,7 @@ const MenuSidebar = ({ isOpen, setIsOpen }) => {
   return (
     <>
       {/* overlay for mobile */}
-      {isOpen && (
+      {/* {isOpen && (
         <div
           className="fixed inset-0 w-full h-full z-40 backdrop-blur-sm"
           onClick={() => {
@@ -76,17 +76,17 @@ const MenuSidebar = ({ isOpen, setIsOpen }) => {
             document.body.style.overflow = "visible";
           }}
         />
-      )}
+      )} */}
 
       <div
-        className={`fixed top-0 left-0 h-full w-[260px] bg-white z-50 shadow-xl transition-all duration-300 flex flex-col
+        className={`fixed top-0  left-0 h-full w-[260px] bg-white z-[9999] shadow-xl transition-all duration-300 flex flex-col
         ${isOpen ? "translate-x-0" : "-translate-x-full"}
         md:translate-x-0 md:hidden md:shadow-none`}
       >
         {/* HEADER */}
-        <div className="h-16 flex items-center justify-center border-b">
+        <div className="h-16 flex items-center justify-center border-b border-gray-100">
           <h2 className="text-xl font-bold bg-gradient-to-r from-blue-500 to-purple-500 bg-clip-text text-transparent">
-            My Panel
+            Al Abadan
           </h2>
         </div>
 

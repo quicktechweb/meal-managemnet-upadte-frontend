@@ -56,6 +56,16 @@ const MainLayout = () => {
       )}
 
       <MenuSidebar isOpen={sidebarOpen} setIsOpen={setSidebarOpen} />
+
+      {sidebarOpen && (
+        <div
+          className="fixed inset-0 w-full h-full z-50 backdrop-blur-sm"
+          onClick={() => {
+            setSidebarOpen(false);
+            document.body.style.overflow = "visible";
+          }}
+        />
+      )}
     </div>
   );
 };

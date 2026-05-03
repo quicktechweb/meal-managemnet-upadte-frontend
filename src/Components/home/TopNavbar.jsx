@@ -113,10 +113,10 @@ const TopNavbar = ({ setHideSidebar, setSidebarOpen }) => {
     <div className="bg-white border-b border-gray-100 sticky top-0 z-50 w-full ">
       <div className="mx-auto px-3.5 xl:px-7 flex items-center gap-2 2xl:gap-8 h-auto py-2">
         {/* LEFT */}
-        <div className="flex flex-col-reverse items-center gap-5">
+        <div className="flex flex-col-reverse items-center gap-1.5  lg:gap-5">
           <div
             onClick={() => setHideSidebar((prev) => !prev)}
-            className="text-xl xl:text-3xl font-semibold cursor-pointer hover:text-blue-500 transition"
+            className="text-2xl xl:text-3xl font-semibold cursor-pointer hover:text-blue-500 transition"
           >
             <FiMenu />
           </div>
@@ -126,7 +126,7 @@ const TopNavbar = ({ setHideSidebar, setSidebarOpen }) => {
               setOpenPopup((prev) => !prev);
               document.body.style.overflow = "hidden";
             }}
-            className="cursor-pointer h-16 w-[70px] lg:w-[80px] xl:w-[100px] shrink-0"
+            className="cursor-pointer h-10 md:h-16 w-[60px] lg:w-[80px] xl:w-[100px] shrink-0"
           >
             <img
               src={data?.logoUrl}
@@ -140,7 +140,7 @@ const TopNavbar = ({ setHideSidebar, setSidebarOpen }) => {
         <div className="w-px h-9 bg-gradient-to-b from-transparent via-gray-200 to-transparent flex-shrink-0" />
 
         {/* CENTER */}
-        <div className="flex  items-center w-full justify-between md:justify-normal  gap-2 2xl:gap-6 ">
+        <div className="flex  w-full justify-between md:justify-normal  gap-2 2xl:gap-6 ">
           <div className="flex flex-col gap-1 xl:gap-2 ">
             {/* top icons */}
             <div className="md:flex hidden gap-1">
@@ -179,10 +179,12 @@ const TopNavbar = ({ setHideSidebar, setSidebarOpen }) => {
             </div>
           </div>
 
-          {/* eikhane click korle side bar hbe */}
           <div
-            onClick={() => setSidebarOpen(true)}
-            className="text-3xl font-bold md:hidden"
+            onClick={() => {
+              setSidebarOpen(true);
+              document.body.style.overflow = "hidden";
+            }}
+            className="text-xl lg:text-3xl font-bold md:hidden mt-2.5"
           >
             <CiMenuFries />
           </div>
