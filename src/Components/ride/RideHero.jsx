@@ -4,14 +4,14 @@ import { MapPin, Navigation, ArrowRight } from "lucide-react";
 
 const RideHero = () => {
   return (
-    <section className="relative min-h-[60vh] flex items-center px-6 pt-5  bg-white">
-      <div className=" mx-auto w-full grid grid-cols-1 lg:grid-cols-2 gap-12 items-center relative z-10">
+    <section className="relative lg:min-h-[60vh] flex items-center px-6 pt-5  bg-white">
+      <div className=" mx-auto w-full grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-12 items-center relative z-10">
         {/* Left Content - Text & CTA */}
         <motion.div
           initial={{ opacity: 0, x: -50 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.8, ease: "easeOut" }}
-          className="space-y-8"
+          className="space-y-4 lg:space-y-8"
         >
           <div className="inline-flex items-center gap-2 bg-blue-50 border border-blue-100 text-blue-700 px-4 py-2 rounded-full text-sm font-bold tracking-wide">
             <span className="relative flex h-2 w-2">
@@ -21,12 +21,12 @@ const RideHero = () => {
             NOW LIVE IN DHAKA
           </div>
 
-          <h1 className="text-6xl md:text-8xl font-black text-slate-900 leading-[1.1] tracking-tight">
+          <h1 className="text-4xl lg:text-8xl font-black text-slate-900 leading-[1.1] tracking-tight">
             Move <span className="text-blue-600">Faster</span>,<br />
             Ride Smarter.
           </h1>
 
-          <p className="text-xl text-slate-600 max-w-lg leading-relaxed">
+          <p className="text-sm lg:text-xl text-slate-600 max-w-lg leading-relaxed">
             City-r traffic-ke pichone fele safely gontobbe pouchao. Affordable
             fare ebong premium service-er bhorsha ekhon apnar hater muthoy.
           </p>
@@ -58,7 +58,7 @@ const RideHero = () => {
                 />
               </div>
             </div>
-            <button className="w-full mt-2 bg-blue-600 hover:bg-blue-700 text-white font-bold py-5 rounded-[24px] transition-all flex items-center justify-center gap-2 group">
+            <button className="w-full mt-2 bg-blue-600 hover:bg-blue-700 text-white font-bold py-2.5 lg:py-5 rounded-[24px] transition-all flex items-center justify-center gap-2 group text-sm lg:text-base">
               Find My Ride
               <ArrowRight
                 className="group-hover:translate-x-1 transition-transform"

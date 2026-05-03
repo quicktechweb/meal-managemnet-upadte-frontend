@@ -9,9 +9,9 @@ const RideStats = () => {
   ];
 
   return (
-    <div className="bg-white py-12 mt-12 border-y border-slate-100">
+    <div className="bg-white py-6 lg:py-12  lg:mt-12 border-y border-slate-100">
       <div className="max-w-7xl mx-auto px-8">
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 lg:gap-8 text-center">
           {stats.map((s, i) => (
             <div key={i} className="space-y-1">
               <div className="text-3xl md:text-4xl font-black text-blue-600">

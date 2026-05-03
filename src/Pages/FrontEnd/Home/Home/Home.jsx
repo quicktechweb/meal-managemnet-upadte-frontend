@@ -36,6 +36,8 @@ import RideStats from "../../../../Components/ride/RideStat";
 import RideAppPreview from "../../../../Components/ride/RideAppPreview";
 import RideTestimonials from "../../../../Components/ride/RideTestimonials";
 import RideFeatures from "../../../../Components/ride/RideFeatures";
+import RideHowItWorks from "../../../../Components/ride/RideHowItWorks";
+import VehicleOptions from "../../../../Components/ride/VehicleOptions";
 
 const Home = () => {
   const { selectedMenu } = useLayoutSwitch();
@@ -81,7 +83,9 @@ const Home = () => {
         <>
           <RideHero />
           <RideStats />
+          <RideHowItWorks />
           <RideFeatures />
+          <VehicleOptions />
           <RideAppPreview />
           <RideTestimonials />
         </>
