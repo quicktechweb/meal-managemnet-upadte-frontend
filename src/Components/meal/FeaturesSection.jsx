@@ -9,11 +9,11 @@ import {
 } from "lucide-react";
 
 const FeatureCard = ({ icon: Icon, title, description, iconColor, iconBg }) => (
-  <div className="bg-white p-8 rounded-2xl shadow-sm border border-gray-100 flex flex-col items-start hover:shadow-md transition-shadow duration-300">
-    <div className={`p-3 rounded-lg ${iconBg} mb-6`}>
+  <div className="bg-white p-4 lg:p-8 rounded-2xl shadow-sm border border-gray-100 flex flex-col items-start hover:shadow-md transition-shadow duration-300">
+    <div className={`p-3 rounded-lg ${iconBg} mb-3 lg:mb-6`}>
       <Icon className={`w-6 h-6 ${iconColor}`} />
     </div>
-    <h3 className="text-xl font-bold text-slate-900 mb-3">{title}</h3>
+    <h3 className="text-xl font-bold text-slate-900 mb-1.5 lg:mb-3">{title}</h3>
     <p className="text-gray-500 leading-relaxed text-sm md:text-base">
       {description}
     </p>
@@ -73,20 +73,20 @@ const FeaturesSection = () => {
   ];
 
   return (
-    <section className="bg-slate-50 py-20 px-6">
+    <section className="bg-slate-50 py-10 lg:py-20 px-6">
       <div className="max-w-6xl mx-auto">
         {/* Header */}
-        <div className="text-center mb-16">
-          <h2 className="text-4xl font-extrabold text-slate-900 mb-4">
+        <div className="text-center mb-4 lg:mb-16">
+          <h2 className="text-2xl lg:text-4xl font-extrabold text-slate-900 mb-4">
             Everything You Need
           </h2>
-          <p className="text-gray-500 text-lg">
+          <p className="text-gray-500 text-base lg:text-lg">
             Simple tools to make your mess experience better
           </p>
         </div>
 
         {/* Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 lg:gap-8">
           {features.map((feature, index) => (
             <FeatureCard key={index} {...feature} />
           ))}

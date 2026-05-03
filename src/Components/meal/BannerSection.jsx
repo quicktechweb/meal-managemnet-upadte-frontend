@@ -13,11 +13,11 @@ export default function BannerSection() {
         <div className="absolute top-1/2 right-[10%] h-[400px] w-[400px] -translate-y-1/2 rounded-full bg-blue-200/50 blur-[80px]" />
       </div>
 
-      <div className="relative z-10 mx-auto w-full px-6 py-12 lg:px-8 xl:px-12 flex flex-col lg:flex-row gap-16 lg:gap-8">
+      <div className="relative z-10 mx-auto w-full px-6 py-4 lg:px-8 xl:px-12 flex flex-col lg:flex-row gap-4 lg:gap-8">
         {/* ── LEFT COLUMN: TEXT CONTENT ── */}
         <div className="flex-1 w-full max-w-2xl text-left">
           {/* Trust Badge */}
-          <div className="mb-6 inline-flex items-center gap-2 rounded-full bg-indigo-100 px-3 py-1.5">
+          <div className=" lg:mb-6 inline-flex items-center gap-2 rounded-full bg-indigo-100 px-3 py-1.5">
             <svg
               className="w-4 h-4 text-indigo-600"
               fill="none"
@@ -37,7 +37,7 @@ export default function BannerSection() {
           </div>
 
           {/* Heading */}
-          <h1 className="mb-6 text-4xl font-extrabold tracking-tight text-slate-900 sm:text-5xl lg:text-[64px] leading-[1.1]">
+          <h1 className="mb-3 lg:mb-6 text-4xl font-extrabold tracking-tight text-slate-900 sm:text-5xl lg:text-[64px] leading-[1.1]">
             Know What's <br />
             Cooking{" "}
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600">
@@ -50,18 +50,18 @@ export default function BannerSection() {
           </h1>
 
           {/* Paragraph */}
-          <p className="mb-8 text-lg text-slate-500 leading-relaxed">
+          <p className="mb-4 lg:mb-8 text-sm lg:text-lg text-slate-500 leading-relaxed">
             Stop walking to mess blindly! Check daily menus, rate your meals,
             and help make hostel food better for everyone. It's free and takes
             30 seconds to start.
           </p>
 
           {/* Buttons */}
-          <div className="mb-8 flex flex-col sm:flex-row items-start gap-4">
-            <button className="flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 hover:from-blue-700 hover:via-indigo-700 hover:to-purple-700 px-6 py-3.5 text-base font-bold text-white transition-all shadow-lg shadow-indigo-200">
+          <div className="mb-4 lg:mb-8 flex flex-col sm:flex-row items-start gap-4">
+            <button className="flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 hover:from-blue-700 hover:via-indigo-700 hover:to-purple-700 px-3  lg:px-6 py-2 lg:py-3.5  font-bold text-white transition-all shadow-lg shadow-indigo-200 text-sm lg:text-base">
               Get Started — It's Free
               <svg
-                className="w-5 h-5"
+                className="w-4 h-4 lg:w-5 lg:h-5"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -89,7 +89,7 @@ export default function BannerSection() {
                   key={i}
                   src={img}
                   alt="User"
-                  className="h-10 w-10 rounded-full border-2 border-white bg-slate-100 object-cover"
+                  className="w-8 h-8 lg:h-10 lg:w-10 rounded-full border-2 border-white bg-slate-100 object-cover"
                 />
               ))}
             </div>
@@ -100,7 +100,7 @@ export default function BannerSection() {
         </div>
 
         {/* ── RIGHT COLUMN: PHONE MOCKUP ── */}
-        <div className="flex-1 w-full relative flex justify-center mt-10 lg:mt-0">
+        <div className="flex-1 w-full relative flex justify-center  lg:mt-0">
           <div className="relative w-[350px] h-[600px]">
             {/* Phone Hardware */}
             <div className="absolute inset-0 bg-[#1A1C23] rounded-[3rem] shadow-2xl p-3 border-4 border-[#2A2C35]">

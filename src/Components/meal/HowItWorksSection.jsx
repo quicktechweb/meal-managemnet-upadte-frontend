@@ -10,19 +10,16 @@ import {
 
 const Step = ({ number, icon: Icon, title, description, isLast }) => (
   <div className="relative flex flex-col items-center text-center group w-full">
-    {/* Large Background Number */}
-    <span className="text-7xl font-bold text-blue-50 opacity-10 absolute -top-10 select-none">
-      {number}
-    </span>
-
     {/* Icon Container */}
-    <div className="relative z-10 bg-blue-600 p-4 rounded-xl mb-6 shadow-lg shadow-blue-100 group-hover:scale-110 transition-transform duration-300">
+    <div className="relative z-10 bg-blue-600 p-4 rounded-xl mb-3 lg:mb-6 shadow-lg shadow-blue-100 group-hover:scale-110 transition-transform duration-300">
       <Icon className="w-6 h-6 text-white" />
     </div>
 
     {/* Content */}
-    <h3 className="text-lg font-bold text-slate-900 mb-3">{title}</h3>
-    <p className="text-gray-500 text-sm leading-relaxed px-2">{description}</p>
+    <h3 className="text-lg font-bold text-slate-900  lg:mb-3">{title}</h3>
+    <p className="text-gray-500 text-sm lg:leading-relaxed px-2">
+      {description}
+    </p>
 
     {/* Connecting Arrow (Visible only on desktop and if not last item) */}
     {!isLast && (
@@ -73,21 +70,23 @@ const HowItWorksSection = () => {
   ];
 
   return (
-    <section className="bg-white py-24 px-6 overflow-hidden">
+    <section className="bg-white py-10 lg:py-24 px-6 overflow-hidden">
       <div className="max-w-7xl mx-auto">
         {/* Badge & Header */}
-        <div className="text-center mb-20">
-          <span className="bg-blue-50 text-blue-600 px-4 py-1.5 rounded-full text-sm font-medium border border-blue-100">
+        <div className="text-center mb-5 lg:mb-20">
+          <span className="bg-blue-50 text-blue-600 px-2 py-1 lg:px-4 lg:py-1.5 rounded-full text-xs lg:text-sm font-medium border border-blue-100">
             Simple Process
           </span>
-          <h2 className="text-4xl font-extrabold text-slate-900 mt-6 mb-4">
+          <h2 className="text-2xl lg:text-4xl font-extrabold text-slate-900 mt-3 lg:mt-6 mb-2 lg:mb-4">
             How It Works
           </h2>
-          <p className="text-gray-500 text-lg">Get started in under a minute</p>
+          <p className="text-gray-500 text-sm lg:text-lg">
+            Get started in under a minute
+          </p>
         </div>
 
         {/* Steps Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-12 lg:gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3 lg:gap-4">
           {steps.map((step, index) => (
             <Step key={index} {...step} isLast={index === steps.length - 1} />
           ))}
