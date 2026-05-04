@@ -511,6 +511,7 @@ export const useInventoryPurchaseProductCreate = () => {
       if (data?.success) {
         toast.success(data?.message);
         reactQuery.invalidateQueries(["inventory-purchase-product"]);
+        reactQuery.invalidateQueries(["get-inventory-stock"]);
       }
     },
     onError: (error) => {

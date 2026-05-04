@@ -6,6 +6,8 @@ const InventoryDayWiseTableList = ({
   measures,
   globalAmount,
   setMeasures,
+  selectedDay,
+  selectedMealType,
 }) => {
   const [searchQuery, setSearchQuery] = useState("");
 
@@ -20,41 +22,43 @@ const InventoryDayWiseTableList = ({
   return (
     <>
       {/* Search Box */}
-      <div className="mb-6">
-        <div className="relative max-w-sm">
-          <span className="absolute inset-y-0 left-3 flex items-center text-gray-400">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              className="h-4 w-4"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M21 21l-4.35-4.35M17 11A6 6 0 1 1 5 11a6 6 0 0 1 12 0z"
-              />
-            </svg>
-          </span>
-          <input
-            type="text"
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder="Search by institute name..."
-            className="w-full pl-10 pr-4 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent transition"
-          />
-          {searchQuery && (
-            <button
-              onClick={() => setSearchQuery("")}
-              className="absolute inset-y-0 right-3 flex items-center text-gray-400 hover:text-gray-600"
-            >
-              ✕
-            </button>
-          )}
+      {selectedDay && selectedMealType && (
+        <div className="mb-6">
+          <div className="relative max-w-sm">
+            <span className="absolute inset-y-0 left-3 flex items-center text-gray-400">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="h-4 w-4"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M21 21l-4.35-4.35M17 11A6 6 0 1 1 5 11a6 6 0 0 1 12 0z"
+                />
+              </svg>
+            </span>
+            <input
+              type="text"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              placeholder="Search by institute name..."
+              className="w-full pl-10 pr-4 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent transition"
+            />
+            {searchQuery && (
+              <button
+                onClick={() => setSearchQuery("")}
+                className="absolute inset-y-0 right-3 flex items-center text-gray-400 hover:text-gray-600"
+              >
+                ✕
+              </button>
+            )}
+          </div>
         </div>
-      </div>
+      )}
 
       {filteredData?.length === 0 ? (
         <div className="text-center text-gray-400 py-16 text-sm">

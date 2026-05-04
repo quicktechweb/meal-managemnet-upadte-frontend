@@ -16,8 +16,8 @@ const StockList = () => {
               <th className="px-6 py-4">Current Stock</th>
               <th className="px-6 py-4">Stock In</th>
               <th className="px-6 py-4">Stock Out</th>
-              <th className="px-6 py-4">Last Price</th>
-              <th className="px-6 py-4">Avg Price</th>
+              {/* <th className="px-6 py-4">Last Price</th>
+              <th className="px-6 py-4">Avg Price</th> */}
               <th className="px-6 py-4">Date</th>
             </tr>
           </thead>
@@ -54,8 +54,8 @@ const StockList = () => {
                 </td>
 
                 {/* Prices */}
-                <td className="px-6 py-4">৳{item.last_purchase_price}</td>
-                <td className="px-6 py-4">৳{item.average_purchase_price}</td>
+                {/* <td className="px-6 py-4">৳{item.last_purchase_price}</td>
+                <td className="px-6 py-4">৳{item.average_purchase_price}</td> */}
 
                 {/* Date */}
                 <td className="px-6 py-4 text-gray-500 text-xs">

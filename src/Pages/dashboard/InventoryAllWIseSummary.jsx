@@ -5,6 +5,8 @@ const InventoryAllWIseSummary = ({
   selectedDay,
   selectedMealType,
 }) => {
+  console.log(summary);
+
   // ── CSV ──────────────────────────────────────────────
   const handleCSVDownload = () => {
     const headers = ["#", "Item Name", "Total Quantity", "Total Amount (kg)"];
@@ -272,6 +274,9 @@ const InventoryAllWIseSummary = ({
                   </th>
                   <th className="text-right text-xs font-medium text-gray-400 uppercase tracking-wide pb-2">
                     Total (kg)
+                  </th>
+                  <th className="text-right text-xs font-medium text-gray-400 uppercase tracking-wide pb-2">
+                    Ac
                   </th>
                 </tr>
               </thead>

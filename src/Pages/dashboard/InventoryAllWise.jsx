@@ -8,6 +8,8 @@ import {
 import InventoryDayWiseTableList from "./InventoryDayWiseTableList";
 import InventoryDayWIseSummary from "./InventoryDayWIseSummary";
 import InventoryIngredients from "./InventoryIngredients";
+import InventoryAllWIseSummary from "./InventoryAllWIseSummary";
+import InventoryAllWiseTableList from "./InventoryAllWiseTableList";
 
 const InventoryAllWise = () => {
   const dayNames = [
@@ -29,8 +31,6 @@ const InventoryAllWise = () => {
   const [inputAmount, setInputAmount] = useState("");
 
   const { data } = useGlobalAllWise();
-
-  console.log(data);
 
   const { mutateAsync, isPending } = useInventoryGlobalAmount();
   // Global amount set
@@ -75,8 +75,6 @@ const InventoryAllWise = () => {
       })
       .filter((inst) => inst.items.length > 0);
   }, [data, selectedDay, selectedMealType]);
-
-  console.log(instituteData);
 
   const summary = useMemo(() => {
     if (instituteData?.length === 0) return [];
@@ -142,7 +140,7 @@ const InventoryAllWise = () => {
               Per institute meal item count
             </p>
           </div>
-          <div className="flex flex-col gap-1">
+          {/* <div className="flex flex-col gap-1">
             <label className="text-sm font-semibold text-gray-700">
               Global Amount
             </label>
@@ -181,7 +179,7 @@ const InventoryAllWise = () => {
               </svg>
               {isPending ? "Saving..." : "Save"}
             </button>
-          </div>
+          </div> */}
         </div>
 
         {/* Day Selector */}
@@ -233,7 +231,7 @@ const InventoryAllWise = () => {
         )}
 
         {/* Overall Summary */}
-        <InventoryDayWIseSummary
+        <InventoryAllWIseSummary
           instituteData={instituteData}
           measures={measures}
           globalAmount={globalAmount}
@@ -242,12 +240,14 @@ const InventoryAllWise = () => {
         />
 
         {/* Per institute table */}
-        <InventoryDayWiseTableList
+        <InventoryAllWiseTableList
           getEffectiveAmount={getEffectiveAmount}
           instituteData={instituteData}
           measures={measures}
           globalAmount={globalAmount}
           setMeasures={setMeasures}
+          selectedDay={selectedDay}
+          selectedMealType={selectedMealType}
         />
 
         {/* day wise and meal type */}

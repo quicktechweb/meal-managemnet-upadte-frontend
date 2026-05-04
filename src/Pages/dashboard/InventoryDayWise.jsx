@@ -137,7 +137,7 @@ const InventoryDayWise = () => {
               Per institute meal item count
             </p>
           </div>
-          <div className="flex flex-col gap-1">
+          {/* <div className="flex flex-col gap-1">
             <label className="text-sm font-semibold text-gray-700">
               Global Amount
             </label>
@@ -176,7 +176,7 @@ const InventoryDayWise = () => {
               </svg>
               {isPending ? "Saving..." : "Save"}
             </button>
-          </div>
+          </div> */}
         </div>
 
         {/* Day Selector */}
@@ -234,6 +234,8 @@ const InventoryDayWise = () => {
           globalAmount={globalAmount}
           getEffectiveAmount={getEffectiveAmount}
           summary={summary}
+          selectedDay={selectedDay}
+          selectedMealType={selectedMealType}
         />
 
         {/* Per institute table */}
@@ -243,6 +245,8 @@ const InventoryDayWise = () => {
           measures={measures}
           globalAmount={globalAmount}
           setMeasures={setMeasures}
+          selectedDay={selectedDay}
+          selectedMealType={selectedMealType}
         />
 
         {/* day wise and meal type */}
