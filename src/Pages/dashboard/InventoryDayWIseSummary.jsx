@@ -144,7 +144,7 @@ const InventoryDayWIseSummary = ({
   };
 
   return (
-    <div>
+    <div className="mb-5">
       {" "}
       {summary.length > 0 && (
         <div className="bg-white rounded-xl border border-gray-100 overflow-hidden mt-4">

@@ -227,15 +227,6 @@ const InventoryDayWise = () => {
           </div>
         )}
 
-        {/* Per institute table */}
-        <InventoryDayWiseTableList
-          getEffectiveAmount={getEffectiveAmount}
-          instituteData={instituteData}
-          measures={measures}
-          globalAmount={globalAmount}
-          setMeasures={setMeasures}
-        />
-
         {/* Overall Summary */}
         <InventoryDayWIseSummary
           instituteData={instituteData}
@@ -243,6 +234,15 @@ const InventoryDayWise = () => {
           globalAmount={globalAmount}
           getEffectiveAmount={getEffectiveAmount}
           summary={summary}
+        />
+
+        {/* Per institute table */}
+        <InventoryDayWiseTableList
+          getEffectiveAmount={getEffectiveAmount}
+          instituteData={instituteData}
+          measures={measures}
+          globalAmount={globalAmount}
+          setMeasures={setMeasures}
         />
 
         {/* day wise and meal type */}
