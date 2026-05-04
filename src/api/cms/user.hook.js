@@ -33,6 +33,7 @@ import {
   locationFunction,
   sellerCreateFunction,
   sellerListFunction,
+  summaryCreateAllWiseFunction,
   updateInstituteProfileInfoFunction,
   userAllwiseCreateMealFunction,
   userAllWiseGetMealFunction,
@@ -555,5 +556,22 @@ export const useInventoryStock = () => {
   return useQuery({
     queryKey: ["get-inventory-stock"],
     queryFn: getInventoryStockFunction,
+  });
+};
+
+export const useCreateSummaryAllWise = () => {
+  const reactQuery = useQueryClient();
+  return useMutation({
+    mutationKey: ["create-summary-all-wise"],
+    mutationFn: (payload) => summaryCreateAllWiseFunction(payload),
+    onSuccess: (data) => {
+      if (data?.success) {
+        toast.success(data?.message);
+        reactQuery.invalidateQueries(["get-inventory-stock"]);
+      }
+    },
+    onError: (error) => {
+      toast.error(error?.response?.data?.message || "Something went wrong");
+    },
   });
 };

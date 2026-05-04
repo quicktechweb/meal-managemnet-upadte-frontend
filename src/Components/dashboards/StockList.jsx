@@ -40,17 +40,17 @@ const StockList = () => {
 
                 {/* Current Stock */}
                 <td className="px-6 py-4 font-medium">
-                  {item.current_quantity} {item.unit}
+                  {item.current_quantity.toFixed(2)} {item.unit}
                 </td>
 
                 {/* Stock In */}
                 <td className="px-6 py-4 text-green-600 font-medium">
-                  +{item.total_stock_in}
+                  +{item.total_stock_in.toFixed(2)}
                 </td>
 
                 {/* Stock Out */}
                 <td className="px-6 py-4 text-red-500 font-medium">
-                  -{item.total_stock_out}
+                  -{item.total_stock_out.toFixed(2)}
                 </td>
 
                 {/* Prices */}

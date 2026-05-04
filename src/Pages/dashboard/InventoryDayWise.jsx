@@ -125,7 +125,7 @@ const InventoryDayWise = () => {
   // ────────────────────────────────────────────────────────────────
 
   return (
-    <div className="min-h-screen p-6">
+    <div className="min-h-screen">
       <div className="mx-auto">
         {/* Header */}
         <div className="flex items-center justify-between mb-6">

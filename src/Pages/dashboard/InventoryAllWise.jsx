@@ -5,8 +5,7 @@ import {
   useGlobalDayWise,
   useInventoryGlobalAmount,
 } from "../../api/cms/user.hook";
-import InventoryDayWiseTableList from "./InventoryDayWiseTableList";
-import InventoryDayWIseSummary from "./InventoryDayWIseSummary";
+
 import InventoryIngredients from "./InventoryIngredients";
 import InventoryAllWIseSummary from "./InventoryAllWIseSummary";
 import InventoryAllWiseTableList from "./InventoryAllWiseTableList";
@@ -128,7 +127,7 @@ const InventoryAllWise = () => {
   // ────────────────────────────────────────────────────────────────
 
   return (
-    <div className="min-h-screen p-6">
+    <div className="min-h-screen">
       <div className="mx-auto">
         {/* Header */}
         <div className="flex items-center justify-between mb-6">
@@ -237,6 +236,8 @@ const InventoryAllWise = () => {
           globalAmount={globalAmount}
           getEffectiveAmount={getEffectiveAmount}
           summary={summary}
+          selectedDay={selectedDay}
+          selectedMealType={selectedMealType}
         />
 
         {/* Per institute table */}

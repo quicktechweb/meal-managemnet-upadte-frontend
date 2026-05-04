@@ -261,3 +261,11 @@ export const getInventoryStockFunction = async () => {
   const { data } = await axiosPublic.get("/api/get-inventory-stock");
   return data?.data;
 };
+
+export const summaryCreateAllWiseFunction = async (payload) => {
+  const { data } = await axiosPublic.post(
+    "/api/create-inventory-summary-allwise",
+    payload,
+  );
+  return data;
+};
