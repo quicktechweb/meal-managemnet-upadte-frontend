@@ -275,9 +275,6 @@ const InventoryAllWIseSummary = ({
                   <th className="text-right text-xs font-medium text-gray-400 uppercase tracking-wide pb-2">
                     Total (kg)
                   </th>
-                  <th className="text-right text-xs font-medium text-gray-400 uppercase tracking-wide pb-2">
-                    Ac
-                  </th>
                 </tr>
               </thead>
               <tbody>
@@ -306,22 +303,6 @@ const InventoryAllWIseSummary = ({
                   </tr>
                 ))}
               </tbody>
-              <tfoot>
-                <tr>
-                  <td
-                    colSpan={2}
-                    className="pt-3 text-xs font-medium text-gray-400 uppercase tracking-wide"
-                  >
-                    Grand total
-                  </td>
-                  <td className="pt-3 text-right font-medium text-gray-700">
-                    {summary.reduce((s, i) => s + i.totalCount, 0)}
-                  </td>
-                  <td className="pt-3 text-right font-semibold text-emerald-700">
-                    {summary.reduce((s, i) => s + i.totalKg, 0).toFixed(2)} kg
-                  </td>
-                </tr>
-              </tfoot>
             </table>
           </div>
         </div>

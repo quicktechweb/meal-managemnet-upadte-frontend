@@ -301,7 +301,7 @@ const InventoryDayWIseSummary = ({
                   </tr>
                 ))}
               </tbody>
-              <tfoot>
+              {/* <tfoot>
                 <tr>
                   <td
                     colSpan={2}
@@ -316,7 +316,7 @@ const InventoryDayWIseSummary = ({
                     {summary.reduce((s, i) => s + i.totalKg, 0).toFixed(2)} kg
                   </td>
                 </tr>
-              </tfoot>
+              </tfoot> */}
             </table>
           </div>
         </div>
