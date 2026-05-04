@@ -256,3 +256,8 @@ export const getInventoryGlobalAmountFunction = async () => {
   const { data } = await axiosPublic.get("/api/inventory-global-amount");
   return data;
 };
+
+export const getInventoryStockFunction = async () => {
+  const { data } = await axiosPublic.get("/api/get-inventory-stock");
+  return data?.data;
+};

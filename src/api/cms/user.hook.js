@@ -12,6 +12,7 @@ import {
   getInstituteRoleFunction,
   getInstituteUserMealOrderListsFunction,
   getInventoryGlobalAmountFunction,
+  getInventoryStockFunction,
   getMealOnOffFunction,
   getPermissionFunction,
   globarAllWiseUserMealFunction,
@@ -546,5 +547,12 @@ export const useGetInventoryGlobalAmount = () => {
   return useQuery({
     queryKey: ["inventory-global-amount"],
     queryFn: getInventoryGlobalAmountFunction,
+  });
+};
+
+export const useInventoryStock = () => {
+  return useQuery({
+    queryKey: ["get-inventory-stock"],
+    queryFn: getInventoryStockFunction,
   });
 };

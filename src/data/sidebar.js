@@ -77,6 +77,10 @@ export const SIDEBAR_ITEMS = [
         label: "All wise",
         path: "/dashboards/inventory-all-wise",
       },
+      {
+        label: "Stock Management",
+        path: "/dashboards/stock-management",
+      },
     ],
   },
 ];

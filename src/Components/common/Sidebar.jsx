@@ -42,6 +42,8 @@ const Sidebar = ({ isOpen, onClose }) => {
 
   const { user } = useInstituteAuth();
 
+  console.log();
+
   const [openMenus, setOpenMenus] = useState({});
 
   const toggleMenu = (label) => {
@@ -157,7 +159,7 @@ const Sidebar = ({ isOpen, onClose }) => {
                       : "grid-rows-[0fr] opacity-0"
                   }`}
                 >
-                  <div className="overflow-hidden flex flex-col gap-0.5 pl-11 pr-2">
+                  <div className="overflow-hidden flex flex-col gap-0.5 pl-8 pr-2">
                     {item.children.map((child) => (
                       <NavLink
                         key={child.path}
@@ -232,8 +234,13 @@ const Sidebar = ({ isOpen, onClose }) => {
             <span className="text-white text-xs font-semibold">U</span>
           </div>
           <div className="flex-1 min-w-0">
-            <p className="text-sm font-medium text-gray-700 truncate">User</p>
-            <p className="text-xs text-gray-400 truncate">user@example.com</p>
+            <p className="text-sm font-medium text-gray-700 truncate">
+              {user?.user?.information?.name_of_institute ??
+                user?.user?.information?.full_name}
+            </p>
+            <p className="text-xs text-gray-400 truncate">
+              {user?.user?.email}
+            </p>
           </div>
         </div>
       </div>

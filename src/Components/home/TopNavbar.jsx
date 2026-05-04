@@ -312,13 +312,11 @@ const TopNavbar = ({ setHideSidebar, setSidebarOpen }) => {
                 <IconButton key={i} {...item} />
               ))}
             </div>
-
             <div className="flex sm:hidden gap-1">
               {smmobiletopIcons.map((item, i) => (
                 <IconButton key={i} {...item} />
               ))}
             </div>
-
             {!selectedMenu && (
               <div className="hidden sm:flex md:hidden gap-1">
                 {mobilebottomIcons.map((item, i) => (
@@ -326,13 +324,11 @@ const TopNavbar = ({ setHideSidebar, setSidebarOpen }) => {
                 ))}
               </div>
             )}
-
             <div className="flex sm:hidden gap-1">
               {smmobilebottomIcons.map((item, i) => (
                 <IconButton key={i} {...item} />
               ))}
             </div>
-
             {/* bottom icons */}
             {!selectedMenu && (
               <div className="md:flex hidden gap-1">
@@ -341,7 +337,6 @@ const TopNavbar = ({ setHideSidebar, setSidebarOpen }) => {
                 ))}
               </div>
             )}
-
             {/* bottom icons */}
             {selectedMenu === "meal" && (
               <div className="md:flex hidden gap-1">
@@ -365,7 +360,6 @@ const TopNavbar = ({ setHideSidebar, setSidebarOpen }) => {
                   ))}
               </div>
             )}
-
             {selectedMenu === "ride" && (
               <div className="md:flex hidden gap-1">
                 {rideBottomIcons
@@ -407,6 +401,28 @@ const TopNavbar = ({ setHideSidebar, setSidebarOpen }) => {
                     user={user?.user}
                   />
                 ))}
+              </div>
+            )}
+            {selectedMenu === "food" && (
+              <div className="md:flex hidden gap-1">
+                {foodBottomIcons
+                  .filter((item) => {
+                    if (user?.user?.role === "institute") {
+                      return !["day-wise-meal", "all-wise-meal"].includes(
+                        item.slug,
+                      );
+                    }
+                    return true;
+                  })
+                  .map((item, i) => (
+                    <IconButton
+                      key={i}
+                      {...item}
+                      setSelectedMenu={setSelectedMenu}
+                      setDaywiseSelect={setDaywiseSelect}
+                      user={user?.user}
+                    />
+                  ))}
               </div>
             )}
           </div>
