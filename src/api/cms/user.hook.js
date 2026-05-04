@@ -14,6 +14,7 @@ import {
   getInventoryGlobalAmountFunction,
   getMealOnOffFunction,
   getPermissionFunction,
+  globarAllWiseUserMealFunction,
   globarDayWiseUserMealFunction,
   individualUserPermissionFunction,
   instituteApprovedUsersFunction,
@@ -369,6 +370,14 @@ export const useGlobalDayWise = () => {
   });
 };
 
+export const useGlobalAllWise = () => {
+  return useQuery({
+    queryKey: ["global-AllWise-user"],
+    queryFn: globarAllWiseUserMealFunction,
+    retry: false,
+  });
+};
+
 export const useGetInstituteMealOnOffTime = () => {
   const { token } = useInstituteAuth();
   return useQuery({
@@ -517,7 +526,7 @@ export const useInventoryPurchaseProductList = () => {
 };
 
 export const useInventoryGlobalAmount = () => {
-  const reactQuery = useQueryClient(); 
+  const reactQuery = useQueryClient();
   return useMutation({
     mutationKey: ["inventory-global-amount"],
     mutationFn: (payload) => inventoryGlobalAmountCreateFunction(payload),

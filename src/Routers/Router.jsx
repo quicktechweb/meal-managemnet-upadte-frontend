@@ -108,6 +108,7 @@ import InventoryAddProduct from "../Pages/dashboard/InventoryAddProduct";
 import InventoryPurchase from "../Pages/dashboard/InventoryPurchase";
 import InventoryDayWise from "../Pages/dashboard/InventoryDayWise";
 import InventoryPurchaseProductLists from "../Pages/dashboard/InventoryPurchaseProductLists";
+import InventoryAllWise from "../Pages/dashboard/InventoryAllWise";
 
 const router = createBrowserRouter([
   {
@@ -571,6 +572,10 @@ const router = createBrowserRouter([
       {
         path: "/dashboards/inventory-day-wise",
         element: <InventoryDayWise />,
+      },
+      {
+        path: "/dashboards/inventory-all-wise",
+        element: <InventoryAllWise />,
       },
     ],
   },

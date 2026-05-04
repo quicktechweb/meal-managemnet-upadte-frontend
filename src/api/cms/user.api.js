@@ -195,6 +195,11 @@ export const globarDayWiseUserMealFunction = async () => {
   return data;
 };
 
+export const globarAllWiseUserMealFunction = async () => {
+  const { data } = await axiosPublic.get("/api/global-all-wise-user-meal");
+  return data;
+};
+
 export const inventoryProductListsFunction = async () => {
   const { data } = await axiosPublic.get("/api/inventory-product");
   return data?.data;
