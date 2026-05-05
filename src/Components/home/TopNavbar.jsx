@@ -47,8 +47,15 @@ const mobileTopIcons = [
   { icon: <Bell size={16} />, label: "Notifications", badge: true },
 ];
 
+const menuTypeMap = {
+  default: { icon: <Utensils size={16} />, label: "A Food" },
+  food: { icon: <Utensils size={16} />, label: "A Food" },
+  "e-commerce": { icon: <ShoppingCart size={16} />, label: "Ecommerce" },
+  ride: { icon: <Bike size={16} />, label: "A Rider" },
+};
+
 const bottomIcons = [
-  // { icon: <Utensils size={16} />, label: "A Food" },
+  { dynamic: true },
   { icon: <Home size={16} />, label: "Home" },
   { icon: <Package size={16} />, label: "Product" },
   { icon: <Grid size={16} />, label: "Category" },
@@ -61,6 +68,7 @@ const bottomIcons = [
 ];
 
 const mobileBottomIcons = [
+  { dynamic: true },
   { icon: <Home size={16} />, label: "Home", active: true },
   { icon: <Video size={16} />, label: "Video" },
   { icon: <Menu size={16} />, label: "Menu" },
@@ -156,8 +164,8 @@ const TopNavbar = () => {
 
             {/* bottom icons */}
 
-            <div className="flex  gap-1">
-              {/* dynamic menu */}
+            {/* <div className="flex  gap-1">
+            
               {!selectedMenu && (
                 <IconButton icon={<Utensils size={16} />} label={"A Food"} />
               )}
@@ -176,17 +184,36 @@ const TopNavbar = () => {
               {selectedMenu === "ride" && (
                 <IconButton icon={<Bike size={16} />} label={"A Rider"} />
               )}
-              <div className="md:flex hidden">
-                {bottomIcons.map((item, i) => (
-                  <IconButton key={i} {...item} />
-                ))}
-              </div>
+
+              {bottomIcons.map((item, i) => (
+                <IconButton key={i} {...item} />
+              ))}
 
               <div className="md:hidden flex">
                 {mobileBottomIcons.map((item, i) => (
                   <IconButton key={i} {...item} />
                 ))}
               </div>
+            </div> */}
+
+            <div className="md:flex hidden gap-1 ">
+              {bottomIcons.map((item, i) => {
+                const resolvedItem = item.dynamic
+                  ? (menuTypeMap[selectedMenu] ?? menuTypeMap["default"])
+                  : item;
+
+                return <IconButton key={i} {...resolvedItem} />;
+              })}
+            </div>
+
+            <div className="md:hidden flex gap-1 ">
+              {mobileBottomIcons.map((item, i) => {
+                const resolvedItem = item.dynamic
+                  ? (menuTypeMap[selectedMenu] ?? menuTypeMap["default"])
+                  : item;
+
+                return <IconButton key={i} {...resolvedItem} />;
+              })}
             </div>
 
             {/* bottom icons */}

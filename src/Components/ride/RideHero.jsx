@@ -21,12 +21,12 @@ const RideHero = () => {
             NOW LIVE IN DHAKA
           </div>
 
-          <h1 className="text-4xl lg:text-8xl font-black text-slate-900 leading-[1.1] tracking-tight">
+          <h1 className="text-4xl xl:text-8xl font-black text-slate-900 leading-[1.1] tracking-tight">
             Move <span className="text-blue-600">Faster</span>,<br />
             Ride Smarter.
           </h1>
 
-          <p className="text-sm lg:text-xl text-slate-600 max-w-lg leading-relaxed">
+          <p className="text-sm xl:text-xl text-slate-600 max-w-lg leading-relaxed">
             City-r traffic-ke pichone fele safely gontobbe pouchao. Affordable
             fare ebong premium service-er bhorsha ekhon apnar hater muthoy.
           </p>
