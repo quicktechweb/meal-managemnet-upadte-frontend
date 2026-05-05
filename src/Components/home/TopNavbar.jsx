@@ -13,6 +13,7 @@ import {
   Truck,
   Video,
   MessageCircle,
+  Bike,
 } from "lucide-react";
 import { FiMenu } from "react-icons/fi";
 import HomePopover from "./HomePopover";
@@ -137,7 +138,24 @@ const TopNavbar = ({ setHideSidebar, setSidebarOpen }) => {
 
             <div className="flex  gap-1">
               {/* dynamic menu */}
-              <IconButton icon={<Utensils size={16} />} label={"A Food"} />
+              {!selectedMenu && (
+                <IconButton icon={<Utensils size={16} />} label={"A Food"} />
+              )}
+
+              {selectedMenu === "food" && (
+                <IconButton icon={<Utensils size={16} />} label={"A Food"} />
+              )}
+
+              {selectedMenu === "e-commerce" && (
+                <IconButton
+                  icon={<ShoppingCart size={16} />}
+                  label={"Ecommerce"}
+                />
+              )}
+
+              {selectedMenu === "ride" && (
+                <IconButton icon={<Bike size={16} />} label={"A Rider"} />
+              )}
 
               {bottomIcons.map((item, i) => (
                 <IconButton key={i} {...item} />
