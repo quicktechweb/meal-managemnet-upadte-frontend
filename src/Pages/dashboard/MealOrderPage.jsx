@@ -9,7 +9,6 @@ const KNOWN_MEAL_CONFIG = {
   snack: { emoji: "🍿", bg: "bg-pink-100", text: "text-pink-600" },
 };
 
-// Dynamic color palette for unknown types (cycles by hash)
 const DYNAMIC_PALETTES = [
   { bg: "bg-teal-100", text: "text-teal-700" },
   { bg: "bg-cyan-100", text: "text-cyan-700" },
@@ -19,7 +18,6 @@ const DYNAMIC_PALETTES = [
   { bg: "bg-lime-100", text: "text-lime-700" },
 ];
 
-// Simple hash: consistent color per unique meal_type string
 const hashString = (str) =>
   [...str].reduce((acc, ch) => acc + ch.charCodeAt(0), 0);
 
@@ -30,9 +28,7 @@ const getMealConfig = (meal_type = "") => {
   return { emoji: "🍽️", ...palette };
 };
 
-/* ── Helpers ── */
 const getUsername = (user) => user?.user_id?.email?.split("@")[0] ?? "Unknown";
-
 const getInitials = (user) => getUsername(user).slice(0, 2).toUpperCase();
 
 const formatTime = (t) => {
@@ -44,18 +40,20 @@ const formatTime = (t) => {
 
 /* ── Stat Card ── */
 const StatCard = ({ label, value, valueClass }) => (
-  <div className="flex-1 bg-white rounded-2xl p-4 shadow-md border border-gray-100">
-    <p className="text-[10px] font-bold uppercase tracking-widest text-gray-400">
+  <div className="flex-1 bg-white rounded-2xl p-3 sm:p-4 shadow-md border border-gray-100">
+    <p className="text-[9px] sm:text-[10px] font-bold uppercase tracking-widest text-gray-400">
       {label}
     </p>
-    <p className={`text-2xl font-black mt-1 ${valueClass}`}>{value}</p>
+    <p className={`text-lg sm:text-2xl font-black mt-1 ${valueClass}`}>
+      {value}
+    </p>
   </div>
 );
 
 /* ── Skeleton Loader ── */
 const SkeletonCard = () => (
   <div className="bg-white rounded-2xl overflow-hidden shadow-sm border border-gray-100 animate-pulse">
-    <div className="flex items-center justify-between px-5 py-4 bg-gray-50 border-b border-gray-100">
+    <div className="flex items-center justify-between px-4 sm:px-5 py-4 bg-gray-50 border-b border-gray-100">
       <div className="flex items-center gap-3">
         <div className="w-11 h-11 rounded-xl bg-gray-200" />
         <div>
@@ -65,7 +63,7 @@ const SkeletonCard = () => (
       </div>
       <div className="h-6 w-16 bg-gray-200 rounded-full" />
     </div>
-    <div className="p-5 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+    <div className="p-4 sm:p-5 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
       {[1, 2, 3].map((i) => (
         <div key={i} className="h-36 bg-gray-100 rounded-2xl" />
       ))}
@@ -89,7 +87,6 @@ const MealCard = ({ meal }) => {
             : "bg-gray-50 border-gray-200 opacity-50"
         }`}
     >
-      {/* Left attendance color strip */}
       {showAttendance && (
         <div
           className={`absolute left-0 top-0 bottom-0 w-1 rounded-l-2xl
@@ -98,14 +95,12 @@ const MealCard = ({ meal }) => {
       )}
 
       <div className="p-4 pl-5">
-        {/* OFF ribbon */}
         {!meal.is_on && (
           <div className="absolute top-3 -right-4 bg-gray-300 text-gray-500 text-[8px] font-black uppercase tracking-widest px-6 py-0.5 rotate-45">
             OFF
           </div>
         )}
 
-        {/* Row 1 — type badge + is_on dot */}
         <div className="flex items-center justify-between mb-3">
           <span
             className={`inline-flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-wide px-2.5 py-1 rounded-full ${cfg.bg} ${cfg.text}`}
@@ -120,36 +115,30 @@ const MealCard = ({ meal }) => {
           </span>
         </div>
 
-        {/* Row 2 — day */}
         <p className="text-xs font-semibold text-gray-400 mb-1">
           📅 {meal.day}
         </p>
 
-        {/* Row 3 — time range */}
         {meal.start_time && meal.end_time && (
           <p className="text-[11px] font-medium text-gray-400 mb-1">
             🕐 {formatTime(meal.start_time)} – {formatTime(meal.end_time)}
           </p>
         )}
 
-        {/* Row 4 — items */}
         <p className="text-sm font-medium text-gray-600">
           🍴 {meal.selected_items?.map((i) => i.title).join(", ")}
         </p>
 
-        {/* Row 5 — guest badge */}
         {hasGuests && (
           <span className="inline-block mt-2 text-[10px] font-bold bg-purple-50 border border-purple-200 text-purple-600 px-2 py-0.5 rounded-full">
             👥 {meal.guest_quantity} Guest{meal.guest_quantity > 1 ? "s" : ""}
           </span>
         )}
 
-        {/* Row 6 — price */}
         <p className="mt-3 text-base font-black text-gray-900">
           ৳{meal.package_price}
         </p>
 
-        {/* Attendance section */}
         {showAttendance && (
           <div className="mt-3 pt-3 border-t border-dashed border-gray-200">
             <div className="flex items-center justify-between">
@@ -183,10 +172,6 @@ const UserCard = ({ user, filter }) => {
   const activeMeals = filteredMeals.filter((m) => m.is_on);
   const attendedMeals = filteredMeals.filter((m) => m.is_on && m.is_attendance);
   const totalBill = activeMeals.reduce((s, m) => s + m.package_price, 0);
-  const username = getUsername(user);
-
-  console.log(user);
-
   const attendanceRate =
     activeMeals.length > 0
       ? Math.round((attendedMeals.length / activeMeals.length) * 100)
@@ -195,49 +180,54 @@ const UserCard = ({ user, filter }) => {
   return (
     <div className="bg-white rounded-2xl overflow-hidden shadow-sm border border-gray-100 hover:shadow-lg transition-shadow duration-200">
       {/* ── Card Head ── */}
-      <div className="flex items-center justify-between px-5 py-4 bg-gray-50 border-b border-gray-100">
-        <div className="flex items-center gap-3">
-          <div className="w-11 h-11 rounded-xl bg-gray-900 text-white flex items-center justify-center text-sm font-black shrink-0">
-            {getInitials(user)}
+      <div className="px-4 sm:px-5 py-4 bg-gray-50 border-b border-gray-100">
+        {/* Mobile: stacked layout / Desktop: side-by-side */}
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+          {/* Left: avatar + info */}
+          <div className="flex items-center gap-3">
+            <div className="w-11 h-11 rounded-xl bg-gray-900 text-white flex items-center justify-center text-sm font-black shrink-0">
+              {getInitials(user)}
+            </div>
+            <div className="min-w-0">
+              <p className="text-sm font-bold text-gray-900 truncate">
+                {user?.user_id?.information.full_name}
+              </p>
+              <p className="text-xs text-gray-400 mt-0.5 truncate">
+                ✉ {user.user_id?.email}
+              </p>
+              <p className="text-xs text-gray-400">
+                📞 {user.user_id?.phone} · ID #{user.user_id?.uid}
+              </p>
+            </div>
           </div>
-          <div>
-            <p className="text-sm font-bold text-gray-900">
-              {user?.user_id?.information.full_name}
-            </p>
-            <p className="text-xs text-gray-400 mt-0.5">
-              ✉ {user.user_id?.email}
-            </p>
-            <p className="text-xs text-gray-400">
-              📞 {user.user_id?.phone} · ID #{user.user_id?.uid}
-            </p>
-          </div>
-        </div>
 
-        <div className="text-right flex flex-col items-end gap-1.5">
-          <p className="text-xl font-black text-gray-900">৳{totalBill}</p>
-          <div className="flex items-center gap-1.5 flex-wrap justify-end">
-            <span className="text-[10px] font-bold bg-green-100 text-green-700 px-2.5 py-0.5 rounded-full uppercase tracking-wide">
-              ✓ {activeMeals.length} Active
-            </span>
-            <span
-              className={`text-[10px] font-bold px-2.5 py-0.5 rounded-full uppercase tracking-wide
-              ${
-                attendanceRate >= 80
-                  ? "bg-green-100 text-green-700"
-                  : attendanceRate >= 50
-                    ? "bg-yellow-100 text-yellow-700"
-                    : "bg-red-100 text-red-500"
-              }`}
-            >
-              👤 {attendanceRate}% Present
-            </span>
+          {/* Right: bill + badges — left-aligned under info on mobile */}
+          <div className="flex sm:flex-col sm:items-end items-center gap-2 sm:gap-1.5 flex-wrap">
+            <p className="text-xl font-black text-gray-900">৳{totalBill}</p>
+            <div className="flex items-center gap-1.5 flex-wrap">
+              <span className="text-[10px] font-bold bg-green-100 text-green-700 px-2.5 py-0.5 rounded-full uppercase tracking-wide">
+                ✓ {activeMeals.length} Active
+              </span>
+              <span
+                className={`text-[10px] font-bold px-2.5 py-0.5 rounded-full uppercase tracking-wide
+                ${
+                  attendanceRate >= 80
+                    ? "bg-green-100 text-green-700"
+                    : attendanceRate >= 50
+                      ? "bg-yellow-100 text-yellow-700"
+                      : "bg-red-100 text-red-500"
+                }`}
+              >
+                👤 {attendanceRate}% Present
+              </span>
+            </div>
           </div>
         </div>
       </div>
 
       {/* ── Attendance Progress Bar ── */}
       {activeMeals.length > 0 && (
-        <div className="px-5 pt-4 pb-1">
+        <div className="px-4 sm:px-5 pt-4 pb-1">
           <div className="flex items-center justify-between mb-1.5">
             <span className="text-[10px] font-bold uppercase tracking-widest text-gray-400">
               Attendance Progress
@@ -264,12 +254,12 @@ const UserCard = ({ user, filter }) => {
 
       {/* ── Meal Grid ── */}
       {filteredMeals.length === 0 ? (
-        <div className="px-5 py-8 text-center text-gray-400 text-sm font-semibold">
+        <div className="px-4 sm:px-5 py-8 text-center text-gray-400 text-sm font-semibold">
           No meals registered for{" "}
           <span className="text-gray-600 font-bold">{filter}</span>
         </div>
       ) : (
-        <div className="p-5 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+        <div className="p-4 sm:p-5 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
           {filteredMeals.map((meal) => (
             <MealCard key={meal._id} meal={meal} />
           ))}
@@ -288,10 +278,7 @@ export default function MealOrderPage() {
   } = useAllwiseInstituteUserOrderLists();
   const [filter, setFilter] = useState("All");
 
-  // Safely fall back to empty array
   const data = rawData ?? [];
-
-  console.log(data);
 
   const allDays = [
     "All",
@@ -323,21 +310,18 @@ export default function MealOrderPage() {
   return (
     <div className="min-h-screen bg-gray-100">
       {/* ── Dark Header ── */}
-      <div className="bg-gray-900 px-6 pt-7 pb-20 relative overflow-hidden">
+      <div className="bg-gray-900 px-4 sm:px-6 pt-6 sm:pt-7 pb-20 relative overflow-hidden">
         <div className="absolute -top-10 -right-10 w-64 h-64 rounded-full bg-orange-500 opacity-10 blur-3xl pointer-events-none" />
         <div className="flex items-center gap-3 max-w-5xl mx-auto">
-          <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-orange-400 to-orange-600 flex items-center justify-center text-2xl shadow-lg shrink-0">
+          <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-2xl bg-gradient-to-br from-orange-400 to-orange-600 flex items-center justify-center text-xl sm:text-2xl shadow-lg shrink-0">
             🍽️
           </div>
-          <div>
-            <h1 className="text-xl font-black text-white tracking-tight">
+          <div className="min-w-0">
+            <h1 className="text-base sm:text-xl font-black text-white tracking-tight truncate">
               Meal Routine Dashboard
             </h1>
-            {/* <p className="text-xs text-gray-500 mt-0.5">
-              QuickTech IT Ltd. — All Members' Meal List
-            </p> */}
           </div>
-          <div className="ml-auto text-[11px] text-gray-500 bg-white/5 px-3 py-1.5 rounded-full whitespace-nowrap">
+          <div className="ml-auto text-[10px] sm:text-[11px] text-gray-500 bg-white/5 px-2.5 sm:px-3 py-1.5 rounded-full whitespace-nowrap shrink-0">
             {new Date().toLocaleDateString("en-BD", {
               weekday: "short",
               day: "numeric",
@@ -347,9 +331,9 @@ export default function MealOrderPage() {
         </div>
       </div>
 
-      <div className="max-w-5xl mx-auto px-6">
-        {/* ── Floating Stats ── */}
-        <div className="flex gap-3 sm:gap-4 -mt-10 relative z-10">
+      <div className="max-w-5xl mx-auto px-3 sm:px-6">
+        {/* ── Floating Stats — 2×2 on mobile, 4 across on sm+ ── */}
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-4 -mt-10 relative z-10">
           <StatCard
             label="Total Members"
             value={isLoading ? "—" : totalUsers}
@@ -373,15 +357,15 @@ export default function MealOrderPage() {
         </div>
 
         {/* ── Day Filter ── */}
-        <div className="flex items-center gap-2 mt-7 mb-5 overflow-x-auto pb-1">
-          <span className="text-[11px] font-bold uppercase tracking-widest text-gray-400 mr-1 whitespace-nowrap">
-            Day Filter
+        <div className="flex items-center gap-2 mt-6 sm:mt-7 mb-4 sm:mb-5 overflow-x-auto pb-1 no-scrollbar">
+          <span className="text-[10px] font-bold uppercase tracking-widest text-gray-400 mr-1 whitespace-nowrap">
+            Filter
           </span>
           {allDays.map((d) => (
             <button
               key={d}
               onClick={() => setFilter(d)}
-              className={`px-4 py-1.5 rounded-full text-xs font-bold border transition-all duration-150 whitespace-nowrap
+              className={`px-3 sm:px-4 py-1.5 rounded-full text-xs font-bold border transition-all duration-150 whitespace-nowrap
                 ${
                   filter === d
                     ? "bg-gray-900 text-white border-gray-900"
@@ -394,7 +378,7 @@ export default function MealOrderPage() {
         </div>
 
         {/* ── Legend ── */}
-        <div className="flex items-center gap-4 mb-5 px-1">
+        <div className="flex items-center gap-3 sm:gap-4 mb-4 sm:mb-5 px-1 flex-wrap">
           <span className="text-[10px] font-bold uppercase tracking-widest text-gray-400">
             Legend:
           </span>
@@ -421,7 +405,7 @@ export default function MealOrderPage() {
         )}
 
         {isError && (
-          <div className="bg-red-50 border border-red-200 text-red-600 rounded-2xl px-6 py-5 text-sm font-semibold text-center">
+          <div className="bg-red-50 border border-red-200 text-red-600 rounded-2xl px-5 py-5 text-sm font-semibold text-center">
             ⚠️ Failed to load data. Please try again.
           </div>
         )}
@@ -434,7 +418,7 @@ export default function MealOrderPage() {
 
         {/* ── User Cards ── */}
         {!isLoading && !isError && (
-          <div className="flex flex-col gap-5 pb-16">
+          <div className="flex flex-col gap-4 sm:gap-5 pb-16">
             {data.map((user) => (
               <UserCard key={user._id} user={user} filter={filter} />
             ))}
