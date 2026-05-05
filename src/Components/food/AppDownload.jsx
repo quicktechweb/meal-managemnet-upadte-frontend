@@ -2,7 +2,7 @@ import React from "react";
 
 const AppDownload = () => {
   return (
-    <section id="app" className="pt-8 px-6  bg-white">
+    <section id="app" className="pt-3  lg:pt-8 px-3 lg:px-6  bg-white">
       <div className="bg-gray-900 rounded-[3rem] p-10 xl:p-20 flex flex-col md:flex-row items-center justify-between relative overflow-hidden shadow-2xl">
         {/* Background Decorative Elements */}
         <div className="absolute top-[-20%] left-[-10%] w-96 h-96 bg-blue-500 rounded-full blur-[100px] opacity-30"></div>

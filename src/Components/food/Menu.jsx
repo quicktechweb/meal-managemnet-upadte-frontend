@@ -40,18 +40,18 @@ const Menu = () => {
 
   return (
     <section id="menu" className="pt-8 px-6 xl:px-10 bg-gray-50">
-      <div className="flex justify-between items-end mb-6 xl:mb-12">
+      <div className="flex justify-between items-end mb-3 lg:mb-6 xl:mb-12">
         <div>
-          <h2 className="text-blue-500 font-bold tracking-wider uppercase mb-2">
+          <h2 className="text-blue-500 font-bold tracking-wider text-sm  lg:text-base uppercase lg:mb-2">
             Our Menu
           </h2>
-          <h3 className="text-4xl xl:text-5xl font-extrabold text-gray-900">
+          <h3 className="text-3xl lg:text-4xl xl:text-5xl font-extrabold text-gray-900">
             Popular Categories
           </h3>
         </div>
       </div>
 
-      <div className="flex overflow-x-auto space-x-4 mb-4 xl:mb-10  no-scrollbar">
+      <div className="flex overflow-x-auto space-x-4 mb-2 lg:mb-4 xl:mb-10  no-scrollbar">
         {categories.map((cat, idx) => (
           <button
             key={idx}
