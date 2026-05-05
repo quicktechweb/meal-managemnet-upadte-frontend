@@ -82,7 +82,7 @@ const IconButton = ({
   return (
     <button
       onClick={() => handleNavigation(slug)}
-      className={`relative w-[55px] xs:!w-[65px] sm:!w-[110px] md:!w-[55px] lg:!w-[80px] xl:w-[100px]  llxl:!w-[110px]  lxl:!w-[118px] 2xl:!w-40  h-10 2xl:h-10 rounded-xl flex items-center justify-center cursor-pointer transition-all duration-300 group 
+      className={`relative !w-[55px] xs:!w-[65px] sm:!w-[110px] md:!w-[55px] lg:!w-[80px] xl:!w-[100px]  llxl:!w-[110px]  lxl:!w-[118px] 2xl:!w-40  h-10 2xl:h-10 rounded-xl flex items-center justify-center cursor-pointer transition-all duration-300 group 
       ${
         special
           ? "bg-gradient-to-br from-blue-500 via-indigo-500 to-purple-500 text-white  hover:scale-105 hover:-translate-y-1"

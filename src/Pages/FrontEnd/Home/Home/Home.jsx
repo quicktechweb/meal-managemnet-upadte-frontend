@@ -50,7 +50,7 @@ const Home = () => {
         <>
           <BannerSection />
           <FeaturesSection />
-          <HowItWorksSection />
+          {/* <HowItWorksSection /> */}
           <MealLandingSection />
           <ReviewsSection />
         </>
@@ -72,7 +72,7 @@ const Home = () => {
         <>
           <Hero />
           <SpecialOffers />
-          <HowItWorks />
+          {/* <HowItWorks /> */}
           <Menu />
           <AppDownload />
           <Review />
@@ -83,7 +83,7 @@ const Home = () => {
         <>
           <RideHero />
           <RideStats />
-          <RideHowItWorks />
+          {/* <RideHowItWorks /> */}
           <RideFeatures />
           <VehicleOptions />
           <RideAppPreview />
