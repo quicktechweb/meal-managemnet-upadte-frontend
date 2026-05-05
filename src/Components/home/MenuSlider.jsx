@@ -73,8 +73,8 @@ const MenuRow = ({ label, items }) => {
   );
 
   return (
-    <div className="flex items-center border-b border-gray-100 last:border-b-0 px-2 py-3 gap-2 bg-gray-100 rounded-2xl shrink-0">
-      <span className="text-sm font-medium text-gray-800 pr-1 border-r border-gray-100 whitespace-nowrap shrink-0">
+    <div className="flex items-center border-b border-gray-100 last:border-b-0 px-2 py-1.5 sm:py-3 gap-2 bg-gray-100 rounded-2xl shrink-0">
+      <span className="text-xs sm:text-sm font-medium text-gray-800 pr-1 border-r border-gray-100 whitespace-nowrap shrink-0">
         {label}
       </span>
 
@@ -90,7 +90,7 @@ const MenuRow = ({ label, items }) => {
             key={i}
             ref={(el) => (chipRefs.current[i] = el)}
             onClick={() => handleSelect(i)}
-            className={`text-sm whitespace-nowrap px-3.5 py-1.5 rounded-full border transition-all duration-150 shrink-0
+            className={`text-xs sm:text-sm whitespace-nowrap px-2 py-1 sm:px-3.5 sm:py-1.5 rounded-full border transition-all duration-150 shrink-0
               ${
                 active === i
                   ? "bg-blue-500 text-white border-blue-500"
@@ -141,7 +141,7 @@ export default function MenuCategorySlider() {
       {showLeft && (
         <button
           onClick={() => scrollOuter(-1)}
-          className="flex-shrink-0 w-8 h-8 rounded-full border border-gray-300 bg-white
+          className="flex-shrink-0 w-6 h-6 sm:w-8 sm:h-8 rounded-full border border-gray-300 bg-white
             text-gray-500 hover:bg-gray-50 hover:text-gray-700 flex items-center justify-center
             transition-all duration-150 cursor-pointer shadow-sm"
         >
@@ -152,7 +152,7 @@ export default function MenuCategorySlider() {
       {/* Outer scrollable track — contains all MenuRows */}
       <div
         ref={outerTrackRef}
-        className="flex items-center gap-4  overflow-x-auto flex-1"
+        className="flex items-center gap-4 xxs:max-w-[200px] xs:max-w-[260px] sm:max-w-[450px]  md:max-w-[520px] lg:max-w-[780px]  xl:max-w-[1000px] llxl:max-w-[1100px] lxl:max-w-[1150px] 2xl:max-w-full  overflow-x-auto flex-1"
         style={{ scrollbarWidth: "none" }}
       >
         {menuData.map((row, index) => (
@@ -164,7 +164,7 @@ export default function MenuCategorySlider() {
       {showRight && (
         <button
           onClick={() => scrollOuter(1)}
-          className="flex-shrink-0 w-8 h-8 rounded-full border border-gray-300 bg-white
+          className="flex-shrink-0 w-6 h-6 sm:w-8 sm:h-8 rounded-full border border-gray-300 bg-white
             text-gray-500 hover:bg-gray-50 hover:text-gray-700 flex items-center justify-center
             transition-all duration-150 cursor-pointer shadow-sm"
         >

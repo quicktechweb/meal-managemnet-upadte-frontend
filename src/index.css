@@ -1,7 +1,10 @@
 @import "tailwindcss";
 
 @theme {
-  --breakpoint-xxl: 1100px;
+  --breakpoint-xxs: 350px;
+  --breakpoint-xs: 400px;
+  --breakpoint-lxl: 1400px;
+  --breakpoint-llxl: 1366px;
 }
 
 /* premimum product start  */
