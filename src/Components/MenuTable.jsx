@@ -16,8 +16,6 @@ const MenuTable = () => {
   const { user, loading } = useInstituteAuth();
   const { data } = useInstituteUserAdminData(user?.user?.institute_id);
 
-  console.log(data);
-
   const routine = data?.routine;
 
   const { mealTypes, groupedSchedule } = React.useMemo(() => {
@@ -38,33 +36,8 @@ const MenuTable = () => {
       "Saturday",
     ];
     const sorted = [
-      ...weekDays.slice(
-        weekDays.indexOf(
-          [
-            "Sunday",
-            "Monday",
-            "Tuesday",
-            "Wednesday",
-            "Thursday",
-            "Friday",
-            "Saturday",
-          ][new Date().getDay()],
-        ),
-      ),
-      ...weekDays.slice(
-        0,
-        weekDays.indexOf(
-          [
-            "Sunday",
-            "Monday",
-            "Tuesday",
-            "Wednesday",
-            "Thursday",
-            "Friday",
-            "Saturday",
-          ][new Date().getDay()],
-        ),
-      ),
+      ...weekDays.slice(weekDays.indexOf(weekDays[new Date().getDay()])),
+      ...weekDays.slice(0, weekDays.indexOf(weekDays[new Date().getDay()])),
     ];
 
     const schedule = sorted.map((day) => {
@@ -72,7 +45,6 @@ const MenuTable = () => {
       const row = { day };
       types.forEach((meal) => {
         const found = meals.find((m) => m.meal_type === meal.type);
-
         row[meal.type] = {
           items:
             found?.items?.map((i) => `${i.title} (৳${i.price})`).join(", ") ||
@@ -135,18 +107,17 @@ const MenuTable = () => {
     getCoreRowModel: getCoreRowModel(),
   });
 
-  if (loading) {
-    return <div className="p-4">Loading...</div>;
-  }
+  if (loading) return <div className="p-4">Loading...</div>;
 
   return (
     <div className="shadow-xl">
       <h4 className="text-lg font-semibold mb-3">Menu Lists</h4>
 
       <div className="w-full">
+        {/* Accordion Toggle */}
         <button
           onClick={() => setIsExpanded(!isExpanded)}
-          className="w-full flex justify-between items-center bg-orange-500 p-2 lg:p-4 text-white rounded-t-md cursor-pointer font-bold transition-colors hover:bg-orange-600 text-xs lg:text-base"
+          className="w-full flex justify-between items-center bg-orange-500 p-3 lg:p-4 text-white rounded-t-md cursor-pointer font-bold transition-colors hover:bg-orange-600 text-sm lg:text-base"
         >
           <span>Weekly Meal Lists</span>
           {isExpanded ? <ChevronUp size={20} /> : <ChevronDown size={20} />}
@@ -154,18 +125,19 @@ const MenuTable = () => {
 
         <div
           className={`transition-all duration-300 ease-in-out overflow-hidden ${
-            isExpanded ? "max-h-[1000px] border border-gray-300" : "max-h-0"
+            isExpanded ? "max-h-[2000px] border border-gray-300" : "max-h-0"
           }`}
         >
-          <div className="overflow-x-auto">
+          {/* ══ DESKTOP TABLE (md+) ══ */}
+          <div className="hidden md:block overflow-x-auto">
             <table className="min-w-full text-sm sm:text-base">
-              <thead className="bg-orange-500 hidden md:table-header-group">
+              <thead className="bg-orange-500">
                 {table.getHeaderGroups().map((headerGroup) => (
                   <tr key={headerGroup.id}>
                     {headerGroup.headers.map((header) => (
                       <th
                         key={header.id}
-                        className="px-4 py-3 text-left font-semibold text-white border-b border-gray-200"
+                        className="px-4 py-3 text-left font-semibold text-white border-b border-orange-400"
                       >
                         {flexRender(
                           header.column.columnDef.header,
@@ -176,42 +148,83 @@ const MenuTable = () => {
                   </tr>
                 ))}
               </thead>
-
               <tbody className="divide-y divide-gray-200">
                 {table.getRowModel().rows.map((row) => (
                   <tr
                     key={row.id}
-                    className="hover:bg-gray-50 flex flex-col md:table-row mb-4 md:mb-0 border border-gray-200 md:border-none rounded-lg md:rounded-none"
+                    className="hover:bg-orange-50 transition-colors"
                   >
                     {row.getVisibleCells().map((cell) => (
                       <td
                         key={cell.id}
-                        className="px-4 py-2 md:py-3 border-gray-300 md:border-b flex justify-between md:table-cell"
+                        className="px-4 py-3 border-b border-gray-200 text-sm"
                       >
-                        <span className="font-bold text-orange-600 md:hidden mr-4">
-                          {cell.column.columnDef.headerText ??
-                            cell.column.columnDef.header?.toString()}
-                          :
-                        </span>
-                        <span className="text-right md:text-left">
-                          {flexRender(
-                            cell.column.columnDef.cell,
-                            cell.getContext(),
-                          )}
-                        </span>
+                        {flexRender(
+                          cell.column.columnDef.cell,
+                          cell.getContext(),
+                        )}
                       </td>
                     ))}
                   </tr>
                 ))}
               </tbody>
             </table>
-
-            {table.getRowModel().rows.length === 0 && (
-              <div className="p-4 text-center text-gray-500">
-                No schedule available
-              </div>
-            )}
           </div>
+
+          {/* ══ MOBILE CARDS (< md) ══ */}
+          <div className="md:hidden divide-y divide-gray-200">
+            {table.getRowModel().rows.map((row) => {
+              // First cell is "day", rest are meal types
+              const [dayCell, ...mealCells] = row.getVisibleCells();
+              const dayValue = flexRender(
+                dayCell.column.columnDef.cell,
+                dayCell.getContext(),
+              );
+
+              return (
+                <div key={row.id} className="bg-white">
+                  {/* Day Header */}
+                  <div className="bg-orange-500 px-4 py-2.5">
+                    <p className="text-white font-bold text-sm">{dayValue}</p>
+                  </div>
+
+                  {/* Meal rows */}
+                  <div className="divide-y divide-gray-100">
+                    {mealCells.map((cell) => {
+                      const label =
+                        cell.column.columnDef.headerText ??
+                        cell.column.columnDef.header?.toString();
+                      const cellValue = flexRender(
+                        cell.column.columnDef.cell,
+                        cell.getContext(),
+                      );
+
+                      return (
+                        <div key={cell.id} className="px-4 py-3 flex gap-3">
+                          {/* Label */}
+                          <div className="w-28 shrink-0">
+                            <span className="text-xs font-bold text-orange-500 leading-tight">
+                              {label}
+                            </span>
+                          </div>
+                          {/* Value */}
+                          <div className="flex-1 text-sm text-gray-700 text-right">
+                            {cellValue}
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+
+          {table.getRowModel().rows.length === 0 && (
+            <div className="p-6 text-center text-gray-500 text-sm">
+              No schedule available
+            </div>
+          )}
         </div>
       </div>
     </div>
