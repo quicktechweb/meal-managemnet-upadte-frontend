@@ -4,8 +4,13 @@ import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
 import { Autoplay, Navigation, Pagination } from "swiper/modules";
+import { useLayoutSwitch } from "../../providers/LayoutSwitchProvider";
 
 const BannerSlider = () => {
+  const { hideSidebar, setHideSidebar } = useLayoutSwitch();
+
+  console.log(hideSidebar);
+
   const images = [
     "https://images.deliveryhero.io/image/adtech-display/campaigns/fp_bd/ec957268-ec8b-11f0-8136-0a03d4ad1092.jpeg?height=205&dpi=1",
     "https://images.deliveryhero.io/image/adtech-display/campaigns/fp_bd/df6eeb8e-eac7-11f0-8d1c-fe9992ee48d4.jpeg?height=205&dpi=1",

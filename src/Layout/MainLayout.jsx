@@ -46,7 +46,7 @@ const bottomIcons = [
 ];
 
 const MainLayout = () => {
-  const [hideSidebar, setHideSidebar] = useState(true);
+  const { hideSidebar, setHideSidebar } = useLayoutSwitch();
   const { openPopup, setOpenPopup } = useLayoutSwitch();
 
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -78,7 +78,7 @@ const MainLayout = () => {
         ></div> */}
 
         {/* Main content */}
-        <div className="grow w-full">
+        <div className={`w-full min-w-0 transition-all duration-300`}>
           <Outlet />
         </div>
       </div>

@@ -102,7 +102,7 @@ const IconButton = ({
   );
 };
 
-const TopNavbar = ({ setHideSidebar, setSidebarOpen }) => {
+const TopNavbar = () => {
   const { data } = useGetWebsiteData();
   const { user } = useInstituteAuth();
 
@@ -112,6 +112,8 @@ const TopNavbar = ({ setHideSidebar, setSidebarOpen }) => {
     selectedMenu,
     setSelectedMenu,
     setDaywiseSelect,
+    hideSidebar,
+    setHideSidebar,
   } = useLayoutSwitch();
 
   return (
