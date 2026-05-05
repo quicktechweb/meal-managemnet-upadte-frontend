@@ -10,37 +10,37 @@ import { Plus } from "lucide-react";
 
 const LiveKitchenVideoTable = () => {
   const { data: liveKitchenVideo } = useAllLiveKitchenVideo();
-
   const { mutateAsync, isPending } = useDeleteKitchenvideo();
+
+  const [selectedVideo, setSelectedVideo] = useState(null);
 
   const handleDelete = async (item) => {
     await mutateAsync(item?._id);
   };
 
-  const [selectedVideo, setSelectedVideo] = useState(null);
-
   return (
-    <div className="p-6 bg-gray-50 min-h-screen">
+    <div className="p-3 md:p-6 bg-gray-50 min-h-screen">
+      {/* Header */}
       <div className="flex items-center justify-between mb-4">
         <h2 className="text-lg md:text-xl font-bold">All Kitchen Video</h2>
 
         <Link
           to="/admin/dashboard/add-live-kitchen"
-          className="inline-flex items-center gap-2 px-4 md:px-6 py-2 bg-violet-600 hover:bg-violet-700 text-white rounded-xl font-semibold shadow-lg text-xs md:text-sm transition active:scale-95"
+          className="inline-flex items-center gap-2 px-3 md:px-6 py-2 bg-violet-600 hover:bg-violet-700 text-white rounded-lg font-semibold text-xs md:text-sm"
         >
-          <Plus size={18} />
-          Add Kitchen Video
+          <Plus size={16} />
+          Add
         </Link>
       </div>
 
-      {/* Table */}
-      <div className="overflow-x-auto bg-white rounded-xl shadow">
+      {/* ================= DESKTOP TABLE ================= */}
+      <div className="hidden md:block overflow-x-auto bg-white rounded-xl shadow">
         <table className="min-w-full">
           <thead className="bg-gray-100 text-gray-700 text-sm">
             <tr>
               <th className="px-6 py-3 text-left">Title</th>
               <th className="px-6 py-3 text-left">Video</th>
-              <th className="px-6 py-3 text-left">Created at</th>
+              <th className="px-6 py-3 text-left">Created</th>
               <th className="px-6 py-3 text-left">Action</th>
             </tr>
           </thead>
@@ -48,7 +48,7 @@ const LiveKitchenVideoTable = () => {
           <tbody>
             {liveKitchenVideo?.length === 0 && (
               <tr>
-                <td colSpan="5" className="text-center text-gray-500 py-4">
+                <td colSpan="4" className="text-center py-4">
                   No Kitchen Video found
                 </td>
               </tr>
@@ -57,40 +57,40 @@ const LiveKitchenVideoTable = () => {
             {liveKitchenVideo?.map((stream) => (
               <tr
                 key={stream._id}
-                className="border-t border-gray-300 hover:bg-gray-50 transition"
+                className="border-t border-gray-300 hover:bg-gray-50"
               >
-                <td className="px-2 md:px-4 py-2  break-words max-w-[250px]">
+                <td className="px-6 py-4 max-w-[250px]">
                   <p className="line-clamp-2">{stream.title}</p>
                 </td>
 
                 <td className="px-6 py-4">
                   <button
                     onClick={() => setSelectedVideo(stream)}
-                    className="text-blue-600 cursor-pointer hover:underline font-medium"
+                    className="text-blue-600 hover:underline"
                   >
                     Play Video
                   </button>
                 </td>
-                <td className="px-6 py-4 text-gray-500 font-medium">
+
+                <td className="px-6 py-4 text-gray-500">
                   {new Date(stream.createdAt).toLocaleString("en-BD", {
                     timeZone: "Asia/Dhaka",
                   })}
                 </td>
-                <td className="px-6 py-4 font-medium">
-                  <div className="flex items-center justify-start gap-2">
+
+                <td className="px-6 py-4">
+                  <div className="flex gap-3">
                     <Link
-                      to={`/admin/dashboard/update-live-kithen/${stream?._id}`}
-                      className="text-lg md:text-xl hover:text-violet-700 duration-300"
+                      to={`/admin/dashboard/update-live-kithen/${stream._id}`}
                     >
-                      <FiEdit />
+                      <FiEdit className="text-lg hover:text-violet-600" />
                     </Link>
 
                     <button
                       onClick={() => handleDelete(stream)}
                       disabled={isPending}
-                      className="text-lg cursor-pointer md:text-xl hover:text-red-600 duration-300"
                     >
-                      <MdDelete />
+                      <MdDelete className="text-lg hover:text-red-600" />
                     </button>
                   </div>
                 </td>
@@ -100,23 +100,66 @@ const LiveKitchenVideoTable = () => {
         </table>
       </div>
 
-      {/* Modal Popup */}
+      {/* ================= MOBILE CARD ================= */}
+      <div className="md:hidden space-y-3">
+        {liveKitchenVideo?.length === 0 && (
+          <p className="text-center py-4">No Kitchen Video found</p>
+        )}
+
+        {liveKitchenVideo?.map((stream) => (
+          <div
+            key={stream._id}
+            className="bg-white p-3 rounded-xl shadow-sm border border-gray-300"
+          >
+            <h3 className="font-semibold text-sm line-clamp-2 mb-2">
+              {stream.title}
+            </h3>
+
+            <p className="text-xs text-gray-500 mb-2">
+              {new Date(stream.createdAt).toLocaleString("en-BD", {
+                timeZone: "Asia/Dhaka",
+              })}
+            </p>
+
+            <button
+              onClick={() => setSelectedVideo(stream)}
+              className="text-blue-600 text-sm font-medium mb-2"
+            >
+              ▶ Play Video
+            </button>
+
+            <div className="flex justify-end gap-4 mt-2">
+              <Link to={`/admin/dashboard/update-live-kithen/${stream._id}`}>
+                <FiEdit className="text-lg hover:text-violet-600" />
+              </Link>
+
+              <button onClick={() => handleDelete(stream)} disabled={isPending}>
+                <MdDelete className="text-lg hover:text-red-600" />
+              </button>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      {/* ================= MODAL ================= */}
       {selectedVideo && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-4">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-3">
           <div className="bg-white rounded-xl w-full max-w-3xl overflow-hidden shadow-xl">
             {/* Header */}
-            <div className="flex justify-between items-center p-4 border-b">
-              <h3 className="font-semibold text-lg">{selectedVideo.title}</h3>
+            <div className="flex justify-between items-center p-3 md:p-4 border-b border-gray-300">
+              <h3 className="font-semibold text-sm md:text-lg line-clamp-1">
+                {selectedVideo.title}
+              </h3>
 
               <button
                 onClick={() => setSelectedVideo(null)}
-                className="text-gray-500 cursor-pointer hover:text-red-500 text-xl"
+                className="text-gray-500 hover:text-red-500 text-xl"
               >
                 ✕
               </button>
             </div>
 
-            {/* Video Player */}
+            {/* Video */}
             <div className="bg-black aspect-video">
               <video
                 src={selectedVideo.kitchen_video}

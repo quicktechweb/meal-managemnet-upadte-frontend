@@ -7,7 +7,6 @@ import { MdDelete } from "react-icons/md";
 
 const Banner = () => {
   const { data } = useAllBanner();
-
   const { mutateAsync, isPending } = useDeletebanner();
 
   const handleDelete = async (banner) => {
@@ -15,93 +14,88 @@ const Banner = () => {
   };
 
   return (
-    <div>
-      <div className="flex items-center justify-between mb-2">
+    <div className="p-3 md:p-4">
+      {/* Header */}
+      <div className="flex items-center justify-between mb-3">
         <h4 className="text-lg md:text-xl font-bold">Banner List</h4>
+
         <Link
           to="/admin/dashboard/add-banner"
-          className="inline-flex items-center gap-2 px-4 md:px-6 py-2 bg-violet-600 hover:bg-violet-700 text-white rounded-xl font-semibold shadow-lg text-xs md:text-sm transition active:scale-95"
+          className="inline-flex items-center gap-2 px-3 md:px-6 py-2 bg-violet-600 hover:bg-violet-700 text-white rounded-lg font-semibold text-xs md:text-sm"
         >
-          <Plus size={18} />
-          Add Banner
+          <Plus size={16} />
+          Add
         </Link>
       </div>
 
-      <div className="w-full overflow-x-auto">
-        <table className="min-w-[800px] w-full border border-gray-300 rounded-xl ">
-          <thead className="bg-gray-100 text-gray-700 text-sm border-b border-gray-300">
+      {/* ================= DESKTOP TABLE ================= */}
+      <div className="hidden md:block overflow-x-auto">
+        <table className="w-full border border-gray-300 rounded-xl">
+          <thead className="bg-gray-100 text-sm">
             <tr>
-              <th className="px-3 md:px-4 py-3 text-left">Title</th>
-              <th className="px-3 md:px-4 py-3 text-left">Description</th>
-              <th className="px-3 md:px-4 py-3 text-center">Background</th>
-              <th className="px-3 md:px-4 py-3 text-center">Banner</th>
-              <th className="px-3 md:px-4 py-3 text-center">Created</th>
-              <th className="px-3 md:px-4 py-3 text-center">Action</th>
+              <th className="p-3 border border-gray-300">Title</th>
+              <th className="p-3 border border-gray-300">Description</th>
+              <th className="p-3 border border-gray-300 text-center">
+                Background
+              </th>
+              <th className="p-3 border border-gray-300 text-center">Banner</th>
+              <th className="p-3 border border-gray-300 text-center">
+                Created
+              </th>
+              <th className="p-3 border border-gray-300 text-center">Action</th>
             </tr>
           </thead>
 
           <tbody>
             {data?.length === 0 && (
               <tr>
-                <td colSpan="6" className="text-center text-gray-500 py-4">
+                <td colSpan="6" className="text-center py-4">
                   No Banner found
                 </td>
               </tr>
             )}
+
             {data?.map((banner) => (
-              <tr
-                key={banner._id}
-                className="border-t border-gray-300 hover:bg-gray-50 transition"
-              >
-                {/* Title */}
-                <td className="px-3 md:px-4 py-3 font-medium max-w-[250px] border-r border-gray-300 ">
+              <tr key={banner._id} className="border-t border-gray-300 text-sm">
+                <td className="p-3 border border-gray-300 max-w-[220px]">
                   <p className="line-clamp-2">{banner.title}</p>
                 </td>
 
-                {/* Description */}
-                <td className="px-3 md:px-4 py-3  border-r border-gray-300 text-sm text-gray-600 max-w-[250px]">
+                <td className="p-3 border border-gray-300 max-w-[220px] text-gray-600">
                   <p className="line-clamp-2">{banner.description}</p>
                 </td>
 
-                {/* Background Image */}
-                <td className="px-3 md:px-4 py-3  border-r border-gray-300">
+                <td className="p-3 border border-gray-300 text-center">
                   <img
                     src={banner.banner_bg}
-                    alt={banner.title}
-                    className="w-24 md:w-28 h-14 md:h-16 object-cover rounded-lg mx-auto"
+                    alt=""
+                    className="w-28 h-16 object-cover rounded mx-auto"
                   />
                 </td>
 
-                {/* Banner Image */}
-                <td className="px-3 md:px-4 py-3  border-r border-gray-300">
+                <td className="p-3 border border-gray-300 text-center">
                   <img
                     src={banner.banner_image}
-                    alt={banner.title}
-                    className="w-10 object-cover rounded-lg mx-auto"
+                    alt=""
+                    className="w-10 mx-auto"
                   />
                 </td>
 
-                {/* Date */}
-                <td className="px-3 md:px-4  text-xs md:text-sm text-center  border-r border-gray-300">
+                <td className="p-3 border border-gray-300  text-center">
                   {new Date(banner.createdAt).toDateString()}
                 </td>
 
-                {/* Action */}
-                <td className="px-3 md:px-4 py-3">
-                  <div className="flex items-center justify-center gap-2 md:gap-3">
-                    <Link
-                      to={`/admin/dashboard/update-banner/${banner._id}`}
-                      className="p-2 rounded-lg hover:bg-violet-100 text-violet-600 transition"
-                    >
-                      <FiEdit size={18} />
+                <td className="p-3 border border-gray-300">
+                  <div className="flex justify-center gap-3">
+                    <Link to={`/admin/dashboard/update-banner/${banner._id}`}>
+                      <FiEdit className="text-lg hover:text-violet-600" />
                     </Link>
 
                     <button
                       onClick={() => handleDelete(banner)}
                       disabled={isPending}
-                      className="p-2 rounded-lg hover:bg-red-100 text-red-500 transition cursor-pointer"
                     >
-                      <MdDelete size={18} />
+                      <MdDelete className="text-lg hover:text-red-600" />
                     </button>
                   </div>
                 </td>
@@ -109,6 +103,59 @@ const Banner = () => {
             ))}
           </tbody>
         </table>
+      </div>
+
+      {/* ================= MOBILE CARD ================= */}
+      <div className="md:hidden space-y-4">
+        {data?.length === 0 && (
+          <p className="text-center py-4">No Banner found</p>
+        )}
+
+        {data?.map((banner) => (
+          <div
+            key={banner._id}
+            className="bg-white border border-gray-300 rounded-xl shadow-sm p-3"
+          >
+            {/* Image Preview */}
+            <div className="relative mb-2">
+              <img
+                src={banner.banner_bg}
+                alt=""
+                className="w-full h-32 object-cover rounded-lg"
+              />
+
+              <img
+                src={banner.banner_image}
+                alt=""
+                className="w-12 absolute bottom-2 right-2 bg-white p-1 rounded"
+              />
+            </div>
+
+            {/* Content */}
+            <h3 className="font-semibold text-sm line-clamp-2">
+              {banner.title}
+            </h3>
+
+            <p className="text-xs text-gray-600 line-clamp-2 mt-1">
+              {banner.description}
+            </p>
+
+            <p className="text-xs text-gray-400 mt-2">
+              {new Date(banner.createdAt).toDateString()}
+            </p>
+
+            {/* Actions */}
+            <div className="flex justify-end gap-4 mt-3">
+              <Link to={`/admin/dashboard/update-banner/${banner._id}`}>
+                <FiEdit className="text-lg hover:text-violet-600" />
+              </Link>
+
+              <button onClick={() => handleDelete(banner)} disabled={isPending}>
+                <MdDelete className="text-lg hover:text-red-600" />
+              </button>
+            </div>
+          </div>
+        ))}
       </div>
     </div>
   );
