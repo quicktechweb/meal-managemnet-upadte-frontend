@@ -24,77 +24,77 @@ import { FiHelpCircle } from "react-icons/fi";
 
 const mainNav = [
   {
-    icon: <FaUserCircle size={16} />,
+    icon: <FaUserCircle size={14} />,
     label: "Profile",
     sectionId: "",
   },
   {
-    icon: <AiOutlineHome size={16} />,
+    icon: <AiOutlineHome size={14} />,
     label: "Home",
     sectionId: "",
   },
   {
-    icon: <RiStarSmileLine size={16} />,
+    icon: <RiStarSmileLine size={14} />,
     label: "Why Choose Us",
     sectionId: "",
   },
   {
-    icon: <MdOutlineFoodBank size={16} />,
+    icon: <MdOutlineFoodBank size={14} />,
     label: "Feature Video",
     sectionId: "",
   },
   {
-    icon: <CiCreditCard1 size={16} />,
+    icon: <CiCreditCard1 size={14} />,
     label: "Balance",
     sectionId: "",
   },
   {
-    icon: <CiShoppingCart size={16} />,
+    icon: <CiShoppingCart size={14} />,
     label: "Order",
     sectionId: "",
   },
   {
-    icon: <CiUndo size={16} />,
+    icon: <CiUndo size={14} />,
     label: "Return",
     sectionId: "",
   },
   {
-    icon: <CiClock2 size={16} />,
+    icon: <CiClock2 size={14} />,
     label: "History",
     sectionId: "",
   },
   {
-    icon: <CiChat1 size={16} />,
+    icon: <CiChat1 size={14} />,
     label: "Review",
     sectionId: "",
   },
   {
-    icon: <CiCircleQuestion size={16} />,
+    icon: <CiCircleQuestion size={14} />,
     label: "Faq",
     sectionId: "",
   },
   {
-    icon: <CiSettings size={16} />,
+    icon: <CiSettings size={14} />,
     label: "Settings & Privacy",
     sectionId: "",
   },
   {
-    icon: <FiHelpCircle size={16} />,
+    icon: <FiHelpCircle size={14} />,
     label: "Help & Support",
     sectionId: "",
   },
   {
-    icon: <CiMail size={16} />,
+    icon: <CiMail size={14} />,
     label: "Contact Us",
     sectionId: "",
   },
   {
-    icon: <CiChat1 size={16} />,
+    icon: <CiChat1 size={14} />,
     label: "Feedback",
     sectionId: "",
   },
   {
-    icon: <MdLogout size={16} />,
+    icon: <MdLogout size={14} />,
     label: "Log Out",
     sectionId: "",
   },
@@ -111,12 +111,12 @@ const HomeSidebar = ({ hideSidebar }) => {
 
   return (
     <div
-      className={`${hideSidebar ? "w-[200px] xl:w-[260px]" : "w-0"} 
+      className={`${hideSidebar ? "w-[200px] xl:w-[180px]" : "w-0"} 
       duration-300 bg-white border-r border-gray-100 shadow-sm
       lg:h-[calc(100vh-80px)] fixed z-[9999] lg:z-auto lg:sticky lg:top-20 self-start shrink-0
       flex flex-col overflow-hidden min-h-screen transition-all`}
     >
-      <div className="flex-1 overflow-y-auto px-2.5 py-2 scrollbar-thin">
+      <div className="flex-1 overflow-y-auto px-0 py-2 scrollbar-thin">
         {mainNav.map((item) => (
           <NavItem
             key={item.label}

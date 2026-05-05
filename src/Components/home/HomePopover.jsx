@@ -8,20 +8,16 @@ import { useNavigate } from "react-router-dom";
 
 const menu = [
   {
-    title: "Meal",
-    icon: GiMeal,
-    slug: "meal",
+    title: "Food",
+    icon: IoFastFood,
+    slug: "food",
   },
   {
     title: "E-commerce",
     icon: CiShop,
     slug: "e-commerce",
   },
-  {
-    title: "Food",
-    icon: IoFastFood,
-    slug: "food",
-  },
+
   {
     title: "Ride",
     icon: RiRidingFill,

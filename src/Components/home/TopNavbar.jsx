@@ -1,18 +1,18 @@
 import React from "react";
 import { useGetWebsiteData } from "../../api/admin/admin.api";
 import {
-  Search,
-  Camera,
-  PlusCircle,
   Heart,
-  Mic,
-  Bell,
-  MapPin,
   Globe,
   Utensils,
   Home,
   Menu,
   ShoppingCart,
+  Package,
+  Grid,
+  PlusCircle,
+  Truck,
+  Video,
+  MessageCircle,
 } from "lucide-react";
 import { FiMenu } from "react-icons/fi";
 import HomePopover from "./HomePopover";
@@ -20,169 +20,35 @@ import { MdOutlineDocumentScanner } from "react-icons/md";
 import { useLayoutSwitch } from "../../providers/LayoutSwitchProvider";
 
 import { CiMenuFries } from "react-icons/ci";
-import { CalendarDays, List, ClipboardList, Wallet } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import useInstituteAuth from "../../Hooks/useInstituteAuth";
+import { Search, Bell, Camera, MapPin } from "lucide-react";
+import { FaBangladeshiTakaSign } from "react-icons/fa6";
 
 const topIcons = [
   { icon: <Search size={16} />, label: "Search" },
-  { icon: <Camera size={16} />, label: "Camera" },
-
+  { icon: <Home size={16} />, label: "Home" },
+  { icon: <Bell size={16} />, label: "Notifications", badge: true },
   { icon: <Heart size={16} />, label: "For you" },
-  { icon: <MdOutlineDocumentScanner size={16} />, label: "Scanner" },
   { icon: <PlusCircle size={16} />, label: "Add", special: true },
-  { icon: <Mic size={16} />, label: "Voice" },
-  { icon: <Bell size={16} />, label: "Notifications", badge: true },
-  { icon: <MapPin size={16} />, label: "Location" },
-  { icon: "৳", label: "Currency" },
-];
-
-const mobiletopIcons = [
-  { icon: <Search size={16} />, label: "Search" },
+  { icon: <MdOutlineDocumentScanner size={16} />, label: "Scanner" },
   { icon: <Camera size={16} />, label: "Camera" },
-  { icon: <MdOutlineDocumentScanner size={16} />, label: "Scanner" },
-  { icon: <PlusCircle size={16} />, label: "Add", special: true },
-
-  { icon: <Mic size={16} />, label: "Voice" },
-  { icon: <Bell size={16} />, label: "Notifications", badge: true },
-
-  { icon: "৳", label: "Currency" },
-];
-
-const smmobiletopIcons = [
-  { icon: <Search size={16} /> },
-  { icon: <PlusCircle size={16} />, special: true },
-  { icon: <Heart size={16} /> },
-  { icon: <Search size={16} /> },
+  { icon: <MapPin size={16} />, label: "Location" },
+  { icon: <FaBangladeshiTakaSign size={16} />, label: "Currency" },
+  { icon: <Globe size={16} />, label: "Language" },
 ];
 
 const bottomIcons = [
-  { icon: <Utensils size={16} />, label: "A Food" },
+  // { icon: <Utensils size={16} />, label: "A Food" },
   { icon: <Home size={16} />, label: "Home", active: true },
-  { icon: <Bell size={16} />, label: "Notifications" },
-  { icon: <Menu size={16} />, label: "Menu" },
+  { icon: <Package size={16} />, label: "Product" },
+  { icon: <Grid size={16} />, label: "Category" },
+  { icon: <PlusCircle size={16} />, label: "Add", special: true },
   { icon: <ShoppingCart size={18} />, label: "Cart" },
-  { icon: <Heart size={16} />, label: "For you" },
-  { icon: <Globe size={16} />, label: "Language" },
-];
-
-const mobilebottomIcons = [
-  { icon: <Utensils size={16} />, label: "A Food" },
-  { icon: <Home size={16} />, label: "Home", active: true },
-  { icon: <Bell size={16} />, label: "Notifications" },
+  { icon: <Truck size={16} />, label: "Track Order" },
+  { icon: <Video size={16} />, label: "Video" },
+  { icon: <MessageCircle size={16} />, label: "Live Chat" },
   { icon: <Menu size={16} />, label: "Menu" },
-  { icon: <ShoppingCart size={18} />, label: "Cart" },
-
-  { icon: <Globe size={16} />, label: "Language" },
-  { icon: <MapPin size={16} />, label: "Location" },
-];
-
-const smmobilebottomIcons = [
-  { icon: <Home size={16} />, active: true },
-
-  { icon: <ShoppingCart size={18} /> },
-
-  { icon: <Globe size={16} /> },
-  { icon: <MapPin size={16} /> },
-];
-
-// meal
-const mealBottomIcons = [
-  { icon: <Home size={16} />, label: "Home", slug: "home", path: "/" },
-  {
-    icon: <CalendarDays size={16} />,
-    label: "Day Wise Meal",
-    slug: "day-wise-meal",
-    path: "/",
-  },
-  {
-    icon: <List size={16} />,
-    label: "All Wise Meal",
-    slug: "all-wise-meal",
-    path: "/",
-  },
-  {
-    icon: <ClipboardList size={18} />,
-    label: "Routine",
-    slug: "routine",
-    path: "/",
-  },
-  {},
-  // { icon: <Wallet size={16} />, label: "Wallet", slug: "wallet", path: "/" },
-];
-
-const rideBottomIcons = [
-  { icon: <Home size={16} />, label: "Home", slug: "home", path: "/" },
-
-  {
-    icon: <ClipboardList size={18} />,
-    label: "Feature",
-    slug: "feature",
-    path: "/",
-  },
-
-  {
-    icon: <ClipboardList size={18} />,
-    label: "Review",
-    slug: "review",
-    path: "/",
-  },
-
-  // { icon: <Wallet size={16} />, label: "Wallet", slug: "wallet", path: "/" },
-];
-const foodBottomIcons = [
-  { icon: <Home size={16} />, label: "Home", slug: "home", path: "/" },
-
-  {
-    icon: <ClipboardList size={18} />,
-    label: "Offers",
-    slug: "offers",
-    path: "/",
-  },
-  {
-    icon: <ClipboardList size={18} />,
-    label: "How it works",
-    slug: "how-its-works",
-    path: "/",
-  },
-  {
-    icon: <ClipboardList size={18} />,
-    label: "Menu",
-    slug: "menu",
-    path: "/",
-  },
-  {
-    icon: <ClipboardList size={18} />,
-    label: "Review",
-    slug: "review",
-    path: "/",
-  },
-
-  // { icon: <Wallet size={16} />, label: "Wallet", slug: "wallet", path: "/" },
-];
-
-const EcommerceBottomIcons = [
-  { icon: <Home size={16} />, label: "Home", slug: "home", path: "/" },
-
-  {
-    icon: <ClipboardList size={18} />,
-    label: "Offers",
-    slug: "offers",
-    path: "/",
-  },
-
-  {
-    icon: <ClipboardList size={18} />,
-    label: "Top Selling",
-    slug: "menu",
-    path: "/",
-  },
-  {
-    icon: <ClipboardList size={18} />,
-    label: "Latest Products",
-    slug: "review",
-    path: "/",
-  },
 ];
 
 const IconButton = ({
@@ -197,44 +63,11 @@ const IconButton = ({
   user,
 }) => {
   const navigate = useNavigate();
-  const handleNavigation = (slug) => {
-    if (slug === "home") {
-      navigate(`/`);
-      setSelectedMenu("");
-    }
-
-    if (slug === "day-wise-meal") {
-      if (!user) {
-        navigate("/register/user");
-      } else if (user?.role === "user") {
-        navigate("/dashboards/routines#meal-activity");
-        setDaywiseSelect("day-wise");
-      }
-    }
-
-    if (slug === "all-wise-meal") {
-      if (!user) {
-        navigate("/register/user");
-      } else if (user?.role === "user") {
-        navigate("/dashboards/routines#meal-activity");
-        setDaywiseSelect("show-all");
-      }
-    }
-
-    if (slug === "routine") {
-      if (!user) {
-        navigate("/register/user");
-      } else if (user?.role === "user") {
-        navigate("/dashboards/routines#package-menu-list");
-      } else if (user?.role === "institute") {
-        navigate("/dashboards/routines");
-      }
-    }
-  };
+  const handleNavigation = (slug) => {};
   return (
     <button
       onClick={() => handleNavigation(slug)}
-      className={`relative w-[45px] sm:w-[55px] md:w-[60px] lg:w-[82px] xl:w-[108px] 2xl:w-40  h-10 2xl:h-14 rounded-xl flex items-center justify-center cursor-pointer transition-all duration-300 group 
+      className={`relative w-[45px] sm:w-[55px] md:w-[60px] lg:w-[82px] xl:w-[108px] 2xl:w-40  h-10 2xl:h-10 rounded-xl flex items-center justify-center cursor-pointer transition-all duration-300 group 
       ${
         special
           ? "bg-gradient-to-br from-blue-500 via-indigo-500 to-purple-500 text-white  hover:scale-105 hover:-translate-y-1"
@@ -258,8 +91,6 @@ const TopNavbar = ({ setHideSidebar, setSidebarOpen }) => {
   const { data } = useGetWebsiteData();
   const { user } = useInstituteAuth();
 
-  console.log();
-
   const {
     openPopup,
     setOpenPopup,
@@ -269,23 +100,16 @@ const TopNavbar = ({ setHideSidebar, setSidebarOpen }) => {
   } = useLayoutSwitch();
 
   return (
-    <div className="bg-white border-b border-gray-100 sticky top-0 z-50 w-full ">
-      <div className="mx-auto px-3.5 xl:px-7 flex items-center gap-2 2xl:gap-8 h-auto py-2">
+    <div className="sticky top-0 z-50 w-full ">
+      <div className="bg-white  mx-auto px-3.5 xl:px-7 flex items-center gap-0 2xl:gap-0 h-auto py-2">
         {/* LEFT */}
         <div className="flex flex-col-reverse items-center gap-1.5  lg:gap-5">
-          <div
-            onClick={() => setHideSidebar((prev) => !prev)}
-            className="text-2xl xl:text-3xl font-semibold cursor-pointer hover:text-blue-500 transition"
-          >
-            <FiMenu />
-          </div>
-
           <div
             onClick={() => {
               setOpenPopup((prev) => !prev);
               document.body.style.overflow = "hidden";
             }}
-            className="cursor-pointer h-10 md:h-16 w-[60px] lg:w-[80px] xl:w-[100px] shrink-0"
+            className="cursor-pointer h-10 md:h-18 w-[60px] lg:w-[80px] xl:w-[100px] shrink-0"
           >
             <img
               src={data?.logoUrl}
@@ -307,124 +131,19 @@ const TopNavbar = ({ setHideSidebar, setSidebarOpen }) => {
                 <IconButton key={i} {...item} />
               ))}
             </div>
-            <div className="hidden sm:flex md:hidden gap-1">
-              {mobiletopIcons.map((item, i) => (
-                <IconButton key={i} {...item} />
-              ))}
-            </div>
-            <div className="flex sm:hidden gap-1">
-              {smmobiletopIcons.map((item, i) => (
-                <IconButton key={i} {...item} />
-              ))}
-            </div>
-            {!selectedMenu && (
-              <div className="hidden sm:flex md:hidden gap-1">
-                {mobilebottomIcons.map((item, i) => (
-                  <IconButton key={i} {...item} />
-                ))}
-              </div>
-            )}
-            <div className="flex sm:hidden gap-1">
-              {smmobilebottomIcons.map((item, i) => (
-                <IconButton key={i} {...item} />
-              ))}
-            </div>
-            {/* bottom icons */}
-            {!selectedMenu && (
-              <div className="md:flex hidden gap-1">
-                {bottomIcons.map((item, i) => (
-                  <IconButton key={i} {...item} />
-                ))}
-              </div>
-            )}
-            {/* bottom icons */}
-            {selectedMenu === "meal" && (
-              <div className="md:flex hidden gap-1">
-                {mealBottomIcons
-                  .filter((item) => {
-                    if (user?.user?.role === "institute") {
-                      return !["day-wise-meal", "all-wise-meal"].includes(
-                        item.slug,
-                      );
-                    }
-                    return true;
-                  })
-                  .map((item, i) => (
-                    <IconButton
-                      key={i}
-                      {...item}
-                      setSelectedMenu={setSelectedMenu}
-                      setDaywiseSelect={setDaywiseSelect}
-                      user={user?.user}
-                    />
-                  ))}
-              </div>
-            )}
-            {selectedMenu === "ride" && (
-              <div className="md:flex hidden gap-1">
-                {rideBottomIcons
-                  .filter((item) => {
-                    if (user?.user?.role === "institute") {
-                      return !["day-wise-meal", "all-wise-meal"].includes(
-                        item.slug,
-                      );
-                    }
-                    return true;
-                  })
-                  .map((item, i) => (
-                    <IconButton
-                      key={i}
-                      {...item}
-                      setSelectedMenu={setSelectedMenu}
-                      setDaywiseSelect={setDaywiseSelect}
-                      user={user?.user}
-                    />
-                  ))}
-              </div>
-            )}
 
-            {selectedMenu === "e-commerce" && (
-              <div className="md:flex hidden gap-1">
-                {EcommerceBottomIcons.filter((item) => {
-                  if (user?.user?.role === "institute") {
-                    return !["day-wise-meal", "all-wise-meal"].includes(
-                      item.slug,
-                    );
-                  }
-                  return true;
-                }).map((item, i) => (
-                  <IconButton
-                    key={i}
-                    {...item}
-                    setSelectedMenu={setSelectedMenu}
-                    setDaywiseSelect={setDaywiseSelect}
-                    user={user?.user}
-                  />
-                ))}
-              </div>
-            )}
-            {selectedMenu === "food" && (
-              <div className="md:flex hidden gap-1">
-                {foodBottomIcons
-                  .filter((item) => {
-                    if (user?.user?.role === "institute") {
-                      return !["day-wise-meal", "all-wise-meal"].includes(
-                        item.slug,
-                      );
-                    }
-                    return true;
-                  })
-                  .map((item, i) => (
-                    <IconButton
-                      key={i}
-                      {...item}
-                      setSelectedMenu={setSelectedMenu}
-                      setDaywiseSelect={setDaywiseSelect}
-                      user={user?.user}
-                    />
-                  ))}
-              </div>
-            )}
+            {/* bottom icons */}
+
+            <div className="flex  gap-1">
+              {/* dynamic menu */}
+              <IconButton icon={<Utensils size={16} />} label={"A Food"} />
+
+              {bottomIcons.map((item, i) => (
+                <IconButton key={i} {...item} />
+              ))}
+            </div>
+
+            {/* bottom icons */}
           </div>
 
           <div
@@ -454,9 +173,30 @@ const TopNavbar = ({ setHideSidebar, setSidebarOpen }) => {
                 <h3 className="text-sm whitespace-nowrap font-semibold text-gray-800">
                   Al abadan
                 </h3>
-                <p className="text-xs text-gray-500">Admin</p>
               </div>
             </div>
+          </div>
+        </div>
+      </div>
+
+      <div className="bg-white border-b border-gray-100  mx-auto px-3.5 xl:px-7 flex items-center gap-20 h-auto py-2">
+        <div className="ml-7">
+          <div
+            onClick={() => setHideSidebar((prev) => !prev)}
+            className="text-2xl xl:text-4xl font-semibold cursor-pointer hover:text-blue-500 transition"
+          >
+            <FiMenu />
+          </div>
+        </div>
+
+        {/* 3 menu list */}
+        <div>
+          {/* parent menu */}
+          <div className="bg-gray-50 flex px-3 gap-2.5 py-3 max-w-[500px]">
+            <h5>Meal</h5>
+            {/* submenu */}
+            <h5>All Wise Routine</h5>
+            <h5>Day Wise Routine</h5>
           </div>
         </div>
       </div>
