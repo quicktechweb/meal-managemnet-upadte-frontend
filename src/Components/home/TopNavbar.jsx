@@ -24,6 +24,7 @@ import { useNavigate } from "react-router-dom";
 import useInstituteAuth from "../../Hooks/useInstituteAuth";
 import { Search, Bell, Camera, MapPin } from "lucide-react";
 import { FaBangladeshiTakaSign } from "react-icons/fa6";
+import MenuCategorySlider from "./MenuSlider";
 
 const topIcons = [
   { icon: <Search size={16} />, label: "Search" },
@@ -179,7 +180,7 @@ const TopNavbar = ({ setHideSidebar, setSidebarOpen }) => {
         </div>
       </div>
 
-      <div className="bg-white border-b border-gray-100  mx-auto px-3.5 xl:px-7 flex items-center gap-20 h-auto py-2">
+      <div className="bg-white border-b border-gray-100  mx-auto px-3.5 xl:px-7 flex items-center gap-[66px] h-auto py-2">
         <div className="ml-7">
           <div
             onClick={() => setHideSidebar((prev) => !prev)}
@@ -188,17 +189,7 @@ const TopNavbar = ({ setHideSidebar, setSidebarOpen }) => {
             <FiMenu />
           </div>
         </div>
-
-        {/* 3 menu list */}
-        <div>
-          {/* parent menu */}
-          <div className="bg-gray-50 flex px-3 gap-2.5 py-3 max-w-[500px]">
-            <h5>Meal</h5>
-            {/* submenu */}
-            <h5>All Wise Routine</h5>
-            <h5>Day Wise Routine</h5>
-          </div>
-        </div>
+        <MenuCategorySlider />
       </div>
 
       {/* popover */}
