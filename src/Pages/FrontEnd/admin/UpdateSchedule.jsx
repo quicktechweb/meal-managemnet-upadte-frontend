@@ -83,7 +83,7 @@ const UpdateSchedule = () => {
         <div className="p-6 space-y-6">
           {/* ============ Day Selector ============ */}
           <div className="flex flex-wrap gap-2">
-            {["Sat", "Sun", "Mon", "Tue", "Wed", "Thu", "Fri"].map((d) => (
+            {["Saturday", "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday"].map((d) => (
               <button
                 key={d}
                 type="button"

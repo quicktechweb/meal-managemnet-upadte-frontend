@@ -26,8 +26,9 @@ import toast from "react-hot-toast";
 import { useQueryClient } from "@tanstack/react-query";
 
 const CreateUserModal = ({ role, onClose }) => {
+  console.log(role);
+
   const { user } = useInstituteAuth();
-  console.log(user?.user?.information?.name_of_institute);
 
   const {
     register,
@@ -330,9 +331,7 @@ const CreateUserModal = ({ role, onClose }) => {
                   <input
                     className={inputCls}
                     placeholder="Enter guardian's name"
-                    {...register("guardian_name", {
-                      required: "Guardian Name is required",
-                    })}
+                    {...register("guardian_name")}
                   />
                   <Err errors={errors} name="guardian_name" />
                 </Field>
@@ -340,9 +339,6 @@ const CreateUserModal = ({ role, onClose }) => {
                 <Controller
                   name="relation_with_guardian"
                   control={control}
-                  rules={{
-                    required: "Relation with Guardian is required",
-                  }}
                   render={({
                     field: { onChange, value },
                     fieldState: { error },
@@ -371,9 +367,7 @@ const CreateUserModal = ({ role, onClose }) => {
                   <input
                     className={inputCls}
                     placeholder="+880 XXXXXXXXXX"
-                    {...register("guardian_number", {
-                      required: "Guardian Number is required",
-                    })}
+                    {...register("guardian_number")}
                   />
                   <Err errors={errors} name="guardian_number" />
                 </Field>
@@ -449,6 +443,66 @@ const CreateUserModal = ({ role, onClose }) => {
               </div>
             </div>
 
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+              <div className="flex flex-col gap-1.5">
+                <Field label="Marital Status" />
+                <Controller
+                  name="marital_status"
+                  control={control}
+                  render={({ field }) => (
+                    <div className="relative">
+                      <select
+                        {...field}
+                        className="w-full px-3 py-2 text-sm rounded-lg border border-gray-200 bg-gray-50 text-gray-800 placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-100 focus:border-blue-400 transition  appearance-none pr-8 cursor-pointer"
+                      >
+                        <option value="">Select Marital Status</option>
+                        <option value="married">Married</option>
+                        <option value="unmarried">Unmarried</option>
+                        <option value="divorce">Divorce</option>
+                      </select>
+                      <ChevronDown
+                        size={13}
+                        className="absolute right-2.5 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none"
+                      />
+                    </div>
+                  )}
+                />
+              </div>
+
+              <div className="flex flex-col gap-1.5">
+                <Field label="Salary">
+                  <input
+                    className={inputCls}
+                    placeholder="10000"
+                    {...register("salary")}
+                  />
+                  <Err errors={errors} name="salary" />
+                </Field>
+              </div>
+
+              <div className="flex flex-col gap-1.5">
+                <Field label="Experiences Year">
+                  <input
+                    className={inputCls}
+                    placeholder="2"
+                    {...register("experience")}
+                  />
+                  <Err errors={errors} name="experience" />
+                </Field>
+              </div>
+
+              <div className="flex flex-col gap-1.5">
+                <Field label="Reference">
+                  <input
+                    className={inputCls}
+                    placeholder="e.g. rahim"
+                    {...register("reference")}
+                  />
+                  <Err errors={errors} name="reference" />
+                </Field>
+              </div>
+            </div>
+
             {/* ── Address ── */}
             <div>
               <SectionHeader
@@ -462,7 +516,6 @@ const CreateUserModal = ({ role, onClose }) => {
                   <Controller
                     name="country"
                     control={control}
-                    rules={{ required: "Country is required" }}
                     render={({ field }) => (
                       <div className="relative">
                         <select
@@ -488,7 +541,6 @@ const CreateUserModal = ({ role, onClose }) => {
                     <Controller
                       name="state"
                       control={control}
-                      rules={{ required: "State is required" }}
                       render={({ field }) => (
                         <div className="relative">
                           <select
@@ -515,7 +567,6 @@ const CreateUserModal = ({ role, onClose }) => {
                     <Controller
                       name="division"
                       control={control}
-                      rules={{ required: "Division is required" }}
                       render={({ field }) => (
                         <div className="relative">
                           <select
@@ -547,7 +598,6 @@ const CreateUserModal = ({ role, onClose }) => {
                     <Controller
                       name="district"
                       control={control}
-                      rules={{ required: "District is required" }}
                       render={({ field }) => (
                         <div className="relative">
                           <select
@@ -579,7 +629,6 @@ const CreateUserModal = ({ role, onClose }) => {
                     <Controller
                       name="upazila"
                       control={control}
-                      rules={{ required: "Upazila is required" }}
                       render={({ field }) => (
                         <div className="relative">
                           <select

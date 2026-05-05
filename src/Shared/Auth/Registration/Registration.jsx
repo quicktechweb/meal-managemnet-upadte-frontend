@@ -37,11 +37,11 @@ const Registration = () => {
     setOpen(false);
   };
   return (
-    <div className="min-h-screen p-4 md:p-10 flex items-center  w-full font-sans">
+    <div className="min-h-screen  flex items-center  w-full font-sans">
       <div
         className={`relative flex flex-row-reverse bg-white 
         ${location?.pathname === "/register/user" ? "h-[850px]" : "h-auto"}
-        justify-center items-stretch overflow-hidden max-w-6xl w-full transition-all duration-500`}
+        justify-center items-stretch overflow-hidden  w-full transition-all duration-500`}
       >
         {step !== 3 && step !== 4 && (
           <div className="relative w-full lg:w-1/2 bg-white overflow-hidden hidden md:flex flex-col items-center justify-center px-4 text-black">
@@ -110,7 +110,7 @@ const Registration = () => {
 
         {/* Left Side: Registration Form */}
         <div
-          className={`w-full ${step !== 3 && step !== 4 ? "lg:w-1/2 " : "max-w-6xl"}  flex flex-col bg-white`}
+          className={`w-full ${step !== 3 && step !== 4 ? "lg:w-1/2 " : ""}  flex flex-col bg-white`}
         >
           <div className="px-5 pt-8">
             <div className="mb-5 ">

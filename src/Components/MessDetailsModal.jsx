@@ -58,7 +58,15 @@ const today = new Date();
 const year = today.getFullYear();
 const month = today.getMonth();
 const daysInMonth = new Date(year, month + 1, 0).getDate();
-const weekDays = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+const weekDays = [
+  "Sunday",
+  "Monday",
+  "Tuesday",
+  "Wednesday",
+  "Thursday",
+  "Friday",
+  "Saturday",
+];
 
 const mealPlans = Array.from({ length: daysInMonth }, (_, i) => {
   const dateObj = new Date(year, month, i + 1);

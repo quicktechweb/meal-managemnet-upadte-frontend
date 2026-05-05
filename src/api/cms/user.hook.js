@@ -1,11 +1,22 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
+  addBalanceFunction,
   approvedInstituteUserFunction,
   assignRolePermissionFunction,
+  buyerCreateFunction,
+  buyerListFunction,
+  createInstituteMealOnOffTimeFunction,
   createInstituteRoleFunction,
   deleteInstituteRoleFunction,
+  getInstituteMealOnOffFunction,
   getInstituteRoleFunction,
+  getInstituteUserMealOrderListsFunction,
+  getInventoryGlobalAmountFunction,
+  getInventoryStockFunction,
+  getMealOnOffFunction,
   getPermissionFunction,
+  globarAllWiseUserMealFunction,
+  globarDayWiseUserMealFunction,
   individualUserPermissionFunction,
   instituteApprovedUsersFunction,
   instituteCreateUserMealFunction,
@@ -14,10 +25,28 @@ import {
   instituteUserListFunction,
   instituteUserMealTypeFunction,
   instituteUserRoleChangeFunction,
+  inventoryGlobalAmountCreateFunction,
+  inventoryProductAddFunction,
+  inventoryProductListsFunction,
+  inventoryPurchaseProductListFunction,
+  inventoryPurchaseProductsFunction,
   locationFunction,
+  sellerCreateFunction,
+  sellerListFunction,
+  summaryCreateAllWiseFunction,
   updateInstituteProfileInfoFunction,
+  userAllwiseCreateMealFunction,
+  userAllWiseGetMealFunction,
+  userAllwiseRoutineCreateMealFunction,
+  userAllWiseRoutineGetMealFunction,
+  userDaywiseCreateMealFunction,
+  userDayWiseGetMealFunction,
+  userDaywiseRoutineCreateMealFunction,
+  userDayWiseRoutineGetMealFunction,
 } from "./user.api";
 import toast from "react-hot-toast";
+import useInstituteAuth from "../../Hooks/useInstituteAuth";
+import useLocalStorage from "../../Hooks/useLocalStorage";
 
 export const useApprovedInstituteUser = () => {
   return useQuery({
@@ -189,9 +218,360 @@ export const useInstituteUserDelete = () => {
 };
 
 export const useIndividualUserPermission = () => {
+  const { token } = useInstituteAuth();
+
   return useQuery({
-    queryKey: ["individual-user-permission"],
+    queryKey: ["individual-user-permission", token],
     queryFn: individualUserPermissionFunction,
     retry: false,
+    enabled: !!token,
+  });
+};
+
+// user all wise create meal
+
+export const useAllwiseUserCreateMeal = () => {
+  return useMutation({
+    mutationKey: ["user-create-meal"],
+    mutationFn: (payload) => userAllwiseCreateMealFunction(payload),
+    onSuccess: (data) => {
+      console.log(data);
+
+      if (data?.success) {
+        toast.success(data?.message);
+      }
+    },
+    onError: (error) => {
+      toast.error(error?.response?.data?.message || "Something went wrong");
+    },
+  });
+};
+
+// user all wise routine create meal
+
+export const useAllwiseRoutineUserCreateMeal = () => {
+  return useMutation({
+    mutationKey: ["user-create-meal-routine"],
+    mutationFn: (payload) => userAllwiseRoutineCreateMealFunction(payload),
+    onSuccess: (data) => {
+      if (data?.success) {
+        toast.success(data?.message);
+      }
+    },
+    onError: (error) => {
+      toast.error(error?.response?.data?.message || "Something went wrong");
+    },
+  });
+};
+
+// daywise user package meal create order
+
+export const useDaywiseUserCreateMeal = () => {
+  const query = useQueryClient();
+  return useMutation({
+    mutationKey: ["user-create-meal"],
+    mutationFn: (payload) => userDaywiseCreateMealFunction(payload),
+    onSuccess: (data) => {
+      console.log(data);
+
+      if (data?.success) {
+        toast.success(data?.message);
+        query.invalidateQueries(["institute-user-meal-lists"]);
+      }
+    },
+    onError: (error) => {
+      toast.error(error?.response?.data?.message || "Something went wrong");
+    },
+  });
+};
+
+//daywise user routine meal create order
+
+export const useDaywiseRoutineUserCreateMeal = () => {
+  const query = useQueryClient();
+  return useMutation({
+    mutationKey: ["user-create-meal"],
+    mutationFn: (payload) => userDaywiseRoutineCreateMealFunction(payload),
+    onSuccess: (data) => {
+      if (data?.success) {
+        toast.success(data?.message);
+        query.invalidateQueries(["institute-user-meal-lists"]);
+      }
+    },
+    onError: (error) => {
+      toast.error(error?.response?.data?.message || "Something went wrong");
+    },
+  });
+};
+
+// /create-user-routine-meal-daywise
+
+// all wise get meal list for user package system
+
+export const useAllwiseGetMealList = () => {
+  const { token } = useInstituteAuth();
+
+  return useQuery({
+    queryKey: ["all-wise-get-meal"],
+    queryFn: userAllWiseGetMealFunction,
+    retry: false,
+    enabled: !!token,
+  });
+};
+
+// userDayWiseRoutineGetMealFunction;
+
+export const useAllwiseRoutineGetMealList = () => {
+  const { token } = useInstituteAuth();
+
+  return useQuery({
+    queryKey: ["all-wise-get-meal"],
+    queryFn: userAllWiseRoutineGetMealFunction,
+    retry: false,
+    enabled: !!token,
+  });
+};
+
+export const useDaywiseGetMealList = () => {
+  const { token } = useInstituteAuth();
+  return useQuery({
+    queryKey: ["day-wise-get-meal"],
+    queryFn: userDayWiseGetMealFunction,
+    retry: false,
+    enabled: !!token,
+  });
+};
+
+export const useDaywiseRoutineGetMealList = () => {
+  const { token } = useInstituteAuth();
+
+  return useQuery({
+    queryKey: ["all-wise-routine-get-meal"],
+    queryFn: userDayWiseRoutineGetMealFunction,
+    retry: false,
+    enabled: !!token,
+  });
+};
+
+export const useGetMealOnOffTime = () => {
+  const { token } = useInstituteAuth();
+
+  return useQuery({
+    queryKey: ["meal-on-off-time"],
+    queryFn: getMealOnOffFunction,
+    retry: false,
+    enabled: !!token,
+  });
+};
+
+export const useGlobalDayWise = () => {
+  return useQuery({
+    queryKey: ["global-DayWise-user"],
+    queryFn: globarDayWiseUserMealFunction,
+    retry: false,
+  });
+};
+
+export const useGlobalAllWise = () => {
+  return useQuery({
+    queryKey: ["global-AllWise-user"],
+    queryFn: globarAllWiseUserMealFunction,
+    retry: false,
+  });
+};
+
+export const useGetInstituteMealOnOffTime = () => {
+  const { token } = useInstituteAuth();
+  return useQuery({
+    queryKey: ["meal-on-off-time"],
+    queryFn: getInstituteMealOnOffFunction,
+    retry: false,
+    enabled: !!token,
+  });
+};
+
+export const useInstituteMealOnOffTime = () => {
+  return useMutation({
+    mutationKey: ["institute-meal-onoff-time"],
+    mutationFn: (payload) => createInstituteMealOnOffTimeFunction(payload),
+    onSuccess: (data) => {
+      if (data?.success) {
+        toast.success(data?.message);
+      }
+    },
+    onError: (error) => {
+      toast.error(error?.response?.data?.message || "Something went wrong");
+    },
+  });
+};
+
+export const useAllwiseInstituteUserOrderLists = () => {
+  const { token } = useInstituteAuth();
+  return useQuery({
+    queryKey: ["institute-user-meal-lists"],
+    queryFn: getInstituteUserMealOrderListsFunction,
+    retry: false,
+    enabled: !!token,
+  });
+};
+
+export const useAddBalance = () => {
+  return useMutation({
+    mutationKey: ["add-balance"],
+    mutationFn: (payload) => addBalanceFunction(payload),
+    onSuccess: (data) => {
+      if (data?.success) {
+        toast.success(data?.message);
+      }
+    },
+    onError: (error) => {
+      toast.error(error?.response?.data?.message || "Something went wrong");
+    },
+  });
+};
+
+export const useInventoryProductLists = () => {
+  return useQuery({
+    queryKey: ["inventory-product-lists"],
+    queryFn: inventoryProductListsFunction,
+  });
+};
+
+export const useInventoryProductAdd = () => {
+  const reactQuery = useQueryClient();
+
+  return useMutation({
+    mutationKey: ["inventory-product-add"],
+    mutationFn: (payload) => inventoryProductAddFunction(payload),
+    onSuccess: (data) => {
+      if (data?.success) {
+        toast.success(data?.message);
+        reactQuery.invalidateQueries(["inventory-product-lists"]);
+      }
+    },
+    onError: (error) => {
+      toast.error(error?.response?.data?.message || "Something went wrong");
+    },
+  });
+};
+
+export const useSellerList = () => {
+  return useQuery({
+    queryKey: ["seller-list"],
+    queryFn: sellerListFunction,
+  });
+};
+
+export const useSellerCreate = () => {
+  const reactQuery = useQueryClient();
+  return useMutation({
+    mutationKey: ["buyer-create"],
+    mutationFn: (payload) => sellerCreateFunction(payload),
+    onSuccess: (data) => {
+      if (data?.success) {
+        toast.success(data?.message);
+        reactQuery.invalidateQueries(["buyer-list"]);
+      }
+    },
+    onError: (error) => {
+      toast.error(error?.response?.data?.message || "Something went wrong");
+    },
+  });
+};
+
+export const useBuyerCreate = () => {
+  const reactQuery = useQueryClient();
+  return useMutation({
+    mutationKey: ["buyer-create"],
+    mutationFn: (payload) => buyerCreateFunction(payload),
+    onSuccess: (data) => {
+      if (data?.success) {
+        toast.success(data?.message);
+        reactQuery.invalidateQueries(["seller-list"]);
+      }
+    },
+    onError: (error) => {
+      toast.error(error?.response?.data?.message || "Something went wrong");
+    },
+  });
+};
+
+export const useBuyerList = () => {
+  return useQuery({
+    queryKey: ["buyer-list"],
+    queryFn: buyerListFunction,
+  });
+};
+
+export const useInventoryPurchaseProductCreate = () => {
+  const reactQuery = useQueryClient();
+  return useMutation({
+    mutationKey: ["inventory-purchase-product-create"],
+    mutationFn: (payload) => inventoryPurchaseProductsFunction(payload),
+    onSuccess: (data) => {
+      if (data?.success) {
+        toast.success(data?.message);
+        reactQuery.invalidateQueries(["inventory-purchase-product"]);
+        reactQuery.invalidateQueries(["get-inventory-stock"]);
+      }
+    },
+    onError: (error) => {
+      toast.error(error?.response?.data?.message || "Something went wrong");
+    },
+  });
+};
+
+export const useInventoryPurchaseProductList = () => {
+  return useQuery({
+    queryKey: ["inventory-purchase-product"],
+    queryFn: inventoryPurchaseProductListFunction,
+  });
+};
+
+export const useInventoryGlobalAmount = () => {
+  const reactQuery = useQueryClient();
+  return useMutation({
+    mutationKey: ["inventory-global-amount"],
+    mutationFn: (payload) => inventoryGlobalAmountCreateFunction(payload),
+    onSuccess: (data) => {
+      if (data?.success) {
+        toast.success(data?.message);
+        reactQuery.invalidateQueries(["inventory-global-amount"]);
+      }
+    },
+    onError: (error) => {
+      toast.error(error?.response?.data?.message || "Something went wrong");
+    },
+  });
+};
+
+export const useGetInventoryGlobalAmount = () => {
+  return useQuery({
+    queryKey: ["inventory-global-amount"],
+    queryFn: getInventoryGlobalAmountFunction,
+  });
+};
+
+export const useInventoryStock = () => {
+  return useQuery({
+    queryKey: ["get-inventory-stock"],
+    queryFn: getInventoryStockFunction,
+  });
+};
+
+export const useCreateSummaryAllWise = () => {
+  const reactQuery = useQueryClient();
+  return useMutation({
+    mutationKey: ["create-summary-all-wise"],
+    mutationFn: (payload) => summaryCreateAllWiseFunction(payload),
+    onSuccess: (data) => {
+      if (data?.success) {
+        toast.success(data?.message);
+        reactQuery.invalidateQueries(["get-inventory-stock"]);
+      }
+    },
+    onError: (error) => {
+      toast.error(error?.response?.data?.message || "Something went wrong");
+    },
   });
 };

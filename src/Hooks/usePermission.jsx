@@ -1,17 +1,24 @@
 // context/PermissionContext.jsx
 import { createContext, useContext, useState, useEffect } from "react";
-import axios from "axios";
 import { useIndividualUserPermission } from "../api/cms/user.hook";
 
 const PermissionContext = createContext();
 
 export const PermissionProvider = ({ children }) => {
   const [permissions, setPermissions] = useState([]);
-  const [loading, setLoading] = useState(true);
 
-  const { data } = useIndividualUserPermission();
+  const { data, isLoading } = useIndividualUserPermission();
 
-  console.log(data);
+  console.log(data, "data");
+
+  console.log(permissions, "permissions");
+
+  useEffect(() => {
+    if (data?.permissions) {
+      const slugs = data?.permissions?.map((p) => p?.slug);
+      setPermissions(slugs);
+    }
+  }, [data]);
 
   const hasPermission = (slug) => permissions.includes(slug);
   const hasAnyPermission = (slugs) =>
@@ -19,7 +26,12 @@ export const PermissionProvider = ({ children }) => {
 
   return (
     <PermissionContext.Provider
-      value={{ permissions, hasPermission, hasAnyPermission, loading }}
+      value={{
+        permissions,
+        hasPermission,
+        hasAnyPermission,
+        loading: isLoading,
+      }}
     >
       {children}
     </PermissionContext.Provider>

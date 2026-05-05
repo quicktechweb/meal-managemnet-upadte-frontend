@@ -94,6 +94,22 @@ import UpdatePackage from "../Pages/FrontEnd/admin/UpdatePackage";
 import MainLayout from "../Layout/MainLayout";
 import HomePage from "../Pages/FrontEnd/Home/Home/HomePage";
 import DashboardLayout from "../Layout/DashboardLayout";
+import DashboardPage from "../Pages/dashboard/DashboardPage";
+import UsersPage from "../Pages/dashboard/UsersPage";
+import RolesPage from "../Pages/dashboard/RolesPage";
+import MealOrderPage from "../Pages/dashboard/MealOrderPage";
+import ServicePage from "../Pages/dashboard/ServicePage";
+import RoutinePage from "../Pages/dashboard/RoutinePage";
+import SettingsPage from "../Pages/dashboard/SettingsPage";
+import BalancePage from "../Pages/dashboard/BalancePage";
+import AddBalance from "../Pages/dashboard/AddBalance";
+import InventoryPage from "../Pages/dashboard/InventoryPage";
+import InventoryAddProduct from "../Pages/dashboard/InventoryAddProduct";
+import InventoryPurchase from "../Pages/dashboard/InventoryPurchase";
+import InventoryDayWise from "../Pages/dashboard/InventoryDayWise";
+import InventoryPurchaseProductLists from "../Pages/dashboard/InventoryPurchaseProductLists";
+import InventoryAllWise from "../Pages/dashboard/InventoryAllWise";
+import InventoryStockManagement from "../Pages/dashboard/InventoryStockManagement";
 
 const router = createBrowserRouter([
   {
@@ -271,26 +287,26 @@ const router = createBrowserRouter([
     path: "/institute/",
     element: <InstituteLayout />,
     children: [
-      {
-        path: "dashboard/permission-settings",
-        element: <UserSettings />,
-      },
+      // {
+      //   path: "dashboard/permission-settings",
+      //   element: <UserSettings />,
+      // },
       {
         path: "dashboard/meal-management",
         element: <InstituteAdminMealManagement />,
       },
-      {
-        path: "dashboard/user-institute",
-        element: <InstituteUser />,
-      },
-      {
-        path: "dashboard/single-user-institute/:id",
-        element: <InstituteUserDetails />,
-      },
-      {
-        path: "dashboard/institute",
-        element: <InstituteAdminProfile />,
-      },
+      // {
+      //   path: "dashboard/user-institute",
+      //   element: <InstituteUser />,
+      // },
+      // {
+      //   path: "dashboard/single-user-institute/:id",
+      //   element: <InstituteUserDetails />,
+      // },
+      // {
+      //   path: "dashboard/institute",
+      //   element: <InstituteAdminProfile />,
+      // },
       {
         path: "dashboard/profile-update/:id",
         element: <InstituteAdminProfileUpdate />,
@@ -501,6 +517,72 @@ const router = createBrowserRouter([
   {
     path: "/dashboards",
     element: <DashboardLayout />,
+    children: [
+      {
+        path: "/dashboards",
+        element: <DashboardPage />,
+      },
+      {
+        path: "/dashboards/users",
+        element: <InstituteUser />,
+      },
+      {
+        path: "/dashboards/single-user-institute/:id",
+        element: <InstituteUserDetails />,
+      },
+      {
+        path: "/dashboards/role",
+        element: <UserSettings />,
+      },
+      {
+        path: "/dashboards/meal-order",
+        element: <MealOrderPage />,
+      },
+      {
+        path: "/dashboards/my-services",
+        element: <ServicePage />,
+      },
+      {
+        path: "/dashboards/routines",
+        element: <InstituteAdminMealManagement />,
+      },
+      {
+        path: "/dashboards/profile",
+        element: <InstituteAdminProfile />,
+      },
+      {
+        path: "/dashboards/balance",
+        element: <BalancePage />,
+      },
+      {
+        path: "/dashboards/add-balance",
+        element: <AddBalance />,
+      },
+      {
+        path: "/dashboards/inventory-add-product",
+        element: <InventoryAddProduct />,
+      },
+      {
+        path: "/dashboards/inventory-purchase",
+        element: <InventoryPurchase />,
+      },
+      {
+        path: "/dashboards/inventory-purchase-list",
+        element: <InventoryPurchaseProductLists />,
+      },
+      {
+        path: "/dashboards/inventory-day-wise",
+        element: <InventoryDayWise />,
+      },
+      {
+        path: "/dashboards/inventory-all-wise",
+        element: <InventoryAllWise />,
+      },
+      {
+        path: "/dashboards/stock-management",
+        element: <InventoryStockManagement />,
+      },
+    ],
   },
 ]);
 

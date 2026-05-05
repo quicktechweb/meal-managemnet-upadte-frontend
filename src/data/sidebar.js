@@ -2,49 +2,85 @@ export const SIDEBAR_ITEMS = [
   {
     label: "Dashboard",
     icon: "LayoutDashboard",
-    path: "/dashboard",
+    path: "/dashboards",
     permission: "dashboard.view",
   },
   {
     label: "Users",
     icon: "Users",
-    path: "/users",
+    path: "/dashboards/users",
     permission: "users.view",
   },
   {
     label: "Roles",
     icon: "Shield",
-    path: "/roles",
+    path: "/dashboards/role",
     permission: "roles.view",
   },
-  {
-    label: "Permissions",
-    icon: "Key",
-    path: "/permissions",
-    permission: "permissions.view",
-  },
+
   {
     label: "Meal Orders",
     icon: "ShoppingCart",
-    path: "/orders",
+    path: "/dashboards/meal-order",
     permission: "orders.view",
+    excludeRoles: ["user"],
   },
   {
     label: "Services",
     icon: "Wrench",
-    path: "/services",
+    path: "/dashboards/my-services",
     permission: "services.view",
   },
   {
     label: "Routine",
     icon: "Calendar",
-    path: "/routine",
+    path: "/dashboards/routines",
     permission: "routine.view",
   },
   {
-    label: "Settings",
-    icon: "Settings",
-    path: "/settings",
-    permission: "settings.view",
+    label: "Profile",
+    icon: "Users",
+    path: "/dashboards/profile",
+    permission: "profile.view",
+  },
+  {
+    label: "Balance",
+    icon: "Wallet",
+    path: "/dashboards/balance",
+    permission: "balance.view",
+  },
+
+  {
+    label: "Inventory",
+    icon: "MdOutlineInventory2",
+    path: "/dashboards/inventory",
+    permission: "inventory.view",
+    excludeRoles: ["user"],
+    children: [
+      {
+        label: "Add Product",
+        path: "/dashboards/inventory-add-product",
+      },
+      {
+        label: "Purchase",
+        path: "/dashboards/inventory-purchase",
+      },
+      {
+        label: "Purchase List",
+        path: "/dashboards/inventory-purchase-list",
+      },
+      {
+        label: "Day wise",
+        path: "/dashboards/inventory-day-wise",
+      },
+      {
+        label: "All wise",
+        path: "/dashboards/inventory-all-wise",
+      },
+      {
+        label: "Stock Management",
+        path: "/dashboards/stock-management",
+      },
+    ],
   },
 ];

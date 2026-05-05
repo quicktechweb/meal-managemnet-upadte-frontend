@@ -30,7 +30,7 @@ const DownloadApp = ({ appData, isLoading }) => {
         <div className="relative z-10  lg:px-6 px-3 h-full grid grid-cols-1 md:grid-cols-2 items-center">
           {/* Left content */}
           <div className="text-white">
-            <h2 className="text-2xl lg:text-5xl font-bold lg:mb-4">
+            <h2 className="text-2xl lg:text-3xl xl:text-5xl font-bold lg:mb-4">
               {appData?.title}
             </h2>
 
@@ -67,7 +67,7 @@ const DownloadApp = ({ appData, isLoading }) => {
             <img
               src={appData?.img_app}
               alt="App Preview"
-              className="absolute right-0 bottom-[-210px] max-w-[550px] h-[370px] drop-shadow-2xl"
+              className="absolute right-0 bottom-[-210px] max-w-[350px] xl:max-w-[550px] h-[320px] xl:h-[370px] drop-shadow-2xl"
             />
           </div>
         </div>

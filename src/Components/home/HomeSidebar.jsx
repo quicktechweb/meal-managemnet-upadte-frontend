@@ -1,34 +1,103 @@
 import { useState } from "react";
 import NavItem from "./NavItem";
-import { AiOutlineHome } from "react-icons/ai";
-import { MdOutlineRestaurantMenu, MdOutlineFoodBank } from "react-icons/md";
+import {
+  MdOutlineRestaurantMenu,
+  MdOutlineFoodBank,
+  MdLogout,
+} from "react-icons/md";
 import { BiDish } from "react-icons/bi";
 import { RiStarSmileLine } from "react-icons/ri";
-import { CiShop } from "react-icons/ci";
+import {
+  CiShop,
+  CiCreditCard1,
+  CiShoppingCart,
+  CiUndo,
+  CiClock2,
+  CiChat1,
+  CiSettings,
+  CiCircleQuestion,
+  CiMail,
+} from "react-icons/ci";
+import { FaUserCircle } from "react-icons/fa";
+import { AiOutlineHome } from "react-icons/ai";
+import { FiHelpCircle } from "react-icons/fi";
 
 const mainNav = [
-  { icon: <AiOutlineHome size={18} />, label: "Home", sectionId: "home" },
   {
-    icon: <MdOutlineRestaurantMenu size={18} />,
-    label: "Meal",
-    sectionId: "features",
-    badge: "New",
+    icon: <FaUserCircle size={14} />,
+    label: "Profile",
+    sectionId: "",
   },
   {
-    icon: <BiDish size={18} />,
+    icon: <AiOutlineHome size={14} />,
+    label: "Home",
+    sectionId: "",
+  },
+  {
+    icon: <RiStarSmileLine size={14} />,
     label: "Why Choose Us",
-    sectionId: "why-choose-us",
-
-    badgeRed: true,
+    sectionId: "",
   },
   {
-    icon: <RiStarSmileLine size={18} />,
-    label: "Review",
-    sectionId: "testimonial",
+    icon: <MdOutlineFoodBank size={14} />,
+    label: "Feature Video",
+    sectionId: "",
   },
-  { icon: <MdOutlineFoodBank size={18} />, label: "Food", sectionId: "food" },
-  { icon: <CiShop size={18} />, label: "E-Commerce", sectionId: "ecommerce" },
-  { icon: <CiShop size={18} />, label: "App", sectionId: "app" },
+  {
+    icon: <CiCreditCard1 size={14} />,
+    label: "Balance",
+    sectionId: "",
+  },
+  {
+    icon: <CiShoppingCart size={14} />,
+    label: "Order",
+    sectionId: "",
+  },
+  {
+    icon: <CiUndo size={14} />,
+    label: "Return",
+    sectionId: "",
+  },
+  {
+    icon: <CiClock2 size={14} />,
+    label: "History",
+    sectionId: "",
+  },
+  {
+    icon: <CiChat1 size={14} />,
+    label: "Review",
+    sectionId: "",
+  },
+  {
+    icon: <CiCircleQuestion size={14} />,
+    label: "Faq",
+    sectionId: "",
+  },
+  {
+    icon: <CiSettings size={14} />,
+    label: "Settings & Privacy",
+    sectionId: "",
+  },
+  {
+    icon: <FiHelpCircle size={14} />,
+    label: "Help & Support",
+    sectionId: "",
+  },
+  {
+    icon: <CiMail size={14} />,
+    label: "Contact Us",
+    sectionId: "",
+  },
+  {
+    icon: <CiChat1 size={14} />,
+    label: "Feedback",
+    sectionId: "",
+  },
+  {
+    icon: <MdLogout size={14} />,
+    label: "Log Out",
+    sectionId: "",
+  },
 ];
 
 const HomeSidebar = ({ hideSidebar }) => {
@@ -42,12 +111,12 @@ const HomeSidebar = ({ hideSidebar }) => {
 
   return (
     <div
-      className={`${hideSidebar ? "w-[260px]" : "w-0"} 
+      className={`${hideSidebar ? "w-[200px] xl:w-[180px]" : "w-0"} 
       duration-300 bg-white border-r border-gray-100 shadow-sm
-      h-[calc(100vh-80px)] sticky top-20 self-start shrink-0
-      flex flex-col overflow-hidden transition-all`}
+      lg:h-[calc(100vh-80px)] fixed z-[9999] lg:z-auto lg:sticky lg:top-20 self-start shrink-0
+      flex flex-col overflow-hidden min-h-screen transition-all`}
     >
-      <div className="flex-1 overflow-y-auto px-2.5 py-2 scrollbar-thin">
+      <div className="flex-1 overflow-y-auto px-0 py-2 scrollbar-thin">
         {mainNav.map((item) => (
           <NavItem
             key={item.label}

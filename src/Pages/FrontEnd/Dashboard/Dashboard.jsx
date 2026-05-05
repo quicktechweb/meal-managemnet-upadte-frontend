@@ -13,8 +13,6 @@ import { useIndividualUserPermission } from "../../../api/cms/user.hook";
 const Dashboard = () => {
   const { data } = useIndividualUserPermission();
 
-  console.log(data);
-
   const [isOpenSidebar, setIsOpenSidebar] = useState(false);
   const [open, setOpen] = useState(false);
   const popupRef = useRef(null);

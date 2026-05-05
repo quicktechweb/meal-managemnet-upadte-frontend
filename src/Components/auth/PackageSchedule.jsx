@@ -8,13 +8,24 @@ const PackageSchedule = ({
   setPackageTypes,
   packageTypes,
 }) => {
-  const days = ["Sat", "Sun", "Mon", "Tue", "Wed", "Thu", "Fri"];
+  const days = [
+    "Saturday",
+    "Sunday",
+    "Monday",
+    "Tuesday",
+    "Wednesday",
+    "Thursday",
+    "Friday",
+  ];
 
   const { data: packages = [], isLoading } = useAllPackage();
+
+  console.log(packages);
 
   const [openDropdown, setOpenDropdown] = useState(null);
   const [alternativeChecked, setAlternativeChecked] = useState({});
   const [selectedAlternative, setSelectedAlternative] = useState({});
+  const [selectedUserAlternatives, setSelectedUserAlternatives] = useState({});
   const [previewData, setPreviewData] = useState(null);
 
   useEffect(() => {
@@ -47,6 +58,7 @@ const PackageSchedule = ({
     );
   };
 
+  // ── Payload builder ──────────────────────────────────────────────────────
   const getSelectedPayload = () => {
     const result = [];
 
@@ -61,13 +73,19 @@ const PackageSchedule = ({
         const isAlternative = !!alternativeChecked[key];
         const selectedAltIndex = selectedAlternative[key];
 
-        let selectedItems = [];
-
+        // items & alternative_items are now [{title: "ভাত,ডাল,ডিম"}] format
+        let selectedItemTitle = "";
         if (isAlternative && selectedAltIndex !== undefined) {
-          selectedItems = pkg?.alternative_items?.[selectedAltIndex] ?? [];
+          selectedItemTitle =
+            pkg?.alternative_items?.[selectedAltIndex]?.title ?? "";
         } else {
-          selectedItems = pkg?.items ?? [];
+          selectedItemTitle = pkg?.items?.[0]?.title ?? "";
         }
+
+        const userAltIndices = selectedUserAlternatives[key] || [];
+        const formattedUserAlternatives = userAltIndices.map((idx) => ({
+          title: pkg?.alternative_items?.[idx]?.title ?? "",
+        }));
 
         result.push({
           day,
@@ -75,7 +93,8 @@ const PackageSchedule = ({
           package_price: pkg.package_price,
           start_time,
           end_time,
-          package_item: selectedItems.map((item) => ({ title: item.title })),
+          package_item: [{ title: selectedItemTitle }],
+          alternative_items: formattedUserAlternatives,
         });
       });
     });
@@ -93,8 +112,8 @@ const PackageSchedule = ({
 
   const handleSubmit = () => {
     const payload = getSelectedPayload();
-    setPackageMealRoutine(payload);
 
+    setPackageMealRoutine(payload);
     setPreviewData(payload);
   };
 
@@ -106,8 +125,8 @@ const PackageSchedule = ({
     <div className="space-y-5">
       {/* Main Schedule Table */}
       <div className="max-w-7xl mx-auto">
-        <div className="border border-gray-100 shadow-xl rounded-3xl overflow-hidden bg-white">
-          <table className="w-full text-left">
+        <div className="border border-gray-100 shadow-xl rounded-3xl bg-white">
+          <table className="w-full text-left overflow-visible">
             {/* Time Inputs header */}
             <thead className="bg-gradient-to-r from-orange-600 to-amber-600">
               <tr>
@@ -234,15 +253,14 @@ const PackageSchedule = ({
                                   <p className="font-semibold text-gray-700">
                                     Items
                                   </p>
+                                  {/* items[0].title is "ভাত,ডাল,ডিম" */}
                                   <p className="text-sm text-gray-600 text-start leading-snug">
-                                    {pkg?.items
-                                      ?.map((item) => item.title)
-                                      .join(", ")}
+                                    {pkg?.items?.[0]?.title ?? "—"}
                                   </p>
                                 </div>
                               </button>
 
-                              {/* Alternative Section */}
+                              {/* Admin Alternative Section */}
                               <div className="flex items-start gap-3">
                                 <input
                                   type="checkbox"
@@ -283,11 +301,9 @@ const PackageSchedule = ({
                                   >
                                     <span className="text-sm font-medium text-gray-700 truncate">
                                       {selectedAlternative[key] !== undefined
-                                        ? pkg?.alternative_items?.[
+                                        ? (pkg?.alternative_items?.[
                                             selectedAlternative[key]
-                                          ]
-                                            ?.map((i) => i.title)
-                                            .join(", ")
+                                          ]?.title ?? "—")
                                         : "Select Alternative Items"}
                                     </span>
                                     <ChevronDown
@@ -298,7 +314,7 @@ const PackageSchedule = ({
                                     />
                                   </button>
 
-                                  {/* Dropdown */}
+                                  {/* Admin Dropdown */}
                                   {isAlternative && openDropdown === key && (
                                     <div className="absolute z-50 w-full mt-2 bg-white rounded-2xl border border-gray-200 shadow-xl max-h-72 overflow-y-auto py-2">
                                       {pkg?.alternative_items?.map(
@@ -313,6 +329,14 @@ const PackageSchedule = ({
                                                 }),
                                               );
                                               setOpenDropdown(null);
+                                              setSelectedUserAlternatives(
+                                                (prev) => ({
+                                                  ...prev,
+                                                  [key]: (
+                                                    prev[key] || []
+                                                  ).filter((i) => i !== gIndex),
+                                                }),
+                                              );
                                             }}
                                             className={`mx-2 my-1 p-4 rounded-xl cursor-pointer transition-all ${
                                               selectedAlternative[key] ===
@@ -324,13 +348,137 @@ const PackageSchedule = ({
                                             <p className="text-xs font-bold text-orange-600 mb-2">
                                               ALTERNATIVE {gIndex + 1}
                                             </p>
+                                            {/* group = {title: "ভাত,ডাল,ডিম"} */}
                                             <p className="text-sm text-gray-700">
-                                              {group
-                                                .map((item) => item.title)
-                                                .join(", ")}
+                                              {group.title}
                                             </p>
                                           </div>
                                         ),
+                                      )}
+                                    </div>
+                                  )}
+                                </div>
+                              </div>
+
+                              {/* User Alternatives Section */}
+                              <div>
+                                <h4 className="font-semibold text-gray-700 mb-2">
+                                  User Alternatives Items
+                                </h4>
+                                <div className="relative flex-1">
+                                  <button
+                                    onClick={() => {
+                                      const userKey = `user-${key}`;
+                                      setOpenDropdown(
+                                        openDropdown === userKey
+                                          ? null
+                                          : userKey,
+                                      );
+                                    }}
+                                    type="button"
+                                    className="w-full px-5 py-4 rounded-2xl border flex items-center justify-between transition-all duration-300 shadow-sm bg-white border-orange-300 hover:border-orange-400 cursor-pointer"
+                                  >
+                                    <span className="text-sm font-medium text-gray-700 truncate">
+                                      {selectedUserAlternatives[key]?.length > 0
+                                        ? `${selectedUserAlternatives[key].length} alternative(s) selected`
+                                        : "Select User Alternatives"}
+                                    </span>
+                                    <ChevronDown
+                                      className={`transition-transform ${
+                                        openDropdown === `user-${key}`
+                                          ? "rotate-180"
+                                          : ""
+                                      }`}
+                                      size={20}
+                                    />
+                                  </button>
+
+                                  {/* User Dropdown */}
+                                  {openDropdown === `user-${key}` && (
+                                    <div className="absolute z-50 w-full mt-2 bg-white rounded-2xl border border-gray-200 shadow-xl max-h-72 overflow-y-auto py-2">
+                                      {pkg?.alternative_items
+                                        ?.map((group, gIndex) => ({
+                                          group,
+                                          gIndex,
+                                        }))
+                                        .filter(
+                                          ({ gIndex }) =>
+                                            gIndex !== selectedAlternative[key],
+                                        )
+                                        .map(({ group, gIndex }) => {
+                                          const isSelected =
+                                            selectedUserAlternatives[
+                                              key
+                                            ]?.includes(gIndex);
+                                          return (
+                                            <div
+                                              key={gIndex}
+                                              onClick={() => {
+                                                setSelectedUserAlternatives(
+                                                  (prev) => {
+                                                    const current =
+                                                      prev[key] || [];
+                                                    const updated = isSelected
+                                                      ? current.filter(
+                                                          (i) => i !== gIndex,
+                                                        )
+                                                      : [...current, gIndex];
+                                                    return {
+                                                      ...prev,
+                                                      [key]: updated,
+                                                    };
+                                                  },
+                                                );
+                                              }}
+                                              className={`mx-2 my-1 p-4 rounded-xl cursor-pointer transition-all flex items-start gap-3 ${
+                                                isSelected
+                                                  ? "bg-orange-50 border border-orange-400"
+                                                  : "hover:bg-gray-50 border border-transparent"
+                                              }`}
+                                            >
+                                              <div
+                                                className={`w-5 h-5 mt-0.5 rounded flex items-center justify-center border-2 flex-shrink-0 ${
+                                                  isSelected
+                                                    ? "bg-orange-500 border-orange-500"
+                                                    : "border-gray-300"
+                                                }`}
+                                              >
+                                                {isSelected && (
+                                                  <svg
+                                                    className="w-3 h-3 text-white"
+                                                    fill="none"
+                                                    viewBox="0 0 24 24"
+                                                    stroke="currentColor"
+                                                  >
+                                                    <path
+                                                      strokeLinecap="round"
+                                                      strokeLinejoin="round"
+                                                      strokeWidth={3}
+                                                      d="M5 13l4 4L19 7"
+                                                    />
+                                                  </svg>
+                                                )}
+                                              </div>
+                                              <div>
+                                                <p className="text-xs font-bold text-orange-600 mb-1">
+                                                  ALTERNATIVE {gIndex + 1}
+                                                </p>
+                                                {/* group = {title: "ভাত,ডাল,ডিম"} */}
+                                                <p className="text-sm text-gray-700">
+                                                  {group.title}
+                                                </p>
+                                              </div>
+                                            </div>
+                                          );
+                                        })}
+
+                                      {pkg?.alternative_items?.filter(
+                                        (_, i) =>
+                                          i !== selectedAlternative[key],
+                                      ).length === 0 && (
+                                        <p className="text-center text-gray-400 text-sm py-4">
+                                          No alternatives available
+                                        </p>
                                       )}
                                     </div>
                                   )}
@@ -368,21 +516,33 @@ const PackageSchedule = ({
       {/* Preview Section */}
       {groupedPreview && (
         <div className="max-w-7xl mx-auto">
-          <h2 className="text-2xl font-bold text-gray-800 mb-6 flex items-center gap-3">
-            Selected Schedule Preview
-          </h2>
+          <div className="flex items-center gap-3 mb-6">
+            <h2 className="text-lg font-medium text-gray-800">
+              Selected schedule preview
+            </h2>
+          </div>
 
-          <div className="overflow-x-auto rounded-3xl border border-gray-100 shadow-xl bg-white">
-            <table className="w-full">
-              <thead className="bg-green-600 text-white sticky top-0">
-                <tr>
-                  <th className="p-6 text-left w-32">Day</th>
+          <div className="border border-gray-100 rounded-2xl overflow-hidden">
+            <table
+              className="w-full border-collapse"
+              style={{ tableLayout: "fixed" }}
+            >
+              <thead>
+                <tr className="bg-gray-50 border-b border-gray-100">
+                  <th className="p-4 text-left text-xs font-medium text-gray-500 w-20">
+                    Day
+                  </th>
                   {packageTypes.map(
                     ({ package_type, start_time, end_time }) => (
-                      <th key={package_type} className="p-6 text-left">
-                        <p className="font-semibold">{package_type}</p>
+                      <th
+                        key={package_type}
+                        className="p-4 text-left border-l border-gray-100"
+                      >
+                        <p className="text-xs font-medium text-gray-700">
+                          {package_type}
+                        </p>
                         {(start_time || end_time) && (
-                          <p className="text-sm text-green-100 mt-1 font-medium">
+                          <p className="text-xs text-gray-400 mt-0.5 font-normal">
                             {start_time || "--:--"} → {end_time || "--:--"}
                           </p>
                         )}
@@ -398,36 +558,68 @@ const PackageSchedule = ({
                   return (
                     <tr
                       key={day}
-                      className="border-b border-gray-200 last:border-none hover:bg-green-50/50 transition-colors"
+                      className="border-b border-gray-100 last:border-none hover:bg-gray-50/60 transition-colors"
                     >
-                      <td className="p-6 font-bold text-lg border-r border-gray-200">
+                      <td className="p-4 text-xs font-medium text-gray-700 border-r border-gray-100">
                         {day}
                       </td>
+
                       {packageTypes.map(({ package_type }) => {
                         const pkg = dayPreview[package_type];
                         return (
                           <td
                             key={package_type}
-                            className="p-6 border-r border-gray-200 last:border-none"
+                            className="p-4 border-l border-gray-100 align-top"
                           >
                             {pkg ? (
                               <div>
-                                <p className="text-green-700 font-semibold mb-2">
+                                {/* Price */}
+                                <p className="text-xs font-medium text-gray-600 mb-2">
                                   ৳{pkg.package_price}
                                 </p>
-                                <div className="flex flex-wrap gap-2">
-                                  {pkg.package_item?.map((item, i) => (
-                                    <span
-                                      key={i}
-                                      className="bg-green-100 text-green-700 text-xs font-medium px-4 py-2 rounded-2xl"
-                                    >
-                                      {item.title}
-                                    </span>
-                                  ))}
+
+                                {/* Items — package_item = [{title: "ভাত,ডাল,ডিম"}] */}
+                                <p className="text-[10px] font-medium text-gray-400 uppercase tracking-wide mb-1.5">
+                                  Items
+                                </p>
+                                <div className="flex flex-wrap gap-1.5">
+                                  {pkg.package_item?.[0]?.title
+                                    ?.split(",")
+                                    .map((t, i) => (
+                                      <span
+                                        key={i}
+                                        className="text-[11px] font-medium bg-gray-100 text-gray-600 px-2.5 py-1 rounded-full"
+                                      >
+                                        {t.trim()}
+                                      </span>
+                                    ))}
                                 </div>
+
+                                {/* User Alternatives — [{title: "খিচুড়ি,মাংস"}] */}
+                                {pkg.alternative_items?.length > 0 && (
+                                  <div className="mt-2.5 space-y-2">
+                                    {pkg.alternative_items.map((alt, i) => (
+                                      <div key={i}>
+                                        <p className="text-[10px] font-medium text-amber-700 mb-1">
+                                          Alt {i + 1}
+                                        </p>
+                                        <div className="flex flex-wrap gap-1.5">
+                                          {alt.title?.split(",").map((t, j) => (
+                                            <span
+                                              key={j}
+                                              className="text-[11px] font-medium bg-amber-50 text-amber-800 px-2.5 py-1 rounded-full"
+                                            >
+                                              {t.trim()}
+                                            </span>
+                                          ))}
+                                        </div>
+                                      </div>
+                                    ))}
+                                  </div>
+                                )}
                               </div>
                             ) : (
-                              <span className="text-gray-300 text-2xl">—</span>
+                              <span className="text-gray-300 text-lg">—</span>
                             )}
                           </td>
                         );

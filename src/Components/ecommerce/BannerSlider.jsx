@@ -4,6 +4,7 @@ import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
 import { Autoplay, Navigation, Pagination } from "swiper/modules";
+import { useLayoutSwitch } from "../../providers/LayoutSwitchProvider";
 
 const BannerSlider = () => {
   const images = [
@@ -13,40 +14,42 @@ const BannerSlider = () => {
     "https://images.deliveryhero.io/image/adtech-display/campaigns/fp_bd/ec957268-ec8b-11f0-8136-0a03d4ad1092.jpeg?height=205&dpi=1",
   ];
   return (
-    <Swiper
-      breakpoints={{
-        0: {
-          slidesPerView: 1,
-        },
+    <div className="max-w-[1600px] mx-auto overflow-hidden">
+      <Swiper
+        breakpoints={{
+          0: {
+            slidesPerView: 1,
+          },
 
-        640: {
-          slidesPerView: 2,
-        },
+          640: {
+            slidesPerView: 2,
+          },
 
-        1024: {
-          slidesPerView: 3,
-        },
-      }}
-      spaceBetween={10}
-      navigation
-      autoplay={{
-        delay: 2500,
-        disableOnInteraction: false,
-      }}
-      loop={true}
-      pagination={{ clickable: true }}
-      modules={[Autoplay, Navigation, Pagination]}
-    >
-      {images.map((src, index) => (
-        <SwiperSlide key={index}>
-          <img
-            src={src}
-            alt={`Slide ${index}`}
-            className="max-w-[500px] md:max-w-[700px] w-full rounded-lg"
-          />
-        </SwiperSlide>
-      ))}
-    </Swiper>
+          1024: {
+            slidesPerView: 3,
+          },
+        }}
+        spaceBetween={10}
+        navigation
+        autoplay={{
+          delay: 2500,
+          disableOnInteraction: false,
+        }}
+        loop={true}
+        pagination={{ clickable: true }}
+        modules={[Autoplay, Navigation, Pagination]}
+      >
+        {images.map((src, index) => (
+          <SwiperSlide key={index}>
+            <img
+              src={src}
+              alt={`Slide ${index}`}
+              className="max-w-[500px] md:max-w-[700px] w-full rounded-lg"
+            />
+          </SwiperSlide>
+        ))}
+      </Swiper>
+    </div>
   );
 };
 

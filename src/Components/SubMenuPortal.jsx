@@ -8,7 +8,7 @@ const SubMenuPortal = ({ category, position, onClose }) => {
       style={{
         top: position.top,
       }}
-      className="fixed w-56 bg-white rounded-xl left-[270px] lg:left-[250px] 2xl:left-[300px] shadow-xl z-50"
+      className="fixed w-56 bg-white rounded-xl left-[200px] lg:left-[230px] 2xl:left-[260px] shadow-xl z-50"
     >
       <ul className="py-2">
         {category.submenu.map((sub) => (

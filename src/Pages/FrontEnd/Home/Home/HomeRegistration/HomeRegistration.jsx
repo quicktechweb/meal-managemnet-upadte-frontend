@@ -161,7 +161,7 @@ const HomeLogin = () => {
           </div>
 
           {/* Floating Badge */}
-          <div className="absolute hidden lg:block -bottom-8 -right-4 bg-white/90 backdrop-blur-md p-2 2xl:p-4 rounded-2xl shadow-xl border border-white rotate-6 hover:rotate-0 transition-transform cursor-pointer">
+          <div className="absolute hidden lg:block  lg:-bottom-10 -right-10 xl:-right-4 bg-white/90 backdrop-blur-md p-2 2xl:p-4 rounded-2xl shadow-xl border border-white rotate-6 hover:rotate-0 transition-transform cursor-pointer">
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 bg-orange-100 rounded-full flex items-center justify-center">
                 <ChefHat className="w-6 h-6 text-orange-500" />

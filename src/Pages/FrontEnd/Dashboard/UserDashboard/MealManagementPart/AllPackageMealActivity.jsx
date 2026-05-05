@@ -1,20 +1,33 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import useInstituteAuth from "../../../../../Hooks/useInstituteAuth";
-import { useInstituteUserAdminData } from "../../../../../api/cms/user.hook";
+import {
+  useAllwiseGetMealList,
+  useAllwiseUserCreateMeal,
+  useGetMealOnOffTime,
+  useInstituteUserAdminData,
+} from "../../../../../api/cms/user.hook";
 import { FaCalendarAlt, FaCheckCircle } from "react-icons/fa";
 import { ChevronDown, Plus, X } from "lucide-react";
 
 import PackageItemSelector from "../../../../../Components/PackageItemSelector";
 import AllWiseUserPackageMealSummary from "../../../../../Components/AllWiseUserPackageMealSummary";
 
-export const getKey = (meal) => `${meal?.day}-${meal?.package_title}`;
+const getKey = (meal) => `${meal?.day}-${meal?.package_title}`;
 
 export default function AllPackageMealActivity({ allWise }) {
   const { user } = useInstituteAuth();
   const { data } = useInstituteUserAdminData(user?.user?.institute_id);
-
+  const { data: mealOnOffTime } = useGetMealOnOffTime();
   const routine = data?.packages;
-  const weekDays = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+  const weekDays = [
+    "Sunday",
+    "Monday",
+    "Tuesday",
+    "Wednesday",
+    "Thursday",
+    "Friday",
+    "Saturday",
+  ];
 
   const sortByToday = (data) => {
     const today = new Date().getDay();
@@ -27,18 +40,23 @@ export default function AllPackageMealActivity({ allWise }) {
 
   const sortedMeals = sortByToday(routine?.package_routine);
 
+  console.log(sortedMeals);
+
   const getNext7Days = () => {
     const days = [];
     const today = new Date();
+
     for (let i = 0; i < 7; i++) {
-      const d = new Date(today);
-      d.setDate(today.getDate() + i);
-      days.push(weekDays[d.getDay()]);
+      const currentDate = new Date(today);
+      currentDate.setDate(today.getDate() + i);
+      days.push(weekDays[currentDate.getDay()]);
     }
+
     return days;
   };
 
   const [selectedDays, setSelectedDays] = useState([getNext7Days()[0]]);
+
   const [activeDayView, setActiveDayView] = useState(getNext7Days()[0]);
 
   const selectedMeals = sortedMeals?.filter(
@@ -49,8 +67,12 @@ export default function AllPackageMealActivity({ allWise }) {
   const [openKey, setOpenKey] = useState(null);
   const [selectedGroupMap, setSelectedGroupMap] = useState({});
   const [useAlternativeMap, setUseAlternativeMap] = useState({});
+
   // ON/OFF toggle — defaultON (true)
   const [mealOnOffMap, setMealOnOffMap] = useState({});
+
+  // is_attendance
+  const [mealAttandence, setMealAttandence] = useState({});
 
   const handleSelect = (key, groupIndex) => {
     setSelectedGroupMap((prev) => ({ ...prev, [key]: groupIndex }));
@@ -68,7 +90,6 @@ export default function AllPackageMealActivity({ allWise }) {
     setMealOnOffMap((prev) => ({
       ...prev,
 
-      // [key]: prev[key] === false ? true : false,
       [key]: prev[key] !== true,
     }));
   };
@@ -76,11 +97,18 @@ export default function AllPackageMealActivity({ allWise }) {
   // const isMealOn = (key) => mealOnOffMap[key] !== false;
   const isMealOn = (key) => mealOnOffMap[key] === true;
 
+  const isMealAttendence = (key) => mealAttandence[key] === true;
+
+  const { mutateAsync, isPending } = useAllwiseUserCreateMeal();
+
+  const { data: allWiseMealData, isLoading } = useAllwiseGetMealList();
+
   // Guest Meal State
   const [guestOpenKey, setGuestOpenKey] = useState(null);
   const [guestSelectedGroupMap, setGuestSelectedGroupMap] = useState({});
   const [guestUseAlternativeMap, setGuestUseAlternativeMap] = useState({});
   const [guestQuantityMap, setGuestQuantityMap] = useState({});
+
   //  which meal a add guest
   const [guestEnabledMap, setGuestEnabledMap] = useState({});
 
@@ -128,49 +156,94 @@ export default function AllPackageMealActivity({ allWise }) {
     }
   };
 
-  const handleUpdate = () => {
+  useEffect(() => {
+    if (!allWiseMealData?.meals?.length) return;
+
+    const savedDays = [
+      ...new Set(allWiseMealData.meals.map((meal) => meal.day)),
+    ];
+    const newMealOnOffMap = {};
+    const newUseAlternativeMap = {};
+    const newGuestEnabledMap = {};
+    const newGuestQuantityMap = {};
+    const newMealAttendanceMap = {};
+
+    allWiseMealData.meals.forEach((meal) => {
+      const key = `${meal.day}-${meal.meal_type}`;
+
+      // is_on state
+      newMealOnOffMap[key] = meal.is_on;
+
+      // attendance state
+      newMealAttendanceMap[key] = meal.is_attendance;
+
+      // alternative state
+      newUseAlternativeMap[key] = meal.is_alternative;
+
+      // guest state
+      if (meal.guest_quantity > 0) {
+        newGuestEnabledMap[key] = true;
+        newGuestQuantityMap[key] = meal.guest_quantity;
+      }
+    });
+
+    setMealOnOffMap(newMealOnOffMap);
+    setUseAlternativeMap(newUseAlternativeMap);
+    setGuestEnabledMap(newGuestEnabledMap);
+    setGuestQuantityMap(newGuestQuantityMap);
+    setMealAttandence(newMealAttendanceMap);
+
+    // ✅ saved days set করো
+    setSelectedDays(savedDays);
+
+    // ✅ প্রথম saved day টা active করো
+    if (savedDays.length > 0) {
+      setActiveDayView(savedDays[0]);
+    }
+  }, [allWiseMealData]);
+
+  const handleUpdate = async () => {
     const allSelectedMeals = sortedMeals?.filter((item) =>
       selectedDays.includes(item?.day),
     );
 
     // Regular meals — OFF
-    const finalSelections = allSelectedMeals
-      // ?.filter((meal) => isMealOn(getKey(meal)))
-      ?.map((meal) => {
-        const key = getKey(meal);
-        const isAlternative = !!useAlternativeMap[key];
-        const altGroupIndex = selectedGroupMap[key];
+    const finalSelections = allSelectedMeals?.map((meal) => {
+      const key = getKey(meal);
+      const isAlternative = !!useAlternativeMap[key];
+      const isGuestAlternative = !!guestUseAlternativeMap[key];
+      const altGuestGroupIndex = guestSelectedGroupMap[key];
+      const altGroupIndex = selectedGroupMap[key];
 
-        return {
-          day: meal.day,
-          meal_type: meal.meal_type,
-          is_on: isMealOn(getKey(meal)) ? true : false,
-          selected_items: isAlternative
-            ? (meal?.alternative_items?.[altGroupIndex] ?? [])
-            : (meal?.package_item ?? []),
-          is_alternative: isAlternative,
-        };
-      });
+      const isGuestEnabled = guestEnabledMap[getKey(meal)];
 
-    const finalGuestSelections = allSelectedMeals
-      ?.filter((meal) => guestEnabledMap[getKey(meal)])
-      ?.map((meal) => {
-        const key = getKey(meal);
-        const isAlternative = !!guestUseAlternativeMap[key];
-        const altGroupIndex = guestSelectedGroupMap[key];
+      return {
+        day: meal.day,
+        meal_type: meal.package_title,
+        package_price: meal.package_price,
+        is_on: isMealOn(getKey(meal)) ? true : false,
+        start_time: meal?.start_time,
+        end_time: meal?.end_time,
+        selected_items: isAlternative
+          ? ([meal?.alternative_items?.[altGroupIndex]] ?? [])
+          : (meal?.package_item ?? []),
+        guest_items: isGuestEnabled
+          ? isGuestAlternative
+            ? ([meal?.alternative_items?.[altGuestGroupIndex]] ?? [])
+            : (meal?.package_item ?? [])
+          : [],
+        is_alternative: isAlternative,
+        guest_quantity: guestQuantityMap[key] ? guestEnabledMap[key] : 0,
+      };
+    });
 
-        return {
-          day: meal.day,
-          meal_type: meal.meal_type,
-          selected_items: isAlternative
-            ? (meal?.alternative_items?.[altGroupIndex] ?? [])
-            : (meal?.package_item ?? []),
-          is_alternative: isAlternative,
-          quantity: guestQuantityMap[key] ?? 1,
-        };
-      });
+    const payload = {
+      type: allWise,
+      routine_type: "Package",
+      meals: finalSelections,
+    };
 
-    console.log(finalSelections);
+    await mutateAsync(payload);
   };
 
   return (
@@ -193,31 +266,56 @@ export default function AllPackageMealActivity({ allWise }) {
             {getNext7Days().map((plan, index) => {
               const isSelected = selectedDays.includes(plan);
               const isViewing = activeDayView === plan;
+              const isToday = index === 0;
 
               return (
                 <div
                   key={index}
                   onClick={() => {
                     setActiveDayView(plan);
-
                     setSelectedDays((prev) =>
                       prev.includes(plan)
                         ? prev.filter((d) => d !== plan)
                         : [...prev, plan],
                     );
                   }}
-                  className={`flex items-center justify-between border-b border-gray-100 py-2 px-3 rounded-md cursor-pointer transition-colors ${
+                  className={`flex items-center justify-between border-b border-gray-100 py-2 px-3 rounded-md cursor-pointer transition-all duration-200 border ${
                     isViewing
-                      ? "bg-orange-500 text-white"
+                      ? "bg-orange-500 text-white border-orange-500 shadow-md scale-[1.02]"
                       : isSelected
-                        ? "bg-orange-100 text-orange-600"
-                        : "hover:bg-orange-50 text-gray-700"
+                        ? "bg-orange-100 text-orange-700 border-orange-300 font-semibold"
+                        : "hover:bg-orange-50 text-gray-700 border-transparent"
                   }`}
                 >
-                  <span>{plan}</span>
+                  {/* Left: Day + Today badge */}
+                  <div className="flex items-center gap-1.5">
+                    <span className="font-semibold text-sm w-auto">{plan}</span>
+                    {isToday && (
+                      <span
+                        className={`text-[10px] px-1.5 py-0.5 rounded-full font-bold ${
+                          isViewing
+                            ? "bg-white/25 text-white"
+                            : "bg-orange-200 text-orange-600"
+                        }`}
+                      >
+                        Today
+                      </span>
+                    )}
+                  </div>
 
-                  {isSelected && !isViewing && (
-                    <span className="w-2 h-2 rounded-full bg-orange-400" />
+                  {/* Right: Checkmark */}
+                  {isSelected ? (
+                    <span
+                      className={`w-4 h-4 rounded-full flex items-center justify-center text-[10px] font-bold flex-shrink-0 ${
+                        isViewing
+                          ? "bg-white text-orange-500"
+                          : "bg-orange-400 text-white"
+                      }`}
+                    >
+                      ✓
+                    </span>
+                  ) : (
+                    <span className="w-4 h-4 rounded-full border border-gray-300 flex-shrink-0" />
                   )}
                 </div>
               );
@@ -234,6 +332,13 @@ export default function AllPackageMealActivity({ allWise }) {
             <p className="text-sm text-gray-500 mt-1">
               Select your preferred meals for the selected date(s)
             </p>
+            <h6 className="bg-yellow-100 mt-2 text-yellow-800 px-3 py-2 rounded-md font-medium inline-block">
+              ⏰ Meals can be turned on or off up to{" "}
+              <span className="font-bold">
+                {mealOnOffTime?.meal_on_off_time} hours
+              </span>{" "}
+              before the start time.
+            </h6>
           </div>
 
           {/* Regular Meal Cards */}
@@ -241,6 +346,7 @@ export default function AllPackageMealActivity({ allWise }) {
             {selectedMeals?.map((meal) => {
               const key = getKey(meal);
               const isOn = isMealOn(key);
+              const isMealAttendences = isMealAttendence(key);
               const isGuestAdded = !!guestEnabledMap[key];
 
               return (
@@ -254,13 +360,13 @@ export default function AllPackageMealActivity({ allWise }) {
                   >
                     <div className="flex items-center gap-2">
                       <h3 className="font-semibold text-sm lg:text-lg">
-                        {meal?.meal_type}
+                        {meal?.package_title}
                       </h3>
                       <span className="text-xs bg-white/20 px-2 py-0.5 rounded-full">
                         {meal.day}
                       </span>
                       <span className="ml-auto bg-white/20 px-2 py-1 rounded-full text-xs">
-                        ৳0
+                        ৳{meal?.package_price}
                       </span>
 
                       {/* ON/OFF Toggle */}
@@ -277,11 +383,29 @@ export default function AllPackageMealActivity({ allWise }) {
                         />
                       </button>
                     </div>
+
                     <div className="flex font-semibold justify-center mt-1">
                       <p>{meal?.start_time}</p>-<p>{meal?.end_time}</p>
                     </div>
                   </div>
 
+                  <div className="flex flex-col items-end gap-0.5">
+                    <h6 className="text-black font-semibold text-xs">
+                      Attendance Status
+                    </h6>
+                    <button
+                      disabled
+                      className={`relative w-12 h-6 rounded-full transition-colors flex-shrink-0 ${
+                        isMealAttendences ? "bg-green-400" : "bg-gray-400"
+                      }`}
+                    >
+                      <span
+                        className={`absolute top-0.5 w-5 h-5 bg-white rounded-full shadow transition-all duration-300 ${
+                          isMealAttendences ? "left-6" : "left-0.5"
+                        }`}
+                      />
+                    </button>
+                  </div>
                   {/* OFF overlay */}
                   <div
                     className={`mt-2 ${!isOn ? "opacity-40 pointer-events-none" : ""}`}
@@ -413,9 +537,10 @@ export default function AllPackageMealActivity({ allWise }) {
           {/* Update Button */}
           <button
             onClick={handleUpdate}
+            disabled={isPending}
             className="w-1/3 mx-auto block bg-gradient-to-r from-orange-400 to-pink-500 text-white py-3 rounded-2xl cursor-pointer"
           >
-            Update
+            {isPending ? "Updating" : "Update"}
           </button>
         </div>
       </div>

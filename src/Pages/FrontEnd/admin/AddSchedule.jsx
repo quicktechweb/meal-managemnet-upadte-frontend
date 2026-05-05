@@ -62,7 +62,7 @@ const AddSchedule = () => {
             <label className="text-purple-900 font-bold text-lg min-w-[120px]">
               Select Day:
             </label>
-            {["Sat", "Sun", "Mon", "Tue", "Wed", "Thu", "Fri"].map((d) => (
+            {["Saturday", "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday"].map((d) => (
               <button
                 key={d}
                 type="button"

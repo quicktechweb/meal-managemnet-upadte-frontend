@@ -51,9 +51,12 @@ const Features = ({ isLoading, chooseusData = [], chooseImage }) => {
   ];
 
   const renderFeature = (item, index) => (
-    <div key={index} className="flex gap-2.5 lg:gap-5 items-start group">
+    <div
+      key={index}
+      className="flex flex-col xl:flex-row gap-2.5 lg:gap-5 items-start group"
+    >
       <div
-        className={`w-10 md:w-14 lg:w-20 h-10 md:h-12 shrink-0 rounded-lg flex items-center justify-center text-lg lg:text-xl ${item.color}
+        className={`w-10 md:w-14 xl:w-20 h-10 md:h-12 shrink-0 rounded-lg flex items-center justify-center text-lg lg:text-xl ${item.color}
         transition-all duration-300 group-hover:scale-110`}
       >
         {item.icon}

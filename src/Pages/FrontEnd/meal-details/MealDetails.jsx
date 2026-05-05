@@ -24,43 +24,43 @@ import VideoSlider from "../../../Components/VideoSlider";
 
 const schedule = [
   {
-    day: "Sat",
+    day: "Saturday",
     morning: "Alu Vorta + Dal",
     afternoon: "Murgi + Mach/Mangsho + Dal",
     night: "Bhat, Alu (Dim-er shonge)",
   },
   {
-    day: "Sun",
+    day: "Sunday",
     morning: "Shobji Parota/Pitha",
     afternoon: "Mach (Bhaji/Porha) + Dal",
     night: "Murgir Jhol + Bhaja Shobji",
   },
   {
-    day: "Mon",
+    day: "Monday",
     morning: "Nesco/Soup + Bhat/Parota",
     afternoon: "Gosht & Murgi + Bhat/Dal (Soup/Mukhar)",
     night: "Bhat, Dal + Alu Vorta",
   },
   {
-    day: "Tue",
+    day: "Tuesday",
     morning: "Alu Vorta + Dal",
     afternoon: "Mach (Bhaji/Porha) + Dal",
     night: "Bhat + Dim",
   },
   {
-    day: "Wed",
+    day: "Wednesday",
     morning: "Nesco/Shobji + Dal",
     afternoon: "Murgi + Mach + Dal",
     night: "Bhat, Alu (Dim-er shonge)",
   },
   {
-    day: "Thu",
+    day: "Thursday",
     morning: "Alu, Piaj Vorta + Dal",
     afternoon: "Mach (Bhaji/Porha) + Dal",
     night: "Murgir Jhol + Shobji Lettuce",
   },
   {
-    day: "Fri",
+    day: "Friday",
     morning: "Ruti/Shobji/Dal",
     afternoon: "Gorur Mangsho/Prani Jhol",
     night: "Bhat, Dim + Shobji (Shak, Mushroom)",
@@ -69,43 +69,43 @@ const schedule = [
 
 const schedule2 = [
   {
-    day: "Sat",
+    day: "Saturday",
     morning: "Alu Vorta + Dal",
     afternoon: "Murgi + Mangsho + Dal / Murgi + Mach + Dal ",
     night: "Bhat, Alu (Dim-er shonge)",
   },
   {
-    day: "Sun",
+    day: "Sunday",
     morning: "Shobji Parota / Pitha",
     afternoon: "Mach (Bhaji/Porha) + Dal",
     night: "Murgir Jhol + Bhaja Shobji",
   },
   {
-    day: "Mon",
+    day: "Monday",
     morning: "Nesco/Soup + Bhat/Parota",
     afternoon: "Gosht & Murgi + Bhat/Dal (Soup/Mukhar)",
     night: "Bhat, Dal + Alu Vorta",
   },
   {
-    day: "Tue",
+    day: "Tuesday",
     morning: "Alu Vorta + Dal",
     afternoon: "Mach (Bhaji/Porha) + Dal",
     night: "Bhat + Dim",
   },
   {
-    day: "Wed",
+    day: "Wednesday",
     morning: "Shobji + Dal / Nesco + Dal  ",
     afternoon: "Murgi + Mach + Dal",
     night: "Bhat, Alu (Dim-er shonge)",
   },
   {
-    day: "Thu",
+    day: "Thursday",
     morning: "Alu, Piaj Vorta + Dal",
     afternoon: "Mach  + Dal",
     night: "Murgir Jhol + Shobji Lettuce",
   },
   {
-    day: "Fri",
+    day: "Friday",
     morning: "Ruti + Shobji/ Ruti + Dal",
     afternoon: "Gorur Mangsho/Prani Jhol",
     night: "Bhat, Dim + Shobji (Shak, Mushroom)",
@@ -119,7 +119,15 @@ const year = today.getFullYear();
 const month = today.getMonth();
 const daysInMonth = new Date(year, month + 1, 0).getDate();
 
-const weekDays = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+const weekDays = [
+  "Sunday",
+  "Monday",
+  "Tuesday",
+  "Wednesday",
+  "Thursday",
+  "Friday",
+  "Saturday",
+];
 
 const mealPlans = Array.from({ length: daysInMonth }, (_, i) => {
   const dateObj = new Date(year, month, i + 1);

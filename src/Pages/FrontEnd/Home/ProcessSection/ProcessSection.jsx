@@ -129,10 +129,10 @@ const ProcessSection = () => {
     <section id="features" className="mt-5 bg-white ">
       {/* HEADING */}
       <div className="text-center mb-6 ">
-        <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-4 px-4">
+        <h2 className="text-2xl sm:text-3xl xl:text-4xl font-bold mb-4 px-4">
           Quick & Easy Process With Best Features
         </h2>
-        <p className="text-gray-500 text-sm md:text-base max-w-full md:max-w-2xl mx-auto">
+        <p className="text-gray-500 text-sm xl:text-base max-w-full md:max-w-2xl mx-auto">
           Rapidiously morph transparent internal or sources Whereas resource
           sucking e-business. Conveniently innovate compelling internal.
         </p>
@@ -156,7 +156,7 @@ const ProcessSection = () => {
                 className="flex flex-col cursor-pointer items-center gap-1.5 lg:gap-3 focus:outline-none group"
               >
                 <div
-                  className={`w-8 h-8  sm:w-10 sm:h-10 lg:w-12 lg:h-12 rounded-full flex items-center justify-center text-sm sm:text-lg lg:text-xl transition
+                  className={`w-8 h-8  sm:w-10 sm:h-10 xl:w-12 xl:h-12 rounded-full flex items-center justify-center text-sm sm:text-lg lg:text-xl transition
                     ${
                       isActive
                         ? "bg-purple-100 text-purple-600"
@@ -198,26 +198,26 @@ const ProcessSection = () => {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-20 items-center">
           {/* LEFT */}
           <div>
-            <span className="text-3xl lg:text-6xl font-bold text-purple-600">
+            <span className="text-3xl xl:text-6xl font-bold text-purple-600">
               {active.number}
             </span>
 
-            <h3 className="mt-3  text-2xl lg:text-5xl font-semibold text-gray-900">
+            <h3 className="mt-3  text-2xl xl:text-5xl font-semibold text-gray-900">
               {active.heading}
             </h3>
 
             <p
               id="menu"
-              className="mt-3  text-sm lg:text-base text-gray-500 max-w-md"
+              className="mt-3  text-sm xl:text-base text-gray-500 max-w-md"
             >
               {active.desc1}
             </p>
 
-            <p className="mt-2   text-sm lg:text-base text-gray-500 max-w-md">
+            <p className="mt-2   text-sm xl:text-base text-gray-500 max-w-md">
               {active.desc2}
             </p>
 
-            <div className="mt-5 grid grid-cols-3 gap-3 ">
+            <div className="mt-5 grid grid-cols-3 gap-2 xl:gap-3 ">
               {stats.map((stat, index) => (
                 <div key={index} className="card  rounded-xl  ">
                   <div className="card__content flex flex-col 2xl:flex-row items-start gap-3 p-2 bg-gradient-to-r from-orange-50 to-yellow-50 rounded-xl shadow hover:shadow-xl transition">
@@ -227,10 +227,10 @@ const ProcessSection = () => {
                     >
                       <stat.icon className="text-purple-600 text-[18px] sm:text-xl shrink-0 lg:text-2xl mt-1" />
                       <div>
-                        <p className="font-semibold text-[10px] whitespace-nowrap lg:text-base text-gray-800">
+                        <p className="font-semibold text-xs whitespace-nowrap xl:text-base text-gray-800">
                           {stat.title}
                         </p>
-                        <p className="text-xs hidden sm:block text-gray-500">
+                        <p className="text-[10px] xl:text-xs hidden sm:block text-gray-500">
                           {stat.description}
                         </p>
                       </div>

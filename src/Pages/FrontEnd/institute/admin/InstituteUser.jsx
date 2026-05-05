@@ -8,8 +8,6 @@ import PendingInstituteUserList from "./PendingInstituteUserList";
 const InstituteUser = () => {
   const { data } = useInstituteUserList();
 
-  console.log(data);
-
   return (
     <div>
       <PendingInstituteUserList users={data} />

@@ -195,6 +195,16 @@ const MessForm = () => {
 
   const { mutateAsync, isPending } = useInstituteRegistration();
 
+  console.log(selectedOption, "selectedOption");
+
+  console.log(kitchenType, "kitchenType");
+
+  console.log(utilityBills, "utilityBills");
+
+  console.log(serviceFeatures, "serviceFeature");
+
+  console.log(totalPrice, "total price");
+
   const nextStep = async () => {
     const isValid = await form.trigger();
 
@@ -249,11 +259,49 @@ const MessForm = () => {
         // formdata.append("registration_step", step);
 
         const payload = {
-          user_type: selectedOption.label,
-          kitchen_type: kitchenType,
-          utility_service: utilityBills,
-          service_feature: serviceFeatures,
-          total_amount: totalPrice,
+          user_type: {
+            id: selectedOption._id,
+            title: selectedOption.title,
+          },
+
+          kitchen_type: {
+            id: kitchenType._id,
+            title: kitchenType.title,
+          },
+
+          utility_bills: utilityBills.map((b) => ({
+            utility_id: b._id,
+            name: b.name,
+            bear_the_cost: {
+              id: b.bear_the_cost?._id,
+              title: b.bear_the_cost?.title,
+            },
+          })),
+
+          service_features: serviceFeatures.map((f) => ({
+            feature_id: f._id,
+            name: f.name,
+          })),
+
+          charges: charge.map((c) => {
+            const matchedRange = c.ranges?.find(
+              (r) =>
+                +currentData?.number_of_member >= r.min &&
+                +currentData?.number_of_member <= r.max,
+            );
+
+            return {
+              charge_id: c._id,
+              name: c.name,
+              type: c.type,
+              charge_generate: c.charge_generate,
+              price: c.price || matchedRange?.price || null,
+              ranges: matchedRange ? [matchedRange] : [],
+            };
+          }),
+          total_amount: totalPrices,
+
+          registration_step: 3,
         };
 
         await mutateAsync(

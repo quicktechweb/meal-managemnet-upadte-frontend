@@ -27,7 +27,7 @@ const InputField = ({ label, name, control, type = "text", rules = {} }) => (
             {...field}
             type={type}
             placeholder=" "
-            className={`peer w-full text-[13px] border rounded-md px-3 h-[50px] text-sm focus:outline-none text-gray-500 focus:border-black transition-all ${
+            className={`peer w-full text-[13px] border rounded-md px-3 h-[50px] text-sm focus:outline-none text-gray-500 focus:border-gray-300 transition-all ${
               fieldState.error ? "border-red-500" : "border-gray-200"
             }`}
           />
@@ -69,8 +69,6 @@ const UserForm = () => {
   const upazila = districts?.districts?.find(
     (upa) => upa?.name === selectedDistrict,
   );
-
-  console.log(upazila);
 
   const uploadedDocs = watch("documents") || [];
 
@@ -121,6 +119,7 @@ const UserForm = () => {
   const { mutateAsync, isPending } = useInstituteUserRegistration();
 
   const onSubmit = async (data) => {
+    data.room_number = Number(data.room_number);
     await mutateAsync(
       { name_of_institute: selectedInstitute?.name_of_institute, ...data },
       {
@@ -501,8 +500,10 @@ const UserForm = () => {
             label="Room Number"
             name="room_number"
             control={control}
+            type="number"
             rules={{
               required: "Room Number is required",
+              valueAsNumber: true,
             }}
           />
 

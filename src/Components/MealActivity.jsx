@@ -3,12 +3,13 @@ import React, { useState } from "react";
 import AllMealActivity from "../Pages/FrontEnd/Dashboard/UserDashboard/MealManagementPart/AllMealActivity";
 
 import DayWiseMealActivity from "./DayWiseMealActivity";
+import { useLayoutSwitch } from "../providers/LayoutSwitchProvider";
 
 const MealActivity = () => {
-  const [daywiseSelect, setDaywiseSelect] = useState("show-all");
+  const { daywiseSelect, setDaywiseSelect } = useLayoutSwitch();
 
   return (
-    <div className="flex flex-col gap-4">
+    <div id="meal-activity" className="flex flex-col gap-4">
       {/* TOGGLE */}
       <div className="flex gap-2">
         <button
@@ -33,8 +34,8 @@ const MealActivity = () => {
         </button>
       </div>
 
-      {daywiseSelect === "day-wise" && daywiseSelect === "day-wise" && (
-        <DayWiseMealActivity />
+      {daywiseSelect === "day-wise" && (
+        <DayWiseMealActivity allWise={daywiseSelect} />
       )}
 
       {daywiseSelect === "show-all" && (

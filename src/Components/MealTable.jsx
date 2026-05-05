@@ -13,7 +13,7 @@ const MealScheduleTable = ({
   setScheduleList,
 }) => {
   const { data: items = [] } = useGetItems();
-  const days = ["Sat", "Sun", "Mon", "Tue", "Wed", "Thu", "Fri"];
+  const days = ["Saturday", "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday"];
 
   // States
 
@@ -289,7 +289,7 @@ const MealScheduleTable = ({
   });
 
   return (
-    <div className="p-8 bg-gray-50">
+    <div className="p-8 ">
       {/* CREATE FORM */}
       <div className="max-w-4xl mx-auto bg-white p-8 rounded-xl shadow-lg border border-gray-200 mb-10">
         <h2 className="text-2xl font-bold text-center mb-6 text-gray-800 uppercase tracking-wide">

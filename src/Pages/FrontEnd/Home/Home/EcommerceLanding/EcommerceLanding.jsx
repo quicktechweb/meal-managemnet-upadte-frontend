@@ -35,28 +35,28 @@ const categories = [
 
 const EcommerceLanding = () => {
   return (
-    <section id="ecommerce" className="py-12 bg-white">
+    <section id="ecommerce" className="lg:py-12 bg-white">
       <div>
-        <h2 className=" text-center text-2xl lg:text-5xl font-bold mb-2 lg:mb-4">
+        <h2 className=" text-center text-2xl lg:text-3xl xl:text-5xl font-bold mb-2 lg:mb-4">
           Ecommerce Management
         </h2>
 
         {/* Subtitle */}
-        <p className="text-gray-500 text-sm lg:text-lg max-w-2xl mx-auto mb-4 text-center">
+        <p className="text-gray-500 text-sm xl:text-lg max-w-2xl mx-auto mb-4 text-center">
           Rapidiously morph transparent internal or sources Whereas resource
           sucking e-business. Conveniently innovate compelling internal.
         </p>
 
         <div className="mt-2 mb-5">
           <Link to="/ecommercesite">
-            <button className="bg-red-500 hover:bg-red-600 transition text-white px-8 py-1.5 lg:py-3 rounded-md text-sm md:text-base flex items-center gap-2 mx-auto cursor-pointer">
+            <button className="bg-red-500 hover:bg-red-600 transition text-white px-8 py-1.5 xl:py-3 rounded-md text-sm xl:text-base flex items-center gap-2 mx-auto cursor-pointer">
               Visit E-commerce site
               <span className="text-sm md:text-base">→</span>
             </button>
           </Link>
         </div>
       </div>
-      <div className=" px-4 lg:px-6 grid grid-cols-1 lg:grid-cols-3 gap-4 ">
+      <div className=" px-4 lg:px-6 grid grid-cols-1 xl:grid-cols-3 gap-4 ">
         {/* LEFT PROMO */}
         <div className="relative overflow-hidden group lg:col-span-1">
           <img
