@@ -7,7 +7,7 @@ const Review = () => {
         <h2 className="text-orange-500 font-bold tracking-wider uppercase mb-2">
           Testimonials
         </h2>
-        <h3 className="text-4xl md:text-5xl font-extrabold text-gray-900">
+        <h3 className="text-4xl xl:text-5xl font-extrabold text-gray-900">
           What Our Customers Say
         </h3>
       </div>

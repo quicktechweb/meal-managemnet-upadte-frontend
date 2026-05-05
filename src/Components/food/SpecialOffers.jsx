@@ -29,13 +29,13 @@ const SpecialOffers = () => {
   ];
 
   return (
-    <section id="offers" className="pt-8 px-8 bg-white">
-      <div className="flex flex-col md:flex-row justify-between items-end mb-12">
+    <section id="offers" className="pt-8 px-6 bg-white">
+      <div className="flex flex-col md:flex-row justify-between items-end mb-6">
         <div>
           <h2 className="text-blue-500 font-bold tracking-wider uppercase mb-2">
             Today's Deals
           </h2>
-          <h3 className="text-4xl md:text-5xl font-extrabold text-gray-900">
+          <h3 className="text-4xl xl:text-5xl font-extrabold text-gray-900">
             Special Offers For You
           </h3>
         </div>

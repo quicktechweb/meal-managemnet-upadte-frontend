@@ -2,24 +2,24 @@ import React from "react";
 
 const AppDownload = () => {
   return (
-    <section id="app" className="pt-8 px-6 lg:px-10 bg-white">
-      <div className="bg-gray-900 rounded-[3rem] p-10 md:p-16 lg:p-20 flex flex-col md:flex-row items-center justify-between relative overflow-hidden shadow-2xl">
+    <section id="app" className="pt-8 px-6  bg-white">
+      <div className="bg-gray-900 rounded-[3rem] p-10 xl:p-20 flex flex-col md:flex-row items-center justify-between relative overflow-hidden shadow-2xl">
         {/* Background Decorative Elements */}
         <div className="absolute top-[-20%] left-[-10%] w-96 h-96 bg-blue-500 rounded-full blur-[100px] opacity-30"></div>
         <div className="absolute bottom-[-20%] right-[-10%] w-96 h-96 bg-blue-500 rounded-full blur-[100px] opacity-20"></div>
 
         {/* Text Content */}
         <div className="md:w-1/2 text-white z-10 text-center md:text-left mb-8 md:mb-0">
-          <h2 className="text-4xl md:text-5xl lg:text-6xl font-extrabold mb-6 leading-tight">
+          <h2 className="text-4xl xl:text-5xl font-extrabold mb-3 xl:mb-6 leading-tight">
             Get The <span className="text-blue-500">Alabadan Food</span> App
           </h2>
-          <p className="text-gray-400 mb-4 lg:mb-8 text-sm lg:text-lg max-w-lg mx-auto md:mx-0">
+          <p className="text-gray-400 mb-4 xl:mb-8 text-sm xl:text-lg max-w-lg mx-auto md:mx-0">
             Order your favorite meals on the go. Download our app to get a **20%
             discount** on your first order and track your delivery in real-time!
           </p>
 
           <div className="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4 justify-center md:justify-start">
-            <button className="bg-white text-gray-900 px-6 py-3.5 rounded-xl font-bold flex items-center justify-center space-x-3 hover:bg-gray-100 transition shadow-lg">
+            <button className="bg-white text-gray-900  xl:px-6 py-3.5 rounded-xl font-bold flex items-center justify-center space-x-3 hover:bg-gray-100 transition shadow-lg">
               <svg
                 className="w-8 h-8"
                 viewBox="0 0 384 512"
@@ -29,10 +29,10 @@ const AppDownload = () => {
                 <path d="M318.7 268.7c-.2-36.7 16.4-64.4 50-84.8-18.8-26.9-47.2-41.7-84.7-44.6-35.5-2.8-74.3 20.7-88.5 20.7-15 0-49.4-19.7-76.4-19.7C63.3 141.2 4 184.8 4 273.5q0 39.3 14.4 81.2c12.8 36.7 59 126.7 107.2 125.2 25.2-.6 43-17.9 75.8-17.9 31.8 0 48.3 17.9 76.4 17.9 48.6-.7 90.4-82.5 102.6-119.3-65.2-30.7-61.7-90-61.7-91.9zm-56.6-164.2c27.3-32.4 24.8-61.9 24-72.5-24.1 1.4-52 16.4-67.9 34.9-17.5 19.8-27.8 44.3-25.6 71.9 26.1 2 49.9-11.4 69.5-34.3z"></path>
               </svg>
               <div className="text-left">
-                <span className="block text-[10px] font-medium leading-none mb-1">
+                <span className="block text-[10px] pr-2 font-medium leading-none mb-1">
                   Download on the
                 </span>
-                <span className="block text-lg font-bold leading-none">
+                <span className="block text-xs  xl:text-lg font-bold leading-none">
                   App Store
                 </span>
               </div>

@@ -39,19 +39,19 @@ const Menu = () => {
   ];
 
   return (
-    <section id="menu" className="pt-8 px-6 lg:px-10 bg-gray-50">
-      <div className="flex justify-between items-end mb-12">
+    <section id="menu" className="pt-8 px-6 xl:px-10 bg-gray-50">
+      <div className="flex justify-between items-end mb-6 xl:mb-12">
         <div>
           <h2 className="text-blue-500 font-bold tracking-wider uppercase mb-2">
             Our Menu
           </h2>
-          <h3 className="text-4xl md:text-5xl font-extrabold text-gray-900">
+          <h3 className="text-4xl xl:text-5xl font-extrabold text-gray-900">
             Popular Categories
           </h3>
         </div>
       </div>
 
-      <div className="flex overflow-x-auto space-x-4 mb-10 pb-4 no-scrollbar">
+      <div className="flex overflow-x-auto space-x-4 mb-4 xl:mb-10  no-scrollbar">
         {categories.map((cat, idx) => (
           <button
             key={idx}
@@ -62,11 +62,11 @@ const Menu = () => {
         ))}
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-2 xl:gap-8">
         {menuItems.map((item) => (
           <div
             key={item.id}
-            className="bg-white rounded-2xl shadow-sm border border-gray-100 hover:shadow-xl transition p-4 group"
+            className="bg-white rounded-2xl shadow-sm border border-gray-100 hover:shadow-xl transition p-2 xl:p-4 group"
           >
             <div className="h-48 rounded-xl overflow-hidden mb-4">
               <img
@@ -76,9 +76,11 @@ const Menu = () => {
               />
             </div>
             <div className="flex justify-between items-start mb-2">
-              <h4 className="text-xl font-bold text-gray-800">{item.name}</h4>
-              <span className="text-sm font-bold bg-orange-100 text-orange-600 px-2 py-1 rounded">
-                ⭐ {item.rating}
+              <h4 className="text-base xl:text-xl font-bold text-gray-800">
+                {item.name}
+              </h4>
+              <span className="text-sm flex font-bold bg-orange-100 text-orange-600 px-2 py-1 rounded">
+                <span>⭐</span> {item.rating}
               </span>
             </div>
             <p className="text-gray-500 text-sm mb-4">{item.desc}</p>
