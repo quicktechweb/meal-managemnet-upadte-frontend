@@ -40,6 +40,13 @@ const topIcons = [
   { icon: <Globe size={16} />, label: "Language" },
 ];
 
+const mobileTopIcons = [
+  { icon: <Search size={16} />, label: "Search" },
+  { icon: <Home size={16} />, label: "Home" },
+  { icon: <PlusCircle size={16} />, label: "Add", special: true },
+  { icon: <Bell size={16} />, label: "Notifications", badge: true },
+];
+
 const bottomIcons = [
   // { icon: <Utensils size={16} />, label: "A Food" },
   { icon: <Home size={16} />, label: "Home", active: true },
@@ -50,6 +57,12 @@ const bottomIcons = [
   { icon: <Truck size={16} />, label: "Track Order" },
   { icon: <Video size={16} />, label: "Video" },
   { icon: <MessageCircle size={16} />, label: "Live Chat" },
+  { icon: <Menu size={16} />, label: "Menu" },
+];
+
+const mobileBottomIcons = [
+  { icon: <Home size={16} />, label: "Home", active: true },
+  { icon: <Video size={16} />, label: "Video" },
   { icon: <Menu size={16} />, label: "Menu" },
 ];
 
@@ -69,7 +82,7 @@ const IconButton = ({
   return (
     <button
       onClick={() => handleNavigation(slug)}
-      className={`relative w-[45px] sm:w-[55px] md:w-[60px] lg:w-[82px] xl:w-[108px] 2xl:w-40  h-10 2xl:h-10 rounded-xl flex items-center justify-center cursor-pointer transition-all duration-300 group 
+      className={`relative w-[55px] xs:w-[65px] sm:w-[110px] md:w-[55px] lg:w-[80px] xl:w-[100px]  llxl:!w-[110px]  lxl:!w-[118px] 2xl:w-40  h-10 2xl:h-10 rounded-xl flex items-center justify-center cursor-pointer transition-all duration-300 group 
       ${
         special
           ? "bg-gradient-to-br from-blue-500 via-indigo-500 to-purple-500 text-white  hover:scale-105 hover:-translate-y-1"
@@ -79,9 +92,9 @@ const IconButton = ({
       }`}
     >
       {/* icon */}
-      <div className="flex flex-col lg:flex-row items-center gap-1 xl:gap-2 justify-center ">
+      <div className="flex  flex-col sm:flex-row md:flex-col  lg:flex-row items-center gap-1 xl:gap-2 justify-center ">
         <span>{icon}</span>
-        <h3 className="font-semibold text-[10px] lg:text-[12px] 2xl:text-lg ">
+        <h3 className="font-semibold hidden sm:block text-[10px] lg:text-[12px] 2xl:text-lg ">
           {label}
         </h3>
       </div>
@@ -105,31 +118,36 @@ const TopNavbar = ({ setHideSidebar, setSidebarOpen }) => {
     <div className="sticky top-0 z-50 w-full ">
       <div className="bg-white  mx-auto px-3.5 xl:px-7 flex items-center gap-0 2xl:gap-0 h-auto py-2">
         {/* LEFT */}
-        <div className="flex flex-col-reverse items-center gap-1.5  lg:gap-5">
-          <div
-            onClick={() => {
-              setOpenPopup((prev) => !prev);
-              document.body.style.overflow = "hidden";
-            }}
-            className="cursor-pointer h-10 md:h-18 w-[60px] lg:w-[80px] xl:w-[100px] shrink-0"
-          >
-            <img
-              src={data?.logoUrl}
-              alt={data?.siteName}
-              className="w-full h-full shrink-0 transition-all duration-300 hover:scale-110 "
-            />
-          </div>
+
+        <div
+          onClick={() => {
+            setOpenPopup((prev) => !prev);
+            document.body.style.overflow = "hidden";
+          }}
+          className="cursor-pointer h-10 md:h-18 w-[60px] lg:w-[80px] xl:w-[100px] shrink-0"
+        >
+          <img
+            src={data?.logoUrl}
+            alt={data?.siteName}
+            className="w-full h-full shrink-0 transition-all duration-300 hover:scale-110 "
+          />
         </div>
 
         {/* divider */}
         <div className="w-px h-9 bg-gradient-to-b from-transparent via-gray-200 to-transparent flex-shrink-0" />
 
         {/* CENTER */}
-        <div className="flex  w-full justify-between md:justify-normal  gap-2 2xl:gap-6 ">
+        <div className="flex  w-full  items-center  gap-2 2xl:gap-6 ">
           <div className="flex flex-col gap-1 xl:gap-2 ">
             {/* top icons */}
             <div className="md:flex hidden gap-1">
               {topIcons.map((item, i) => (
+                <IconButton key={i} {...item} />
+              ))}
+            </div>
+
+            <div className="md:hidden flex gap-1">
+              {mobileTopIcons.map((item, i) => (
                 <IconButton key={i} {...item} />
               ))}
             </div>
@@ -156,16 +174,23 @@ const TopNavbar = ({ setHideSidebar, setSidebarOpen }) => {
               {selectedMenu === "ride" && (
                 <IconButton icon={<Bike size={16} />} label={"A Rider"} />
               )}
+              <div className="md:flex hidden">
+                {bottomIcons.map((item, i) => (
+                  <IconButton key={i} {...item} />
+                ))}
+              </div>
 
-              {bottomIcons.map((item, i) => (
-                <IconButton key={i} {...item} />
-              ))}
+              <div className="md:hidden flex">
+                {mobileBottomIcons.map((item, i) => (
+                  <IconButton key={i} {...item} />
+                ))}
+              </div>
             </div>
 
             {/* bottom icons */}
           </div>
 
-          <div
+          {/* <div
             onClick={() => {
               setSidebarOpen(true);
               document.body.style.overflow = "hidden";
@@ -173,19 +198,17 @@ const TopNavbar = ({ setHideSidebar, setSidebarOpen }) => {
             className="text-xl lg:text-3xl font-bold md:hidden mt-2.5"
           >
             <CiMenuFries />
-          </div>
+          </div> */}
 
           {/* RIGHT PROFILE */}
-          <div className="md:block hidden">
-            <div className="rounded-2xl  flex flex-col items-center gap-2  hover:-translate-y-1 transition-all duration-300 ">
-              <div className="relative">
-                <div className=" rounded-full bg-gradient-to-tr from-blue-500 to-purple-500">
-                  <img
-                    src="https://i.pravatar.cc/100"
-                    alt="profile"
-                    className="w-10 h-10 lg:w-14 lg:h-14 rounded-full object-cover"
-                  />
-                </div>
+          <div className="shrink-0">
+            <div className="rounded-2xl  flex flex-col items-center gap-2  hover:-translate-y-1 transition-all duration-300 shrink-0 ">
+              <div className=" rounded-full bg-gradient-to-tr from-blue-500 to-purple-500 shrink-0">
+                <img
+                  src="https://i.pravatar.cc/100"
+                  alt="profile"
+                  className="w-10 h-10 lg:w-14 lg:h-14 rounded-full object-cover shrink-0"
+                />
               </div>
 
               <div className="text-center hidden sm:block">
