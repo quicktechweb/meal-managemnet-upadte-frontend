@@ -17,8 +17,6 @@ const formatAmount = (amount) => "৳" + Number(amount).toLocaleString("en-BD");
 const BalancePage = () => {
   const { data, isLoading } = useBalanceList();
 
-  console.log(data);
-
   const list = data ?? [];
 
   const totalAmount = list.reduce((sum, b) => sum + (b.amount ?? 0), 0);

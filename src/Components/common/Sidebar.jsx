@@ -42,7 +42,7 @@ const Sidebar = ({ isOpen, onClose }) => {
 
   const { user } = useInstituteAuth();
 
-  console.log();
+  console.log(hasPermission);
 
   const [openMenus, setOpenMenus] = useState({});
 

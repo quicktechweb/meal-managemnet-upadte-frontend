@@ -4,7 +4,7 @@ import { CategorySidebar } from "./Components/CategorySidebar";
 import { Outlet, ScrollRestoration } from "react-router-dom";
 import { FaLaptop, FaMobileAlt, FaTshirt } from "react-icons/fa";
 import { CartSidebar } from "./Components/CartSidebar";
-
+import "./index.css";
 const categories = [
   {
     label: "Electronics",

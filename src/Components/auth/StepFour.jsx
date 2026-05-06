@@ -121,7 +121,7 @@ const StepFour = ({
   const handleCreateAdminType = (value) => {
     if (!admin) return;
 
-    setAdminPanelState((prev) => ({
+    setAdminType((prev) => ({
       ...prev,
       [admin]: [...(prev[admin] || []), value],
     }));
