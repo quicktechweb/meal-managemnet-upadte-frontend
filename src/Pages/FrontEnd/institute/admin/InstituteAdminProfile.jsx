@@ -41,7 +41,7 @@ const InstituteAdminProfile = () => {
         </div>
 
         <Link
-          to={`/institute/dashboard/profile-update/${me?._id}`}
+          to={`/dashboards/profile-update/${me?._id}`}
           className="flex items-center gap-2 bg-indigo-600 text-white px-4 py-2 rounded-xl hover:bg-indigo-700 cursor-pointer"
         >
           <Edit3 size={16} />
@@ -176,8 +176,8 @@ const InstituteAdminProfile = () => {
 
       {/* service */}
 
-      <div className=" mx-auto my-10 p-6 bg-white rounded-2xl shadow-sm border border-gray-100">
-        {/* Header Section */}
+      {/* service */}
+      <div className="mx-auto my-10 p-6 bg-white rounded-2xl shadow-sm border border-gray-100">
         <div className="mb-8 border-b border-gray-100 pb-5 flex items-center justify-between">
           <div>
             <h4 className="text-2xl lg:text-3xl font-black text-gray-900 tracking-tight">
@@ -187,95 +187,104 @@ const InstituteAdminProfile = () => {
               View and oversee your active utility subscriptions.
             </p>
           </div>
-
-          <div>
-            <Link
-              to={`/institute/dashboard/service-update/${me?._id}`}
-              className="flex items-center gap-2 bg-indigo-600 text-white px-4 py-2 rounded-xl hover:bg-indigo-700 cursor-pointer"
-            >
-              <Edit3 size={16} />
-              Edit Profile
-            </Link>
-          </div>
         </div>
 
         <div className="space-y-8">
-          <section>
-            <h5 className="text-sm font-semibold uppercase tracking-wider text-indigo-600 mb-4">
-              Your Utility Services
-            </h5>
+          {/* Overview Grid */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="p-4 bg-gray-50 rounded-xl">
+              <p className="text-xs text-gray-500 uppercase font-medium">
+                Account Type
+              </p>
+              <p className="text-lg font-bold text-gray-800 capitalize">
+                {me?.services?.user_type?.title || "N/A"}
+              </p>
+            </div>
+            <div className="p-4 bg-gray-50 rounded-xl">
+              <p className="text-xs text-gray-500 uppercase font-medium">
+                Kitchen Configuration
+              </p>
+              <p className="text-lg font-bold text-gray-800">
+                {me?.services?.kitchen_type?.title || "N/A"}
+              </p>
+            </div>
+          </div>
 
-            {/* Overview Grid */}
-            {/* <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
-              <div className="p-4 bg-gray-50 rounded-xl">
-                <p className="text-xs text-gray-500 uppercase font-medium">
-                  Account Type
-                </p>
-                <p className="text-lg font-bold text-gray-800 capitalize">
-                  {me?.services?.user_type || "Standard"}
-                </p>
-              </div>
-              <div className="p-4 bg-gray-50 rounded-xl">
-                <p className="text-xs text-gray-500 uppercase font-medium">
-                  Kitchen Configuration
-                </p>
-                <p className="text-lg font-bold text-gray-800">
-                  {kitchenType?.title || "Not Specified"}
-                </p>
-              </div>
-            </div> */}
-
-            {/* Services & Features List */}
-            {/* <div className="space-y-6">
-              <div>
-                <p className="font-bold text-gray-700 mb-3 flex items-center">
-                  <span className="w-2 h-2 bg-green-500 rounded-full mr-2"></span>
-                  Active Utilities
-                </p>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                  {me?.services?.utility_service?.map((service, index) => (
-                    <div
-                      key={index}
-                      className="flex flex-col p-3 border border-gray-100 rounded-lg bg-white hover:border-indigo-200 transition-colors"
-                    >
-                      <span className="font-semibold text-gray-800">
-                        {service?.name}
-                      </span>
-                      <span className="text-xs text-gray-400">
-                        Standard Service
-                      </span>
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-              <div>
-                <p className="font-bold text-gray-700 mb-3">
-                  Included Features
-                </p>
-                <div className="flex flex-wrap gap-2">
-                  {me?.services?.service_feature?.map((feature, index) => (
-                    <span
-                      key={index}
-                      className="px-3 py-1 bg-indigo-50 text-indigo-700 text-sm font-medium rounded-full border border-indigo-100"
-                    >
-                      {feature?.name}
+          {/* Utility Bills */}
+          {me?.services?.utility_bills?.length > 0 && (
+            <div>
+              <p className="font-bold text-gray-700 mb-3 flex items-center gap-2">
+                <span className="w-2 h-2 bg-green-500 rounded-full"></span>
+                Active Utilities
+              </p>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                {me?.services?.utility_bills?.map((bill, index) => (
+                  <div
+                    key={index}
+                    className="flex flex-col p-3 border border-gray-100 rounded-lg bg-white hover:border-indigo-200 transition-colors"
+                  >
+                    <span className="font-semibold text-gray-800">
+                      {bill?.name}
                     </span>
-                  ))}
-                </div>
+                    {bill?.bear_the_cost?.title && (
+                      <span className="text-xs text-gray-400">
+                        Bear by: {bill?.bear_the_cost?.title}
+                      </span>
+                    )}
+                  </div>
+                ))}
               </div>
-            </div> */}
+            </div>
+          )}
 
-            {/* Billing Summary */}
-            {/* <div className="mt-10 p-5 bg-gray-900 rounded-2xl text-white flex justify-between items-center">
-              <div>
-                <p className="text-gray-400 text-sm">Total Monthly Amount</p>
-                <h4 className="text-3xl font-bold">
-                  ${me?.services?.total_amount}
-                </h4>
+          {/* Service Features */}
+          {me?.services?.service_features?.length > 0 && (
+            <div>
+              <p className="font-bold text-gray-700 mb-3">Included Features</p>
+              <div className="flex flex-wrap gap-2">
+                {me?.services?.service_features?.map((feature, index) => (
+                  <span
+                    key={index}
+                    className="px-3 py-1 bg-indigo-50 text-indigo-700 text-sm font-medium rounded-full border border-indigo-100"
+                  >
+                    {feature?.name}
+                  </span>
+                ))}
               </div>
-            </div> */}
-          </section>
+            </div>
+          )}
+
+          {/* Charges */}
+          {me?.services?.charges?.length > 0 && (
+            <div>
+              <p className="font-bold text-gray-700 mb-3">Charge Breakdown</p>
+              <div className="flex flex-col gap-2">
+                {me?.services?.charges?.map((charge, index) => (
+                  <div
+                    key={index}
+                    className="flex justify-between items-center px-4 py-3 bg-gray-50 rounded-xl border border-gray-100"
+                  >
+                    <span className="text-sm text-gray-600">
+                      {charge?.charge_generate}
+                    </span>
+                    <span className="font-bold text-gray-800">
+                      ৳ {charge?.price}
+                    </span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Total Amount */}
+          <div className="p-5 bg-gray-900 rounded-2xl text-white flex justify-between items-center">
+            <div>
+              <p className="text-gray-400 text-sm">Total Monthly Amount</p>
+              <h4 className="text-3xl font-bold">
+                ৳ {me?.services?.total_amount || 0}
+              </h4>
+            </div>
+          </div>
         </div>
       </div>
     </div>

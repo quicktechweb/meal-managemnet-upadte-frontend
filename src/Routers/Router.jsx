@@ -535,6 +535,10 @@ const router = createBrowserRouter([
         element: <UserSettings />,
       },
       {
+        path: "/dashboards/profile-update/:id",
+        element: <InstituteAdminProfileUpdate />,
+      },
+      {
         path: "/dashboards/meal-order",
         element: <MealOrderPage />,
       },
