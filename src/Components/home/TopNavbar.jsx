@@ -126,7 +126,7 @@ const TopNavbar = () => {
 
   return (
     <div className="sticky top-0 z-50 w-full ">
-      <div className="bg-white  mx-auto px-3.5 xl:px-7 flex items-center gap-0 2xl:gap-0 h-auto py-2">
+      <div className="bg-white  mx-auto flex items-center gap-0 2xl:gap-0 h-auto py-2">
         {/* LEFT */}
 
         <div
@@ -250,7 +250,7 @@ const TopNavbar = () => {
         </div>
       </div>
 
-      <div className="bg-white border-b border-gray-100  mx-auto px-3.5 xl:px-7 flex items-center xxs:gap-[15px]  md:gap-[20px] lg:gap-[40px]  xl:gap-[50px] llxl:gap-[50px]  lxl:gap-[60px] 2xl:gap-[66px] h-auto py-2">
+      <div className="bg-white border-b border-gray-100  mx-auto  flex items-center xxs:gap-[15px]  md:gap-[20px] lg:gap-[40px]  xl:gap-[50px] llxl:gap-[50px]  lxl:gap-[60px] 2xl:gap-[66px] h-auto py-2">
         <div className="ml-4 md:ml-5 lg:ml-7">
           <div
             onClick={() => setHideSidebar((prev) => !prev)}
