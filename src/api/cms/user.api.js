@@ -269,3 +269,8 @@ export const summaryCreateAllWiseFunction = async (payload) => {
   );
   return data;
 };
+
+export const instituteWiseBalanceListFunction = async () => {
+  const { data } = await axiosSecure.get("/api/balance-list");
+  return data?.data;
+};

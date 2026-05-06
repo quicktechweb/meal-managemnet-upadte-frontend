@@ -25,6 +25,7 @@ import {
   instituteUserListFunction,
   instituteUserMealTypeFunction,
   instituteUserRoleChangeFunction,
+  instituteWiseBalanceListFunction,
   inventoryGlobalAmountCreateFunction,
   inventoryProductAddFunction,
   inventoryProductListsFunction,
@@ -416,12 +417,15 @@ export const useAllwiseInstituteUserOrderLists = () => {
 };
 
 export const useAddBalance = () => {
+  const reactQuery = useQueryClient();
+
   return useMutation({
     mutationKey: ["add-balance"],
     mutationFn: (payload) => addBalanceFunction(payload),
     onSuccess: (data) => {
       if (data?.success) {
         toast.success(data?.message);
+        reactQuery.invalidateQueries(["balance-list"]);
       }
     },
     onError: (error) => {
@@ -573,5 +577,12 @@ export const useCreateSummaryAllWise = () => {
     onError: (error) => {
       toast.error(error?.response?.data?.message || "Something went wrong");
     },
+  });
+};
+
+export const useBalanceList = () => {
+  return useQuery({
+    queryKey: ["balance-list"],
+    queryFn: instituteWiseBalanceListFunction,
   });
 };
