@@ -134,7 +134,7 @@ const TopNavbar = () => {
             setOpenPopup((prev) => !prev);
             document.body.style.overflow = "hidden";
           }}
-          className="cursor-pointer h-10 md:h-18 w-[60px] lg:w-[80px] xl:w-[100px] shrink-0"
+          className="cursor-pointer h-10 md:h-16 w-[60px] lg:w-[80px] xl:w-[100px] shrink-0"
         >
           <img
             src={data?.logoUrl}
@@ -231,12 +231,12 @@ const TopNavbar = () => {
 
           {/* RIGHT PROFILE */}
           <div className="shrink-0">
-            <div className="rounded-2xl  flex flex-col items-center gap-2  hover:-translate-y-1 transition-all duration-300 shrink-0 ">
+            <div className="rounded-2xl  flex flex-col items-center   hover:-translate-y-1 transition-all duration-300 shrink-0 ">
               <div className=" rounded-full bg-gradient-to-tr from-blue-500 to-purple-500 shrink-0">
                 <img
                   src="https://i.pravatar.cc/100"
                   alt="profile"
-                  className="w-10 h-10 lg:w-14 lg:h-14 rounded-full object-cover shrink-0"
+                  className="w-[45px] h-[45px]  rounded-full object-cover shrink-0"
                 />
               </div>
 
