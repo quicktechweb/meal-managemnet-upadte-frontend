@@ -100,32 +100,107 @@ const SinglePendingInstituteUser = () => {
             <h3 className="text-lg font-bold mt-8 mb-4 text-blue-800 border-b pb-2">
               Services & Features
             </h3>
-            {/* <div className="flex gap-4">
+
+            <div className="flex gap-4 mb-4">
+              {/* User Type & Kitchen */}
               <div className="flex-1 p-3 bg-blue-50 rounded-lg">
-                <p className="text-xs font-bold text-blue-600">
+                <p className="text-xs font-bold text-blue-600 mb-1">
+                  Account Type
+                </p>
+                <span className="block font-medium capitalize">
+                  {singlePendingInstituteUser?.services?.user_type?.title ||
+                    "N/A"}
+                </span>
+              </div>
+              <div className="flex-1 p-3 bg-indigo-50 rounded-lg">
+                <p className="text-xs font-bold text-indigo-600 mb-1">
+                  Kitchen Type
+                </p>
+                <span className="block font-medium">
+                  {singlePendingInstituteUser?.services?.kitchen_type?.title ||
+                    "N/A"}
+                </span>
+              </div>
+            </div>
+
+            <div className="flex gap-4 mb-4">
+              {/* Utility Bills */}
+              <div className="flex-1 p-3 bg-green-50 rounded-lg">
+                <p className="text-xs font-bold text-green-600 mb-2">
                   Utility Services
                 </p>
-                {singlePendingInstituteUser?.services.utility_service.map(
-                  (s) => (
-                    <span key={s._id} className="block font-medium">
-                      {s.name}
-                    </span>
-                  ),
+                {singlePendingInstituteUser?.services?.utility_bills?.length >
+                0 ? (
+                  singlePendingInstituteUser.services.utility_bills.map(
+                    (bill, i) => (
+                      <div key={i} className="flex flex-col mb-1">
+                        <span className="font-medium text-sm">{bill.name}</span>
+                        {bill?.bear_the_cost?.title && (
+                          <span className="text-xs text-gray-400">
+                            Bear by: {bill.bear_the_cost.title}
+                          </span>
+                        )}
+                      </div>
+                    ),
+                  )
+                ) : (
+                  <span className="text-sm text-gray-400">None</span>
                 )}
               </div>
+
+              {/* Service Features */}
               <div className="flex-1 p-3 bg-purple-50 rounded-lg">
-                <p className="text-xs font-bold text-purple-600">
+                <p className="text-xs font-bold text-purple-600 mb-2">
                   Service Features
                 </p>
-                {singlePendingInstituteUser?.services.service_feature.map(
-                  (f) => (
-                    <span key={f._id} className="block font-medium">
-                      {f.name}
-                    </span>
-                  ),
+                {singlePendingInstituteUser?.services?.service_features
+                  ?.length > 0 ? (
+                  singlePendingInstituteUser.services.service_features.map(
+                    (f, i) => (
+                      <span key={i} className="block font-medium text-sm">
+                        {f.name}
+                      </span>
+                    ),
+                  )
+                ) : (
+                  <span className="text-sm text-gray-400">None</span>
                 )}
               </div>
-            </div> */}
+            </div>
+
+            {/* Charges */}
+            {singlePendingInstituteUser?.services?.charges?.length > 0 && (
+              <div className="p-3 bg-orange-50 rounded-lg mb-4">
+                <p className="text-xs font-bold text-orange-600 mb-2">
+                  Charge Breakdown
+                </p>
+                <div className="flex flex-col gap-1">
+                  {singlePendingInstituteUser.services.charges.map(
+                    (charge, i) => (
+                      <div
+                        key={i}
+                        className="flex justify-between items-center text-sm"
+                      >
+                        <span className="text-gray-600">
+                          {charge.charge_generate}
+                        </span>
+                        <span className="font-bold text-gray-800">
+                          ৳ {charge.price}
+                        </span>
+                      </div>
+                    ),
+                  )}
+                </div>
+              </div>
+            )}
+
+            {/* Total */}
+            <div className="flex justify-between items-center bg-gray-900 text-white px-4 py-3 rounded-xl">
+              <p className="text-sm text-gray-400">Total Monthly Amount</p>
+              <p className="text-xl font-black">
+                ৳ {singlePendingInstituteUser?.services?.total_amount || 0}
+              </p>
+            </div>
           </div>
 
           {/* Admin Info Card */}
@@ -155,16 +230,14 @@ const SinglePendingInstituteUser = () => {
                   Permissions
                 </p>
                 <div className="flex flex-wrap gap-1">
-                  {singlePendingInstituteUser?.roles?.map(
-                    (p, i) => (
-                      <span
-                        key={i}
-                        className="bg-gray-100 text-gray-600 px-2 py-1 rounded text-[10px]"
-                      >
-                        {p}
-                      </span>
-                    ),
-                  )}
+                  {singlePendingInstituteUser?.roles?.map((p, i) => (
+                    <span
+                      key={i}
+                      className="bg-gray-100 text-gray-600 px-2 py-1 rounded text-[10px]"
+                    >
+                      {p}
+                    </span>
+                  ))}
                 </div>
               </div>
             </div>
