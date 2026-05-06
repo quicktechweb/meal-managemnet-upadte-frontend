@@ -100,7 +100,7 @@ const SinglePendingInstituteUser = () => {
             <h3 className="text-lg font-bold mt-8 mb-4 text-blue-800 border-b pb-2">
               Services & Features
             </h3>
-            <div className="flex gap-4">
+            {/* <div className="flex gap-4">
               <div className="flex-1 p-3 bg-blue-50 rounded-lg">
                 <p className="text-xs font-bold text-blue-600">
                   Utility Services
@@ -125,7 +125,7 @@ const SinglePendingInstituteUser = () => {
                   ),
                 )}
               </div>
-            </div>
+            </div> */}
           </div>
 
           {/* Admin Info Card */}

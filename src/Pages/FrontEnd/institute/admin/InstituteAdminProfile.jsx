@@ -206,7 +206,7 @@ const InstituteAdminProfile = () => {
             </h5>
 
             {/* Overview Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+            {/* <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
               <div className="p-4 bg-gray-50 rounded-xl">
                 <p className="text-xs text-gray-500 uppercase font-medium">
                   Account Type
@@ -223,10 +223,10 @@ const InstituteAdminProfile = () => {
                   {kitchenType?.title || "Not Specified"}
                 </p>
               </div>
-            </div>
+            </div> */}
 
             {/* Services & Features List */}
-            <div className="space-y-6">
+            {/* <div className="space-y-6">
               <div>
                 <p className="font-bold text-gray-700 mb-3 flex items-center">
                   <span className="w-2 h-2 bg-green-500 rounded-full mr-2"></span>
@@ -264,17 +264,17 @@ const InstituteAdminProfile = () => {
                   ))}
                 </div>
               </div>
-            </div>
+            </div> */}
 
             {/* Billing Summary */}
-            <div className="mt-10 p-5 bg-gray-900 rounded-2xl text-white flex justify-between items-center">
+            {/* <div className="mt-10 p-5 bg-gray-900 rounded-2xl text-white flex justify-between items-center">
               <div>
                 <p className="text-gray-400 text-sm">Total Monthly Amount</p>
                 <h4 className="text-3xl font-bold">
                   ${me?.services?.total_amount}
                 </h4>
               </div>
-            </div>
+            </div> */}
           </section>
         </div>
       </div>
