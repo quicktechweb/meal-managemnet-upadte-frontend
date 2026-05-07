@@ -89,6 +89,8 @@ const CreateUserModal = ({ role, onClose }) => {
   const [references, setReferences] = useState([]);
   const [certificates, setCertificates] = useState([]);
 
+  console.log(certificates);
+
   const handleChange = async (idx, field, value) => {
     if (field === "nidImage" && value instanceof File) {
       setReferences((prev) =>
@@ -190,23 +192,27 @@ const CreateUserModal = ({ role, onClose }) => {
   // user create api
   const { mutateAsync, isPending } = useInstituteUserRegistration();
   const onSubmit = async (data) => {
-    console.log(data);
-
-    // await mutateAsync(
-    //   { institute_id: user?.user?._id, ...data, added_by: "admin" },
-    //   {
-    //     onSuccess: (data) => {
-    //       if (data) {
-    //         toast.success(data?.message);
-    //         query.invalidateQueries(["approved-user"]);
-    //         onClose();
-    //       }
-    //     },
-    //     onError: (err) => {
-    //       toast.error(err?.response?.data?.message);
-    //     },
-    //   },
-    // );
+    await mutateAsync(
+      {
+        institute_id: user?.user?._id,
+        ...data,
+        references: references,
+        certificates: certificates,
+        added_by: "admin",
+      },
+      {
+        onSuccess: (data) => {
+          if (data) {
+            toast.success(data?.message);
+            query.invalidateQueries(["approved-user"]);
+            onClose();
+          }
+        },
+        onError: (err) => {
+          toast.error(err?.response?.data?.message);
+        },
+      },
+    );
   };
 
   const errBorder = (name) =>
