@@ -127,13 +127,13 @@ export default function MenuCategorySlider() {
   };
 
   return (
-    <div className="flex items-center gap-2">
+    <div className="flex items-center relative gap-2">
       {showLeft && (
         <button
           onClick={() => scrollOuter(-1)}
           className="flex-shrink-0 w-6 h-6 sm:w-8 sm:h-8 rounded-full border border-gray-300 bg-white
             text-gray-500 hover:bg-gray-50 hover:text-gray-700 flex items-center justify-center
-            transition-all duration-150 cursor-pointer shadow-sm"
+            transition-all duration-150 cursor-pointer shadow-sm absolute left-0 top-1/2 -translate-y-1/2 z-10"
         >
           <IoIosArrowBack />
         </button>
@@ -141,7 +141,7 @@ export default function MenuCategorySlider() {
 
       <div
         ref={outerTrackRef}
-        className="flex items-center gap-4 xxs:max-w-[200px] xs:max-w-[260px] sm:max-w-[450px]  md:max-w-[600px] lg:max-w-[780px]  xl:max-w-[1000px] llxl:!max-w-[1120px] lxl:!max-w-[1200px] 2xl:!max-w-full  overflow-x-auto flex-1"
+        className="flex items-center gap-4 xxs:max-w-[310px] xs:max-w-[360px] sm:max-w-[569px]  md:max-w-[680px] lg:max-w-[910px]  xl:max-w-[1150px] llxl:!max-w-[1230px] lxl:!max-w-[1280px] 2xl:!max-w-full  overflow-x-auto flex-1"
         style={{ scrollbarWidth: "none" }}
       >
         {menuData.map((row, index) => (
@@ -154,7 +154,7 @@ export default function MenuCategorySlider() {
           onClick={() => scrollOuter(1)}
           className="flex-shrink-0 w-6 h-6 sm:w-8 sm:h-8 rounded-full border border-gray-300 bg-white
             text-gray-500 hover:bg-gray-50 hover:text-gray-700 flex items-center justify-center
-            transition-all duration-150 cursor-pointer shadow-sm"
+            transition-all duration-150 cursor-pointer shadow-sm  absolute right-0 top-1/2 -translate-y-1/2 z-10"
         >
           <IoIosArrowForward />
         </button>

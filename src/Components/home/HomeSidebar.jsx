@@ -40,7 +40,7 @@ const mainNav = [
   },
   {
     icon: <MdOutlineFoodBank size={14} />,
-    label: "Feature",
+    label: "Feature ",
     sectionId: "",
   },
   {
@@ -100,7 +100,7 @@ const mainNav = [
   },
 ];
 
-const HomeSidebar = ({ hideSidebar }) => {
+const HomeSidebar = ({ hideSidebar, visible, hideOffset }) => {
   const [active, setActive] = useState("Home");
 
   const handleClick = (item) => {
@@ -114,9 +114,12 @@ const HomeSidebar = ({ hideSidebar }) => {
       className={`${hideSidebar ? "w-[200px] xl:w-[180px]" : "w-0"} 
       duration-300 bg-white border-r border-gray-100 shadow-sm
       lg:h-[calc(100vh-80px)] fixed z-[9999] lg:z-auto lg:sticky lg:top-20 self-start shrink-0
-      flex flex-col overflow-hidden min-h-screen transition-all`}
+      flex flex-col overflow-y-auto  h-screen lg:min-h-screen transition-all`}
+      style={{
+        transform: visible ? "translateY(0)" : `translateY(-${hideOffset}px)`,
+      }}
     >
-      <div className="flex-1 overflow-y-auto px-0 py-2 scrollbar-thin">
+      <div className="flex-1 overflow-y-auto h-full px-0 pb-14 scrollbar-thin">
         {mainNav.map((item) => (
           <NavItem
             key={item.label}
@@ -125,7 +128,6 @@ const HomeSidebar = ({ hideSidebar }) => {
             onClick={() => handleClick(item)}
           />
         ))}
-        <div className="h-px bg-gray-100 my-2 mx-2" />
       </div>
     </div>
   );

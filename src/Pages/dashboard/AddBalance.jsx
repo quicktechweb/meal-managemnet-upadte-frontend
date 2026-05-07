@@ -119,7 +119,7 @@ const AddBalance = () => {
 
         {/* room part */}
 
-        <div className="mb-6 bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-sm">
+        {/* <div className="mb-6 bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-sm">
           <div className="px-5 py-4 border-b border-slate-100">
             <p className="text-xs font-semibold text-slate-400 uppercase tracking-widest mb-3">
               Filter by Room
@@ -128,7 +128,7 @@ const AddBalance = () => {
               value={selectedRoom}
               onChange={(e) => {
                 handleRoomSelect(e);
-                setRoomSearch(""); // room change হলে search clear
+                setRoomSearch("");
               }}
               className="w-full text-sm px-3 py-2 rounded-lg border border-slate-200 bg-slate-50 text-slate-700 focus:outline-none focus:ring-2 focus:ring-violet-400 focus:border-transparent transition"
             >
@@ -146,7 +146,6 @@ const AddBalance = () => {
               ))}
             </select>
 
-            {/* Search — শুধু room select করলে দেখাবে */}
             {selectedRoom && (
               <input
                 type="text"
@@ -221,7 +220,7 @@ const AddBalance = () => {
               )}
             </ul>
           )}
-        </div>
+        </div> */}
 
         <div className="grid grid-cols-1 lg:grid-cols-5 gap-6">
           {/* ── User List ── */}

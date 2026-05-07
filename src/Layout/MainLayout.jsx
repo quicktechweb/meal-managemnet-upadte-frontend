@@ -1,6 +1,5 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Outlet } from "react-router-dom";
-
 import TopNavbar from "../Components/home/TopNavbar";
 import HomeSidebar from "../Components/home/HomeSidebar";
 import HomePopover from "../Components/home/HomePopover";
@@ -27,7 +26,6 @@ import { FaBangladeshiTakaSign } from "react-icons/fa6";
 const topIcons = [
   { icon: <Package size={16} />, label: "Product" },
   { icon: <Grid size={16} />, label: "Category" },
-
   { icon: <Mic size={16} />, label: "Voice Mode" },
   { icon: <PlusCircle size={16} />, label: "Add", special: true },
   { icon: <ShoppingCart size={18} />, label: "Cart" },
@@ -48,44 +46,79 @@ const bottomIcons = [
 const MainLayout = () => {
   const { hideSidebar, setHideSidebar } = useLayoutSwitch();
   const { openPopup, setOpenPopup } = useLayoutSwitch();
-
   const [sidebarOpen, setSidebarOpen] = useState(false);
+
+  const [navVisible, setNavVisible] = useState(true);
+  const firstBarRef = useRef(null);
+  const [hideOffset, setHideOffset] = useState(0);
 
   useEffect(() => {
     const handleResize = () => {
-      if (window.innerWidth < 1024) {
-        setHideSidebar(false);
-      }
+      if (window.innerWidth < 1024) setHideSidebar(false);
     };
-
     handleResize();
-
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
+  useEffect(() => {
+    const update = () => {
+      const height = firstBarRef.current?.offsetHeight ?? 0;
+
+      console.log(height, "height");
+
+      setHideOffset(height);
+    };
+    update();
+    window.addEventListener("resize", update);
+    return () => window.removeEventListener("resize", update);
+  }, []);
+
+  useEffect(() => {
+    const updateNavHeight = () => {
+      const navbar = document.querySelector(".navbar-wrapper");
+      const height = navbar?.offsetHeight ?? 0;
+      document.documentElement.style.setProperty(
+        "--navbar-height",
+        `${height}px`,
+      );
+    };
+    updateNavHeight();
+    window.addEventListener("resize", updateNavHeight);
+    return () => window.removeEventListener("resize", updateNavHeight);
+  }, []);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      if (window.innerWidth >= 768) return;
+      setNavVisible(window.scrollY === 0);
+    };
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
   return (
-    <div className="w-full relative ">
+    <div className="w-full relative">
       <TopNavbar
         sidebarOpen={sidebarOpen}
         setSidebarOpen={setSidebarOpen}
         setHideSidebar={setHideSidebar}
+        navVisible={navVisible}
+        hideOffset={hideOffset}
+        firstBarRef={firstBarRef}
       />
-      <div className={`flex `}>
-        <HomeSidebar hideSidebar={hideSidebar} />
-        {/* <div
-          className={`side-bar ${hideSidebar ? "w-[250px]" : "w-0"}  duration-300 bg-white shadow-xl h-[calc(100vh-80px)] sticky top-20 self-start overflow-y-auto shrink-0`}
-        ></div> */}
-
-        {/* Main content */}
-        <div className={`w-full min-w-0 transition-all duration-300`}>
+      <div className="flex">
+        <HomeSidebar
+          hideSidebar={hideSidebar}
+          hideOffset={hideOffset}
+          visible={navVisible}
+        />
+        <div className="w-full min-w-0 transition-all duration-300">
           <Outlet />
         </div>
       </div>
 
-      {/* popover */}
       {openPopup && <HomePopover />}
-
       {openPopup && (
         <div
           className="fixed inset-0 w-full h-full z-40 backdrop-blur-sm"
@@ -94,7 +127,6 @@ const MainLayout = () => {
       )}
 
       <MenuSidebar isOpen={sidebarOpen} setIsOpen={setSidebarOpen} />
-
       {sidebarOpen && (
         <div
           className="fixed inset-0 w-full h-full z-50 backdrop-blur-sm"
@@ -106,10 +138,7 @@ const MainLayout = () => {
       )}
 
       {/* mobile bottom bar */}
-      <div className="bg-white md:hidden fixed bottom-0 w-full flex flex-col items-center  border-t border-gray-200 z-10 pb-safe">
-        {/* Row label */}
-
-        {/* Top icon row */}
+      <div className="bg-white md:hidden fixed bottom-0 w-full flex flex-col items-center border-t border-gray-200 z-10 pb-safe">
         <div className="flex overflow-x-auto scrollbar-hide px-3 gap-0">
           {topIcons.map(({ icon, label, special }) => (
             <button
@@ -118,17 +147,14 @@ const MainLayout = () => {
             >
               <div
                 className={`w-9 h-9 rounded-[10px] flex items-center justify-center border border-gray-100
-          ${special ? "bg-gradient-to-br from-blue-500 via-indigo-500 to-purple-500 border-transparent text-white shadow-md" : "bg-gray-50 text-gray-700"}`}
+                ${special ? "bg-gradient-to-br from-blue-500 via-indigo-500 to-purple-500 border-transparent text-white shadow-md" : "bg-gray-50 text-gray-700"}`}
               >
                 {icon}
               </div>
             </button>
           ))}
         </div>
-
         <div className="h-px bg-gray-100 mx-3 my-0.5" />
-
-        {/* Bottom icon row */}
         <div className="flex overflow-x-auto scrollbar-hide px-3 gap-0 pb-1">
           {bottomIcons.map(({ icon, label }) => (
             <button
