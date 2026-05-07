@@ -106,7 +106,7 @@ const MainLayout = () => {
       )}
 
       {/* mobile bottom bar */}
-      <div className="bg-white block md:hidden fixed bottom-0 w-full border-t border-gray-200 z-10 pb-safe">
+      <div className="bg-white md:hidden fixed bottom-0 w-full flex flex-col items-center  border-t border-gray-200 z-10 pb-safe">
         {/* Row label */}
 
         {/* Top icon row */}

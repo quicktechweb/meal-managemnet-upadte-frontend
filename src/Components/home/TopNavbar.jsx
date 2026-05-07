@@ -90,7 +90,7 @@ const IconButton = ({
   return (
     <button
       onClick={() => handleNavigation(slug)}
-      className={`relative w-[55px] xs:w-[65px] sm:w-[110px] md:w-[55px] lg:w-[80px] xl:w-[100px]  llxl:!w-[110px]  lxl:!w-[117px] 2xl:!w-40  h-10 2xl:h-10 rounded-xl flex items-center justify-center cursor-pointer transition-all duration-300 group 
+      className={`relative w-[65px] xs:w-[75px] sm:w-[120px] md:w-[59px] lg:w-[82px] xl:w-[106px]  llxl:!w-[115px]  lxl:!w-[120px] 2xl:!w-42  h-7 lg:h-10 rounded-xl flex items-center justify-center cursor-pointer transition-all duration-300 group 
       ${
         special
           ? "bg-gradient-to-br from-blue-500 via-indigo-500 to-purple-500 text-white  hover:scale-105 hover:-translate-y-1"
@@ -134,7 +134,7 @@ const TopNavbar = () => {
             setOpenPopup((prev) => !prev);
             document.body.style.overflow = "hidden";
           }}
-          className="cursor-pointer h-10 md:h-16 w-[60px] lg:w-[80px] xl:w-[100px] shrink-0"
+          className="cursor-pointer h-10 sm:h-[50px] lg:h-16 w-[50px] md:w-[60px] lg:w-[80px] xl:w-[100px] shrink-0"
         >
           <img
             src={data?.logoUrl}
@@ -147,7 +147,7 @@ const TopNavbar = () => {
         <div className="w-px h-9 bg-gradient-to-b from-transparent via-gray-200 to-transparent flex-shrink-0" />
 
         {/* CENTER */}
-        <div className="flex  w-full  items-center  gap-2 2xl:gap-6 ">
+        <div className="flex  w-full  items-center  ">
           <div className="flex flex-col gap-1 xl:gap-2 ">
             {/* top icons */}
             <div className="md:flex hidden gap-1">
@@ -236,12 +236,12 @@ const TopNavbar = () => {
                 <img
                   src="https://i.pravatar.cc/100"
                   alt="profile"
-                  className="w-[45px] h-[45px]  rounded-full object-cover shrink-0"
+                  className="w-7 h-7 md:w-[45px] md:h-[45px]  rounded-full object-cover shrink-0"
                 />
               </div>
 
               <div className="text-center hidden sm:block">
-                <h3 className="text-sm whitespace-nowrap font-semibold text-gray-800">
+                <h3 className="text-xs md:text-sm whitespace-nowrap font-semibold text-gray-800">
                   Al abadan
                 </h3>
               </div>

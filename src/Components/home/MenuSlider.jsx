@@ -141,7 +141,7 @@ export default function MenuCategorySlider() {
 
       <div
         ref={outerTrackRef}
-        className="flex items-center gap-4 xxs:max-w-[200px] xs:max-w-[260px] sm:max-w-[450px]  md:max-w-[520px] lg:max-w-[780px]  xl:max-w-[1000px] llxl:!max-w-[1120px] lxl:!max-w-[1200px] 2xl:!max-w-full  overflow-x-auto flex-1"
+        className="flex items-center gap-4 xxs:max-w-[200px] xs:max-w-[260px] sm:max-w-[450px]  md:max-w-[600px] lg:max-w-[780px]  xl:max-w-[1000px] llxl:!max-w-[1120px] lxl:!max-w-[1200px] 2xl:!max-w-full  overflow-x-auto flex-1"
         style={{ scrollbarWidth: "none" }}
       >
         {menuData.map((row, index) => (
