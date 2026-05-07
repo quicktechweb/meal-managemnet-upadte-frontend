@@ -25,10 +25,11 @@ import { useInstituteUserRegistration } from "../../api/auth/auth.hook";
 import useInstituteAuth from "../../Hooks/useInstituteAuth";
 import toast from "react-hot-toast";
 import { useQueryClient } from "@tanstack/react-query";
-
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
+import { parse, format } from "date-fns";
+import { uploadToImgBB } from "../../utils/uploadToImageBB";
 const CreateUserModal = ({ role, onClose }) => {
-  console.log(role);
-
   const { user } = useInstituteAuth();
 
   const {
@@ -86,11 +87,28 @@ const CreateUserModal = ({ role, onClose }) => {
   // reference part
 
   const [references, setReferences] = useState([]);
+  const [certificates, setCertificates] = useState([]);
 
-  const handleChange = (idx, field, value) => {
-    setReferences((prev) =>
-      prev.map((ref, i) => (i === idx ? { ...ref, [field]: value } : ref)),
-    );
+  const handleChange = async (idx, field, value) => {
+    if (field === "nidImage" && value instanceof File) {
+      setReferences((prev) =>
+        prev.map((ref, i) =>
+          i === idx ? { ...ref, nidImageLoading: true } : ref,
+        ),
+      );
+
+      const url = await uploadToImgBB(value);
+
+      setReferences((prev) =>
+        prev.map((ref, i) =>
+          i === idx ? { ...ref, nidImage: url, nidImageLoading: false } : ref,
+        ),
+      );
+    } else {
+      setReferences((prev) =>
+        prev.map((ref, i) => (i === idx ? { ...ref, [field]: value } : ref)),
+      );
+    }
   };
 
   const addReference = () => {
@@ -106,12 +124,28 @@ const CreateUserModal = ({ role, onClose }) => {
 
   // certificate part
 
-  const [certificates, setCertificates] = useState([]);
+  const handleCertificateChange = async (idx, field, value) => {
+    if (field === "certificateImage" && value instanceof File) {
+      setCertificates((prev) =>
+        prev.map((cert, i) =>
+          i === idx ? { ...cert, certificateImageLoading: true } : cert,
+        ),
+      );
 
-  const handleCertificateChange = (idx, field, value) => {
-    setCertificates((prev) =>
-      prev.map((cert, i) => (i === idx ? { ...cert, [field]: value } : cert)),
-    );
+      const url = await uploadToImgBB(value);
+
+      setCertificates((prev) =>
+        prev.map((cert, i) =>
+          i === idx
+            ? { ...cert, certificateImage: url, certificateImageLoading: false }
+            : cert,
+        ),
+      );
+    } else {
+      setCertificates((prev) =>
+        prev.map((cert, i) => (i === idx ? { ...cert, [field]: value } : cert)),
+      );
+    }
   };
 
   const addCertificate = () => {
@@ -156,21 +190,23 @@ const CreateUserModal = ({ role, onClose }) => {
   // user create api
   const { mutateAsync, isPending } = useInstituteUserRegistration();
   const onSubmit = async (data) => {
-    await mutateAsync(
-      { institute_id: user?.user?._id, ...data, added_by: "admin" },
-      {
-        onSuccess: (data) => {
-          if (data) {
-            toast.success(data?.message);
-            query.invalidateQueries(["approved-user"]);
-            onClose();
-          }
-        },
-        onError: (err) => {
-          toast.error(err?.response?.data?.message);
-        },
-      },
-    );
+    console.log(data);
+
+    // await mutateAsync(
+    //   { institute_id: user?.user?._id, ...data, added_by: "admin" },
+    //   {
+    //     onSuccess: (data) => {
+    //       if (data) {
+    //         toast.success(data?.message);
+    //         query.invalidateQueries(["approved-user"]);
+    //         onClose();
+    //       }
+    //     },
+    //     onError: (err) => {
+    //       toast.error(err?.response?.data?.message);
+    //     },
+    //   },
+    // );
   };
 
   const errBorder = (name) =>
@@ -328,12 +364,23 @@ const CreateUserModal = ({ role, onClose }) => {
                 />
 
                 <Field label="Date of Birth" required>
-                  <input
-                    type="date"
-                    className={`${inputCls} ${errBorder("dob")}`}
-                    {...register("dob", {
-                      required: "Date of birth is required",
-                    })}
+                  <Controller
+                    name="dob"
+                    control={control}
+                    rules={{ required: "Date of birth is required" }}
+                    render={({ field: { onChange, value } }) => (
+                      <DatePicker
+                        className={`${inputCls} ${errBorder("dob")}`}
+                        placeholderText="DD/MM/YYYY"
+                        dateFormat="dd/MM/yyyy"
+                        selected={
+                          value ? parse(value, "yyyy-MM-dd", new Date()) : null
+                        }
+                        onChange={(date) =>
+                          onChange(date ? format(date, "yyyy-MM-dd") : "")
+                        }
+                      />
+                    )}
                   />
                   <Err errors={errors} name="dob" />
                 </Field>
@@ -558,6 +605,7 @@ const CreateUserModal = ({ role, onClose }) => {
                         <input
                           className={inputCls}
                           type="file"
+                          accept="image/*"
                           onChange={(e) =>
                             handleCertificateChange(
                               idx,
@@ -566,6 +614,18 @@ const CreateUserModal = ({ role, onClose }) => {
                             )
                           }
                         />
+                        {/* Loading indicator */}
+                        {cert.certificateImageLoading && (
+                          <p className="text-xs text-blue-500 mt-1">
+                            Uploading...
+                          </p>
+                        )}
+                        {cert.certificateImage &&
+                          !cert.certificateImageLoading && (
+                            <p className="text-xs text-green-500 mt-1">
+                              ✓ Uploaded
+                            </p>
+                          )}
                       </div>
                     </div>
                   </div>
@@ -689,12 +749,21 @@ const CreateUserModal = ({ role, onClose }) => {
                       <input
                         className={inputCls}
                         type="file"
-                        placeholder="Enter the NID Image"
-                        value={ref.nidImage}
+                        accept="image/*"
                         onChange={(e) =>
-                          handleChange(idx, "nidImage", e.target.value)
+                          handleChange(idx, "nidImage", e.target.files[0])
                         }
                       />
+                      {ref.nidImageLoading && (
+                        <p className="text-xs text-blue-500 mt-1">
+                          Uploading...
+                        </p>
+                      )}
+                      {ref.nidImage && !ref.nidImageLoading && (
+                        <p className="text-xs text-green-500 mt-1">
+                          ✓ Uploaded
+                        </p>
+                      )}
                     </div>
                     <div>
                       <label className="text-xs font-medium text-gray-600">
