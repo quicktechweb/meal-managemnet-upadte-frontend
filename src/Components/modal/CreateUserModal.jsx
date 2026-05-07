@@ -10,6 +10,7 @@ import {
   FileText,
   Lock,
   ChevronDown,
+  PlusIcon,
 } from "lucide-react";
 import React, { useState } from "react";
 import { useForm, Controller } from "react-hook-form";
@@ -81,6 +82,48 @@ const CreateUserModal = ({ role, onClose }) => {
     "brother",
     "sister",
   ]);
+
+  // reference part
+
+  const [references, setReferences] = useState([]);
+
+  const handleChange = (idx, field, value) => {
+    setReferences((prev) =>
+      prev.map((ref, i) => (i === idx ? { ...ref, [field]: value } : ref)),
+    );
+  };
+
+  const addReference = () => {
+    setReferences((prev) => [
+      ...prev,
+      { name: "", nid: "", nidImage: "", phone: "", occupation: "" },
+    ]);
+  };
+
+  const removeReference = (idx) => {
+    setReferences((prev) => prev.filter((_, i) => i !== idx));
+  };
+
+  // certificate part
+
+  const [certificates, setCertificates] = useState([]);
+
+  const handleCertificateChange = (idx, field, value) => {
+    setCertificates((prev) =>
+      prev.map((cert, i) => (i === idx ? { ...cert, [field]: value } : cert)),
+    );
+  };
+
+  const addCertificate = () => {
+    setCertificates((prev) => [
+      ...prev,
+      { degreeName: "", result: "", certificateImage: null },
+    ]);
+  };
+
+  const removeCertificate = (idx) => {
+    setCertificates((prev) => prev.filter((_, i) => i !== idx));
+  };
 
   const selectedCountry = watch("country");
   const selectedState = watch("state");
@@ -173,7 +216,7 @@ const CreateUserModal = ({ role, onClose }) => {
           <form
             id="create-user-form"
             onSubmit={handleSubmit(onSubmit)}
-            className="space-y-7"
+            className="space-y-3"
           >
             {/* ── Personal Information ── */}
             <div>
@@ -440,6 +483,93 @@ const CreateUserModal = ({ role, onClose }) => {
                   />
                   <Err errors={errors} name="occupation_year" />
                 </Field>
+                <div className="flex items-end">
+                  <button
+                    onClick={addCertificate}
+                    type="button"
+                    className="flex items-center gap-1.5 text-xs font-medium text-blue-600 hover:text-blue-800 border border-blue-200 hover:border-blue-400 rounded-md px-2.5 py-2.5 transition-all bg-blue-50 hover:bg-blue-100"
+                  >
+                    + Add Certificate
+                  </button>
+                </div>
+              </div>
+
+              {/* certificate section */}
+              <div className="flex flex-wrap gap-3 mt-4">
+                {certificates.map((cert, idx) => (
+                  <div
+                    key={idx}
+                    className="border border-gray-200 max-w-[375px] rounded-lg p-4 bg-gray-50"
+                  >
+                    <div className="flex items-center justify-between mb-3">
+                      <span className="text-xs font-semibold text-gray-500">
+                        Certificate #{idx + 1}
+                      </span>
+                      <button
+                        onClick={() => removeCertificate(idx)}
+                        type="button"
+                        className="text-xs text-red-400 hover:text-red-600"
+                      >
+                        Remove
+                      </button>
+                    </div>
+
+                    <div className="flex flex-col gap-3">
+                      <div>
+                        <label className="text-xs font-medium text-gray-600">
+                          Degree Name
+                        </label>
+                        <input
+                          className={inputCls}
+                          type="text"
+                          placeholder="Enter the Degree Name"
+                          value={cert.degreeName}
+                          onChange={(e) =>
+                            handleCertificateChange(
+                              idx,
+                              "degreeName",
+                              e.target.value,
+                            )
+                          }
+                        />
+                      </div>
+                      <div>
+                        <label className="text-xs font-medium text-gray-600">
+                          Result
+                        </label>
+                        <input
+                          className={inputCls}
+                          type="text"
+                          placeholder="Enter the Result"
+                          value={cert.result}
+                          onChange={(e) =>
+                            handleCertificateChange(
+                              idx,
+                              "result",
+                              e.target.value,
+                            )
+                          }
+                        />
+                      </div>
+                      <div>
+                        <label className="text-xs font-medium text-gray-600">
+                          Certificate Image
+                        </label>
+                        <input
+                          className={inputCls}
+                          type="file"
+                          onChange={(e) =>
+                            handleCertificateChange(
+                              idx,
+                              "certificateImage",
+                              e.target.files[0],
+                            )
+                          }
+                        />
+                      </div>
+                    </div>
+                  </div>
+                ))}
               </div>
             </div>
 
@@ -491,16 +621,112 @@ const CreateUserModal = ({ role, onClose }) => {
                 </Field>
               </div>
 
-              <div className="flex flex-col gap-1.5">
-                <Field label="Reference">
-                  <input
-                    className={inputCls}
-                    placeholder="e.g. rahim"
-                    {...register("reference")}
-                  />
-                  <Err errors={errors} name="reference" />
-                </Field>
+              <div className="flex items-end ">
+                <button
+                  onClick={addReference}
+                  type="button"
+                  className="flex items-center gap-1.5 text-xs font-medium text-blue-600 hover:text-blue-800 border border-blue-200 hover:border-blue-400 rounded-md px-2.5 py-2.5 transition-all bg-blue-50 hover:bg-blue-100"
+                >
+                  <PlusIcon size={13} />
+                  Add Reference
+                </button>
               </div>
+            </div>
+            {/* Dynamic reference cards */}
+            <div className="flex flex-wrap  gap-3 mt-1">
+              {references.map((ref, idx) => (
+                <div
+                  key={idx}
+                  className="border border-gray-200 rounded-lg p-4 bg-gray-50"
+                >
+                  <div className="flex items-center justify-between mb-3">
+                    <span className="text-xs font-semibold text-gray-500">
+                      Reference #{idx + 1}
+                    </span>
+
+                    <button
+                      onClick={() => removeReference(idx)}
+                      type="button"
+                      className="text-xs text-red-400 hover:text-red-600"
+                    >
+                      Remove
+                    </button>
+                  </div>
+
+                  <div className="flex flex-col gap-1">
+                    <div>
+                      <label className="text-xs font-medium text-gray-600">
+                        Name
+                      </label>
+                      <input
+                        className={inputCls}
+                        type="text"
+                        placeholder="Enter the reference Name"
+                        value={ref.name}
+                        onChange={(e) =>
+                          handleChange(idx, "name", e.target.value)
+                        }
+                      />
+                    </div>
+                    <div>
+                      <label className="text-xs font-medium text-gray-600">
+                        NID
+                      </label>
+                      <input
+                        className={inputCls}
+                        type="number"
+                        placeholder="Enter the NID Number"
+                        value={ref.nid}
+                        onChange={(e) =>
+                          handleChange(idx, "nid", e.target.value)
+                        }
+                      />
+                    </div>
+                    <div>
+                      <label className="text-xs font-medium text-gray-600">
+                        NID Image
+                      </label>
+                      <input
+                        className={inputCls}
+                        type="file"
+                        placeholder="Enter the NID Image"
+                        value={ref.nidImage}
+                        onChange={(e) =>
+                          handleChange(idx, "nidImage", e.target.value)
+                        }
+                      />
+                    </div>
+                    <div>
+                      <label className="text-xs font-medium text-gray-600">
+                        Phone Number
+                      </label>
+                      <input
+                        className={inputCls}
+                        type="text"
+                        placeholder="Enter the reference Phone Number"
+                        value={ref.phone}
+                        onChange={(e) =>
+                          handleChange(idx, "phone", e.target.value)
+                        }
+                      />
+                    </div>
+                    <div>
+                      <label className="text-xs font-medium text-gray-600">
+                        Occupation
+                      </label>
+                      <input
+                        className={inputCls}
+                        type="text"
+                        placeholder="Enter the reference Occupation"
+                        value={ref.occupation}
+                        onChange={(e) =>
+                          handleChange(idx, "occupation", e.target.value)
+                        }
+                      />
+                    </div>
+                  </div>
+                </div>
+              ))}
             </div>
 
             {/* ── Address ── */}
