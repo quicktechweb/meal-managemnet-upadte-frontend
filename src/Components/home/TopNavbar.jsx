@@ -182,6 +182,10 @@ const TopNavbar = ({ navVisible, hideOffset, firstBarRef }) => {
                   Al abadan
                 </h3>
               </div>
+
+              <h3 className="text-xs md:text-sm font-semibold text-gray-800">
+                {"Al abadan".slice(0, 3)}
+              </h3>
             </div>
           </div>
         </div>

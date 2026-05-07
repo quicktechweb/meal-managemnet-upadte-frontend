@@ -195,16 +195,6 @@ const MessForm = () => {
 
   const { mutateAsync, isPending } = useInstituteRegistration();
 
-  console.log(selectedOption, "selectedOption");
-
-  console.log(kitchenType, "kitchenType");
-
-  console.log(utilityBills, "utilityBills");
-
-  console.log(serviceFeatures, "serviceFeature");
-
-  console.log(totalPrice, "total price");
-
   const nextStep = async () => {
     const isValid = await form.trigger();
 
