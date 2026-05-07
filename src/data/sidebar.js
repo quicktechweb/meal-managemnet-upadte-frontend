@@ -51,6 +51,13 @@ export const SIDEBAR_ITEMS = [
   },
 
   {
+    label: "Meal On Off",
+    icon: "IoIosSwitch",
+    path: "/dashboards/meal-on-off",
+    permission: "mealonoff.view",
+  },
+
+  {
     label: "Inventory",
     icon: "MdOutlineInventory2",
     path: "/dashboards/inventory",

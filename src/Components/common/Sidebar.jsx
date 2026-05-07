@@ -14,6 +14,7 @@ import {
   ChevronDown,
 } from "lucide-react";
 import { MdOutlineInventory2 } from "react-icons/md";
+import { IoIosSwitch } from "react-icons/io";
 
 import { usePermission } from "../../Hooks/usePermission";
 import { SIDEBAR_ITEMS } from "../../data/sidebar";
@@ -32,6 +33,7 @@ const ICON_MAP = {
   Calendar,
   Settings,
   Wallet,
+  IoIosSwitch,
   MdOutlineInventory2,
 };
 
@@ -41,8 +43,6 @@ const Sidebar = ({ isOpen, onClose }) => {
   const { data } = useGetWebsiteData();
 
   const { user } = useInstituteAuth();
-
-  console.log(hasPermission);
 
   const [openMenus, setOpenMenus] = useState({});
 
