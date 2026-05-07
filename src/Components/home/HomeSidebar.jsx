@@ -40,7 +40,7 @@ const mainNav = [
   },
   {
     icon: <MdOutlineFoodBank size={14} />,
-    label: "Feature Video",
+    label: "Feature",
     sectionId: "",
   },
   {

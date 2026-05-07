@@ -3,6 +3,14 @@ import { IoIosArrowForward, IoIosArrowBack } from "react-icons/io";
 
 const menuData = [
   {
+    label: "Al Abadan Kitchen",
+    items: ["Kitchen 1", "Kitchen 2", "Kitchen 3", "Kitchen 4", "Kitchen 5"],
+  },
+  {
+    label: "Canteen/Restaurants",
+    items: ["All", "Bangladeshi", "Chinese", "Indian", "Fast Food"],
+  },
+  {
     label: "Meal",
     items: [
       "All Wise Routine",
@@ -11,25 +19,18 @@ const menuData = [
       "Custom Diet",
     ],
   },
-  {
-    label: "Cloud Kitchen",
-    items: ["Canteen 1", "Canteen 2", "Canteen 3", "Canteen 4", "Canteen 5"],
-  },
-  {
-    label: "Restaurants",
-    items: ["All", "Bangladeshi", "Chinese", "Indian", "Fast Food"],
-  },
 ];
 
 const MenuRow = ({ label, items }) => {
-  const [active, setActive] = useState(0);
+  const [labelActive, setLabelActive] = useState(false);
+  const [activeChip, setActiveChip] = useState(null);
   const [showLeft, setShowLeft] = useState(false);
   const [showRight, setShowRight] = useState(false);
-  const trackRef = useRef(null);
+  const chipsRef = useRef(null);
   const chipRefs = useRef([]);
 
   const updateArrows = () => {
-    const el = trackRef.current;
+    const el = chipsRef.current;
     if (!el) return;
     setShowLeft(el.scrollLeft > 4);
     setShowRight(el.scrollLeft + el.clientWidth < el.scrollWidth - 4);
@@ -37,7 +38,7 @@ const MenuRow = ({ label, items }) => {
 
   useEffect(() => {
     updateArrows();
-    const el = trackRef.current;
+    const el = chipsRef.current;
     el?.addEventListener("scroll", updateArrows);
     const ro = new ResizeObserver(updateArrows);
     if (el) ro.observe(el);
@@ -48,61 +49,79 @@ const MenuRow = ({ label, items }) => {
   }, []);
 
   const scroll = (dir) => {
-    trackRef.current?.scrollBy({ left: dir * 140, behavior: "smooth" });
+    chipsRef.current?.scrollBy({ left: dir * 130, behavior: "smooth" });
   };
 
-  const handleSelect = (index) => {
-    setActive(index);
-    chipRefs.current[index]?.scrollIntoView({
-      behavior: "smooth",
-      block: "nearest",
-      inline: "center",
-    });
+  const handleChipSelect = (index) => {
+    setActiveChip((prev) => (prev === index ? null : index));
+    if (activeChip !== index) {
+      chipRefs.current[index]?.scrollIntoView({
+        behavior: "smooth",
+        block: "nearest",
+        inline: "center",
+      });
+    }
   };
-
-  const ArrowBtn = ({ dir }) => (
-    <button
-      onClick={() => scroll(dir === "left" ? -1 : 1)}
-      className={`flex-shrink-0 w-7 h-7 rounded-full border border-gray-200 bg-white
-        text-gray-400 hover:bg-gray-50 hover:text-gray-700 flex items-center justify-center
-        transition-all duration-150
-        ${dir === "left" ? (showLeft ? "flex cursor-pointer" : "hidden") : showRight ? "flex cursor-pointer" : "hidden"}`}
-    >
-      {dir === "left" ? <IoIosArrowBack /> : <IoIosArrowForward />}
-    </button>
-  );
 
   return (
-    <div className="flex items-center border-b border-gray-100 last:border-b-0 px-2 py-1.5 sm:py-3 gap-2 bg-gray-100 rounded-2xl shrink-0">
-      <span className="text-xs sm:text-sm font-medium text-gray-800 pr-1 border-r border-gray-100 whitespace-nowrap shrink-0">
-        {label}
-      </span>
-
-      <ArrowBtn dir="left" />
-
-      <div
-        ref={trackRef}
-        className="flex gap-2 overflow-x-auto max-w-[400px] scrollbar-hide flex-1"
-        style={{ scrollbarWidth: "none" }}
+    <div className="flex items-center gap-2 bg-gray-100 rounded-2xl px-2 py-1.5 shrink-0  border border-gray-200">
+      {/* Single label button with toggle */}
+      <button
+        onClick={() => setLabelActive((prev) => !prev)}
+        className={`text-xs sm:text-sm whitespace-nowrap px-3 py-1 rounded-full border transition-all duration-150 shrink-0
+          ${
+            labelActive
+              ? "bg-gray-900 text-white border-gray-900"
+              : "bg-white text-gray-500 border-gray-200 hover:text-gray-700 hover:bg-gray-50"
+          }`}
       >
-        {items.map((item, i) => (
-          <button
-            key={i}
-            ref={(el) => (chipRefs.current[i] = el)}
-            onClick={() => handleSelect(i)}
-            className={`text-xs sm:text-sm whitespace-nowrap px-2 py-1 sm:px-3.5 sm:py-1.5 rounded-full border transition-all duration-150 shrink-0
-              ${
-                active === i
-                  ? "bg-blue-500 text-white border-blue-500"
-                  : "bg-white text-gray-500 border-gray-200 hover:bg-gray-50 hover:text-gray-700"
-              }`}
-          >
-            {item}
-          </button>
-        ))}
-      </div>
+        {label}
+      </button>
 
-      <ArrowBtn dir="right" />
+      <div className="w-px h-5 bg-gray-200 shrink-0" />
+
+      {/* Chips */}
+      <div className="flex items-center gap-1.5">
+        <button
+          onClick={() => scroll(-1)}
+          className={`flex-shrink-0 w-6 h-6 rounded-full border border-gray-200 bg-white text-gray-400
+            hover:bg-gray-50 hover:text-gray-700 flex items-center justify-center transition-all duration-150
+            ${showLeft ? "flex cursor-pointer" : "hidden"}`}
+        >
+          <IoIosArrowBack size={12} />
+        </button>
+
+        <div
+          ref={chipsRef}
+          className="flex gap-1.5 overflow-x-auto max-w-[340px]"
+          style={{ scrollbarWidth: "none" }}
+        >
+          {items.map((item, i) => (
+            <button
+              key={i}
+              ref={(el) => (chipRefs.current[i] = el)}
+              onClick={() => handleChipSelect(i)}
+              className={`text-xs sm:text-sm whitespace-nowrap px-2.5 py-1 sm:px-3.5 rounded-full border transition-all duration-150 shrink-0
+                ${
+                  activeChip === i
+                    ? "bg-blue-500 text-white border-blue-500"
+                    : "bg-white text-gray-500 border-gray-200 hover:bg-gray-50 hover:text-gray-700"
+                }`}
+            >
+              {item}
+            </button>
+          ))}
+        </div>
+
+        <button
+          onClick={() => scroll(1)}
+          className={`flex-shrink-0 w-6 h-6 rounded-full border border-gray-200 bg-white text-gray-400
+            hover:bg-gray-50 hover:text-gray-700 flex items-center justify-center transition-all duration-150
+            ${showRight ? "flex cursor-pointer" : "hidden"}`}
+        >
+          <IoIosArrowForward size={12} />
+        </button>
+      </div>
     </div>
   );
 };
@@ -137,7 +156,6 @@ export default function MenuCategorySlider() {
 
   return (
     <div className="flex items-center gap-2">
-      {/* Category-level left arrow */}
       {showLeft && (
         <button
           onClick={() => scrollOuter(-1)}
@@ -149,7 +167,6 @@ export default function MenuCategorySlider() {
         </button>
       )}
 
-      {/* Outer scrollable track — contains all MenuRows */}
       <div
         ref={outerTrackRef}
         className="flex items-center gap-4 xxs:max-w-[200px] xs:max-w-[260px] sm:max-w-[450px]  md:max-w-[520px] lg:max-w-[780px]  xl:max-w-[1000px] llxl:!max-w-[1120px] lxl:!max-w-[1200px] 2xl:!max-w-full  overflow-x-auto flex-1"
@@ -160,7 +177,6 @@ export default function MenuCategorySlider() {
         ))}
       </div>
 
-      {/* Category-level right arrow */}
       {showRight && (
         <button
           onClick={() => scrollOuter(1)}
