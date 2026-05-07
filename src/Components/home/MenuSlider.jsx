@@ -24,47 +24,19 @@ const menuData = [
 const MenuRow = ({ label, items }) => {
   const [labelActive, setLabelActive] = useState(false);
   const [activeChip, setActiveChip] = useState(null);
-  const [showLeft, setShowLeft] = useState(false);
-  const [showRight, setShowRight] = useState(false);
-  const chipsRef = useRef(null);
-  const chipRefs = useRef([]);
+  const [page, setPage] = useState(0);
 
-  const updateArrows = () => {
-    const el = chipsRef.current;
-    if (!el) return;
-    setShowLeft(el.scrollLeft > 4);
-    setShowRight(el.scrollLeft + el.clientWidth < el.scrollWidth - 4);
-  };
-
-  useEffect(() => {
-    updateArrows();
-    const el = chipsRef.current;
-    el?.addEventListener("scroll", updateArrows);
-    const ro = new ResizeObserver(updateArrows);
-    if (el) ro.observe(el);
-    return () => {
-      el?.removeEventListener("scroll", updateArrows);
-      ro.disconnect();
-    };
-  }, []);
-
-  const scroll = (dir) => {
-    chipsRef.current?.scrollBy({ left: dir * 130, behavior: "smooth" });
-  };
+  const pageSize = 3;
+  const totalPages = Math.ceil(items.length / pageSize);
+  const visibleItems = items.slice(page * pageSize, page * pageSize + pageSize);
 
   const handleChipSelect = (index) => {
-    setActiveChip((prev) => (prev === index ? null : index));
-    if (activeChip !== index) {
-      chipRefs.current[index]?.scrollIntoView({
-        behavior: "smooth",
-        block: "nearest",
-        inline: "center",
-      });
-    }
+    const realIndex = page * pageSize + index;
+    setActiveChip((prev) => (prev === realIndex ? null : realIndex));
   };
 
   return (
-    <div className="flex items-center gap-2 bg-gray-100 rounded-2xl px-2 py-1.5 shrink-0  border border-gray-200">
+    <div className="flex items-center gap-2 bg-gray-100 rounded-2xl px-2 py-1.5 shrink-0 border border-gray-200">
       {/* Single label button with toggle */}
       <button
         onClick={() => setLabelActive((prev) => !prev)}
@@ -80,48 +52,48 @@ const MenuRow = ({ label, items }) => {
 
       <div className="w-px h-5 bg-gray-200 shrink-0" />
 
-      {/* Chips */}
-      <div className="flex items-center gap-1.5">
-        <button
-          onClick={() => scroll(-1)}
-          className={`flex-shrink-0 w-6 h-6 rounded-full border border-gray-200 bg-white text-gray-400
-            hover:bg-gray-50 hover:text-gray-700 flex items-center justify-center transition-all duration-150
-            ${showLeft ? "flex cursor-pointer" : "hidden"}`}
-        >
-          <IoIosArrowBack size={12} />
-        </button>
+      {/* Left arrow */}
+      <button
+        onClick={() => setPage((p) => p - 1)}
+        disabled={page === 0}
+        className={`flex-shrink-0 w-6 h-6 rounded-full border border-gray-200 bg-white text-gray-400
+          flex items-center justify-center transition-all duration-150
+          ${page === 0 ? "hidden" : "hover:bg-gray-50 hover:text-gray-700 cursor-pointer"}`}
+      >
+        <IoIosArrowBack size={12} />
+      </button>
 
-        <div
-          ref={chipsRef}
-          className="flex gap-1.5 overflow-x-auto max-w-[340px]"
-          style={{ scrollbarWidth: "none" }}
-        >
-          {items.map((item, i) => (
+      {/* Chips — fixed 3 slots */}
+      <div className="flex gap-1.5">
+        {visibleItems.map((item, i) => {
+          const realIndex = page * pageSize + i;
+          return (
             <button
-              key={i}
-              ref={(el) => (chipRefs.current[i] = el)}
+              key={realIndex}
               onClick={() => handleChipSelect(i)}
               className={`text-xs sm:text-sm whitespace-nowrap px-2.5 py-1 sm:px-3.5 rounded-full border transition-all duration-150 shrink-0
                 ${
-                  activeChip === i
+                  activeChip === realIndex
                     ? "bg-blue-500 text-white border-blue-500"
                     : "bg-white text-gray-500 border-gray-200 hover:bg-gray-50 hover:text-gray-700"
                 }`}
             >
               {item}
             </button>
-          ))}
-        </div>
-
-        <button
-          onClick={() => scroll(1)}
-          className={`flex-shrink-0 w-6 h-6 rounded-full border border-gray-200 bg-white text-gray-400
-            hover:bg-gray-50 hover:text-gray-700 flex items-center justify-center transition-all duration-150
-            ${showRight ? "flex cursor-pointer" : "hidden"}`}
-        >
-          <IoIosArrowForward size={12} />
-        </button>
+          );
+        })}
       </div>
+
+      {/* Right arrow */}
+      <button
+        onClick={() => setPage((p) => p + 1)}
+        disabled={page >= totalPages - 1}
+        className={`flex-shrink-0 w-6 h-6 rounded-full border border-gray-200 bg-white text-gray-400
+          flex items-center justify-center transition-all duration-150
+          ${page >= totalPages - 1 ? "hidden" : "hover:bg-gray-50 hover:text-gray-700 cursor-pointer"}`}
+      >
+        <IoIosArrowForward size={12} />
+      </button>
     </div>
   );
 };
