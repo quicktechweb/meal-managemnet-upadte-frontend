@@ -110,10 +110,26 @@ const UserForm = () => {
 
   const { data } = useApprovedInstituteUser();
 
-  const selectedInstituteId = watch("institute_id");
+  const selectedOrgType = watch("organization_type");
+  const selectedInstituteType = watch("institute_type");
 
-  const selectedInstitute = data?.find(
-    (item) => item._id === selectedInstituteId,
+  const uniqueOrgTypes = [
+    ...new Set(data?.map((d) => d.organization_type).filter(Boolean)),
+  ];
+
+  const filteredInstituteTypes = [
+    ...new Set(
+      data
+        ?.filter((d) => d.organization_type === selectedOrgType)
+        .map((d) => d.instituteType)
+        .filter(Boolean),
+    ),
+  ];
+
+  const filteredInstitutes = data?.filter(
+    (d) =>
+      d.organization_type === selectedOrgType &&
+      d.instituteType === selectedInstituteType,
   );
 
   const { mutateAsync, isPending } = useInstituteUserRegistration();
@@ -121,7 +137,7 @@ const UserForm = () => {
   const onSubmit = async (data) => {
     data.room_number = Number(data.room_number);
     await mutateAsync(
-      { name_of_institute: selectedInstitute?.name_of_institute, ...data },
+      { name_of_institute: filteredInstitutes?.name_of_institute, ...data },
       {
         onSuccess: (data) => {
           if (data) {
@@ -429,29 +445,73 @@ const UserForm = () => {
 
           {/* Password */}
 
-          {/* institute */}
+          {/* Organization Type */}
           <Controller
-            name="institute_id"
+            name="organization_type"
             control={control}
-            rules={{
-              required: "Institute is required",
-            }}
+            rules={{ required: "Organization type is required" }}
             render={({ field }) => (
               <select
                 {...field}
+                onChange={(e) => {
+                  field.onChange(e);
+                  // org type চেঞ্জ হলে নিচের দুটো reset করো
+                  setValue("institute_type", "");
+                  setValue("institute_id", "");
+                }}
                 className="w-full border border-gray-200 rounded-md px-3 h-[50px] text-base text-gray-500"
               >
+                <option value="">Organization Type</option>
+                {uniqueOrgTypes.map((type) => (
+                  <option key={type} value={type}>
+                    {type}
+                  </option>
+                ))}
+              </select>
+            )}
+          />
+
+          <Controller
+            name="institute_type"
+            control={control}
+            rules={{ required: "Institute type is required" }}
+            render={({ field }) => (
+              <select
+                {...field}
+                disabled={!selectedOrgType}
+                onChange={(e) => {
+                  field.onChange(e);
+
+                  setValue("institute_id", "");
+                }}
+                className="w-full border border-gray-200 rounded-md px-3 h-[50px] text-base text-gray-500 disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                <option value="">Institute Type</option>
+                {filteredInstituteTypes.map((type) => (
+                  <option key={type} value={type}>
+                    {type}
+                  </option>
+                ))}
+              </select>
+            )}
+          />
+
+          <Controller
+            name="institute_id"
+            control={control}
+            rules={{ required: "Institute is required" }}
+            render={({ field }) => (
+              <select
+                {...field}
+                disabled={!selectedInstituteType}
+                className="w-full border border-gray-200 rounded-md px-3 h-[50px] text-base text-gray-500 disabled:opacity-50 disabled:cursor-not-allowed"
+              >
                 <option value="">Name Of the Institute</option>
-                {data?.map(
-                  (institute) => (
-                    console.log(institute),
-                    (
-                      <option key={institute?._id} value={institute?._id}>
-                        {institute.name_of_institute}
-                      </option>
-                    )
-                  ),
-                )}
+                {filteredInstitutes?.map((institute) => (
+                  <option key={institute._id} value={institute._id}>
+                    {institute.name_of_institute}
+                  </option>
+                ))}
               </select>
             )}
           />
@@ -467,9 +527,9 @@ const UserForm = () => {
               >
                 <option value="">Name Of the Hall</option>
 
-                {selectedInstitute?.name_of_hall && (
-                  <option value={selectedInstitute.name_of_hall}>
-                    {selectedInstitute.name_of_hall}
+                {filteredInstitutes?.name_of_hall && (
+                  <option value={filteredInstitutes.name_of_hall}>
+                    {filteredInstitutes.name_of_hall}
                   </option>
                 )}
               </select>
@@ -486,9 +546,9 @@ const UserForm = () => {
               >
                 <option value="">Name Of the Mess</option>
 
-                {selectedInstitute?.name_of_mess && (
-                  <option value={selectedInstitute.name_of_mess}>
-                    {selectedInstitute.name_of_mess}
+                {filteredInstitutes?.name_of_mess && (
+                  <option value={filteredInstitutes.name_of_mess}>
+                    {filteredInstitutes.name_of_mess}
                   </option>
                 )}
               </select>

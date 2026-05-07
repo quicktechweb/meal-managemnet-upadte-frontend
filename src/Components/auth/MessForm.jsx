@@ -202,6 +202,7 @@ const MessForm = () => {
       if (step === 1) {
         const payload = {
           instituteType: currentData?.institute_type,
+          organization_type: currentData?.organization_type,
           name_of_institute: currentData?.institute_name,
           number_of_member: +currentData?.number_of_member,
           username: currentData?.username,
