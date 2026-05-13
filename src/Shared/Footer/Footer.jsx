@@ -12,8 +12,6 @@ const Footer = () => {
 
   const { data: siteData } = useGetWebsiteData();
 
- 
-
   return (
     <footer className="bg-white text-sm text-gray-700 pt-10">
       {/* --------------------------

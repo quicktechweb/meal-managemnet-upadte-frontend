@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { useGetWebsiteData } from "../../api/admin/admin.api";
 import {
   Heart,
@@ -18,6 +18,8 @@ import {
   Bell,
   Camera,
   MapPin,
+  ChevronDown,
+  ChevronUp,
 } from "lucide-react";
 import { FiMenu } from "react-icons/fi";
 import HomePopover from "./HomePopover";
@@ -75,8 +77,7 @@ const mobileBottomIcons = [
   { icon: <Menu size={16} />, label: "Menu" },
 ];
 
-const IconButton = ({ icon, label, special, active, slug }) => {
-  const navigate = useNavigate();
+const IconButton = ({ icon, label, special, active }) => {
   return (
     <button
       onClick={() => {}}
@@ -105,103 +106,227 @@ const TopNavbar = ({ navVisible, hideOffset, firstBarRef }) => {
   const { openPopup, setOpenPopup, selectedMenu, setHideSidebar } =
     useLayoutSwitch();
 
+  // scroll হয়েছে কিনা
+  const [scrolled, setScrolled] = useState(false);
+  // scroll করার পর manually toggle করা
+  const [mobileNavOpen, setMobileNavOpen] = useState(false);
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+
+    const handleScroll = () => {
+      const isScrolled = window.scrollY > 10;
+      setScrolled(isScrolled);
+      // scroll করে উপরে আসলে auto open করে দাও
+      if (!isScrolled) setMobileNavOpen(false);
+    };
+
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
   const isMobile = typeof window !== "undefined" && window.innerWidth < 768;
-  const translateY = !navVisible && isMobile ? `-${hideOffset}px` : "0px";
+  const translateY = !navVisible && !isMobile ? `-${hideOffset}px` : "0px";
+
+  // mobile-এ navbar দেখাবে কিনা:
+  // scroll না হলে → সবসময় দেখাবে
+  // scroll হলে → শুধু toggle open থাকলে দেখাবে
+  const showMobileNav = !scrolled || mobileNavOpen;
 
   return (
-    <div
-      className="navbar-wrapper sticky top-0 z-50 w-full transition-transform duration-300"
-      style={{ transform: `translateY(${translateY})` }}
-    >
-      {/* First bar */}
-      <div
-        ref={firstBarRef}
-        className="bg-white mx-auto flex items-center gap-0 2xl:gap-0 h-auto py-2"
-      >
-        {/* Logo */}
+    <>
+      {/* ============================================================
+          MOBILE ONLY
+          ============================================================ */}
+      <div className="md:hidden">
+        {/* ── Toggle button: শুধু scroll করলে দেখাবে ── */}
+        {scrolled && (
+          <button
+            onClick={() => setMobileNavOpen((prev) => !prev)}
+            className="fixed top-2 right-3 z-[70] flex items-center gap-1 px-2.5 py-1.5 rounded-lg bg-gradient-to-br from-blue-500 to-purple-500 text-white text-xs font-semibold shadow-md transition-all duration-200 active:scale-95"
+          >
+            {mobileNavOpen ? (
+              <>
+                <ChevronUp size={14} />
+                <span>Close</span>
+              </>
+            ) : (
+              <>
+                <ChevronDown size={14} />
+                <span>Menu</span>
+              </>
+            )}
+          </button>
+        )}
+
+        {/* ── Navbar: scroll না হলে normal, scroll হলে fixed+toggle ── */}
         <div
-          onClick={() => {
-            setOpenPopup((prev) => !prev);
-            document.body.style.overflow = "hidden";
-          }}
-          className="cursor-pointer h-10 sm:h-[50px] lg:h-16 w-[50px] md:w-[60px] lg:w-[80px] xl:w-[100px] shrink-0"
+          className={`
+            w-full bg-white z-[60]
+            transition-all duration-300
+            ${scrolled ? "fixed top-0 left-0 right-0 shadow-md" : "relative"}
+            ${scrolled && !mobileNavOpen ? "opacity-0 pointer-events-none -translate-y-full" : "opacity-100 translate-y-0"}
+          `}
         >
-          <img
-            src={data?.logoUrl}
-            alt={data?.siteName}
-            className="w-full h-full shrink-0 transition-all duration-300 hover:scale-110"
+          {/* First bar — হুবহু original */}
+          <div
+            ref={firstBarRef}
+            className="bg-white mx-auto flex items-center gap-0 h-auto py-2"
+          >
+            {/* Logo */}
+            <div
+              onClick={() => {
+                setOpenPopup((prev) => !prev);
+                document.body.style.overflow = "hidden";
+              }}
+              className="cursor-pointer h-10 w-[50px] shrink-0"
+            >
+              <img
+                src={data?.logoUrl}
+                alt={data?.siteName}
+                className="w-full h-full shrink-0 transition-all duration-300 hover:scale-110"
+              />
+            </div>
+
+            {/* Divider */}
+            <div className="w-px h-9 bg-gradient-to-b from-transparent via-gray-200 to-transparent flex-shrink-0" />
+
+            {/* Center */}
+            <div className="flex w-full items-center">
+              <div className="flex flex-col gap-1">
+                <div className="flex gap-1">
+                  {mobileTopIcons.map((item, i) => (
+                    <IconButton key={i} {...item} />
+                  ))}
+                </div>
+                <div className="flex gap-1">
+                  {mobileBottomIcons.map((item, i) => {
+                    const resolvedItem = item.dynamic
+                      ? (menuTypeMap[selectedMenu] ?? menuTypeMap["default"])
+                      : item;
+                    return <IconButton key={i} {...resolvedItem} />;
+                  })}
+                </div>
+              </div>
+
+              {/* Profile */}
+              <div className="shrink-0">
+                <div className="rounded-2xl flex flex-col items-center hover:-translate-y-1 transition-all duration-300 shrink-0">
+                  <div className="rounded-full bg-gradient-to-tr from-blue-500 to-purple-500 shrink-0">
+                    <img
+                      src="https://i.pravatar.cc/100"
+                      alt="profile"
+                      className="w-7 h-7 rounded-full object-cover shrink-0"
+                    />
+                  </div>
+                  <h3 className="text-xs font-semibold text-gray-800">
+                    {"Al abadan".slice(0, 3)}
+                  </h3>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Second bar — হুবহু original */}
+          <div className="bg-white border-b border-gray-100 mx-auto flex items-center gap-0 h-auto py-2">
+            <div className="ml-4 mr-1.5">
+              <div
+                onClick={() => setHideSidebar((prev) => !prev)}
+                className="text-2xl font-semibold cursor-pointer hover:text-blue-500 transition"
+              >
+                <FiMenu />
+              </div>
+            </div>
+            <MenuCategorySlider />
+          </div>
+        </div>
+
+        {/* Spacer — fixed হলে জায়গা ধরে রাখে */}
+        {scrolled && mobileNavOpen && (
+          <div
+            style={{
+              height: firstBarRef?.current?.parentElement?.offsetHeight || 120,
+            }}
           />
-        </div>
-
-        {/* Divider */}
-        <div className="w-px h-9 bg-gradient-to-b from-transparent via-gray-200 to-transparent flex-shrink-0" />
-
-        {/* Center */}
-        <div className="flex w-full items-center">
-          <div className="flex flex-col gap-1 xl:gap-2">
-            <div className="md:flex hidden gap-1">
-              {topIcons.map((item, i) => (
-                <IconButton key={i} {...item} />
-              ))}
-            </div>
-            <div className="md:hidden flex gap-1">
-              {mobileTopIcons.map((item, i) => (
-                <IconButton key={i} {...item} />
-              ))}
-            </div>
-            <div className="md:flex hidden gap-1">
-              {bottomIcons.map((item, i) => {
-                const resolvedItem = item.dynamic
-                  ? (menuTypeMap[selectedMenu] ?? menuTypeMap["default"])
-                  : item;
-                return <IconButton key={i} {...resolvedItem} />;
-              })}
-            </div>
-            <div className="md:hidden flex gap-1">
-              {mobileBottomIcons.map((item, i) => {
-                const resolvedItem = item.dynamic
-                  ? (menuTypeMap[selectedMenu] ?? menuTypeMap["default"])
-                  : item;
-                return <IconButton key={i} {...resolvedItem} />;
-              })}
-            </div>
-          </div>
-
-          {/* Profile */}
-          <div className="shrink-0">
-            <div className="rounded-2xl flex flex-col items-center hover:-translate-y-1 transition-all duration-300 shrink-0">
-              <div className="rounded-full bg-gradient-to-tr from-blue-500 to-purple-500 shrink-0">
-                <img
-                  src="https://i.pravatar.cc/100"
-                  alt="profile"
-                  className="w-7 h-7 md:w-[45px] md:h-[45px] rounded-full object-cover shrink-0"
-                />
-              </div>
-              <div className="text-center hidden sm:block">
-                <h3 className="text-xs md:text-sm whitespace-nowrap font-semibold text-gray-800">
-                  Al abadan
-                </h3>
-              </div>
-
-              <h3 className="text-xs md:text-sm font-semibold text-gray-800">
-                {"Al abadan".slice(0, 3)}
-              </h3>
-            </div>
-          </div>
-        </div>
+        )}
       </div>
 
-      {/* Second bar */}
-      <div className="bg-white border-b border-gray-100 mx-auto flex items-center xxs:gap-0 md:gap-[20px] lg:gap-[40px] xl:gap-[50px] llxl:gap-[50px] lxl:gap-[60px] 2xl:gap-[66px] h-auto py-2">
-        <div className="ml-4 xxs:mr-1.5 md:mr-0 md:ml-5 lg:ml-7">
+      {/* ============================================================
+          DESKTOP — হুবহু original, কোনো change নেই
+          ============================================================ */}
+      <div
+        className="navbar-wrapper w-full hidden md:block md:sticky md:top-0 md:z-50 transition-transform duration-300"
+        style={{ transform: `translateY(${translateY})` }}
+      >
+        {/* First bar */}
+        <div className="bg-white mx-auto flex items-center gap-0 2xl:gap-0 h-auto py-2">
           <div
-            onClick={() => setHideSidebar((prev) => !prev)}
-            className="text-2xl xl:text-4xl font-semibold cursor-pointer hover:text-blue-500 transition"
+            onClick={() => {
+              setOpenPopup((prev) => !prev);
+              document.body.style.overflow = "hidden";
+            }}
+            className="cursor-pointer h-10 sm:h-[50px] lg:h-16 w-[50px] md:w-[60px] lg:w-[80px] xl:w-[100px] shrink-0"
           >
-            <FiMenu />
+            <img
+              src={data?.logoUrl}
+              alt={data?.siteName}
+              className="w-full h-full shrink-0 transition-all duration-300 hover:scale-110"
+            />
+          </div>
+
+          <div className="w-px h-9 bg-gradient-to-b from-transparent via-gray-200 to-transparent flex-shrink-0" />
+
+          <div className="flex w-full items-center">
+            <div className="flex flex-col gap-1 xl:gap-2">
+              <div className="flex gap-1">
+                {topIcons.map((item, i) => (
+                  <IconButton key={i} {...item} />
+                ))}
+              </div>
+              <div className="flex gap-1">
+                {bottomIcons.map((item, i) => {
+                  const resolvedItem = item.dynamic
+                    ? (menuTypeMap[selectedMenu] ?? menuTypeMap["default"])
+                    : item;
+                  return <IconButton key={i} {...resolvedItem} />;
+                })}
+              </div>
+            </div>
+
+            <div className="shrink-0">
+              <div className="rounded-2xl flex flex-col items-center hover:-translate-y-1 transition-all duration-300 shrink-0">
+                <div className="rounded-full bg-gradient-to-tr from-blue-500 to-purple-500 shrink-0">
+                  <img
+                    src="https://i.pravatar.cc/100"
+                    alt="profile"
+                    className="w-7 h-7 md:w-[45px] md:h-[45px] rounded-full object-cover shrink-0"
+                  />
+                </div>
+                <div className="text-center hidden sm:block">
+                  <h3 className="text-xs md:text-sm whitespace-nowrap font-semibold text-gray-800">
+                    Al abadan
+                  </h3>
+                </div>
+                <h3 className="text-xs md:text-sm font-semibold text-gray-800">
+                  {"Al abadan".slice(0, 3)}
+                </h3>
+              </div>
+            </div>
           </div>
         </div>
-        <MenuCategorySlider />
+
+        {/* Second bar */}
+        <div className="bg-white border-b border-gray-100 mx-auto flex items-center md:gap-[20px] lg:gap-[40px] xl:gap-[50px] llxl:gap-[50px] lxl:gap-[60px] 2xl:gap-[66px] h-auto py-2">
+          <div className="ml-4 md:mr-0 md:ml-5 lg:ml-7">
+            <div
+              onClick={() => setHideSidebar((prev) => !prev)}
+              className="text-2xl xl:text-4xl font-semibold cursor-pointer hover:text-blue-500 transition"
+            >
+              <FiMenu />
+            </div>
+          </div>
+          <MenuCategorySlider />
+        </div>
       </div>
 
       {openPopup && <HomePopover />}
@@ -214,7 +339,7 @@ const TopNavbar = ({ navVisible, hideOffset, firstBarRef }) => {
           }}
         />
       )}
-    </div>
+    </>
   );
 };
 
