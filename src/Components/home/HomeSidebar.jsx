@@ -26,6 +26,7 @@ const mainNav = [
   {
     icon: <FaUserCircle size={14} />,
     label: "Profile",
+    link:"/dashboards/profile",
     sectionId: "",
   },
   {

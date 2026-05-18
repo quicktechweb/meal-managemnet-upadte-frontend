@@ -111,6 +111,7 @@ import InventoryPurchaseProductLists from "../Pages/dashboard/InventoryPurchaseP
 import InventoryAllWise from "../Pages/dashboard/InventoryAllWise";
 import InventoryStockManagement from "../Pages/dashboard/InventoryStockManagement";
 import InstiuteUserMealOnOff from "../Pages/dashboard/InstiuteUserMealOnOff";
+import InstituteUserBrowser from "../Components/admin/AllInstituteshowBalance/AllInstituteshowBalance";
 
 const router = createBrowserRouter([
   {
@@ -349,6 +350,10 @@ const router = createBrowserRouter([
       {
         path: "add-schedule",
         element: <AddSchedule />,
+      },
+      {
+        path: "allinstitutebalance",
+        element: <InstituteUserBrowser />,
       },
       {
         path: `update-schedule/:id`,

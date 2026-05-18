@@ -179,7 +179,7 @@ const MainLayout = () => {
         <div className="flex justify-end px-4 mb-2">
           <button
             onClick={() => setMobileBarOpen((prev) => !prev)}
-            className="w-12 h-12 rounded-full bg-gradient-to-br from-blue-500 via-indigo-500 to-purple-500 text-white shadow-xl flex items-center justify-center active:scale-95 transition-all duration-300"
+            className="w-9 h-9 mb-5 rounded-full bg-gradient-to-br from-blue-500 via-indigo-500 to-purple-500 text-white shadow-xl flex items-center justify-center active:scale-95 transition-all duration-300"
           >
             {mobileBarOpen ? (
               <ChevronDown size={22} />

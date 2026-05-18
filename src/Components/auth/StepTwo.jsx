@@ -33,8 +33,6 @@ const StepTwo = ({
   setModalData,
   isPending,
   combineData,
-
-  // charge
   charge,
   setCharge,
   chargeModalData,
@@ -47,8 +45,22 @@ const StepTwo = ({
   members,
   service_type,
 }) => {
- 
+  // যেকোনো একটাও "paid_by_himself" থাকলে Charge Generate field hide হবে
+ // ✅ যদি সব bills paid_by_himself হয় তাহলেই hide, নাহলে show
 
+
+  // ✅ যদি paid_by_himself আছে এবং non-paid bills আছে → show
+// ✅ যদি সব paid_by_himself → hide  
+// ✅ যদি কোনো bill নেই → hide
+// ✅ Final correct logic
+// ✅ Replace this
+
+
+  // ✅ With this
+const nonPaidBills = utilityBills.filter(
+  (b) => b.bear_the_cost?._id !== "paid_by_himself"
+);
+const hasPaidByHimself = utilityBills.length > 0 && nonPaidBills.length === 0;
   return (
     <div className="flex flex-col gap-8 p-4">
       {/* 1. Option Dropdown */}
@@ -68,7 +80,7 @@ const StepTwo = ({
             />
           </div>
           {activeDropdown === "option" && (
-            <div className="absolute top-full left-0 w-full bg-white border border-gray-200   rounded-xl mt-1 shadow-lg z-50">
+            <div className="absolute top-full left-0 w-full bg-white border border-gray-200 rounded-xl mt-1 shadow-lg z-50">
               {service_type?.map((opt) => (
                 <div
                   key={opt._id}
@@ -88,260 +100,11 @@ const StepTwo = ({
           )}
         </div>
       </div>
+
+      {/* ===================== USER BLOCK ===================== */}
       {selectedOption?.title?.toLowerCase() === "user" && (
-       <div className="flex flex-col gap-2.5">
-            {/* 2. Kitchen Dropdown */}
-            <div className="flex flex-col gap-2">
-              <label className="text-sm font-semibold text-slate-700">
-                Kitchen Type
-              </label>
-              <div className="relative w-[250px]">
-                <div
-                  className="flex justify-between items-center bg-slate-100 px-4 py-3 rounded-xl cursor-pointer"
-                  onClick={() => toggleDropdown("kitchen")}
-                >
-                  <span>{kitchenType?.title || "Select Kitchen"}</span>
-                  <ChevronDown
-                    className={`transition-transform ${activeDropdown === "kitchen" ? "rotate-180" : ""}`}
-                    size={18}
-                  />
-                </div>
-                {activeDropdown === "kitchen" && (
-                  <div className="absolute top-full left-0 w-full bg-white border border-gray-200 rounded-xl mt-1 shadow-lg z-50 max-h-60 overflow-auto">
-                    {kitchenData?.map((kitchen) => (
-                      <div
-                        key={kitchen._id}
-                        className={`px-4 py-2 cursor-pointer ${kitchenType?._id === kitchen._id ? "bg-orange-500 text-white" : "hover:bg-slate-100 "}`}
-                        onClick={() => {
-                          setKitchenType(kitchen);
-                          setUtilityBills([]);
-                          setActiveDropdown(null);
-                        }}
-                      >
-                        {kitchen.title}
-                      </div>
-                    ))}
-                  </div>
-                )}
-              </div>
-            </div>
-      
-            {kitchenType && (
-              <div className="flex flex-col gap-3">
-                <label className="text-sm font-semibold text-slate-700">
-                  Utility Services
-                </label>
-                <div className="relative w-[300px]">
-                  <div
-                    className="flex justify-between items-center bg-slate-100 px-4 py-3 rounded-xl cursor-pointer"
-                    onClick={() => toggleDropdown("utility")}
-                  >
-                    <span className="text-slate-500">Add Utilities...</span>
-                    <ChevronDown
-                      className={`transition-transform ${activeDropdown === "utility" ? "rotate-180" : ""}`}
-                      size={18}
-                    />
-                  </div>
-                  {activeDropdown === "utility" && (
-                    <div className="absolute top-full left-0 w-full bg-white border border-gray-200 rounded-xl mt-1 shadow-lg z-50 max-h-48 overflow-auto">
-                      {singleUtilities?.map((bill) => (
-                        <div
-                          key={bill._id}
-                          className="px-4 py-2 flex justify-between items-center cursor-pointer hover:bg-slate-100"
-                          onClick={() => handleUtilityBill(bill)}
-                        >
-                          <span>{bill.name}</span>
-                          {utilityBills.find((b) => b._id === bill._id) && (
-                            <Check size={16} className="text-orange-500" />
-                          )}
-                        </div>
-                      ))}
-                    </div>
-                  )}
-                </div>
-                {/* Selected Badges Below */}
-                <div className="flex flex-wrap gap-2 w-full max-w-[400px]">
-                  {/* {utilityBills.map((bill) => (
-                          <SelectedBadge
-                            key={bill._id}
-                            item={bill}
-                            onRemove={handleUtilityBill}
-                          />
-                        ))} */}
-                  {utilityBills?.map((bill) => (
-                    <SelectedBadge
-                      key={bill._id}
-                      item={{
-                        ...bill,
-                        charge_generate: `${bill.name} ${
-                          bill.bear_the_cost ? `- ${bill.bear_the_cost.title}` : ""
-                        } `,
-                      }}
-                      onRemove={(b) =>
-                        setUtilityBills((prev) => prev.filter((u) => u._id !== b._id))
-                      }
-                    />
-                  ))}
-                </div>
-              </div>
-            )}
-      
-            {singleFeature?.length > 0 && kitchenType && (
-              <div className="flex flex-col gap-3">
-                <label className="text-sm font-semibold text-slate-700">
-                  Service Features
-                </label>
-                <div className="relative w-[300px]">
-                  <div
-                    className="flex justify-between items-center bg-slate-100 px-4 py-3 rounded-xl cursor-pointer"
-                    onClick={() => toggleDropdown("feature")}
-                  >
-                    <span className="text-slate-500">Add Features...</span>
-                    <ChevronDown
-                      className={`transition-transform ${activeDropdown === "feature" ? "rotate-180" : ""}`}
-                      size={18}
-                    />
-                  </div>
-                  {activeDropdown === "feature" && (
-                    <div className="absolute top-full left-0 w-full bg-white border  border-gray-200 rounded-xl mt-1 shadow-lg z-50 max-h-48 overflow-auto">
-                      {singleFeature?.map((feature) => (
-                        <div
-                          key={feature._id}
-                          className="px-4 py-2 flex justify-between items-center cursor-pointer hover:bg-slate-100"
-                          onClick={() => handleFeature(feature)}
-                        >
-                          <span>{feature.name}</span>
-                          {serviceFeatures.find((f) => f._id === feature._id) && (
-                            <Check size={16} className="text-orange-500" />
-                          )}
-                        </div>
-                      ))}
-                    </div>
-                  )}
-                </div>
-                {/* Selected Badges Below */}
-                <div className="flex flex-wrap gap-2 w-full max-w-[400px]">
-                  {serviceFeatures.map((f) => (
-                    <SelectedBadge key={f._id} item={f} onRemove={handleFeature} />
-                  ))}
-                </div>
-              </div>
-            )}
-      
-            <div className="flex flex-col gap-2">
-              <label className="text-sm font-semibold text-slate-700">
-                Charge Generate
-              </label>
-      
-              <div className="relative w-[250px]">
-                <div
-                  className="flex justify-between items-center bg-slate-100 px-4 py-3 rounded-xl cursor-pointer"
-                  onClick={() => toggleDropdown("service")}
-                >
-                  Select Charge
-                  <ChevronDown
-                    className={`transition-transform ${
-                      activeDropdown === "service" ? "rotate-180" : ""
-                    }`}
-                    size={18}
-                  />
-                </div>
-      
-                {activeDropdown === "service" && (
-                  <div className="absolute w-full bg-white border border-gray-200 rounded-xl mt-1 shadow-lg z-50 max-h-60 overflow-auto">
-                    {combineData?.map((service) => (
-                      <div
-                        key={service._id}
-                        className="px-4 py-2 cursor-pointer hover:bg-slate-100 flex justify-between items-center"
-                        onClick={() => handleCharge(service)}
-                      >
-                        {service.name}
-      
-                        {charge?.find((c) => c._id === service._id) && (
-                          <Check size={16} className="text-orange-500" />
-                        )}
-                      </div>
-                    ))}
-                  </div>
-                )}
-              </div>
-      
-              {/* Selected Charges */}
-              <div className="flex flex-wrap gap-2">
-                {charge?.map((item) => (
-                  <SelectedBadge
-                    key={item._id}
-                    item={item}
-                    onRemove={(chargeItem) =>
-                      setCharge((prev) =>
-                        prev.filter((c) => c._id !== chargeItem._id),
-                      )
-                    }
-                  />
-                ))}
-              </div>
-            </div>
-      
-            {/* price */}
-      
-            {charge?.length > 0 && (
-              <div className="flex flex-col gap-4 p-4 bg-white rounded-3xl shadow-sm border border-slate-100">
-                {/* Amount of Charge - Light & Subtle */}
-      
-                {charge?.map((singlecharge) => (
-                  <div className="flex items-center justify-between px-2">
-                    <h3 className="text-md font-medium text-slate-500">
-                      {singlecharge?.charge_generate}
-                    </h3>
-                    {singlecharge?.price && (
-                      <p className="text-xl font-bold text-slate-700">
-                        ৳ {singlecharge?.price}
-                      </p>
-                    )}
-      
-                    {singlecharge?.ranges &&
-                      singlecharge?.ranges?.length > 0 &&
-                      (() => {
-                        const matchedRange = singlecharge.ranges.find(
-                          (r) => +members >= r.min && +members <= r.max,
-                        );
-      
-                        return (
-                          <p className="text-xl font-bold text-slate-700">
-                            ৳ {matchedRange?.price}
-                          </p>
-                        );
-                      })()}
-                  </div>
-                ))}
-      
-                {/* Styled Divider */}
-                <div className="relative h-px">
-                  <div className="absolute inset-0 border-t border-dashed border-gray-300"></div>
-                </div>
-      
-                {/* Total Amount - High Contrast & Eye Catchy */}
-                <div className="flex items-center justify-between p-4 bg-gradient-to-r from-orange-500 to-orange-600 rounded-2xl shadow-lg shadow-orange-200 transform transition-transform hover:scale-[1.02]">
-                  <div className="flex flex-col">
-                    <h3 className="text-sm font-bold text-orange-100 uppercase tracking-tight">
-                      Total Amount
-                    </h3>
-                    <p className="text-xs text-orange-200">Final Payable</p>
-                  </div>
-      
-                  <div className="flex flex-col items-end">
-                    <p className="text-3xl font-black text-white drop-shadow-sm">
-                      ৳ {totalPrices}
-                    </p>
-                  </div>
-                </div>
-              </div>
-            )}
-          </div>
-      )}
-      {selectedOption?.title?.toLowerCase() === "client" && (
         <div className="flex flex-col gap-2.5">
-          {/* 2. Kitchen Dropdown */}
+          {/* Kitchen Dropdown */}
           <div className="flex flex-col gap-2">
             <label className="text-sm font-semibold text-slate-700">
               Kitchen Type
@@ -362,7 +125,7 @@ const StepTwo = ({
                   {kitchenData?.map((kitchen) => (
                     <div
                       key={kitchen._id}
-                      className={`px-4 py-2 cursor-pointer ${kitchenType?._id === kitchen._id ? "bg-orange-500 text-white" : "hover:bg-slate-100 "}`}
+                      className={`px-4 py-2 cursor-pointer ${kitchenType?._id === kitchen._id ? "bg-orange-500 text-white" : "hover:bg-slate-100"}`}
                       onClick={() => {
                         setKitchenType(kitchen);
                         setUtilityBills([]);
@@ -377,6 +140,7 @@ const StepTwo = ({
             </div>
           </div>
 
+          {/* Utility Services */}
           {kitchenType && (
             <div className="flex flex-col gap-3">
               <label className="text-sm font-semibold text-slate-700">
@@ -410,30 +174,18 @@ const StepTwo = ({
                   </div>
                 )}
               </div>
-              {/* Selected Badges Below */}
               <div className="flex flex-wrap gap-2 w-full max-w-[400px]">
-                {/* {utilityBills.map((bill) => (
-                  <SelectedBadge
-                    key={bill._id}
-                    item={bill}
-                    onRemove={handleUtilityBill}
-                  />
-                ))} */}
-                {utilityBills.map((bill) => (
+                {utilityBills?.map((bill) => (
                   <SelectedBadge
                     key={bill._id}
                     item={{
                       ...bill,
                       charge_generate: `${bill.name} ${
-                        bill.bear_the_cost
-                          ? `- ${bill.bear_the_cost.title}`
-                          : ""
-                      } `,
+                        bill.bear_the_cost ? `- ${bill.bear_the_cost.title}` : ""
+                      }`,
                     }}
                     onRemove={(b) =>
-                      setUtilityBills((prev) =>
-                        prev.filter((u) => u._id !== b._id),
-                      )
+                      setUtilityBills((prev) => prev.filter((u) => u._id !== b._id))
                     }
                   />
                 ))}
@@ -441,6 +193,7 @@ const StepTwo = ({
             </div>
           )}
 
+          {/* Service Features */}
           {singleFeature?.length > 0 && kitchenType && (
             <div className="flex flex-col gap-3">
               <label className="text-sm font-semibold text-slate-700">
@@ -458,7 +211,7 @@ const StepTwo = ({
                   />
                 </div>
                 {activeDropdown === "feature" && (
-                  <div className="absolute top-full left-0 w-full bg-white border  border-gray-200 rounded-xl mt-1 shadow-lg z-50 max-h-48 overflow-auto">
+                  <div className="absolute top-full left-0 w-full bg-white border border-gray-200 rounded-xl mt-1 shadow-lg z-50 max-h-48 overflow-auto">
                     {singleFeature?.map((feature) => (
                       <div
                         key={feature._id}
@@ -474,81 +227,71 @@ const StepTwo = ({
                   </div>
                 )}
               </div>
-              {/* Selected Badges Below */}
               <div className="flex flex-wrap gap-2 w-full max-w-[400px]">
                 {serviceFeatures.map((f) => (
+                  <SelectedBadge key={f._id} item={f} onRemove={handleFeature} />
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* ✅ Charge Generate — paid_by_himself থাকলে hide */}
+          {!hasPaidByHimself && (
+            <div className="flex flex-col gap-2">
+              <label className="text-sm font-semibold text-slate-700">
+                Charge Generate
+              </label>
+              <div className="relative w-[250px]">
+                <div
+                  className="flex justify-between items-center bg-slate-100 px-4 py-3 rounded-xl cursor-pointer"
+                  onClick={() => toggleDropdown("service")}
+                >
+                  Select Charge
+                  <ChevronDown
+                    className={`transition-transform ${
+                      activeDropdown === "service" ? "rotate-180" : ""
+                    }`}
+                    size={18}
+                  />
+                </div>
+                {activeDropdown === "service" && (
+                  <div className="absolute w-full bg-white border border-gray-200 rounded-xl mt-1 shadow-lg z-50 max-h-60 overflow-auto">
+                    {combineData?.map((service) => (
+                      <div
+                        key={service._id}
+                        className="px-4 py-2 cursor-pointer hover:bg-slate-100 flex justify-between items-center"
+                        onClick={() => handleCharge(service)}
+                      >
+                        {service.name}
+                        {charge?.find((c) => c._id === service._id) && (
+                          <Check size={16} className="text-orange-500" />
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+              <div className="flex flex-wrap gap-2">
+                {charge?.map((item) => (
                   <SelectedBadge
-                    key={f._id}
-                    item={f}
-                    onRemove={handleFeature}
+                    key={item._id}
+                    item={item}
+                    onRemove={(chargeItem) =>
+                      setCharge((prev) =>
+                        prev.filter((c) => c._id !== chargeItem._id)
+                      )
+                    }
                   />
                 ))}
               </div>
             </div>
           )}
 
-          <div className="flex flex-col gap-2">
-            <label className="text-sm font-semibold text-slate-700">
-              Charge Generate
-            </label>
-
-            <div className="relative w-[250px]">
-              <div
-                className="flex justify-between items-center bg-slate-100 px-4 py-3 rounded-xl cursor-pointer"
-                onClick={() => toggleDropdown("service")}
-              >
-                Select Charge
-                <ChevronDown
-                  className={`transition-transform ${
-                    activeDropdown === "service" ? "rotate-180" : ""
-                  }`}
-                  size={18}
-                />
-              </div>
-
-              {activeDropdown === "service" && (
-                <div className="absolute w-full bg-white border border-gray-200 rounded-xl mt-1 shadow-lg z-50 max-h-60 overflow-auto">
-                  {combineData?.map((service) => (
-                    <div
-                      key={service._id}
-                      className="px-4 py-2 cursor-pointer hover:bg-slate-100 flex justify-between items-center"
-                      onClick={() => handleCharge(service)}
-                    >
-                      {service.name}
-
-                      {charge.find((c) => c._id === service._id) && (
-                        <Check size={16} className="text-orange-500" />
-                      )}
-                    </div>
-                  ))}
-                </div>
-              )}
-            </div>
-
-            {/* Selected Charges */}
-            <div className="flex flex-wrap gap-2">
-              {charge.map((item) => (
-                <SelectedBadge
-                  key={item._id}
-                  item={item}
-                  onRemove={(chargeItem) =>
-                    setCharge((prev) =>
-                      prev.filter((c) => c._id !== chargeItem._id),
-                    )
-                  }
-                />
-              ))}
-            </div>
-          </div>
-
-          {/* price */}
-
+          {/* ✅ Price Summary — charge থাকলে সবসময় দেখাবে */}
           {charge?.length > 0 && (
             <div className="flex flex-col gap-4 p-4 bg-white rounded-3xl shadow-sm border border-slate-100">
-              {/* Amount of Charge - Light & Subtle */}
-
               {charge?.map((singlecharge) => (
-                <div className="flex items-center justify-between px-2">
+                <div key={singlecharge._id} className="flex items-center justify-between px-2">
                   <h3 className="text-md font-medium text-slate-500">
                     {singlecharge?.charge_generate}
                   </h3>
@@ -557,14 +300,12 @@ const StepTwo = ({
                       ৳ {singlecharge?.price}
                     </p>
                   )}
-
                   {singlecharge?.ranges &&
-                    singlecharge.ranges.length > 0 &&
+                    singlecharge?.ranges?.length > 0 &&
                     (() => {
                       const matchedRange = singlecharge.ranges.find(
-                        (r) => +members >= r.min && +members <= r.max,
+                        (r) => +members >= r.min && +members <= r.max
                       );
-
                       return (
                         <p className="text-xl font-bold text-slate-700">
                           ৳ {matchedRange?.price}
@@ -573,13 +314,9 @@ const StepTwo = ({
                     })()}
                 </div>
               ))}
-
-              {/* Styled Divider */}
               <div className="relative h-px">
                 <div className="absolute inset-0 border-t border-dashed border-gray-300"></div>
               </div>
-
-              {/* Total Amount - High Contrast & Eye Catchy */}
               <div className="flex items-center justify-between p-4 bg-gradient-to-r from-orange-500 to-orange-600 rounded-2xl shadow-lg shadow-orange-200 transform transition-transform hover:scale-[1.02]">
                 <div className="flex flex-col">
                   <h3 className="text-sm font-bold text-orange-100 uppercase tracking-tight">
@@ -587,7 +324,6 @@ const StepTwo = ({
                   </h3>
                   <p className="text-xs text-orange-200">Final Payable</p>
                 </div>
-
                 <div className="flex flex-col items-end">
                   <p className="text-3xl font-black text-white drop-shadow-sm">
                     ৳ {totalPrices}
@@ -598,6 +334,242 @@ const StepTwo = ({
           )}
         </div>
       )}
+
+      {/* ===================== CLIENT BLOCK ===================== */}
+      {selectedOption?.title?.toLowerCase() === "client" && (
+        <div className="flex flex-col gap-2.5">
+          {/* Kitchen Dropdown */}
+          <div className="flex flex-col gap-2">
+            <label className="text-sm font-semibold text-slate-700">
+              Kitchen Type
+            </label>
+            <div className="relative w-[250px]">
+              <div
+                className="flex justify-between items-center bg-slate-100 px-4 py-3 rounded-xl cursor-pointer"
+                onClick={() => toggleDropdown("kitchen")}
+              >
+                <span>{kitchenType?.title || "Select Kitchen"}</span>
+                <ChevronDown
+                  className={`transition-transform ${activeDropdown === "kitchen" ? "rotate-180" : ""}`}
+                  size={18}
+                />
+              </div>
+              {activeDropdown === "kitchen" && (
+                <div className="absolute top-full left-0 w-full bg-white border border-gray-200 rounded-xl mt-1 shadow-lg z-50 max-h-60 overflow-auto">
+                  {kitchenData?.map((kitchen) => (
+                    <div
+                      key={kitchen._id}
+                      className={`px-4 py-2 cursor-pointer ${kitchenType?._id === kitchen._id ? "bg-orange-500 text-white" : "hover:bg-slate-100"}`}
+                      onClick={() => {
+                        setKitchenType(kitchen);
+                        setUtilityBills([]);
+                        setActiveDropdown(null);
+                      }}
+                    >
+                      {kitchen.title}
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          </div>
+
+          {/* Utility Services */}
+          {kitchenType && (
+            <div className="flex flex-col gap-3">
+              <label className="text-sm font-semibold text-slate-700">
+                Utility Services
+              </label>
+              <div className="relative w-[300px]">
+                <div
+                  className="flex justify-between items-center bg-slate-100 px-4 py-3 rounded-xl cursor-pointer"
+                  onClick={() => toggleDropdown("utility")}
+                >
+                  <span className="text-slate-500">Add Utilities...</span>
+                  <ChevronDown
+                    className={`transition-transform ${activeDropdown === "utility" ? "rotate-180" : ""}`}
+                    size={18}
+                  />
+                </div>
+                {activeDropdown === "utility" && (
+                  <div className="absolute top-full left-0 w-full bg-white border border-gray-200 rounded-xl mt-1 shadow-lg z-50 max-h-48 overflow-auto">
+                    {singleUtilities?.map((bill) => (
+                      <div
+                        key={bill._id}
+                        className="px-4 py-2 flex justify-between items-center cursor-pointer hover:bg-slate-100"
+                        onClick={() => handleUtilityBill(bill)}
+                      >
+                        <span>{bill.name}</span>
+                        {utilityBills.find((b) => b._id === bill._id) && (
+                          <Check size={16} className="text-orange-500" />
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+              <div className="flex flex-wrap gap-2 w-full max-w-[400px]">
+                {utilityBills.map((bill) => (
+                  <SelectedBadge
+                    key={bill._id}
+                    item={{
+                      ...bill,
+                      charge_generate: `${bill.name} ${
+                        bill.bear_the_cost ? `- ${bill.bear_the_cost.title}` : ""
+                      }`,
+                    }}
+                    onRemove={(b) =>
+                      setUtilityBills((prev) => prev.filter((u) => u._id !== b._id))
+                    }
+                  />
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Service Features */}
+          {singleFeature?.length > 0 && kitchenType && (
+            <div className="flex flex-col gap-3">
+              <label className="text-sm font-semibold text-slate-700">
+                Service Features
+              </label>
+              <div className="relative w-[300px]">
+                <div
+                  className="flex justify-between items-center bg-slate-100 px-4 py-3 rounded-xl cursor-pointer"
+                  onClick={() => toggleDropdown("feature")}
+                >
+                  <span className="text-slate-500">Add Features...</span>
+                  <ChevronDown
+                    className={`transition-transform ${activeDropdown === "feature" ? "rotate-180" : ""}`}
+                    size={18}
+                  />
+                </div>
+                {activeDropdown === "feature" && (
+                  <div className="absolute top-full left-0 w-full bg-white border border-gray-200 rounded-xl mt-1 shadow-lg z-50 max-h-48 overflow-auto">
+                    {singleFeature?.map((feature) => (
+                      <div
+                        key={feature._id}
+                        className="px-4 py-2 flex justify-between items-center cursor-pointer hover:bg-slate-100"
+                        onClick={() => handleFeature(feature)}
+                      >
+                        <span>{feature.name}</span>
+                        {serviceFeatures.find((f) => f._id === feature._id) && (
+                          <Check size={16} className="text-orange-500" />
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+              <div className="flex flex-wrap gap-2 w-full max-w-[400px]">
+                {serviceFeatures.map((f) => (
+                  <SelectedBadge key={f._id} item={f} onRemove={handleFeature} />
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* ✅ Charge Generate — paid_by_himself থাকলে hide */}
+          {!hasPaidByHimself && (
+            <div className="flex flex-col gap-2">
+              <label className="text-sm font-semibold text-slate-700">
+                Charge Generate
+              </label>
+              <div className="relative w-[250px]">
+                <div
+                  className="flex justify-between items-center bg-slate-100 px-4 py-3 rounded-xl cursor-pointer"
+                  onClick={() => toggleDropdown("service")}
+                >
+                  Select Charge
+                  <ChevronDown
+                    className={`transition-transform ${
+                      activeDropdown === "service" ? "rotate-180" : ""
+                    }`}
+                    size={18}
+                  />
+                </div>
+                {activeDropdown === "service" && (
+                  <div className="absolute w-full bg-white border border-gray-200 rounded-xl mt-1 shadow-lg z-50 max-h-60 overflow-auto">
+                    {combineData?.map((service) => (
+                      <div
+                        key={service._id}
+                        className="px-4 py-2 cursor-pointer hover:bg-slate-100 flex justify-between items-center"
+                        onClick={() => handleCharge(service)}
+                      >
+                        {service.name}
+                        {charge.find((c) => c._id === service._id) && (
+                          <Check size={16} className="text-orange-500" />
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+              <div className="flex flex-wrap gap-2">
+                {charge.map((item) => (
+                  <SelectedBadge
+                    key={item._id}
+                    item={item}
+                    onRemove={(chargeItem) =>
+                      setCharge((prev) =>
+                        prev.filter((c) => c._id !== chargeItem._id)
+                      )
+                    }
+                  />
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* ✅ Price Summary — charge থাকলে সবসময় দেখাবে */}
+          {charge?.length > 0 && (
+            <div className="flex flex-col gap-4 p-4 bg-white rounded-3xl shadow-sm border border-slate-100">
+              {charge?.map((singlecharge) => (
+                <div key={singlecharge._id} className="flex items-center justify-between px-2">
+                  <h3 className="text-md font-medium text-slate-500">
+                    {singlecharge?.charge_generate}
+                  </h3>
+                  {singlecharge?.price && (
+                    <p className="text-xl font-bold text-slate-700">
+                      ৳ {singlecharge?.price}
+                    </p>
+                  )}
+                  {singlecharge?.ranges &&
+                    singlecharge.ranges.length > 0 &&
+                    (() => {
+                      const matchedRange = singlecharge.ranges.find(
+                        (r) => +members >= r.min && +members <= r.max
+                      );
+                      return (
+                        <p className="text-xl font-bold text-slate-700">
+                          ৳ {matchedRange?.price}
+                        </p>
+                      );
+                    })()}
+                </div>
+              ))}
+              <div className="relative h-px">
+                <div className="absolute inset-0 border-t border-dashed border-gray-300"></div>
+              </div>
+              <div className="flex items-center justify-between p-4 bg-gradient-to-r from-orange-500 to-orange-600 rounded-2xl shadow-lg shadow-orange-200 transform transition-transform hover:scale-[1.02]">
+                <div className="flex flex-col">
+                  <h3 className="text-sm font-bold text-orange-100 uppercase tracking-tight">
+                    Total Amount
+                  </h3>
+                  <p className="text-xs text-orange-200">Final Payable</p>
+                </div>
+                <div className="flex flex-col items-end">
+                  <p className="text-3xl font-black text-white drop-shadow-sm">
+                    ৳ {totalPrices}
+                  </p>
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* Back/Next Buttons */}
       <div className="flex gap-2">
         <button
           type="button"
@@ -616,13 +588,11 @@ const StepTwo = ({
         </button>
       </div>
 
-      {/* modal */}
+      {/* ✅ Utility Bill Modal */}
       {selectedBill && (
-        <div className="fixed inset-0 flex items-center justify-center bg-black/50  bg-opacity-30 z-[99999]">
+        <div className="fixed inset-0 flex items-center justify-center bg-black/50 bg-opacity-30 z-[99999]">
           <div className="bg-white rounded-xl p-6 w-[400px] max-w-full">
             <h3 className="font-semibold text-lg mb-4">{selectedBill.name}</h3>
-
-            {/* Bear the Cost */}
             <label className="block text-sm font-medium mb-1">
               Bear the Cost
             </label>
@@ -630,10 +600,20 @@ const StepTwo = ({
               className="w-full border border-gray-300 rounded-md p-2 mb-4"
               value={modalData.bear_the_cost?._id || ""}
               onChange={(e) => {
-                const selected = selectedBill.bear_the_cost.find(
-                  (b) => b._id === e.target.value,
-                );
-                setModalData((prev) => ({ ...prev, bear_the_cost: selected }));
+                if (e.target.value === "paid_by_himself") {
+                  setModalData((prev) => ({
+                    ...prev,
+                    bear_the_cost: {
+                      _id: "paid_by_himself",
+                      title: "User Paid By Himself",
+                    },
+                  }));
+                } else {
+                  const selected = selectedBill.bear_the_cost.find(
+                    (b) => b._id === e.target.value
+                  );
+                  setModalData((prev) => ({ ...prev, bear_the_cost: selected }));
+                }
               }}
             >
               <option value="">Select Bear the Cost</option>
@@ -642,9 +622,8 @@ const StepTwo = ({
                   {b.title}
                 </option>
               ))}
+              <option value="paid_by_himself">User Paid By Himself</option>
             </select>
-
-            {/* Buttons */}
             <div className="flex justify-end gap-3">
               <button
                 type="button"
@@ -653,52 +632,68 @@ const StepTwo = ({
               >
                 Cancel
               </button>
-              <button
-                type="button"
-                className="px-4 py-2 rounded-md bg-orange-500 text-white"
-                onClick={() => {
-                  setUtilityBills((prev) => {
-                    const exists = prev.find((b) => b._id === selectedBill._id);
-                    if (exists) {
-                      return prev.map((b) =>
-                        b._id === selectedBill._id ? { ...b, ...modalData } : b,
-                      );
-                    } else {
-                      return [...prev, { ...selectedBill, ...modalData }];
-                    }
-                  });
-                  setSelectedBill(null);
-                  setActiveDropdown(null);
-                }}
-              >
-                OK
-              </button>
+            <button
+  type="button"
+  className="px-4 py-2 rounded-md bg-orange-500 text-white"
+ // Modal OK button
+onClick={() => {
+  const updatedBills = (() => {
+    const exists = utilityBills.find((b) => b._id === selectedBill._id);
+    if (exists) {
+      return utilityBills.map((b) =>
+        b._id === selectedBill._id ? { ...b, ...modalData } : b
+      );
+    } else {
+      return [...utilityBills, { ...selectedBill, ...modalData }];
+    }
+  })();
+
+  setUtilityBills(updatedBills); // ✅ direct set
+
+  // ✅ updated bills দিয়ে check করো
+  const allPaidByHimself = updatedBills.every(
+    (b) => b.bear_the_cost?._id === "paid_by_himself"
+  );
+
+  if (!allPaidByHimself) {
+    // paid_by_himself না হলে charge রাখো
+  } else {
+    setCharge([]); // সব paid_by_himself হলে charge clear
+  }
+
+  if (modalData.bear_the_cost?._id === "paid_by_himself") {
+    setCharge((prev) =>
+      prev.filter((c) => c.utilityBillId !== selectedBill._id)
+    );
+  }
+
+  setSelectedBill(null);
+  setActiveDropdown(null);
+}}
+>
+  OK
+</button>
             </div>
           </div>
         </div>
       )}
 
+      {/* Charge Modal */}
       {selectedCharge && (
         <div className="fixed inset-0 flex items-center justify-center bg-black/50 z-[9999]">
           <div className="bg-white rounded-xl p-6 w-[400px] max-w-full">
-            <h3 className="font-semibold text-lg mb-4">
-              {selectedCharge.name}
-            </h3>
-
+            <h3 className="font-semibold text-lg mb-4">{selectedCharge.name}</h3>
             <label className="block text-sm font-medium mb-1">Service</label>
-
             <select
               className="w-full border border-gray-300 rounded-md p-2 mb-4"
               value={chargeModalData.type}
-              onChange={(e) =>
-                setChargeModalData({
-                  type: e.target.value,
-                })
-              }
+              onChange={(e) => setChargeModalData({ type: e.target.value })}
             >
               <option value="">Select Service</option>
               {data?.map((item) => (
-                <option value={item?.title}>{item?.title}</option>
+                <option key={item?.title} value={item?.title}>
+                  {item?.title}
+                </option>
               ))}
             </select>
             <div className="flex justify-end gap-3">
@@ -709,35 +704,27 @@ const StepTwo = ({
               >
                 Cancel
               </button>
-
               <button
                 type="button"
                 className="px-4 py-2 rounded-md bg-orange-500 text-white"
                 onClick={() => {
                   setCharge((prev) => {
-                    const exists = prev.find(
-                      (c) => c._id === selectedCharge._id,
-                    );
-
-                    const newCharge = {
-                      ...selectedCharge,
-                      type: chargeModalData.type,
-                      charge_generate: `${selectedCharge.name} - ${
-                        chargeModalData.type === "Per User"
-                          ? "Per User"
-                          : "Per Meal"
-                      }`,
-                    };
-
+                    const exists = prev.find((c) => c._id === selectedCharge._id);
+                  const newCharge = {
+  ...selectedCharge,
+  utilityBillId: selectedBill?._id, // ✅ কোন bill এর জন্য সেটা track করো
+  type: chargeModalData.type,
+  charge_generate: `${selectedCharge.name} - ${
+    chargeModalData.type === "Per User" ? "Per User" : "Per Meal"
+  }`,
+};
                     if (exists) {
                       return prev.map((c) =>
-                        c._id === selectedCharge._id ? newCharge : c,
+                        c._id === selectedCharge._id ? newCharge : c
                       );
                     }
-
                     return [...prev, newCharge];
                   });
-
                   setChargeModalData({ type: "" });
                   setSelectedCharge(null);
                   setActiveDropdown(null);

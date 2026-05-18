@@ -1,18 +1,12 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { useForm, Controller, FormProvider } from "react-hook-form";
 import { IoMdEye, IoMdEyeOff } from "react-icons/io";
-
 import { Link, useNavigate } from "react-router-dom";
-
-import { api } from "../../utils/countryApi";
 import CustomSelect from "../CustomSelect";
 import DynamicDropdown from "../DynamicSelect";
 import DocumentUpload from "../DocumentUpload";
 import { useInstituteUserRegistration } from "../../api/auth/auth.hook";
-import {
-  useAllLocation,
-  useApprovedInstituteUser,
-} from "../../api/cms/user.hook";
+import { useAllLocation, useApprovedInstituteUser } from "../../api/cms/user.hook";
 import toast from "react-hot-toast";
 
 const InputField = ({ label, name, control, type = "text", rules = {} }) => (
@@ -31,20 +25,12 @@ const InputField = ({ label, name, control, type = "text", rules = {} }) => (
               fieldState.error ? "border-red-500" : "border-gray-200"
             }`}
           />
-          <label
-            className="absolute left-3 bg-white px-1 text-gray-500 transition-all
-          top-1/2 -translate-y-1/2 text-sm md:text-base
-          peer-focus:top-1 peer-focus:text-xs peer-focus:text-black
-          peer-not-placeholder-shown:top-1 peer-not-placeholder-shown:text-xs
-          pointer-events-none"
-          >
+          <label className="absolute left-3 bg-white px-1 text-gray-500 transition-all top-1/2 -translate-y-1/2 text-sm md:text-base peer-focus:top-1 peer-focus:text-xs peer-focus:text-black peer-not-placeholder-shown:top-1 peer-not-placeholder-shown:text-xs pointer-events-none">
             {label}
           </label>
         </div>
         {fieldState.error && (
-          <span className="text-red-500 text-sm  ">
-            {fieldState.error.message}
-          </span>
+          <span className="text-red-500 text-sm">{fieldState.error.message}</span>
         )}
       </>
     )}
@@ -57,7 +43,8 @@ const UserForm = () => {
 
   const { data: location } = useAllLocation();
 
-  const { handleSubmit, control, watch } = useForm();
+  const { handleSubmit, control, watch, setValue } = useForm();
+
   const selectedCountry = watch("country");
   const selectedState = watch("state");
   const selectedDivision = watch("division");
@@ -65,47 +52,53 @@ const UserForm = () => {
   const selectedUpazila = watch("upazila");
 
   const districts = location?.find((loc) => loc.name === selectedDivision);
-
-  const upazila = districts?.districts?.find(
-    (upa) => upa?.name === selectedDistrict,
-  );
-
+  const upazila = districts?.districts?.find((upa) => upa?.name === selectedDistrict);
   const uploadedDocs = watch("documents") || [];
 
   const [passwordShow, setPasswordShow] = useState(false);
   const [confirmPasswordShow, setConfirmPasswordShow] = useState(false);
-
   const passwordValue = watch("password");
 
-  const [hallSelect, setHallSelect] = useState(false);
-
-  // custom select
   const [gender, setGender] = useState("");
   const [religion, setReligion] = useState("");
 
-  // dynamic dropdown
-
   const [genderOptions, setGenderOptions] = useState(["Male", "Female"]);
-
-  const [gurdianOptions, setGurdianOptions] = useState([
-    "father",
-    "mother",
-    "brother",
-    "sister",
-  ]);
-
+  const [gurdianOptions, setGurdianOptions] = useState(["father", "mother", "brother", "sister"]);
   const [religionOptions, setReligionOptions] = useState(["Islam", "Hindu"]);
 
-  const handleCreateGurdian = (newItem) => {
-    setGurdianOptions((prev) => [...prev, newItem]);
+  const handleCreateGurdian = (newItem) => setGurdianOptions((prev) => [...prev, newItem]);
+  const handleCreateGender = (newItem) => setGenderOptions((prev) => [...prev, newItem]);
+  const handleCreateReligion = (newItem) => setReligionOptions((prev) => [...prev, newItem]);
+
+  // ✅ StepOne এর মতো organization/institute states
+  const [organizeOptions, setOrganizeOptions] = useState(["Company", "Institute"]);
+  const [instituteOptionsState, setInstituteOptionsState] = useState({
+    Company: ["Office", "Startup", "Agency"],
+    Institute: ["School", "College", "University"],
+  });
+
+  const organizationType = watch("organization_type");
+  const instituteLabel = organizationType ? `${organizationType} Type` : "Type";
+
+  const instituteOptions = useMemo(() => {
+    return instituteOptionsState[organizationType] || [];
+  }, [organizationType, instituteOptionsState]);
+
+  useEffect(() => {
+    setValue("institute_type", "");
+  }, [organizationType, setValue]);
+
+  const handleCreateOrganizeType = (value) => {
+    setOrganizeOptions((prev) => [...prev, value]);
+    setInstituteOptionsState((prev) => ({ ...prev, [value]: [] }));
   };
 
-  const handleCreateGender = (newItem) => {
-    setGenderOptions((prev) => [...prev, newItem]);
-  };
-
-  const handleCreateReligion = (newItem) => {
-    setReligionOptions((prev) => [...prev, newItem]);
+  const handleCreateInstituteType = (value) => {
+    if (!organizationType) return;
+    setInstituteOptionsState((prev) => ({
+      ...prev,
+      [organizationType]: [...(prev[organizationType] || []), value],
+    }));
   };
 
   const { data } = useApprovedInstituteUser();
@@ -142,7 +135,6 @@ const UserForm = () => {
         onSuccess: (data) => {
           if (data) {
             toast.success(data?.message);
-
             navigate("/auth/login");
           }
         },
@@ -156,7 +148,8 @@ const UserForm = () => {
   return (
     <>
       <FormProvider {...{ handleSubmit, control, watch }}>
-        <form onSubmit={handleSubmit(onSubmit)} className="space-y-3 ">
+        <form onSubmit={handleSubmit(onSubmit)} className="space-y-3">
+
           <InputField
             label="Full name"
             name="full_name"
@@ -170,13 +163,60 @@ const UserForm = () => {
             rules={{}}
           />
 
+          {/* ✅ StepOne এর মতো Organization & Institute block */}
+          <div className="bg-gray-100 p-3 rounded-2xl flex flex-col gap-2">
+            <Controller
+              name="organization_type"
+              control={control}
+              rules={{ required: "This field is required" }}
+              render={({ field: { onChange, value }, fieldState: { error } }) => (
+                <div className="space-y-1">
+                  <CustomSelect
+                    label="Organization Type"
+                    options={organizeOptions}
+                    value={value ?? ""}
+                    onChange={(newValue) => onChange(newValue)}
+                    onCreate={handleCreateOrganizeType}
+                    allowCreate
+                  />
+                  {error && <p className="text-red-500 text-sm">{error.message}</p>}
+                </div>
+              )}
+            />
+
+            <Controller
+              name="institute_type"
+              control={control}
+              rules={{ required: "This field is required" }}
+              render={({ field, fieldState: { error } }) => (
+                <div className="space-y-1">
+                  <label className="text-sm font-medium">
+                    {instituteLabel} <span className="text-red-500">*</span>
+                  </label>
+                  <CustomSelect
+                    label={instituteLabel}
+                    options={instituteOptions}
+                    value={field.value || ""}
+                    onChange={field.onChange}
+                    onCreate={(newItem) => {
+                      handleCreateInstituteType(newItem);
+                      field.onChange(newItem);
+                    }}
+                    allowCreate
+                    disabled={!organizationType}
+                  />
+                  {error && <p className="text-red-500 text-sm">{error.message}</p>}
+                </div>
+              )}
+            />
+          </div>
+
           <InputField
             label="Username"
             name="username"
             control={control}
             rules={{ required: "Username required" }}
           />
-
           <InputField
             label="Father Name"
             name="father_name"
@@ -199,17 +239,13 @@ const UserForm = () => {
           <Controller
             name="relation_with_guardian"
             control={control}
-            rules={{
-              required: "Relation with Guardian is required",
-            }}
+            rules={{ required: "Relation with Guardian is required" }}
             render={({ field: { onChange, value }, fieldState: { error } }) => (
               <CustomSelect
                 label="Relation with Guardian"
                 options={gurdianOptions}
                 value={value ?? ""}
-                onChange={(newValue) => {
-                  onChange(newValue);
-                }}
+                onChange={(newValue) => onChange(newValue)}
                 onCreate={handleCreateGurdian}
                 allowCreate
                 showOther
@@ -227,15 +263,10 @@ const UserForm = () => {
           <Controller
             name="gender"
             control={control}
-            rules={{
-              required: "Gender is required",
-            }}
+            rules={{ required: "Gender is required" }}
             render={({ field: { onChange, value }, fieldState: { error } }) => (
               <div className="space-y-1">
-                <label className="block text-sm font-medium text-gray-700">
-                  Gender
-                </label>
-
+                <label className="block text-sm font-medium text-gray-700">Gender</label>
                 <CustomSelect
                   label="Gender"
                   options={genderOptions}
@@ -248,10 +279,7 @@ const UserForm = () => {
                   allowCreate
                   showOther
                 />
-
-                {error && (
-                  <p className="text-red-500 text-sm mt-1">{error.message}</p>
-                )}
+                {error && <p className="text-red-500 text-sm mt-1">{error.message}</p>}
               </div>
             )}
           />
@@ -259,15 +287,10 @@ const UserForm = () => {
           <Controller
             name="religion"
             control={control}
-            rules={{
-              required: "Religion is required",
-            }}
+            rules={{ required: "Religion is required" }}
             render={({ field: { onChange, value }, fieldState: { error } }) => (
               <div className="space-y-1">
-                <label className="block text-sm font-medium text-gray-700">
-                  Religion
-                </label>
-
+                <label className="block text-sm font-medium text-gray-700">Religion</label>
                 <CustomSelect
                   label="Religion"
                   options={religionOptions}
@@ -280,10 +303,7 @@ const UserForm = () => {
                   allowCreate
                   showOther
                 />
-
-                {error && (
-                  <p className="text-red-500 text-sm mt-1">{error.message}</p>
-                )}
+                {error && <p className="text-red-500 text-sm mt-1">{error.message}</p>}
               </div>
             )}
           />
@@ -303,33 +323,25 @@ const UserForm = () => {
           <div className="w-full flex flex-col gap-2">
             <h4 className="text-[18px] font-semibold text-gray-500">Address</h4>
 
-            {/* Country */}
             <Controller
               name="country"
               control={control}
               rules={{ required: "Country is required" }}
               render={({ field }) => (
-                <select
-                  {...field}
-                  className="border border-gray-300 px-2 py-3 rounded w-full text-gray-600"
-                >
+                <select {...field} className="border border-gray-300 px-2 py-3 rounded w-full text-gray-600">
                   <option value="">Select Country</option>
                   <option value="bangladesh">Bangladesh</option>
                 </select>
               )}
             />
 
-            {/* State */}
             {selectedCountry && (
               <Controller
                 name="state"
                 control={control}
                 rules={{ required: "State is required" }}
                 render={({ field }) => (
-                  <select
-                    {...field}
-                    className="border border-gray-300 px-2 py-3 rounded w-full text-gray-600"
-                  >
+                  <select {...field} className="border border-gray-300 px-2 py-3 rounded w-full text-gray-600">
                     <option value="">Select State</option>
                     <option value="bangladesh">Bangladesh</option>
                   </select>
@@ -337,46 +349,32 @@ const UserForm = () => {
               />
             )}
 
-            {/* Division */}
             {selectedState && (
               <Controller
                 name="division"
                 control={control}
                 rules={{ required: "Division is required" }}
                 render={({ field }) => (
-                  <select
-                    {...field}
-                    className="border border-gray-300 px-2 py-3 rounded w-full text-gray-600"
-                  >
+                  <select {...field} className="border border-gray-300 px-2 py-3 rounded w-full text-gray-600">
                     <option value="">Select Division</option>
-
                     {location?.map((item) => (
-                      <option key={item._id} value={item.name}>
-                        {item.name}
-                      </option>
+                      <option key={item._id} value={item.name}>{item.name}</option>
                     ))}
                   </select>
                 )}
               />
             )}
 
-            {/* District */}
             {selectedDivision && (
               <Controller
                 name="district"
                 control={control}
                 rules={{ required: "District is required" }}
                 render={({ field }) => (
-                  <select
-                    {...field}
-                    className="border border-gray-300 px-2 py-3 rounded w-full text-gray-600"
-                  >
+                  <select {...field} className="border border-gray-300 px-2 py-3 rounded w-full text-gray-600">
                     <option value="">Select District</option>
-
                     {districts?.districts?.map((item) => (
-                      <option key={item.name} value={item.name}>
-                        {item.name}
-                      </option>
+                      <option key={item.name} value={item.name}>{item.name}</option>
                     ))}
                   </select>
                 )}
@@ -389,31 +387,20 @@ const UserForm = () => {
                 control={control}
                 rules={{ required: "Upazila is required" }}
                 render={({ field }) => (
-                  <select
-                    {...field}
-                    className="border border-gray-300 px-2 py-3 rounded w-full text-gray-600"
-                  >
+                  <select {...field} className="border border-gray-300 px-2 py-3 rounded w-full text-gray-600">
                     <option value="">Select Upazila</option>
-
                     {upazila?.upazilas?.map((item) => (
-                      <option key={item.name} value={item.name}>
-                        {item.name}
-                      </option>
+                      <option key={item.name} value={item.name}>{item.name}</option>
                     ))}
                   </select>
                 )}
               />
             )}
 
-            {/* Village + Location */}
             {selectedUpazila && (
               <>
                 <InputField label="Village" name="village" control={control} />
-                <InputField
-                  label="Location"
-                  name="location"
-                  control={control}
-                />
+                <InputField label="Location" name="location" control={control} />
               </>
             )}
           </div>
@@ -427,25 +414,18 @@ const UserForm = () => {
               control={control}
               rules={{
                 required: "Email is required",
-                pattern: {
-                  value: /\S+@\S+\.\S+/,
-                  message: "Invalid email address",
-                },
+                pattern: { value: /\S+@\S+\.\S+/, message: "Invalid email address" },
               }}
             />
             <InputField
               label="Phone Number"
               name="phone"
               control={control}
-              rules={{
-                required: "Phone Number is required",
-              }}
+              rules={{ required: "Phone Number is required" }}
             />
           </div>
 
-          {/* Password */}
-
-          {/* Organization Type */}
+          {/* Organization Type — database field */}
           <Controller
             name="organization_type"
             control={control}
@@ -455,7 +435,6 @@ const UserForm = () => {
                 {...field}
                 onChange={(e) => {
                   field.onChange(e);
-                  // org type চেঞ্জ হলে নিচের দুটো reset করো
                   setValue("institute_type", "");
                   setValue("institute_id", "");
                 }}
@@ -463,9 +442,7 @@ const UserForm = () => {
               >
                 <option value="">Organization Type</option>
                 {uniqueOrgTypes.map((type) => (
-                  <option key={type} value={type}>
-                    {type}
-                  </option>
+                  <option key={type} value={type}>{type}</option>
                 ))}
               </select>
             )}
@@ -481,16 +458,13 @@ const UserForm = () => {
                 disabled={!selectedOrgType}
                 onChange={(e) => {
                   field.onChange(e);
-
                   setValue("institute_id", "");
                 }}
                 className="w-full border border-gray-200 rounded-md px-3 h-[50px] text-base text-gray-500 disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 <option value="">Institute Type</option>
                 {filteredInstituteTypes.map((type) => (
-                  <option key={type} value={type}>
-                    {type}
-                  </option>
+                  <option key={type} value={type}>{type}</option>
                 ))}
               </select>
             )}
@@ -521,12 +495,8 @@ const UserForm = () => {
             name="hall"
             control={control}
             render={({ field }) => (
-              <select
-                {...field}
-                className="w-full border border-gray-200 rounded-md px-3 h-[50px] text-base text-gray-500"
-              >
+              <select {...field} className="w-full border border-gray-200 rounded-md px-3 h-[50px] text-base text-gray-500">
                 <option value="">Name Of the Hall</option>
-
                 {filteredInstitutes?.name_of_hall && (
                   <option value={filteredInstitutes.name_of_hall}>
                     {filteredInstitutes.name_of_hall}
@@ -540,12 +510,8 @@ const UserForm = () => {
             name="mess"
             control={control}
             render={({ field }) => (
-              <select
-                {...field}
-                className="w-full border border-gray-200 rounded-md px-3 h-[50px] text-base text-gray-500"
-              >
+              <select {...field} className="w-full border border-gray-200 rounded-md px-3 h-[50px] text-base text-gray-500">
                 <option value="">Name Of the Mess</option>
-
                 {filteredInstitutes?.name_of_mess && (
                   <option value={filteredInstitutes.name_of_mess}>
                     {filteredInstitutes.name_of_mess}
@@ -555,29 +521,22 @@ const UserForm = () => {
             )}
           />
 
-          {/* room number */}
           <InputField
             label="Room Number"
             name="room_number"
             control={control}
             type="number"
-            rules={{
-              required: "Room Number is required",
-              valueAsNumber: true,
-            }}
+            rules={{ required: "Room Number is required", valueAsNumber: true }}
           />
 
           <div className="flex flex-col gap-1">
-            <h4 className="text-[18px] font-semibold text-gray-500">
-              Document
-            </h4>
+            <h4 className="text-[18px] font-semibold text-gray-500">Document</h4>
             <Controller
               name="documents"
               control={control}
               rules={{
                 validate: (value) =>
-                  (value && value.length > 0) ||
-                  "At least one document is required",
+                  (value && value.length > 0) || "At least one document is required",
               }}
               render={({ field: { onChange }, fieldState: { error } }) => (
                 <>
@@ -586,11 +545,7 @@ const UserForm = () => {
                     initialDocuments={uploadedDocs}
                     setFormUploadData={setFormUploadData}
                   />
-                  {error && (
-                    <p className="text-red-500 text-sm mt-1">
-                      * {error.message}
-                    </p>
-                  )}
+                  {error && <p className="text-red-500 text-sm mt-1">* {error.message}</p>}
                 </>
               )}
             />
@@ -603,7 +558,7 @@ const UserForm = () => {
             rules={{ required: "Password is required" }}
             render={({ field, fieldState }) => (
               <>
-                <div className="relative ">
+                <div className="relative">
                   <input
                     {...field}
                     type={passwordShow ? "text" : "password"}
@@ -612,17 +567,9 @@ const UserForm = () => {
                       fieldState.error ? "border-red-500" : "border-gray-200"
                     }`}
                   />
-
-                  <label
-                    className="absolute left-3 bg-white px-1 text-gray-500 transition-all
-        top-1/2 -translate-y-1/2 text-sm md:text-base
-        peer-focus:top-1 peer-focus:text-xs peer-focus:text-black
-        peer-not-placeholder-shown:top-1 peer-not-placeholder-shown:text-xs
-        pointer-events-none"
-                  >
+                  <label className="absolute left-3 bg-white px-1 text-gray-500 transition-all top-1/2 -translate-y-1/2 text-sm md:text-base peer-focus:top-1 peer-focus:text-xs peer-focus:text-black peer-not-placeholder-shown:top-1 peer-not-placeholder-shown:text-xs pointer-events-none">
                     Password
                   </label>
-
                   <div
                     onClick={() => setPasswordShow(!passwordShow)}
                     className="absolute top-1/2 -translate-y-1/2 right-4 text-2xl text-gray-500 cursor-pointer"
@@ -631,9 +578,7 @@ const UserForm = () => {
                   </div>
                 </div>
                 {fieldState.error && (
-                  <span className="text-red-500 text-sm ">
-                    {fieldState.error.message}
-                  </span>
+                  <span className="text-red-500 text-sm">{fieldState.error.message}</span>
                 )}
               </>
             )}
@@ -645,12 +590,11 @@ const UserForm = () => {
             control={control}
             rules={{
               required: "Confirm password is required",
-              validate: (value) =>
-                value === passwordValue || "Passwords do not match",
+              validate: (value) => value === passwordValue || "Passwords do not match",
             }}
             render={({ field, fieldState }) => (
               <>
-                <div className="relative ">
+                <div className="relative">
                   <input
                     {...field}
                     type={confirmPasswordShow ? "text" : "password"}
@@ -659,17 +603,9 @@ const UserForm = () => {
                       fieldState.error ? "border-red-500" : "border-gray-200"
                     }`}
                   />
-
-                  <label
-                    className="absolute left-3 bg-white px-1 text-gray-500 transition-all
-        top-1/2 -translate-y-1/2 text-sm md:text-base
-        peer-focus:top-1 peer-focus:text-xs peer-focus:text-black
-        peer-not-placeholder-shown:top-1 peer-not-placeholder-shown:text-xs
-        pointer-events-none"
-                  >
+                  <label className="absolute left-3 bg-white px-1 text-gray-500 transition-all top-1/2 -translate-y-1/2 text-sm md:text-base peer-focus:top-1 peer-focus:text-xs peer-focus:text-black peer-not-placeholder-shown:top-1 peer-not-placeholder-shown:text-xs pointer-events-none">
                     Confirm Password
                   </label>
-
                   <div
                     onClick={() => setConfirmPasswordShow(!confirmPasswordShow)}
                     className="absolute top-1/2 -translate-y-1/2 right-4 text-2xl text-gray-500 cursor-pointer"
@@ -678,20 +614,19 @@ const UserForm = () => {
                   </div>
                 </div>
                 {fieldState.error && (
-                  <span className="text-red-500 text-sm ">
-                    {fieldState.error.message}
-                  </span>
+                  <span className="text-red-500 text-sm">{fieldState.error.message}</span>
                 )}
               </>
             )}
           />
 
-          <div className="flex items-center  gap-2">
+          <div className="flex items-center gap-2">
             <input type="checkbox" />
             <p className="text-black font-semibold">
               I confirm that the above information is correct.
             </p>
           </div>
+
           <button
             type="submit"
             disabled={isPending}
@@ -702,13 +637,11 @@ const UserForm = () => {
 
           <div className="flex items-center gap-2 text-sm md:text-[18px]">
             <p>Already have an account?</p>
-            <Link
-              className="text-[rgba(50,100,245,0.90)] font-semibold"
-              to="/auth/login"
-            >
+            <Link className="text-[rgba(50,100,245,0.90)] font-semibold" to="/auth/login">
               Login
             </Link>
           </div>
+
         </form>
       </FormProvider>
     </>

@@ -75,11 +75,15 @@ const AddBalance = () => {
   const amountValue = watch("amount");
 
   const filteredUsers = (instituteUsers ?? []).filter(
-    (u) =>
-      u.information?.full_name?.toLowerCase().includes(search.toLowerCase()) ||
-      u.email?.toLowerCase().includes(search.toLowerCase()) ||
-      String(u.uid).includes(search),
-  );
+  (u) =>
+    u.information?.full_name?.toLowerCase().includes(search.toLowerCase()) ||
+    u.email?.toLowerCase().includes(search.toLowerCase()) ||
+      Number(u.uid) === Number(search.trim()) ||
+    String(u.phone ?? "").includes(search.trim()) ||
+    Number(u.information?.room_number) === Number(search.trim()) ||
+    u.information?.full_name?.toLowerCase().replace(/\s+/g, "").includes(search.toLowerCase().replace(/\s+/g, "")) ||
+    String(u.uid) === search.trim(),
+);
 
   const onSubmit = async (data) => {
     if (!selectedUser) return;
@@ -141,13 +145,13 @@ const AddBalance = () => {
               <p className="text-xs font-semibold text-slate-400 uppercase tracking-widest mb-3">
                 User List
               </p>
-              <input
-                type="text"
-                placeholder="Search by name, email or UID..."
-                value={search}
-                onChange={(e) => setSearch(e.target.value)}
-                className="w-full text-sm px-3 py-2 rounded-lg border border-slate-200 bg-slate-50 text-slate-700 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-violet-400 focus:border-transparent transition"
-              />
+            <input
+  type="text"
+  placeholder="Search by name, email, phone, UID or room..."
+  value={search}
+  onChange={(e) => setSearch(e.target.value)}
+  className="w-full text-sm px-3 py-2 rounded-lg border border-slate-200 bg-slate-50 text-slate-700 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-violet-400 focus:border-transparent transition"
+/>
             </div>
 
             <ul className="divide-y divide-slate-100 max-h-[500px] overflow-y-auto">
@@ -199,6 +203,9 @@ const AddBalance = () => {
                       </div>
                       <p className="text-xs text-slate-400 truncate">
                         {user.email}
+                      </p>
+                      <p className="text-xs text-slate-400 truncate">
+                        {user.phone}
                       </p>
                     </div>
 

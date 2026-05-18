@@ -153,7 +153,7 @@ const TopNavbar = ({ navVisible, hideOffset, firstBarRef }) => {
             ) : (
               <>
                 <ChevronDown size={14} />
-                <span>Menu</span>
+                {/* <span>Menu</span> */}
               </>
             )}
           </button>
