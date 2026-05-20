@@ -112,6 +112,9 @@ import InventoryAllWise from "../Pages/dashboard/InventoryAllWise";
 import InventoryStockManagement from "../Pages/dashboard/InventoryStockManagement";
 import InstiuteUserMealOnOff from "../Pages/dashboard/InstiuteUserMealOnOff";
 import InstituteUserBrowser from "../Components/admin/AllInstituteshowBalance/AllInstituteshowBalance";
+import MealOnOffSuperAdmin from "../Components/admin/MealOnoff/MealOnOffSuperAdmin";
+import Institutionalldatamealon from "../Pages/dashboard/institutionalldatamealon";
+import Superadminmealallonpart from "../Components/admin/MealOnoff/Superadminmealallonpart";
 
 const router = createBrowserRouter([
   {
@@ -356,6 +359,14 @@ const router = createBrowserRouter([
         element: <InstituteUserBrowser />,
       },
       {
+        path: "mealonoffparts",
+        element: <MealOnOffSuperAdmin />,
+      },
+      {
+        path: "allviewmealonoff",
+        element: <Superadminmealallonpart />,
+      },
+      {
         path: `update-schedule/:id`,
         element: <UpdateSchedule />,
       },
@@ -575,6 +586,10 @@ const router = createBrowserRouter([
       {
         path: "/dashboards/meal-on-off",
         element: <InstiuteUserMealOnOff />,
+      },
+      {
+        path: "/dashboards/all-meal-on-off",
+        element: <Institutionalldatamealon />,
       },
       {
         path: "/dashboards/inventory-purchase",

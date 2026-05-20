@@ -95,6 +95,30 @@ const AdminDashboardSidebar = ({ setIsOpenSidebar }) => {
       ],
     },
     {
+      key: "Balance",
+      title: "Balance",
+      icon: FaClipboardList,
+      links: [
+        {
+          title: "Add Balance",
+          icon: FaShoppingBag,
+          path: "/admin/dashboard/allinstitutebalance",
+        },
+      ],
+    },
+    {
+      key: "MealONOff",
+      title: "MealONOff",
+      icon: FaClipboardList,
+      links: [
+        {
+          title: "MealONOff",
+          icon: FaShoppingBag,
+          path: "/admin/dashboard/mealonoffparts",
+        },
+      ],
+    },
+    {
       key: "CMS",
       title: "CMS",
       icon: FaClipboardList,
