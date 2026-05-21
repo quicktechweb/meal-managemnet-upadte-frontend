@@ -115,6 +115,18 @@ import InstituteUserBrowser from "../Components/admin/AllInstituteshowBalance/Al
 import MealOnOffSuperAdmin from "../Components/admin/MealOnoff/MealOnOffSuperAdmin";
 import Institutionalldatamealon from "../Pages/dashboard/institutionalldatamealon";
 import Superadminmealallonpart from "../Components/admin/MealOnoff/Superadminmealallonpart";
+import WhychooseusSkeleton from "../Components/skeleton/WhychooseusSkeleton";
+import WhyChooseUs from "../Components/home/WhyChooseUs/WhyChooseUs";
+import FeaturePart from "../Components/home/WhyChooseUs/FeatursPart/FeaturesPart";
+import SettingsPrivacy from "../Components/home/SettingsPrivacy/SettingsPrivacy";
+import HelpSection from "../Components/home/HelpSupport/HelpSupport";
+import Contactus from "../Components/home/Contactus/Contactus";
+import Feedback from "../Components/home/Contactus/Feedback";
+import ProtectedRoute from "../providers/ProtedRoute/ProtedRoute";
+import BalancePagepart from "../Components/home/Balance/Balance";
+import History from "../Components/home/History/History";
+import Review from "../Components/home/History/Review";
+import ReturnPage from "../Components/home/Return/Return";
 
 const router = createBrowserRouter([
   {
@@ -148,6 +160,47 @@ const router = createBrowserRouter([
         path: "/faq",
         element: <Faq />,
       },
+      {
+        path: "/whychooseus",
+        element: <WhyChooseUs />,
+      },
+      {
+        path: "/featutes",
+        element: <FeaturePart />,
+      },
+      {
+        path: "/settingsprivacy",
+        element: <SettingsPrivacy />,
+      },
+      {
+        path: "/helpsupport",
+        element: <HelpSection />,
+      },
+      {
+        path: "/contactus",
+        element: <Contactus />,
+      },
+      {
+        path: "/feedback",
+        element: <Feedback />,
+      },
+      {
+        path: "/reviewspart",
+        element: <Review />,
+      },
+      {
+        path: "/returnpart",
+        element: <ReturnPage />,
+      },
+      {
+        path: "/balance",
+        element: <BalancePagepart />,
+      },
+      {
+        path: "/history",
+        element: <History />,
+      },
+     
     ],
   },
   {
@@ -207,9 +260,9 @@ const router = createBrowserRouter([
   {
     path: "/dashboard",
     element: (
-      //  <PrivateRoute>
+       <ProtectedRoute>
       <Dashboard />
-      //  </PrivateRoute>
+       </ProtectedRoute>
     ),
     children: [
       {
@@ -565,11 +618,19 @@ const router = createBrowserRouter([
       },
       {
         path: "/dashboards/routines",
-        element: <InstituteAdminMealManagement />,
+        element: 
+        <ProtectedRoute>
+           <InstituteAdminMealManagement />
+        </ProtectedRoute>
+       
       },
       {
         path: "/dashboards/profile",
-        element: <InstituteAdminProfile />,
+        element: 
+        <ProtectedRoute>
+            <InstituteAdminProfile />
+        </ProtectedRoute>
+      
       },
       {
         path: "/dashboards/balance",

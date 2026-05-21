@@ -14,6 +14,10 @@ const AuthProvider = ({ children }) => {
   // mutation:
   const { data: getUserData, isLoading } = useGetUserData(token);
 
+  // const { data: getUserData, isLoading } = useGetUserData(token);
+
+console.log("getUserData:", getUserData);
+
   // get data:
   useEffect(() => {
     if (token) {

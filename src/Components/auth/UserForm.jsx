@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState,useRef  } from "react";
 import { useForm, Controller, FormProvider } from "react-hook-form";
 import { IoMdEye, IoMdEyeOff } from "react-icons/io";
 import { Link, useNavigate } from "react-router-dom";
@@ -36,6 +36,104 @@ const InputField = ({ label, name, control, type = "text", rules = {} }) => (
     )}
   />
 );
+
+
+// SearchableSelect component — file এর top এ বা আলাদা file এ রাখো
+const SearchableSelect = ({
+  field,
+  options = [],
+  placeholder = "Select...",
+  disabled = false,
+  onChange,
+}) => {
+  const [search, setSearch] = useState("");
+  const [open, setOpen] = useState(false);
+  const ref = useRef(null);
+
+  const filtered = options.filter((opt) =>
+    opt?.toLowerCase().includes(search.toLowerCase())
+  );
+
+  const selectedLabel = field.value
+    ? options.find((o) => o === field.value) || field.value
+    : "";
+
+  // outside click এ close
+  useEffect(() => {
+    const handler = (e) => {
+      if (ref.current && !ref.current.contains(e.target)) setOpen(false);
+    };
+    document.addEventListener("mousedown", handler);
+    return () => document.removeEventListener("mousedown", handler);
+  }, []);
+
+  return (
+    <div ref={ref} className="relative w-full">
+      {/* Trigger button */}
+      <button
+        type="button"
+        disabled={disabled}
+        onClick={() => !disabled && setOpen((prev) => !prev)}
+        className="w-full border border-gray-200 rounded-md px-3 h-[50px] text-base text-gray-500 text-left flex items-center justify-between disabled:opacity-50 disabled:cursor-not-allowed bg-white"
+      >
+        <span className={selectedLabel ? "text-gray-700" : "text-gray-400"}>
+          {selectedLabel || placeholder}
+        </span>
+        <span className="text-gray-400">{open ? "▲" : "▼"}</span>
+      </button>
+
+      {/* Dropdown */}
+      {open && (
+        <div className="absolute z-50 w-full mt-1 bg-white border border-gray-200 rounded-md shadow-lg">
+          {/* Search input */}
+          <div className="p-2 border-b border-gray-100">
+            <input
+              type="text"
+              autoFocus
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              placeholder="Search..."
+              className="w-full px-3 py-2 text-sm border border-gray-200 rounded-md focus:outline-none focus:border-gray-400"
+            />
+          </div>
+
+          {/* Options list */}
+          <ul className="max-h-48 overflow-y-auto">
+            <li
+              onClick={() => {
+                onChange ? onChange("") : field.onChange("");
+                setOpen(false);
+                setSearch("");
+              }}
+              className="px-3 py-2 text-sm text-gray-400 hover:bg-gray-50 cursor-pointer"
+            >
+              {placeholder}
+            </li>
+            {filtered.length > 0 ? (
+              filtered.map((opt, idx) => (
+                <li
+                  key={idx}
+                  onClick={() => {
+                    onChange ? onChange(opt) : field.onChange(opt);
+                    setOpen(false);
+                    setSearch("");
+                  }}
+                  className={`px-3 py-2 text-sm cursor-pointer hover:bg-gray-50 ${
+                    field.value === opt ? "bg-gray-100 font-medium text-black" : "text-gray-700"
+                  }`}
+                >
+                  {opt}
+                </li>
+              ))
+            ) : (
+              <li className="px-3 py-2 text-sm text-gray-400">No results found</li>
+            )}
+          </ul>
+        </div>
+      )}
+    </div>
+  );
+};
 
 const UserForm = () => {
   const navigate = useNavigate();
@@ -145,6 +243,35 @@ const UserForm = () => {
     );
   };
 
+
+  // ১. institute_id select করলে selected institute object বের করো
+const selectedInstituteId = watch("institute_id");
+const selectedHall = watch("hall");
+
+const selectedInstituteObj = filteredInstitutes?.find(
+  (inst) => inst._id === selectedInstituteId
+);
+
+// ২. selected institute এর halls বের করো
+// data structure অনুযায়ী: name_of_hall string হলে array বানাও,
+// অথবা যদি halls array থাকে সেটা use করো
+const hallOptions = selectedInstituteObj
+  ? Array.isArray(selectedInstituteObj.name_of_hall)
+    ? selectedInstituteObj.name_of_hall
+    : selectedInstituteObj.name_of_hall
+    ? [selectedInstituteObj.name_of_hall]
+    : []
+  : [];
+
+// ৩. selected hall এর messes বের করো
+const messOptions = selectedInstituteObj
+  ? Array.isArray(selectedInstituteObj.name_of_mess)
+    ? selectedInstituteObj.name_of_mess
+    : selectedInstituteObj.name_of_mess
+    ? [selectedInstituteObj.name_of_mess]
+    : []
+  : [];
+
   return (
     <>
       <FormProvider {...{ handleSubmit, control, watch }}>
@@ -164,7 +291,7 @@ const UserForm = () => {
           />
 
           {/* ✅ StepOne এর মতো Organization & Institute block */}
-          <div className="bg-gray-100 p-3 rounded-2xl flex flex-col gap-2">
+          {/* <div className="bg-gray-100 p-3 rounded-2xl flex flex-col gap-2">
             <Controller
               name="organization_type"
               control={control}
@@ -209,7 +336,7 @@ const UserForm = () => {
                 </div>
               )}
             />
-          </div>
+          </div> */}
 
           <InputField
             label="Username"
@@ -426,100 +553,180 @@ const UserForm = () => {
           </div>
 
           {/* Organization Type — database field */}
-          <Controller
-            name="organization_type"
-            control={control}
-            rules={{ required: "Organization type is required" }}
-            render={({ field }) => (
-              <select
-                {...field}
-                onChange={(e) => {
-                  field.onChange(e);
-                  setValue("institute_type", "");
-                  setValue("institute_id", "");
-                }}
-                className="w-full border border-gray-200 rounded-md px-3 h-[50px] text-base text-gray-500"
-              >
-                <option value="">Organization Type</option>
-                {uniqueOrgTypes.map((type) => (
-                  <option key={type} value={type}>{type}</option>
-                ))}
-              </select>
-            )}
-          />
+        {/* Organization Type */}
+<Controller
+  name="organization_type"
+  control={control}
+  rules={{ required: "Organization type is required" }}
+  render={({ field, fieldState }) => (
+    <>
+      <SearchableSelect
+        field={field}
+        options={uniqueOrgTypes}
+        placeholder="Organization Type"
+        onChange={(val) => {
+          field.onChange(val);
+          setValue("institute_type", "");
+          setValue("institute_id", "");
+          setValue("hall", "");
+          setValue("mess", "");
+        }}
+      />
+      {fieldState.error && <span className="text-red-500 text-sm">{fieldState.error.message}</span>}
+    </>
+  )}
+/>
 
-          <Controller
-            name="institute_type"
-            control={control}
-            rules={{ required: "Institute type is required" }}
-            render={({ field }) => (
-              <select
-                {...field}
-                disabled={!selectedOrgType}
-                onChange={(e) => {
-                  field.onChange(e);
-                  setValue("institute_id", "");
-                }}
-                className="w-full border border-gray-200 rounded-md px-3 h-[50px] text-base text-gray-500 disabled:opacity-50 disabled:cursor-not-allowed"
-              >
-                <option value="">Institute Type</option>
-                {filteredInstituteTypes.map((type) => (
-                  <option key={type} value={type}>{type}</option>
-                ))}
-              </select>
-            )}
-          />
+{/* Institute Type */}
+<Controller
+  name="institute_type"
+  control={control}
+  rules={{ required: "Institute type is required" }}
+  render={({ field, fieldState }) => (
+    <>
+      <SearchableSelect
+        field={field}
+        options={filteredInstituteTypes}
+        placeholder="Institute Type"
+        disabled={!selectedOrgType}
+        onChange={(val) => {
+          field.onChange(val);
+          setValue("institute_id", "");
+          setValue("hall", "");
+          setValue("mess", "");
+        }}
+      />
+      {fieldState.error && <span className="text-red-500 text-sm">{fieldState.error.message}</span>}
+    </>
+  )}
+/>
 
-          <Controller
-            name="institute_id"
-            control={control}
-            rules={{ required: "Institute is required" }}
-            render={({ field }) => (
-              <select
-                {...field}
-                disabled={!selectedInstituteType}
-                className="w-full border border-gray-200 rounded-md px-3 h-[50px] text-base text-gray-500 disabled:opacity-50 disabled:cursor-not-allowed"
-              >
-                <option value="">Name Of the Institute</option>
-                {filteredInstitutes?.map((institute) => (
-                  <option key={institute._id} value={institute._id}>
-                    {institute.name_of_institute}
-                  </option>
-                ))}
-              </select>
-            )}
-          />
+{/* Institute Name — label আলাদা তাই custom */}
+<Controller
+  name="institute_id"
+  control={control}
+  rules={{ required: "Institute is required" }}
+  render={({ field, fieldState }) => {
+    const [search, setSearch] = useState("");
+    const [open, setOpen] = useState(false);
+    const ref = useRef(null);
 
-          {/* hall */}
-          <Controller
-            name="hall"
-            control={control}
-            render={({ field }) => (
-              <select {...field} className="w-full border border-gray-200 rounded-md px-3 h-[50px] text-base text-gray-500">
-                <option value="">Name Of the Hall</option>
-                {filteredInstitutes?.name_of_hall && (
-                  <option value={filteredInstitutes.name_of_hall}>
-                    {filteredInstitutes.name_of_hall}
-                  </option>
+    const filtered = filteredInstitutes?.filter((inst) =>
+      inst.name_of_institute?.toLowerCase().includes(search.toLowerCase())
+    );
+
+    const selectedLabel = filteredInstitutes?.find(
+      (inst) => inst._id === field.value
+    )?.name_of_institute;
+
+    useEffect(() => {
+      const handler = (e) => {
+        if (ref.current && !ref.current.contains(e.target)) setOpen(false);
+      };
+      document.addEventListener("mousedown", handler);
+      return () => document.removeEventListener("mousedown", handler);
+    }, []);
+
+    return (
+      <>
+        <div ref={ref} className="relative w-full">
+          <button
+            type="button"
+            disabled={!selectedInstituteType}
+            onClick={() => selectedInstituteType && setOpen((p) => !p)}
+            className="w-full border border-gray-200 rounded-md px-3 h-[50px] text-base text-left flex items-center justify-between disabled:opacity-50 disabled:cursor-not-allowed bg-white text-gray-500"
+          >
+            <span className={selectedLabel ? "text-gray-700" : "text-gray-400"}>
+              {selectedLabel || "Name Of the Institute"}
+            </span>
+            <span className="text-gray-400">{open ? "▲" : "▼"}</span>
+          </button>
+
+          {open && (
+            <div className="absolute z-50 w-full mt-1 bg-white border border-gray-200 rounded-md shadow-lg">
+              <div className="p-2 border-b border-gray-100">
+                <input
+                  autoFocus
+                  type="text"
+                  value={search}
+                  onChange={(e) => setSearch(e.target.value)}
+                  placeholder="Search..."
+                  className="w-full px-3 py-2 text-sm border border-gray-200 rounded-md focus:outline-none"
+                />
+              </div>
+              <ul className="max-h-48 overflow-y-auto">
+                {filtered?.length > 0 ? (
+                  filtered.map((inst) => (
+                    <li
+                      key={inst._id}
+                      onClick={() => {
+                        field.onChange(inst._id);
+                        setValue("hall", "");
+                        setValue("mess", "");
+                        setOpen(false);
+                        setSearch("");
+                      }}
+                      className={`px-3 py-2 text-sm cursor-pointer hover:bg-gray-50 ${
+                        field.value === inst._id ? "bg-gray-100 font-medium text-black" : "text-gray-700"
+                      }`}
+                    >
+                      {inst.name_of_institute}
+                    </li>
+                  ))
+                ) : (
+                  <li className="px-3 py-2 text-sm text-gray-400">No results found</li>
                 )}
-              </select>
-            )}
-          />
+              </ul>
+            </div>
+          )}
+        </div>
+        {fieldState.error && <span className="text-red-500 text-sm">{fieldState.error.message}</span>}
+      </>
+    );
+  }}
+/>
 
-          <Controller
-            name="mess"
-            control={control}
-            render={({ field }) => (
-              <select {...field} className="w-full border border-gray-200 rounded-md px-3 h-[50px] text-base text-gray-500">
-                <option value="">Name Of the Mess</option>
-                {filteredInstitutes?.name_of_mess && (
-                  <option value={filteredInstitutes.name_of_mess}>
-                    {filteredInstitutes.name_of_mess}
-                  </option>
-                )}
-              </select>
-            )}
-          />
+{/* Hall */}
+<Controller
+  name="hall"
+  control={control}
+  rules={{ required: "Hall is required" }}
+  render={({ field, fieldState }) => (
+    <>
+      <SearchableSelect
+        field={field}
+        options={hallOptions}
+        placeholder="Name Of the Hall"
+        disabled={!selectedInstituteId || hallOptions.length === 0}
+        onChange={(val) => {
+          field.onChange(val);
+          setValue("mess", "");
+        }}
+      />
+      {fieldState.error && <span className="text-red-500 text-sm">{fieldState.error.message}</span>}
+    </>
+  )}
+/>
+
+{/* Mess */}
+{selectedHall && (
+  <Controller
+    name="mess"
+    control={control}
+    rules={{ required: "Mess is required" }}
+    render={({ field, fieldState }) => (
+      <>
+        <SearchableSelect
+          field={field}
+          options={messOptions}
+          placeholder="Name Of the Mess"
+          disabled={messOptions.length === 0}
+        />
+        {fieldState.error && <span className="text-red-500 text-sm">{fieldState.error.message}</span>}
+      </>
+    )}
+  />
+)}
 
           <InputField
             label="Room Number"
