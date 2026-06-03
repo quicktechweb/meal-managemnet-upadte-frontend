@@ -81,6 +81,9 @@ const StepFour = ({
     );
   };
 
+
+  // অন্য useEffect গুলোর নিচে এটা যোগ করো
+
   // const onSubmit = (data) => {
   //   const payload = {
   //     ...data,
@@ -117,6 +120,10 @@ const StepFour = ({
       [value]: [],
     }));
   };
+
+  useEffect(() => {
+  form.setValue("isRegister", true);
+}, []);
 
   const handleCreateAdminType = (value) => {
     if (!admin) return;
@@ -447,6 +454,7 @@ const StepFour = ({
       </div>
 
       <div className="flex  gap-2">
+        {/* <input type="hidden" {...register("isRegister")} value="true" /> */}
         {/* <button
           type="button"
           onClick={prevStep}

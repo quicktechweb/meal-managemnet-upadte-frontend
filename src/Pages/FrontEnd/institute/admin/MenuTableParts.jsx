@@ -1,17 +1,17 @@
-import { useInstituteUserAdminData } from "../../api/cms/user.hook";
-import Headline from "../../Components/Headline";
-import InstituteMealOnOff from "../../Components/InstituteMealOnOff";
-import LiveKitchen from "../../Components/LiveKitchen";
-import MealActivity from "../../Components/MealActivity";
-import MenuTable from "../../Components/MenuTable";
-import PackageMenuRoutine from "../../Components/PackageMenuRoutine";
-import useInstituteAuth from "../../Hooks/useInstituteAuth";
-import PackageMealActivity from "../FrontEnd/Dashboard/UserDashboard/MealManagementPart/PackageMealActivity";
-import InstituteAdminPackageRoutine from "../FrontEnd/institute/admin/InstituteAdminPackageRoutine";
-import MealAdminScheduleTable from "../FrontEnd/institute/admin/MealAdminScheduleTable";
+import React from "react";
+import MealAdminScheduleTable from "./MealAdminScheduleTable";
+import useInstituteAuth from "../../../../Hooks/useInstituteAuth";
+import InstituteAdminPackageRoutine from "./InstituteAdminPackageRoutine";
+import { useInstituteUserAdminData } from "../../../../api/cms/user.hook";
+import Headline from "../../../../Components/Headline";
+import LiveKitchen from "../../../../Components/LiveKitchen";
+import MenuTable from "../../../../Components/MenuTable";
+import PackageMenuRoutine from "../../../../Components/PackageMenuRoutine";
+import MealActivity from "../../../../Components/MealActivity";
+import PackageMealActivity from "../../Dashboard/UserDashboard/MealManagementPart/PackageMealActivity";
+import InstituteMealOnOff from "../../../../Components/InstituteMealOnOff";
 
-
-const DashboardPage = () => {
+const MenuTableParts = () => {
   const { user } = useInstituteAuth();
 
   const { data } = useInstituteUserAdminData(user?.user?.institute_id);
@@ -46,7 +46,7 @@ const DashboardPage = () => {
           <Headline />
 
           {/* Live Kitchen */}
-          <LiveKitchen />
+          {/* <LiveKitchen /> */}
 
           {/* Menu Table */}
           {data?.routine_type === "Routine" && <MenuTable />}
@@ -55,13 +55,13 @@ const DashboardPage = () => {
 
           {/*meal activity  */}
 
-          {data?.routine_type === "Routine" && <MealActivity />}
+          {/* {data?.routine_type === "Routine" && <MealActivity />} */}
 
-          {data?.routine_type === "Package" && <PackageMealActivity />}
+          {/* {data?.routine_type === "Package" && <PackageMealActivity />} */}
         </section>
       )}
     </>
   );
 };
 
-export default DashboardPage;
+export default MenuTableParts;

@@ -32,7 +32,7 @@ export const SIDEBAR_ITEMS = [
     permission: "services.view",
   },
   {
-    label: "Routine",
+    label: "Home",
     icon: "Calendar",
     path: "/dashboards/routines",
     permission: "routine.view",

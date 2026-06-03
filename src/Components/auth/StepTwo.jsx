@@ -254,20 +254,27 @@ const hasPaidByHimself = utilityBills.length > 0 && nonPaidBills.length === 0;
                     size={18}
                   />
                 </div>
-                {activeDropdown === "service" && (
-                  <div className="absolute w-full bg-white border border-gray-200 rounded-xl mt-1 shadow-lg z-50 max-h-60 overflow-auto">
-                    {combineData?.map((service) => (
-                      <div
-                        key={service._id}
-                        className="px-4 py-2 cursor-pointer hover:bg-slate-100 flex justify-between items-center"
-                        onClick={() => handleCharge(service)}
-                      >
-                        {service.name}
-                        {charge?.find((c) => c._id === service._id) && (
-                          <Check size={16} className="text-orange-500" />
-                        )}
-                      </div>
-                    ))}
+               {activeDropdown === "service" && (
+  <div className="absolute w-full bg-white border border-gray-200 rounded-xl mt-1 shadow-lg z-50 max-h-60 overflow-auto">
+    {combineData
+      ?.filter((service) => {
+        const paidByHimselfNames = utilityBills
+          .filter((b) => b.bear_the_cost?._id === "paid_by_himself")
+          .map((b) => b.name.toLowerCase().trim());
+        return !paidByHimselfNames.includes(service.name.toLowerCase().trim());
+      })
+      ?.map((service) => (
+  <div
+    key={service._id}
+    className="px-4 py-2 cursor-pointer hover:bg-slate-100 flex justify-between items-center"
+    onClick={() => handleCharge(service)}
+  >
+    {service.name}
+    {charge?.find((c) => c._id === service._id) && (
+      <Check size={16} className="text-orange-500" />
+    )}
+  </div>
+))}
                   </div>
                 )}
               </div>
@@ -490,18 +497,26 @@ const hasPaidByHimself = utilityBills.length > 0 && nonPaidBills.length === 0;
                 </div>
                 {activeDropdown === "service" && (
                   <div className="absolute w-full bg-white border border-gray-200 rounded-xl mt-1 shadow-lg z-50 max-h-60 overflow-auto">
-                    {combineData?.map((service) => (
-                      <div
-                        key={service._id}
-                        className="px-4 py-2 cursor-pointer hover:bg-slate-100 flex justify-between items-center"
-                        onClick={() => handleCharge(service)}
-                      >
-                        {service.name}
-                        {charge.find((c) => c._id === service._id) && (
-                          <Check size={16} className="text-orange-500" />
-                        )}
-                      </div>
-                    ))}
+                    {combineData
+  ?.filter((service) => {
+    const paidByHimselfNames = utilityBills
+      .filter((b) => b.bear_the_cost?._id === "paid_by_himself")
+      .map((b) => b.name.toLowerCase().trim());
+
+    return !paidByHimselfNames.includes(service.name.toLowerCase().trim());
+  })
+  ?.map((service) => (
+    <div
+      key={service._id}
+      className="px-4 py-2 cursor-pointer hover:bg-slate-100 flex justify-between items-center"
+      onClick={() => handleCharge(service)}
+    >
+      {service.name}
+      {charge?.find((c) => c._id === service._id) && (
+        <Check size={16} className="text-orange-500" />
+      )}
+    </div>
+  ))}
                   </div>
                 )}
               </div>

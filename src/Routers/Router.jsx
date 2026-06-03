@@ -127,6 +127,13 @@ import BalancePagepart from "../Components/home/Balance/Balance";
 import History from "../Components/home/History/History";
 import Review from "../Components/home/History/Review";
 import ReturnPage from "../Components/home/Return/Return";
+import LiveKitchen from "../Components/LiveKitchen";
+import MenuTable from "../Components/MenuTable";
+import MenuTableParts from "../Pages/FrontEnd/institute/admin/MenuTableParts";
+import MealParts from "../Pages/FrontEnd/institute/admin/MealParts";
+import MealSummary from "../Pages/FrontEnd/institute/admin/MealSummary";
+import BalanceHistory from "../Pages/FrontEnd/institute/admin/BalanceHistory";
+import MealFeedbackForm from "../Pages/FrontEnd/institute/admin/MealFeedbackForm";
 
 const router = createBrowserRouter([
   {
@@ -260,9 +267,9 @@ const router = createBrowserRouter([
   {
     path: "/dashboard",
     element: (
-       <ProtectedRoute>
+      //  <ProtectedRoute>
       <Dashboard />
-       </ProtectedRoute>
+      //  </ProtectedRoute>
     ),
     children: [
       {
@@ -619,17 +626,65 @@ const router = createBrowserRouter([
       {
         path: "/dashboards/routines",
         element: 
-        <ProtectedRoute>
+        // <ProtectedRoute>
            <InstituteAdminMealManagement />
-        </ProtectedRoute>
+        // </ProtectedRoute>
+       
+      },
+      {
+        path: "/dashboards/liveKitchen",
+        element: 
+        // <ProtectedRoute>
+           <LiveKitchen />
+        // </ProtectedRoute>
+       
+      },
+      {
+        path: "/dashboards/mealonof",
+        element: 
+        // <ProtectedRoute>
+           <MealParts />
+        // </ProtectedRoute>
+       
+      },
+      {
+        path: "/dashboards/mealsummary",
+        element: 
+        // <ProtectedRoute>
+           <MealSummary />
+        // </ProtectedRoute>
+       
+      },
+      {
+        path: "/dashboards/balancehistory",
+        element: 
+        // <ProtectedRoute>
+           <BalanceHistory />
+        // </ProtectedRoute>
+       
+      },
+      {
+        path: "/dashboards/mealfeedbackform",
+        element: 
+        // <ProtectedRoute>
+           <MealFeedbackForm />
+        // </ProtectedRoute>
+       
+      },
+      {
+        path: "/dashboards/menu",
+        element: 
+        // <ProtectedRoute>
+           <MenuTableParts />
+        // </ProtectedRoute>
        
       },
       {
         path: "/dashboards/profile",
         element: 
-        <ProtectedRoute>
+        // <ProtectedRoute>
             <InstituteAdminProfile />
-        </ProtectedRoute>
+        // </ProtectedRoute>
       
       },
       {
