@@ -134,6 +134,8 @@ import MealParts from "../Pages/FrontEnd/institute/admin/MealParts";
 import MealSummary from "../Pages/FrontEnd/institute/admin/MealSummary";
 import BalanceHistory from "../Pages/FrontEnd/institute/admin/BalanceHistory";
 import MealFeedbackForm from "../Pages/FrontEnd/institute/admin/MealFeedbackForm";
+import AddMaterialManagement from "../Pages/FrontEnd/admin/Inventory/AddMaterialManagement/AddMaterialManagement";
+import ProductMaterialAll from "../Pages/FrontEnd/admin/Inventory/AddMaterialManagement/ProductMaterialAll";
 
 const router = createBrowserRouter([
   {
@@ -409,6 +411,14 @@ const router = createBrowserRouter([
       {
         path: "all-Schedule",
         element: <AllSchedule />,
+      },
+      {
+        path: "admaterial-management",
+        element: <AddMaterialManagement />,
+      },
+      {
+        path: "admaterial-allproduct",
+        element: <ProductMaterialAll />,
       },
       {
         path: "add-schedule",
