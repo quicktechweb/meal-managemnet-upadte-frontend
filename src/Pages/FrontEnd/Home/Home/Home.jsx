@@ -99,7 +99,7 @@ const Home = () => {
             {" "}
             <Bannerparts bannerData={data?.banner} isLoading={isLoading} />
             <HomeLogin />
-            <WalletProfileCard />
+            {/* <WalletProfileCard /> */}
             <Features
               chooseusData={data?.chooseUs}
               chooseImage={data?.chooseImage}

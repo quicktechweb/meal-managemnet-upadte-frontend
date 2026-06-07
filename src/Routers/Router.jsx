@@ -310,6 +310,7 @@ const router = createBrowserRouter([
         path: "/dashboard/hall-profile",
         element: <SingleHallProfile />,
       },
+      
       {
         path: "/dashboard/mess-profile",
         element: <SingleMessProfile />,
@@ -624,6 +625,14 @@ const router = createBrowserRouter([
       {
         path: "/dashboards/profile-update/:id",
         element: <InstituteAdminProfileUpdate />,
+      },
+       {
+        path: "admaterial-management",
+        element: <AddMaterialManagement />,
+      },
+      {
+        path: "admaterial-allproduct",
+        element: <ProductMaterialAll />,
       },
       {
         path: "/dashboards/meal-order",

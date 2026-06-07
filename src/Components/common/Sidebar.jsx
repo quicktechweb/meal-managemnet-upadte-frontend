@@ -111,14 +111,56 @@ const Sidebar = ({ isOpen, onClose }) => {
             Menu
           </p>
 
-          {visibleItems.map((item) => {
+        {visibleItems.map((item) => {
             const Icon = ICON_MAP[item.icon];
             const hasChildren = item.children && item.children.length > 0;
 
             if (hasChildren) {
+              const isOpen = openMenus[item.label];
               return (
                 <div key={item.label} className="flex flex-col gap-0.5">
-                  {/* dropdown code */}
+                  {/* Parent button */}
+                  <button
+                    onClick={() => toggleMenu(item.label)}
+                    className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium text-gray-500 hover:bg-gray-50 hover:text-gray-800 transition-all duration-150 group w-full"
+                  >
+                    <span className="flex items-center justify-center w-7 h-7 rounded-lg text-gray-400 group-hover:text-gray-600 transition-all duration-150 shrink-0">
+                      {Icon && <Icon size={16} />}
+                    </span>
+                    <span className="flex-1 text-left">{item.label}</span>
+                    <ChevronDown
+                      size={14}
+                      className={`text-gray-400 transition-transform duration-200 ${isOpen ? "rotate-180" : ""}`}
+                    />
+                  </button>
+
+                  {/* Children */}
+                  {isOpen && (
+                    <div className="ml-4 pl-3 border-l border-gray-100 flex flex-col gap-0.5">
+                      {item.children.map((child) => (
+                        <NavLink
+                          key={child.path}
+                          to={child.path}
+                          end
+                          onClick={onClose}
+                          className={({ isActive }) =>
+                            `flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium transition-all duration-150 ${
+                              isActive
+                                ? "bg-blue-50 text-blue-600"
+                                : "text-gray-500 hover:bg-gray-50 hover:text-gray-800"
+                            }`
+                          }
+                        >
+                          {({ isActive }) => (
+                            <>
+                              <span className={`w-1.5 h-1.5 rounded-full shrink-0 ${isActive ? "bg-blue-500" : "bg-gray-300"}`} />
+                              <span>{child.label}</span>
+                            </>
+                          )}
+                        </NavLink>
+                      ))}
+                    </div>
+                  )}
                 </div>
               );
             }
@@ -159,56 +201,58 @@ const Sidebar = ({ isOpen, onClose }) => {
           })}
 
           {/* Quick Links */}
-          <div className="mt-4 px-1 flex flex-col gap-0.5">
-            <p className="text-[10px] font-semibold text-gray-400 uppercase tracking-widest px-3 mb-1">
-              Quick Links
-            </p>
-            <Link
-              to="/dashboards/liveKitchen"
-              className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium text-gray-500 hover:bg-green-50 hover:text-green-600 transition-all duration-150 group"
-            >
-              <span className="flex items-center justify-center w-7 h-7 rounded-lg bg-green-50 text-green-400 group-hover:bg-green-100 shrink-0">
-                <FiCalendar size={16} />
-              </span>
-              <span>Live Kitchen</span>
-            </Link>
-            <Link
-              to="/dashboards/menu"
-              className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium text-gray-500 hover:bg-red-50 hover:text-red-500 transition-all duration-150 group"
-            >
-              <span className="flex items-center justify-center w-7 h-7 rounded-lg bg-red-50 text-red-400 group-hover:bg-red-100 shrink-0">
-                <FiVideo size={16} />
-              </span>
-              <span>Routine</span>
-            </Link>
-            <Link
-              to="/dashboards/mealonof"
-              className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium text-gray-500 hover:bg-red-50 hover:text-red-500 transition-all duration-150 group"
-            >
-              <span className="flex items-center justify-center w-7 h-7 rounded-lg bg-red-50 text-red-400 group-hover:bg-red-100 shrink-0">
-                <FiVideo size={16} />
-              </span>
-              <span>MealPart</span>
-            </Link>
-            <Link
-              to="/dashboards/balancehistory"
-              className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium text-gray-500 hover:bg-green-50 hover:text-green-600 transition-all duration-150 group"
-            >
-              <span className="flex items-center justify-center w-7 h-7 rounded-lg bg-green-50 text-green-400 group-hover:bg-green-100 shrink-0">
-                <FiCalendar size={16} />
-              </span>
-              <span>Balance History</span>
-            </Link>
-            <Link
-              to="/dashboards/mealfeedbackform"
-              className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium text-gray-500 hover:bg-green-50 hover:text-green-600 transition-all duration-150 group"
-            >
-              <span className="flex items-center justify-center w-7 h-7 rounded-lg bg-green-50 text-green-400 group-hover:bg-green-100 shrink-0">
-                <FiCalendar size={16} />
-              </span>
-              <span>Feedback</span>
-            </Link>
-          </div>
+          {!isInstitute && (
+  <div className="mt-4 px-1 flex flex-col gap-0.5">
+    <p className="text-[10px] font-semibold text-gray-400 uppercase tracking-widest px-3 mb-1">
+      Quick Links
+    </p>
+    <Link
+      to="/dashboards/liveKitchen"
+      className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium text-gray-500 hover:bg-green-50 hover:text-green-600 transition-all duration-150 group"
+    >
+      <span className="flex items-center justify-center w-7 h-7 rounded-lg bg-green-50 text-green-400 group-hover:bg-green-100 shrink-0">
+        <FiCalendar size={16} />
+      </span>
+      <span>Live Kitchen</span>
+    </Link>
+    <Link
+      to="/dashboards/menu"
+      className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium text-gray-500 hover:bg-red-50 hover:text-red-500 transition-all duration-150 group"
+    >
+      <span className="flex items-center justify-center w-7 h-7 rounded-lg bg-red-50 text-red-400 group-hover:bg-red-100 shrink-0">
+        <FiVideo size={16} />
+      </span>
+      <span>Routine</span>
+    </Link>
+    <Link
+      to="/dashboards/mealonof"
+      className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium text-gray-500 hover:bg-red-50 hover:text-red-500 transition-all duration-150 group"
+    >
+      <span className="flex items-center justify-center w-7 h-7 rounded-lg bg-red-50 text-red-400 group-hover:bg-red-100 shrink-0">
+        <FiVideo size={16} />
+      </span>
+      <span>MealPart</span>
+    </Link>
+    <Link
+      to="/dashboards/balancehistory"
+      className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium text-gray-500 hover:bg-green-50 hover:text-green-600 transition-all duration-150 group"
+    >
+      <span className="flex items-center justify-center w-7 h-7 rounded-lg bg-green-50 text-green-400 group-hover:bg-green-100 shrink-0">
+        <FiCalendar size={16} />
+      </span>
+      <span>Balance History</span>
+    </Link>
+    <Link
+      to="/dashboards/mealfeedbackform"
+      className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium text-gray-500 hover:bg-green-50 hover:text-green-600 transition-all duration-150 group"
+    >
+      <span className="flex items-center justify-center w-7 h-7 rounded-lg bg-green-50 text-green-400 group-hover:bg-green-100 shrink-0">
+        <FiCalendar size={16} />
+      </span>
+      <span>Feedback</span>
+    </Link>
+  </div>
+)}
         </nav>
 
         {/* Bottom user area + Logout */}

@@ -107,6 +107,23 @@ const AdminDashboardSidebar = ({ setIsOpenSidebar }) => {
       ],
     },
     {
+      key: "Inventory",
+      title: "Inventory",
+      icon: FaClipboardList,
+      links: [
+        {
+          title: "Add Material",
+          icon: FaShoppingBag,
+          path: "/admin/dashboard/admaterial-management",
+        },
+        {
+          title: "Add Product-Material",
+          icon: FaShoppingBag,
+          path: "/admin/dashboard/admaterial-allproduct",
+        },
+      ],
+    },
+    {
       key: "MealONOff",
       title: "MealONOff",
       icon: FaClipboardList,

@@ -56,8 +56,7 @@ export const SIDEBAR_ITEMS = [
     path: "/dashboards/meal-on-off",
     permission: "mealonoff.view",
   },
-
-  {
+   {
     label: "Inventory",
     icon: "MdOutlineInventory2",
     path: "/dashboards/inventory",
@@ -88,6 +87,20 @@ export const SIDEBAR_ITEMS = [
         label: "Stock Management",
         path: "/dashboards/stock-management",
       },
+       {
+                label: "Add Material",
+               
+                path: "/dashboards/admaterial-management",
+              },
+              {
+                label: "Add Product-Material",
+               
+                path: "/dashboards/admaterial-allproduct",
+              },
     ],
   },
+
+  
+
+ 
 ];
