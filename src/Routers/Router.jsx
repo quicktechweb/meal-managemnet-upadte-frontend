@@ -136,6 +136,7 @@ import BalanceHistory from "../Pages/FrontEnd/institute/admin/BalanceHistory";
 import MealFeedbackForm from "../Pages/FrontEnd/institute/admin/MealFeedbackForm";
 import AddMaterialManagement from "../Pages/FrontEnd/admin/Inventory/AddMaterialManagement/AddMaterialManagement";
 import ProductMaterialAll from "../Pages/FrontEnd/admin/Inventory/AddMaterialManagement/ProductMaterialAll";
+import DayWiseProfitReport from "../Pages/FrontEnd/admin/Inventory/AddMaterialManagement/Daywisecalculation";
 
 const router = createBrowserRouter([
   {
@@ -633,6 +634,10 @@ const router = createBrowserRouter([
       {
         path: "admaterial-allproduct",
         element: <ProductMaterialAll />,
+      },
+      {
+        path: "daywisecalculation-report",
+        element: <DayWiseProfitReport />,
       },
       {
         path: "/dashboards/meal-order",

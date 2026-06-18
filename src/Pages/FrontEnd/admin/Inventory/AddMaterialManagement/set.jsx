@@ -1,10 +1,9 @@
-import { useState, useEffect, useCallback, useRef } from "react";
+import { useState, useEffect, useCallback } from "react";
+// import { useAllwiseInstituteUserOrderLists } from "../../api/cms/user.hook";
 import { useAllwiseInstituteUserOrderLists } from "../../../../../api/cms/user.hook";
 
 const API = "https://meal-management-backend-update-3.onrender.com/api/submaterial";
 const API_PRODUCTS = "https://meal-management-backend-update-3.onrender.com/api/allmetrialproductadd";
-
-const DEDUCT_KEY = "lastDeductedDate";
 
 async function apiFetch(url, options = {}) {
   const res = await fetch(url, {
@@ -18,14 +17,17 @@ async function apiFetch(url, options = {}) {
 
 const NON_WEIGHT = ["piece", "dozen", "bag", "packet"];
 
+// Get today's day name (e.g. "Wednesday")
 const getTodayName = () =>
   new Date().toLocaleDateString("en-US", { weekday: "long" });
 
-const getTodayDate = () =>
-  new Date().toISOString().split("T")[0];
-
+// Parse product titles from meal selected_items
+// "Vat,Goru" → ["vat", "goru"]
 const parseTitles = (titleStr = "") =>
-  titleStr.split(",").map((t) => t.trim().toLowerCase()).filter(Boolean);
+  titleStr
+    .split(",")
+    .map((t) => t.trim().toLowerCase())
+    .filter(Boolean);
 
 export default function RawMaterialManager() {
   const [tab, setTab] = useState("materials");
@@ -39,14 +41,14 @@ export default function RawMaterialManager() {
   const [editId, setEditId] = useState(null);
   const [costForm, setCostForm] = useState({ name: "", totalCost: "", selectedMats: [] });
 
+  // Orders from existing hook — same source as MealOrderPage, no extra API call
   const { data: ordersRaw, isLoading: ordersLoading } = useAllwiseInstituteUserOrderLists();
   const ordersData = ordersRaw ?? [];
 
+  // Deduction state
   const [deductLoading, setDeductLoading] = useState(false);
+  const [deductPreview, setDeductPreview] = useState(null); // null | { items: [], todayDay: string }
   const [deductResult, setDeductResult] = useState(null);
-  const [todayDeducted, setTodayDeducted] = useState(false);
-
-  const autoRanRef = useRef(false);
 
   const loadMaterials = useCallback(async () => {
     setLoading(true);
@@ -82,57 +84,53 @@ export default function RawMaterialManager() {
   useEffect(() => {
     loadMaterials();
     loadCostings();
-    const lastDate = localStorage.getItem(DEDUCT_KEY);
-    if (lastDate === getTodayDate()) {
-      setTodayDeducted(true);
-    }
   }, [loadMaterials, loadCostings]);
 
   useEffect(() => {
     if (tab === "summary") loadSummary();
   }, [tab, loadSummary]);
 
-  const runAutoDeduction = useCallback(async (isManual = false) => {
-    if (deductLoading) return;
-
-    if (!isManual) {
-      const lastDate = localStorage.getItem(DEDUCT_KEY);
-      if (lastDate === getTodayDate()) {
-        setTodayDeducted(true);
-        return;
-      }
-    }
-
-    if (ordersData.length === 0 || materials.length === 0) return;
-
+  // ── DEDUCTION LOGIC ─────────────────────────────────────────────────────────
+  // Step 1: orders come from the hook above; only products need a fresh fetch
+  const buildDeductionPreview = useCallback(async () => {
     setDeductLoading(true);
     setDeductResult(null);
-
     try {
-      const todayDay = getTodayName();
+      const todayDay = getTodayName(); // e.g. "Wednesday"
+
+      // orders already loaded via hook — just fetch products
       const productsRes = await apiFetch(API_PRODUCTS);
+
+      const orders = ordersData; // from useAllwiseInstituteUserOrderLists
       const products = Array.isArray(productsRes?.data) ? productsRes.data : [];
 
+      // Build a product lookup by lowercase name
+      // product.name = "goru" matches title "Goru"
       const productByName = {};
       products.forEach((p) => {
         productByName[p.name.toLowerCase().trim()] = p;
       });
 
-      const deductMap = {};
+      // Accumulate: materialId → { name, unit, totalGramsToDeduct }
+      const deductMap = {}; // key: material _id
 
-      ordersData.forEach((userOrder) => {
+      orders.forEach((userOrder) => {
         const todayMeals = (userOrder.meals || []).filter(
           (m) => m.day === todayDay && m.is_on
         );
+
         todayMeals.forEach((meal) => {
           (meal.selected_items || []).forEach((item) => {
             const titles = parseTitles(item.title);
             titles.forEach((title) => {
               const product = productByName[title];
               if (!product) return;
+
               (product.ingredients || []).forEach((ing) => {
-                const mat = typeof ing.material === "object" ? ing.material : null;
+                const mat =
+                  typeof ing.material === "object" ? ing.material : null;
                 if (!mat) return;
+
                 const key = mat._id;
                 if (!deductMap[key]) {
                   deductMap[key] = {
@@ -140,9 +138,13 @@ export default function RawMaterialManager() {
                     name: mat.name,
                     unit: mat.unit,
                     totalGramsToDeduct: 0,
+                    gramPerServing: ing.gramPerServing,
+                    productName: product.name,
+                    ordersCount: 0,
                   };
                 }
                 deductMap[key].totalGramsToDeduct += ing.gramPerServing;
+                deductMap[key].ordersCount += 1;
               });
             });
           });
@@ -150,75 +152,69 @@ export default function RawMaterialManager() {
       });
 
       const items = Object.values(deductMap);
-
-      if (items.length === 0) {
-        console.log(`📭 ${todayDay} তে কোনো order নেই`);
-        setDeductLoading(false);
-        return;
-      }
-
-      const results = [];
-
-      for (const item of items) {
-        const mat = materials.find((m) => m._id === item.materialId);
-        if (!mat) {
-          results.push({ name: item.name, status: "not_found" });
-          continue;
-        }
-
-        let deductInUnit = item.totalGramsToDeduct;
-        if (mat.unit === "kg") deductInUnit = item.totalGramsToDeduct / 1000;
-        else if (mat.unit === "liter") deductInUnit = item.totalGramsToDeduct / 1000;
-
-        const newQty = Math.max(0, mat.qty - deductInUnit);
-
-        try {
-          await apiFetch(API + `/${mat._id}`, {
-            method: "PUT",
-            body: JSON.stringify({
-              name: mat.name,
-              qty: newQty,
-              unit: mat.unit,
-              pricePerUnit: mat.pricePerUnit,
-            }),
-          });
-          results.push({
-            name: mat.name,
-            unit: mat.unit,
-            before: mat.qty,
-            deducted: deductInUnit,
-            after: newQty,
-            status: "ok",
-          });
-        } catch (e) {
-          results.push({ name: item.name, status: "error", msg: e.message });
-        }
-      }
-
-      localStorage.setItem(DEDUCT_KEY, getTodayDate());
-      setTodayDeducted(true);
-      setDeductResult(results);
-      await loadMaterials();
-
+      setDeductPreview({ items, todayDay });
     } catch (e) {
-      setError("Auto deduction error: " + e.message);
+      setError("Order/Product লোড করতে সমস্যা: " + e.message);
     } finally {
       setDeductLoading(false);
     }
-  }, [ordersData, materials, deductLoading]);
+  }, [ordersData]);
 
-  useEffect(() => {
-    if (
-      !autoRanRef.current &&
-      !ordersLoading &&
-      ordersData.length > 0 &&
-      materials.length > 0
-    ) {
-      autoRanRef.current = true;
-      runAutoDeduction(false);
+  // Step 2: Apply the deductions via API (PUT each material's new qty)
+  const applyDeductions = async () => {
+    if (!deductPreview?.items?.length) return;
+    if (!window.confirm("আজকের অর্ডার অনুযায়ী কাঁচামাল stock থেকে বাদ দেওয়া হবে। নিশ্চিত?")) return;
+
+    setDeductLoading(true);
+    const results = [];
+
+    for (const item of deductPreview.items) {
+      const mat = materials.find((m) => m._id === item.materialId);
+      if (!mat) {
+        results.push({ name: item.name, status: "not_found" });
+        continue;
+      }
+
+      // Convert grams to material's unit for subtraction
+      // material stored in kg → deduct grams → convert to kg
+      let deductInUnit = item.totalGramsToDeduct;
+      if (mat.unit === "kg") deductInUnit = item.totalGramsToDeduct / 1000;
+      else if (mat.unit === "liter") deductInUnit = item.totalGramsToDeduct / 1000;
+      // g, ml → already in same unit
+      else if (mat.unit === "g" || mat.unit === "ml") deductInUnit = item.totalGramsToDeduct;
+
+      const newQty = Math.max(0, mat.qty - deductInUnit);
+
+      try {
+        await apiFetch(API + `/${mat._id}`, {
+          method: "PUT",
+          body: JSON.stringify({
+            name: mat.name,
+            qty: newQty,
+            unit: mat.unit,
+            pricePerUnit: mat.pricePerUnit,
+          }),
+        });
+        results.push({
+          name: mat.name,
+          unit: mat.unit,
+          before: mat.qty,
+          deducted: deductInUnit,
+          after: newQty,
+          status: "ok",
+        });
+      } catch (e) {
+        results.push({ name: mat.name, status: "error", msg: e.message });
+      }
     }
-  }, [ordersData, materials, ordersLoading]);
 
+    setDeductResult(results);
+    setDeductPreview(null);
+    await loadMaterials();
+    setDeductLoading(false);
+  };
+
+  // ── EXISTING CRUD ────────────────────────────────────────────────────────────
   const addOrUpdateMaterial = async () => {
     const { name, qty, unit, pricePerUnit } = matForm;
     if (!name.trim() || !qty || !pricePerUnit) return alert("সব তথ্য পূরণ করুন!");
@@ -295,30 +291,23 @@ export default function RawMaterialManager() {
             <p className="text-sm text-gray-500 mt-1">Raw Material & Costing Manager</p>
           </div>
 
+          {/* Today's Order Deduction Button */}
           <div className="flex flex-col items-end gap-2">
-            {todayDeducted ? (
-              <div className="flex items-center gap-2 bg-green-50 border border-green-200 text-green-700 text-sm font-medium rounded-xl px-4 py-2.5">
-                <span>✅</span>
-                <span>আজকের stock adjust হয়ে গেছে</span>
-                <span className="bg-green-100 text-xs px-2 py-0.5 rounded-full">{getTodayName()}</span>
-              </div>
-            ) : (
-              <button
-                onClick={() => runAutoDeduction(true)}
-                disabled={deductLoading}
-                className="flex items-center gap-2 bg-orange-600 hover:bg-orange-700 disabled:opacity-60 text-white text-sm font-semibold rounded-xl px-4 py-2.5 transition-colors shadow-sm"
-              >
-                {deductLoading ? (
-                  <span>⏳ চলছে...</span>
-                ) : (
-                  <>
-                    <span>📦</span>
-                    <span>আজকের Stock বাদ দিন</span>
-                    <span className="bg-white/20 text-xs px-2 py-0.5 rounded-full">{getTodayName()}</span>
-                  </>
-                )}
-              </button>
-            )}
+            <button
+              onClick={buildDeductionPreview}
+              disabled={deductLoading}
+              className="flex items-center gap-2 bg-orange-600 hover:bg-orange-700 disabled:opacity-60 text-white text-sm font-semibold rounded-xl px-4 py-2.5 transition-colors shadow-sm"
+            >
+              {deductLoading ? (
+                <span>⏳ লোড হচ্ছে...</span>
+              ) : (
+                <>
+                  <span>📦</span>
+                  <span>আজকের অর্ডার অনুযায়ী Stock বাদ দিন</span>
+                  <span className="bg-white/20 text-xs px-2 py-0.5 rounded-full">{getTodayName()}</span>
+                </>
+              )}
+            </button>
           </div>
         </div>
 
@@ -329,12 +318,18 @@ export default function RawMaterialManager() {
           </div>
         )}
 
-        {deductLoading && (
-          <div className="mb-4 bg-blue-50 border border-blue-200 rounded-xl p-3 text-sm text-blue-700">
-            ⏳ আজকের অর্ডার অনুযায়ী stock calculate হচ্ছে...
-          </div>
+        {/* ── Deduction Preview Modal ── */}
+        {deductPreview && (
+          <DeductionPreview
+            preview={deductPreview}
+            materials={materials}
+            onConfirm={applyDeductions}
+            onCancel={() => setDeductPreview(null)}
+            loading={deductLoading}
+          />
         )}
 
+        {/* ── Deduction Result ── */}
         {deductResult && (
           <DeductionResult
             results={deductResult}
@@ -374,6 +369,89 @@ export default function RawMaterialManager() {
             setCostForm={setCostForm} toggleMat={toggleMatInCost} addCosting={addCosting} deleteCosting={deleteCosting} />
         )}
         {!loading && tab === "summary" && <SummaryTab summary={summary} />}
+      </div>
+    </div>
+  );
+}
+
+// ========== DEDUCTION PREVIEW ==========
+function DeductionPreview({ preview, materials, onConfirm, onCancel, loading }) {
+  const { items, todayDay } = preview;
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4">
+      <div className="bg-white rounded-2xl shadow-2xl max-w-lg w-full p-6 max-h-[80vh] overflow-y-auto">
+        <div className="flex items-center justify-between mb-4">
+          <div>
+            <h2 className="text-base font-semibold text-gray-800">
+              📦 আজকের Stock বাদ করার Preview
+            </h2>
+            <p className="text-xs text-gray-500 mt-0.5">
+              {todayDay}-এর সব active অর্ডার অনুযায়ী
+            </p>
+          </div>
+          <button onClick={onCancel} className="text-gray-400 hover:text-gray-600 text-xl">✕</button>
+        </div>
+
+        {items.length === 0 ? (
+          <div className="text-center py-8 text-gray-400 text-sm">
+            <div className="text-3xl mb-2">🎉</div>
+            আজকের ({todayDay}) কোনো active অর্ডার নেই অথবা কোনো product match হয়নি।
+          </div>
+        ) : (
+          <>
+            <div className="bg-orange-50 border border-orange-200 rounded-lg p-3 text-sm text-orange-800 mb-4">
+              ⚠️ নিচের পরিমাণ কাঁচামাল stock থেকে বাদ যাবে। একবার করলে undo হবে না।
+            </div>
+            <table className="w-full text-sm mb-5">
+              <thead>
+                <tr className="text-left text-xs text-gray-500 border-b border-gray-100">
+                  <th className="pb-2 px-2">কাঁচামাল</th>
+                  <th className="pb-2 px-2">বর্তমান Stock</th>
+                  <th className="pb-2 px-2">বাদ যাবে (g)</th>
+                  <th className="pb-2 px-2">বাকি থাকবে</th>
+                </tr>
+              </thead>
+              <tbody>
+                {items.map((item) => {
+                  const mat = materials.find((m) => m._id === item.materialId);
+                  const currentQty = mat?.qty ?? "?";
+                  const currentUnit = mat?.unit ?? item.unit;
+
+                  // Convert deduction to display in material's unit
+                  let deductDisplay = item.totalGramsToDeduct + "g";
+                  let remaining = "?";
+                  if (mat) {
+                    let deductInUnit = item.totalGramsToDeduct;
+                    if (mat.unit === "kg") deductInUnit = item.totalGramsToDeduct / 1000;
+                    else if (mat.unit === "liter") deductInUnit = item.totalGramsToDeduct / 1000;
+                    deductDisplay = `${item.totalGramsToDeduct}g (${deductInUnit.toFixed(3)} ${mat.unit})`;
+                    remaining = `${Math.max(0, mat.qty - deductInUnit).toFixed(3)} ${mat.unit}`;
+                  }
+
+                  return (
+                    <tr key={item.materialId} className="border-b border-gray-50">
+                      <td className="py-2 px-2 font-medium text-gray-800">{item.name}</td>
+                      <td className="py-2 px-2 text-gray-600">{currentQty} {currentUnit}</td>
+                      <td className="py-2 px-2 text-red-600 font-medium">−{deductDisplay}</td>
+                      <td className="py-2 px-2 text-green-700 font-semibold">{remaining}</td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+            <div className="flex gap-3">
+              <button onClick={onCancel}
+                className="flex-1 border border-gray-200 rounded-xl py-2.5 text-sm font-medium text-gray-600 hover:bg-gray-50">
+                বাতিল করুন
+              </button>
+              <button onClick={onConfirm} disabled={loading}
+                className="flex-1 bg-orange-600 hover:bg-orange-700 disabled:opacity-60 text-white rounded-xl py-2.5 text-sm font-bold transition-colors">
+                {loading ? "প্রসেস হচ্ছে..." : "✓ নিশ্চিত করুন ও বাদ দিন"}
+              </button>
+            </div>
+          </>
+        )}
       </div>
     </div>
   );

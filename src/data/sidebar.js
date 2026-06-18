@@ -63,18 +63,18 @@ export const SIDEBAR_ITEMS = [
     permission: "inventory.view",
     excludeRoles: ["user"],
     children: [
-      {
-        label: "Add Product",
-        path: "/dashboards/inventory-add-product",
-      },
-      {
-        label: "Purchase",
-        path: "/dashboards/inventory-purchase",
-      },
-      {
-        label: "Purchase List",
-        path: "/dashboards/inventory-purchase-list",
-      },
+      // {
+      //   label: "Add Product",
+      //   path: "/dashboards/inventory-add-product",
+      // },
+      // {
+      //   label: "Purchase",
+      //   path: "/dashboards/inventory-purchase",
+      // },
+      // {
+      //   label: "Purchase List",
+      //   path: "/dashboards/inventory-purchase-list",
+      // },
       {
         label: "Day wise",
         path: "/dashboards/inventory-day-wise",
@@ -83,10 +83,10 @@ export const SIDEBAR_ITEMS = [
         label: "All wise",
         path: "/dashboards/inventory-all-wise",
       },
-      {
-        label: "Stock Management",
-        path: "/dashboards/stock-management",
-      },
+      // {
+      //   label: "Stock Management",
+      //   path: "/dashboards/stock-management",
+      // },
        {
                 label: "Add Material",
                
@@ -96,6 +96,11 @@ export const SIDEBAR_ITEMS = [
                 label: "Add Product-Material",
                
                 path: "/dashboards/admaterial-allproduct",
+              },
+              {
+                label: "Profit Calculation",
+               
+                path: "/dashboards/daywisecalculation-report",
               },
     ],
   },
