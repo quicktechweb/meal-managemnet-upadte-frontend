@@ -1,6 +1,6 @@
 import { useState, useEffect, useMemo } from "react";
 
-const API_BASE = "https://meal-management-backend-update-3.onrender.com/api";
+const API_BASE = "http://localhost:5000/api";
 
 const DAY_ORDER = ["Saturday", "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday"];
 const MEAL_ICONS = { Breakfast: "🌅", Lunch: "☀️", Dinner: "🌙" };

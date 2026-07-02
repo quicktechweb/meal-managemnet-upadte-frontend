@@ -1,31 +1,34 @@
 import { useState, useEffect, useCallback, useRef } from "react";
-import { useAllwiseInstituteUserOrderLists } from "../../../../../api/cms/user.hook";
 
-const API = "https://meal-management-backend-update-3.onrender.com/api/submaterial";
-const API_PRODUCTS = "https://meal-management-backend-update-3.onrender.com/api/allmetrialproductadd";
+const BASE = "http://localhost:5000/api";
+const API = `${BASE}/submaterial`;
+const API_PRODUCTS = `${BASE}/allmetrialproductadd`;
+const API_ALLDAYMEAL = `${BASE}/alldaymeal`;
 
 const DEDUCT_KEY = "lastDeductedDate";
+const NON_WEIGHT = ["piece", "dozen", "bag", "packet"];
 
 async function apiFetch(url, options = {}) {
-  const res = await fetch(url, {
-    headers: { "Content-Type": "application/json" },
-    ...options,
-  });
+  const res = await fetch(url, { headers: { "Content-Type": "application/json" }, ...options });
   const json = await res.json();
   if (!json.success) throw new Error(json.message || "API Error");
   return json;
 }
 
-const NON_WEIGHT = ["piece", "dozen", "bag", "packet"];
+const getTodayName = () => new Date().toLocaleDateString("en-US", { weekday: "long" });
+const getTodayDate = () => new Date().toISOString().split("T")[0];
+const parseTitles = (titleStr = "") => titleStr.split(",").map((t) => t.trim().toLowerCase()).filter(Boolean);
 
-const getTodayName = () =>
-  new Date().toLocaleDateString("en-US", { weekday: "long" });
-
-const getTodayDate = () =>
-  new Date().toISOString().split("T")[0];
-
-const parseTitles = (titleStr = "") =>
-  titleStr.split(",").map((t) => t.trim().toLowerCase()).filter(Boolean);
+// MealManagement এর মতই — /alldaymeal থেকে dayWise + allWise (এই API আগে থেকেই
+// logged-in institute অনুযায়ী filtered ডেটা দেয়, তাই আলাদা institute_id লুপ লাগে না)
+const fetchAllDayMealOrders = async () => {
+  const res = await fetch(API_ALLDAYMEAL, {
+    headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+  });
+  const data = await res.json();
+  if (!data.success) throw new Error(data.message || "Meal fetch failed");
+  return [...(data.data?.dayWise || []), ...(data.data?.allWise || [])];
+};
 
 export default function RawMaterialManager() {
   const [tab, setTab] = useState("materials");
@@ -39,8 +42,10 @@ export default function RawMaterialManager() {
   const [editId, setEditId] = useState(null);
   const [costForm, setCostForm] = useState({ name: "", totalCost: "", selectedMats: [] });
 
-  const { data: ordersRaw, isLoading: ordersLoading } = useAllwiseInstituteUserOrderLists();
-  const ordersData = ordersRaw ?? [];
+  // /alldaymeal থেকে আসা meal orders (dayWise + allWise মিলিয়ে) — RawMaterialManager
+  // এখন এটাকেই ordersData হিসেবে ব্যবহার করছে
+  const [mealOrders, setMealOrders] = useState([]);
+  const [mealOrdersLoading, setMealOrdersLoading] = useState(true);
 
   const [deductLoading, setDeductLoading] = useState(false);
   const [deductResult, setDeductResult] = useState(null);
@@ -79,117 +84,101 @@ export default function RawMaterialManager() {
     }
   }, []);
 
+  const loadMealOrders = useCallback(async () => {
+    setMealOrdersLoading(true);
+    try {
+      const orders = await fetchAllDayMealOrders();
+      setMealOrders(orders);
+    } catch (e) {
+      setError(e.message);
+    } finally {
+      setMealOrdersLoading(false);
+    }
+  }, []);
+
   useEffect(() => {
     loadMaterials();
     loadCostings();
-    const lastDate = localStorage.getItem(DEDUCT_KEY);
-    if (lastDate === getTodayDate()) {
-      setTodayDeducted(true);
-    }
-  }, [loadMaterials, loadCostings]);
+    loadMealOrders();
+    if (localStorage.getItem(DEDUCT_KEY) === getTodayDate()) setTodayDeducted(true);
+  }, [loadMaterials, loadCostings, loadMealOrders]);
 
   useEffect(() => {
     if (tab === "summary") loadSummary();
   }, [tab, loadSummary]);
 
+  // ================= AUTO STOCK DEDUCTION (via /alldaymeal) =================
+  // /alldaymeal API লগইন করা institute এর dayWise + allWise সব meal order একসাথে
+  // দিয়ে দেয় (MealManagement যেভাবে ব্যবহার করে ঠিক সেভাবেই)। সেখান থেকে আজকের
+  // is_on=true meal গুলো বের করে stock বাদ দেওয়া হয়। page লোড হলেই এটা নিজে থেকে
+  // চলে যায় — manually API hit করা লাগে না।
   const runAutoDeduction = useCallback(async (isManual = false) => {
     if (deductLoading) return;
 
-    if (!isManual) {
-      const lastDate = localStorage.getItem(DEDUCT_KEY);
-      if (lastDate === getTodayDate()) {
-        setTodayDeducted(true);
-        return;
-      }
+    if (!isManual && localStorage.getItem(DEDUCT_KEY) === getTodayDate()) {
+      setTodayDeducted(true);
+      return;
     }
-
-    if (ordersData.length === 0 || materials.length === 0) return;
+    if (mealOrders.length === 0 || materials.length === 0) return;
 
     setDeductLoading(true);
     setDeductResult(null);
 
     try {
       const todayDay = getTodayName();
+
+      // সবসময় fresh meal orders নিয়ে কাজ করার জন্য আবার টানা
+      const freshOrders = isManual ? await fetchAllDayMealOrders() : mealOrders;
+
       const productsRes = await apiFetch(API_PRODUCTS);
       const products = Array.isArray(productsRes?.data) ? productsRes.data : [];
-
       const productByName = {};
-      products.forEach((p) => {
-        productByName[p.name.toLowerCase().trim()] = p;
-      });
+      products.forEach((p) => { productByName[p.name.toLowerCase().trim()] = p; });
 
       const deductMap = {};
 
-      ordersData.forEach((userOrder) => {
-        const todayMeals = (userOrder.meals || []).filter(
-          (m) => m.day === todayDay && m.is_on
-        );
-        todayMeals.forEach((meal) => {
-          (meal.selected_items || []).forEach((item) => {
-            const titles = parseTitles(item.title);
-            titles.forEach((title) => {
-              const product = productByName[title];
-              if (!product) return;
-              (product.ingredients || []).forEach((ing) => {
-                const mat = typeof ing.material === "object" ? ing.material : null;
-                if (!mat) return;
-                const key = mat._id;
-                if (!deductMap[key]) {
-                  deductMap[key] = {
-                    materialId: key,
-                    name: mat.name,
-                    unit: mat.unit,
-                    totalGramsToDeduct: 0,
-                  };
-                }
-                deductMap[key].totalGramsToDeduct += ing.gramPerServing;
+      freshOrders.forEach((order) => {
+        (order.meals || [])
+          .filter((m) => m.day === todayDay && m.is_on)
+          .forEach((meal) => {
+            (meal.selected_items || []).forEach((item) => {
+              parseTitles(item.title).forEach((title) => {
+                const product = productByName[title];
+                if (!product) return;
+                (product.ingredients || []).forEach((ing) => {
+                  const mat = typeof ing.material === "object" ? ing.material : null;
+                  if (!mat) return;
+                  const key = mat._id;
+                  deductMap[key] ??= { materialId: key, name: mat.name, unit: mat.unit, totalGramsToDeduct: 0 };
+                  deductMap[key].totalGramsToDeduct += ing.gramPerServing;
+                });
               });
             });
           });
-        });
       });
 
       const items = Object.values(deductMap);
-
       if (items.length === 0) {
-        console.log(`📭 ${todayDay} তে কোনো order নেই`);
         setDeductLoading(false);
         return;
       }
 
       const results = [];
-
       for (const item of items) {
         const mat = materials.find((m) => m._id === item.materialId);
-        if (!mat) {
-          results.push({ name: item.name, status: "not_found" });
-          continue;
-        }
+        if (!mat) { results.push({ name: item.name, status: "not_found" }); continue; }
 
-        let deductInUnit = item.totalGramsToDeduct;
-        if (mat.unit === "kg") deductInUnit = item.totalGramsToDeduct / 1000;
-        else if (mat.unit === "liter") deductInUnit = item.totalGramsToDeduct / 1000;
-
+        const deductInUnit = ["kg", "liter"].includes(mat.unit)
+          ? item.totalGramsToDeduct / 1000
+          : item.totalGramsToDeduct;
         const newQty = Math.max(0, mat.qty - deductInUnit);
 
         try {
           await apiFetch(API + `/${mat._id}`, {
             method: "PUT",
-            body: JSON.stringify({
-              name: mat.name,
-              qty: newQty,
-              unit: mat.unit,
-              pricePerUnit: mat.pricePerUnit,
-            }),
+            body: JSON.stringify({ name: mat.name, qty: newQty, unit: mat.unit, pricePerUnit: mat.pricePerUnit }),
           });
-          results.push({
-            name: mat.name,
-            unit: mat.unit,
-            before: mat.qty,
-            deducted: deductInUnit,
-            after: newQty,
-            status: "ok",
-          });
+          results.push({ name: mat.name, unit: mat.unit, before: mat.qty, deducted: deductInUnit, after: newQty, status: "ok" });
         } catch (e) {
           results.push({ name: item.name, status: "error", msg: e.message });
         }
@@ -199,25 +188,19 @@ export default function RawMaterialManager() {
       setTodayDeducted(true);
       setDeductResult(results);
       await loadMaterials();
-
     } catch (e) {
       setError("Auto deduction error: " + e.message);
     } finally {
       setDeductLoading(false);
     }
-  }, [ordersData, materials, deductLoading]);
+  }, [mealOrders, materials, deductLoading]);
 
   useEffect(() => {
-    if (
-      !autoRanRef.current &&
-      !ordersLoading &&
-      ordersData.length > 0 &&
-      materials.length > 0
-    ) {
+    if (!autoRanRef.current && !mealOrdersLoading && mealOrders.length > 0 && materials.length > 0) {
       autoRanRef.current = true;
       runAutoDeduction(false);
     }
-  }, [ordersData, materials, ordersLoading]);
+  }, [mealOrders, materials, mealOrdersLoading]);
 
   const addOrUpdateMaterial = async () => {
     const { name, qty, unit, pricePerUnit } = matForm;
@@ -335,12 +318,7 @@ export default function RawMaterialManager() {
           </div>
         )}
 
-        {deductResult && (
-          <DeductionResult
-            results={deductResult}
-            onClose={() => setDeductResult(null)}
-          />
-        )}
+        {deductResult && <DeductionResult results={deductResult} onClose={() => setDeductResult(null)} />}
 
         <div className="grid grid-cols-3 gap-4 mb-6">
           <StatCard label="মোট কাঁচামাল মূল্য" value={`৳${totalBase.toFixed(2)}`} color="text-gray-800" />
@@ -418,15 +396,13 @@ function DeductionResult({ results, onClose }) {
   );
 }
 
-// ── প্রতি গ্রাম দাম badge ──────────────────────────────────
 function PricePerGramBadge({ pricePerGram, unit }) {
   if (NON_WEIGHT.includes(unit)) return <span className="text-gray-300 text-xs">N/A</span>;
   if (pricePerGram == null) return <span className="text-gray-300 text-xs">–</span>;
   const isLiquid = unit === "liter" || unit === "ml";
-  const label = isLiquid ? "প্রতি ml" : "প্রতি g";
   return (
     <span className="bg-purple-100 text-purple-700 text-xs px-2 py-0.5 rounded-full font-medium">
-      ৳{pricePerGram} <span className="font-normal opacity-70">{label}</span>
+      ৳{pricePerGram} <span className="font-normal opacity-70">{isLiquid ? "প্রতি ml" : "প্রতি g"}</span>
     </span>
   );
 }

@@ -1,8 +1,9 @@
 import { useState, useEffect, useMemo } from "react";
-import { useAllwiseInstituteUserOrderLists } from "../../../../../api/cms/user.hook";
 
-const API_PRODUCTS  = "https://meal-management-backend-update-3.onrender.com/api/allmetrialproductadd";
-const API_MATERIALS = "https://meal-management-backend-update-3.onrender.com/api/submaterial";
+const BASE = "http://localhost:5000/api";
+const API_PRODUCTS  = `${BASE}/allmetrialproductadd`;
+const API_MATERIALS = `${BASE}/submaterial`;
+const API_ALLDAYMEAL = `${BASE}/alldaymeal`;
 
 async function apiFetch(url) {
   const res  = await fetch(url, { headers: { "Content-Type": "application/json" } });
@@ -10,6 +11,17 @@ async function apiFetch(url) {
   if (!json.success) throw new Error(json.message || "API Error");
   return json.data;
 }
+
+// MealManagement এর মতই — /alldaymeal থেকে dayWise + allWise (এই API আগে থেকেই
+// logged-in institute অনুযায়ী filtered ডেটা দেয়, তাই আলাদা institute_id লুপ লাগে না)
+const fetchAllDayMealOrders = async () => {
+  const res = await fetch(API_ALLDAYMEAL, {
+    headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+  });
+  const data = await res.json();
+  if (!data.success) throw new Error(data.message || "Meal fetch failed");
+  return [...(data.data?.dayWise || []), ...(data.data?.allWise || [])];
+};
 
 function matchProductByTitle(title, products) {
   const titleParts = title
@@ -82,14 +94,16 @@ function Td({ children, colSpan }) {
 
 // ─── Main component ────────────────────────────────────────
 export default function DayWiseProfitReport() {
-  const { data: orderData, isLoading: orderLoading } = useAllwiseInstituteUserOrderLists();
-
   const [products,     setProducts]     = useState([]);
   const [materialsMap, setMaterialsMap] = useState({});
   const [loading,      setLoading]      = useState(true);
   const [error,        setError]        = useState(null);
   const [activeTab,    setActiveTab]    = useState("weekly");
   const [expandedRow,  setExpandedRow]  = useState(null);
+
+  // /alldaymeal থেকে আসা meal orders (dayWise + allWise মিলিয়ে)
+  const [mealOrders, setMealOrders] = useState([]);
+  const [mealOrdersLoading, setMealOrdersLoading] = useState(true);
 
   // Load products & materials
   useEffect(() => {
@@ -111,18 +125,31 @@ export default function DayWiseProfitReport() {
     })();
   }, []);
 
-  // Collect all active meals
+  // /alldaymeal থেকে meal orders fetch — MealManagement এর মতই একটামাত্র API কল
+  useEffect(() => {
+    (async () => {
+      setMealOrdersLoading(true);
+      try {
+        const orders = await fetchAllDayMealOrders();
+        setMealOrders(orders);
+      } catch (e) {
+        setError(e.message);
+      } finally {
+        setMealOrdersLoading(false);
+      }
+    })();
+  }, []);
+
+  // Collect all active meals — mealOrders থেকে
   const allMeals = useMemo(() => {
-    if (!orderData) return [];
-    const orders = Array.isArray(orderData) ? orderData : orderData?.data ?? [];
-    return orders.flatMap((order) =>
-      (order.meals ?? []).map((meal) => ({
+    return mealOrders.flatMap((doc) =>
+      (doc.meals ?? []).map((meal) => ({
         ...meal,
-        // fallback: use order's createdAt if meal has no date
-        _date: meal.date ?? meal.createdAt ?? order.createdAt ?? null,
+        // fallback: use doc's createdAt if meal has no date
+        _date: meal.date ?? meal.createdAt ?? doc.createdAt ?? null,
       }))
     );
-  }, [orderData]);
+  }, [mealOrders]);
 
   // Per-meal cost calculator
   const getMealCost = useMemo(() => {
@@ -246,7 +273,7 @@ export default function DayWiseProfitReport() {
   const monthGrand  = useMemo(() => ({ price: monthlySummary.reduce((s,d)=>s+d.totalPrice,0), cost: monthlySummary.reduce((s,d)=>s+d.totalCost,0), profit: monthlySummary.reduce((s,d)=>s+d.totalProfit,0), count: monthlySummary.reduce((s,d)=>s+d.count,0) }), [monthlySummary]);
   const yearGrand   = useMemo(() => ({ price: yearlySummary.reduce((s,d)=>s+d.totalPrice,0), cost: yearlySummary.reduce((s,d)=>s+d.totalCost,0), profit: yearlySummary.reduce((s,d)=>s+d.totalProfit,0), count: yearlySummary.reduce((s,d)=>s+d.count,0) }), [yearlySummary]);
 
-  const isLoading = loading || orderLoading;
+  const isLoading = loading || mealOrdersLoading;
 
   if (isLoading) {
     return (

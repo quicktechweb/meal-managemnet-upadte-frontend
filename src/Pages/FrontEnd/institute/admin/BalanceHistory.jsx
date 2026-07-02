@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   ArrowDownCircle, ArrowUpCircle, Search,
@@ -6,12 +6,18 @@ import {
 } from "lucide-react";
 import useInstituteAuth from "../../../../Hooks/useInstituteAuth";
 
+const BASE = "http://localhost:5000/api";
+
 const fmtAmount = (n) => "৳" + Number(n).toLocaleString("en-BD");
 const fmtDate = (d) =>
   new Date(d).toLocaleString("en-BD", {
     day: "2-digit", month: "short", year: "numeric",
     hour: "2-digit", minute: "2-digit",
   });
+
+// API তে কোনো "type" ফিল্ড নেই — তাই amount এর sign দিয়ে credit/debit ঠিক করা হচ্ছে।
+// amount >= 0 হলে credit (টাকা যোগ হয়েছে), negative হলে debit (টাকা কাটা হয়েছে)।
+const getType = (amount) => (Number(amount) >= 0 ? "credit" : "debit");
 
 const TYPE_CONFIG = {
   credit: {
@@ -40,16 +46,50 @@ const FILTERS = ["all", "credit", "debit"];
 
 const BalanceHistory = () => {
   const { user } = useInstituteAuth();
-  const currentBalance = user?.user?.balance ?? 0;
-  const rawHistory = user?.user?.balance_history ?? [];
+  const userId = user?.user?._id;
+  const currentBalance = user?.user?.balance ?? 0; // ← এটা useInstituteAuth থেকেই থাকবে, API থেকে না
 
-  const transactions = useMemo(
-    () => [...rawHistory].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)),
-    [rawHistory]
-  );
-
+  const [rawData, setRawData] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   const [filter, setFilter] = useState("all");
   const [search, setSearch] = useState("");
+
+  // ── শুধু transaction list (history) API থেকে fetch করা হচ্ছে ──
+  useEffect(() => {
+    if (!userId) return;
+    (async () => {
+      setLoading(true);
+      setError(null);
+      try {
+        const res = await fetch(`${BASE}/all-part-balance-list?userId=${userId}`);
+        const json = await res.json();
+        if (!json.success) throw new Error(json.message || "Fetch failed");
+        setRawData(Array.isArray(json.data) ? json.data : []);
+      } catch (e) {
+        setError(e.message);
+      } finally {
+        setLoading(false);
+      }
+    })();
+  }, [userId]);
+
+  // ── raw API ডেটাকে UI-friendly transaction এ map করা + sort (নতুন আগে) ──
+  const transactions = useMemo(() => {
+    return [...rawData]
+      .map((t) => ({
+        _id: t._id,
+        type: getType(t.amount),
+        amount: Math.abs(Number(t.amount) || 0),
+        note: t.note || "",
+        ref: t._id?.slice(-6) || "",
+        createdAt: t.createdAt,
+        added_by: t.added_by?.email || t.added_by?.name || "-",
+      }))
+      .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+  }, [rawData]);
+
+  // ── বর্তমান ব্যালেন্স useInstituteAuth (user.user.balance) থেকেই আসছে, এখানে recompute করা হচ্ছে না ──
 
   const stats = useMemo(() => ({
     totalCredit: transactions.filter((t) => t.type === "credit").reduce((a, t) => a + t.amount, 0),
@@ -69,13 +109,31 @@ const BalanceHistory = () => {
     return list;
   }, [transactions, filter, search]);
 
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center py-20">
+        <div className="text-center">
+          <div className="w-10 h-10 border-4 border-slate-700 border-t-transparent rounded-full animate-spin mx-auto mb-3" />
+          <p className="text-sm text-gray-400">লোড হচ্ছে...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="max-w-2xl mx-auto mt-10 bg-red-50 border border-red-200 rounded-xl p-4 text-red-700 text-sm">
+        ⚠️ {error}
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-[#f7f8fc] p-4 md:p-8">
       <div className="max-w-6xl mx-auto space-y-6">
 
         {/* ══ Hero card ══ */}
         <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-slate-800 via-slate-900 to-slate-950 p-6 md:p-8 shadow-2xl">
-          {/* decorative circles */}
           <div className="absolute -top-10 -right-10 w-48 h-48 rounded-full bg-white/5" />
           <div className="absolute -bottom-14 -left-8 w-56 h-56 rounded-full bg-white/[0.03]" />
 
@@ -89,11 +147,10 @@ const BalanceHistory = () => {
                 </span>
               </div>
               <p className="text-slate-500 text-xs mt-2">
-                {user?.user?.information?.full_name ?? "User"} · UID {user?.user?.uid ?? "—"}
+                {user?.user?.information?.full_name ?? user?.user?.name ?? "User"} · UID {user?.user?.uid ?? "—"}
               </p>
             </div>
 
-            {/* Mini stats inside hero */}
             <div className="flex gap-3">
               <div className="bg-white/5 backdrop-blur rounded-2xl px-4 py-3 text-center">
                 <p className="text-emerald-400 text-lg font-bold">{fmtAmount(stats.totalCredit)}</p>
@@ -196,12 +253,10 @@ const BalanceHistory = () => {
                     transition={{ duration: 0.2, delay: Math.min(i * 0.04, 0.3) }}
                     className="group bg-white rounded-2xl ring-1 ring-gray-100 px-5 py-4 flex items-center gap-4 shadow-sm hover:shadow-md hover:ring-gray-200 transition-all duration-200"
                   >
-                    {/* Icon */}
                     <div className={`relative w-11 h-11 rounded-2xl bg-gradient-to-br ${cfg.iconGradient} flex items-center justify-center shrink-0 shadow-sm`}>
                       <Icon size={18} className="text-white" />
                     </div>
 
-                    {/* Middle info */}
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-2 flex-wrap">
                         <p className="text-sm font-semibold text-gray-800 truncate">
@@ -222,13 +277,9 @@ const BalanceHistory = () => {
                       </p>
                     </div>
 
-                    {/* Amount */}
                     <div className={`text-right shrink-0 px-3 py-2 rounded-xl ${cfg.amountBg}`}>
                       <p className={`text-base font-bold ${cfg.textColor} tabular-nums`}>
                         {cfg.sign}{fmtAmount(tx.amount)}
-                      </p>
-                      <p className="text-[10px] text-gray-400 mt-0.5 tabular-nums">
-                        bal {fmtAmount(tx.balance_after)}
                       </p>
                     </div>
                   </motion.div>

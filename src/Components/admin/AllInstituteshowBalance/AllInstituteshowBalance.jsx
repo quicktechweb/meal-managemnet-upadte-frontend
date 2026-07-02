@@ -146,7 +146,7 @@ const BalanceModal = ({ user, onClose, onSuccess }) => {
     if (!num || num <= 0) { setErr("Enter a valid amount"); return; }
     setLoading(true); setErr("");
     try {
-      await axios.post(`https://meal-management-backend-update-3.onrender.com/api/add-balance/${user._id}`, {
+      await axios.post(`http://localhost:5000/api/add-balance/${user._id}`, {
         amount: num, note,
       });
       onSuccess(num);
@@ -318,7 +318,7 @@ export default function InstituteUserBrowser() {
   const [balanceTarget, setBalanceTarget] = useState(null);
 
   useEffect(() => {
-    axios.get("https://meal-management-backend-update-3.onrender.com/api/instituteuser-approved-user-all")
+    axios.get("http://localhost:5000/api/instituteuser-approved-user-all")
       .then(r => setUsers(r.data.users))
       .catch(console.error)
       .finally(() => setLoading(false));
