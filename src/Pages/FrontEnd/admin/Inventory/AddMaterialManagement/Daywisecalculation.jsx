@@ -1,6 +1,6 @@
 import { useState, useEffect, useMemo } from "react";
 
-const BASE = "http://localhost:5000/api";
+const BASE = "https://meal-management-backend-update-3.onrender.com/api";
 const API_PRODUCTS  = `${BASE}/allmetrialproductadd`;
 const API_MATERIALS = `${BASE}/submaterial`;
 const API_ALLDAYMEAL = `${BASE}/alldaymeal`;
@@ -141,15 +141,18 @@ export default function DayWiseProfitReport() {
   }, []);
 
   // Collect all active meals — mealOrders থেকে
-  const allMeals = useMemo(() => {
-    return mealOrders.flatMap((doc) =>
-      (doc.meals ?? []).map((meal) => ({
+ // Collect all deduction history entries — প্রতিটা history entry = একটা real transaction
+const allMeals = useMemo(() => {
+  return mealOrders.flatMap((doc) =>
+    (doc.meals ?? []).flatMap((meal) =>
+      (meal.deduction_history ?? []).map((h) => ({
         ...meal,
-        // fallback: use doc's createdAt if meal has no date
-        _date: meal.date ?? meal.createdAt ?? doc.createdAt ?? null,
+        package_price: h.amount, // ওই নির্দিষ্ট দিনে যত টাকা কাটা হয়েছিল
+        _date: h.date,           // history entry-র নিজের তারিখ — এটাই আসল "কবে খাওয়া হয়েছে"
       }))
-    );
-  }, [mealOrders]);
+    )
+  );
+}, [mealOrders]);
 
   // Per-meal cost calculator
   const getMealCost = useMemo(() => {
@@ -165,45 +168,45 @@ export default function DayWiseProfitReport() {
   }, [products, materialsMap]);
 
   // ── WEEKLY (day-wise) ──
-  const dayWiseData = useMemo(() => {
-    if (!allMeals.length || !products.length) return {};
-    const result = {};
+ const dayWiseData = useMemo(() => {
+  if (!allMeals.length || !products.length) return {};
+  const result = {};
 
-    allMeals.forEach((meal) => {
-      if (!meal.is_on || !meal.balance_deducted) return;
-      const day      = meal.day;
-      const mealType = meal.meal_type;
-      const price    = meal.package_price ?? 0;
-      const cost     = getMealCost(meal);
-      const profit   = price - cost;
+  allMeals.forEach((meal) => {
+    // ✅ balance_deducted লাগবে না — history-তে থাকা মানেই এটা real deduction
+    if (!meal.is_on) return;
+    const day      = meal.day;
+    const mealType = meal.meal_type;
+    const price    = meal.package_price ?? 0;
+    const cost     = getMealCost(meal);
+    const profit   = price - cost;
 
-      if (!result[day]) result[day] = {};
-      if (!result[day][mealType]) {
-        result[day][mealType] = { count: 0, totalPrice: 0, totalCost: 0, totalProfit: 0, ingredientDetails: [] };
-      }
+    if (!result[day]) result[day] = {};
+    if (!result[day][mealType]) {
+      result[day][mealType] = { count: 0, totalPrice: 0, totalCost: 0, totalProfit: 0, ingredientDetails: [] };
+    }
 
-      result[day][mealType].count        += 1;
-      result[day][mealType].totalPrice   += price;
-      result[day][mealType].totalCost    += cost;
-      result[day][mealType].totalProfit  += profit;
+    result[day][mealType].count        += 1;
+    result[day][mealType].totalPrice   += price;
+    result[day][mealType].totalCost    += cost;
+    result[day][mealType].totalProfit  += profit;
 
-      // ingredient details (last meal)
-      const details = [];
-      (meal.selected_items ?? []).forEach((item) => {
-        matchProductByTitle(item.title, products).forEach((prod) => {
-          prod.ingredients.forEach((ing) => {
-            const matId = typeof ing.material === "object" ? ing.material._id : ing.material;
-            const mat   = materialsMap[matId];
-            const c     = mat?.pricePerGram != null ? ing.gramPerServing * mat.pricePerGram : null;
-            details.push({ productName: prod.name, matName: mat?.name ?? matId, gram: ing.gramPerServing, pricePerGram: mat?.pricePerGram ?? null, cost: c });
-          });
+    const details = [];
+    (meal.selected_items ?? []).forEach((item) => {
+      matchProductByTitle(item.title, products).forEach((prod) => {
+        prod.ingredients.forEach((ing) => {
+          const matId = typeof ing.material === "object" ? ing.material._id : ing.material;
+          const mat   = materialsMap[matId];
+          const c     = mat?.pricePerGram != null ? ing.gramPerServing * mat.pricePerGram : null;
+          details.push({ productName: prod.name, matName: mat?.name ?? matId, gram: ing.gramPerServing, pricePerGram: mat?.pricePerGram ?? null, cost: c });
         });
       });
-      result[day][mealType].ingredientDetails = details;
     });
+    result[day][mealType].ingredientDetails = details;
+  });
 
-    return result;
-  }, [allMeals, products, materialsMap, getMealCost]);
+  return result;
+}, [allMeals, products, materialsMap, getMealCost]);
 
   const daySummary = useMemo(() => {
     return Object.entries(dayWiseData).map(([day, meals]) => ({
@@ -217,41 +220,42 @@ export default function DayWiseProfitReport() {
 
   // ── MONTHLY ──
   const monthlySummary = useMemo(() => {
-    if (!allMeals.length || !products.length) return [];
-    const map = {};
+  if (!allMeals.length || !products.length) return [];
+  const map = {};
 
-    allMeals.forEach((meal) => {
-      if (!meal.is_on || !meal.balance_deducted) return;
-      const raw = meal._date ? new Date(meal._date) : null;
-      if (!raw || isNaN(raw)) return;
+  allMeals.forEach((meal) => {
+    // ✅ balance_deducted লাগবে না
+    if (!meal.is_on) return;
+    const raw = meal._date ? new Date(meal._date) : null;
+    if (!raw || isNaN(raw)) return;
 
-      const yr    = raw.getFullYear();
-      const mo    = raw.getMonth();
-      const key   = `${yr}-${String(mo).padStart(2,"0")}`;
-      const label = `${MONTH_NAMES_BN[mo]} ${yr}`;
-      const sort  = yr * 100 + mo;
+    const yr    = raw.getFullYear();
+    const mo    = raw.getMonth();
+    const key   = `${yr}-${String(mo).padStart(2,"0")}`;
+    const label = `${MONTH_NAMES_BN[mo]} ${yr}`;
+    const sort  = yr * 100 + mo;
 
-      if (!map[key]) map[key] = { label, sort, totalPrice: 0, totalCost: 0, totalProfit: 0, count: 0, mealBreakdown: {} };
+    if (!map[key]) map[key] = { label, sort, totalPrice: 0, totalCost: 0, totalProfit: 0, count: 0, mealBreakdown: {} };
 
-      const price  = meal.package_price ?? 0;
-      const cost   = getMealCost(meal);
-      const profit = price - cost;
-      const mtype  = meal.meal_type ?? "অন্যান্য";
+    const price  = meal.package_price ?? 0;
+    const cost   = getMealCost(meal);
+    const profit = price - cost;
+    const mtype  = meal.meal_type ?? "অন্যান্য";
 
-      map[key].count       += 1;
-      map[key].totalPrice  += price;
-      map[key].totalCost   += cost;
-      map[key].totalProfit += profit;
+    map[key].count       += 1;
+    map[key].totalPrice  += price;
+    map[key].totalCost   += cost;
+    map[key].totalProfit += profit;
 
-      if (!map[key].mealBreakdown[mtype]) map[key].mealBreakdown[mtype] = { count:0, totalPrice:0, totalCost:0, totalProfit:0 };
-      map[key].mealBreakdown[mtype].count       += 1;
-      map[key].mealBreakdown[mtype].totalPrice  += price;
-      map[key].mealBreakdown[mtype].totalCost   += cost;
-      map[key].mealBreakdown[mtype].totalProfit += profit;
-    });
+    if (!map[key].mealBreakdown[mtype]) map[key].mealBreakdown[mtype] = { count:0, totalPrice:0, totalCost:0, totalProfit:0 };
+    map[key].mealBreakdown[mtype].count       += 1;
+    map[key].mealBreakdown[mtype].totalPrice  += price;
+    map[key].mealBreakdown[mtype].totalCost   += cost;
+    map[key].mealBreakdown[mtype].totalProfit += profit;
+  });
 
-    return Object.values(map).sort((a, b) => a.sort - b.sort);
-  }, [allMeals, products, materialsMap, getMealCost]);
+  return Object.values(map).sort((a, b) => a.sort - b.sort);
+}, [allMeals, products, materialsMap, getMealCost]);
 
   // ── YEARLY ──
   const yearlySummary = useMemo(() => {

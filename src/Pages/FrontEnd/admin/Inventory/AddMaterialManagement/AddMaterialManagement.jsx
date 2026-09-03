@@ -1,11 +1,8 @@
-import { useState, useEffect, useCallback, useRef } from "react";
+import { useState, useEffect, useCallback } from "react";
 
-const BASE = "http://localhost:5000/api";
+const BASE = "https://meal-management-backend-update-3.onrender.com/api";
 const API = `${BASE}/submaterial`;
-const API_PRODUCTS = `${BASE}/allmetrialproductadd`;
-const API_ALLDAYMEAL = `${BASE}/alldaymeal`;
 
-const DEDUCT_KEY = "lastDeductedDate";
 const NON_WEIGHT = ["piece", "dozen", "bag", "packet"];
 
 async function apiFetch(url, options = {}) {
@@ -14,21 +11,6 @@ async function apiFetch(url, options = {}) {
   if (!json.success) throw new Error(json.message || "API Error");
   return json;
 }
-
-const getTodayName = () => new Date().toLocaleDateString("en-US", { weekday: "long" });
-const getTodayDate = () => new Date().toISOString().split("T")[0];
-const parseTitles = (titleStr = "") => titleStr.split(",").map((t) => t.trim().toLowerCase()).filter(Boolean);
-
-// MealManagement এর মতই — /alldaymeal থেকে dayWise + allWise (এই API আগে থেকেই
-// logged-in institute অনুযায়ী filtered ডেটা দেয়, তাই আলাদা institute_id লুপ লাগে না)
-const fetchAllDayMealOrders = async () => {
-  const res = await fetch(API_ALLDAYMEAL, {
-    headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
-  });
-  const data = await res.json();
-  if (!data.success) throw new Error(data.message || "Meal fetch failed");
-  return [...(data.data?.dayWise || []), ...(data.data?.allWise || [])];
-};
 
 export default function RawMaterialManager() {
   const [tab, setTab] = useState("materials");
@@ -41,17 +23,6 @@ export default function RawMaterialManager() {
   const [matForm, setMatForm] = useState({ name: "", qty: "", unit: "kg", pricePerUnit: "" });
   const [editId, setEditId] = useState(null);
   const [costForm, setCostForm] = useState({ name: "", totalCost: "", selectedMats: [] });
-
-  // /alldaymeal থেকে আসা meal orders (dayWise + allWise মিলিয়ে) — RawMaterialManager
-  // এখন এটাকেই ordersData হিসেবে ব্যবহার করছে
-  const [mealOrders, setMealOrders] = useState([]);
-  const [mealOrdersLoading, setMealOrdersLoading] = useState(true);
-
-  const [deductLoading, setDeductLoading] = useState(false);
-  const [deductResult, setDeductResult] = useState(null);
-  const [todayDeducted, setTodayDeducted] = useState(false);
-
-  const autoRanRef = useRef(false);
 
   const loadMaterials = useCallback(async () => {
     setLoading(true);
@@ -84,123 +55,14 @@ export default function RawMaterialManager() {
     }
   }, []);
 
-  const loadMealOrders = useCallback(async () => {
-    setMealOrdersLoading(true);
-    try {
-      const orders = await fetchAllDayMealOrders();
-      setMealOrders(orders);
-    } catch (e) {
-      setError(e.message);
-    } finally {
-      setMealOrdersLoading(false);
-    }
-  }, []);
-
   useEffect(() => {
     loadMaterials();
     loadCostings();
-    loadMealOrders();
-    if (localStorage.getItem(DEDUCT_KEY) === getTodayDate()) setTodayDeducted(true);
-  }, [loadMaterials, loadCostings, loadMealOrders]);
+  }, [loadMaterials, loadCostings]);
 
   useEffect(() => {
     if (tab === "summary") loadSummary();
   }, [tab, loadSummary]);
-
-  // ================= AUTO STOCK DEDUCTION (via /alldaymeal) =================
-  // /alldaymeal API লগইন করা institute এর dayWise + allWise সব meal order একসাথে
-  // দিয়ে দেয় (MealManagement যেভাবে ব্যবহার করে ঠিক সেভাবেই)। সেখান থেকে আজকের
-  // is_on=true meal গুলো বের করে stock বাদ দেওয়া হয়। page লোড হলেই এটা নিজে থেকে
-  // চলে যায় — manually API hit করা লাগে না।
-  const runAutoDeduction = useCallback(async (isManual = false) => {
-    if (deductLoading) return;
-
-    if (!isManual && localStorage.getItem(DEDUCT_KEY) === getTodayDate()) {
-      setTodayDeducted(true);
-      return;
-    }
-    if (mealOrders.length === 0 || materials.length === 0) return;
-
-    setDeductLoading(true);
-    setDeductResult(null);
-
-    try {
-      const todayDay = getTodayName();
-
-      // সবসময় fresh meal orders নিয়ে কাজ করার জন্য আবার টানা
-      const freshOrders = isManual ? await fetchAllDayMealOrders() : mealOrders;
-
-      const productsRes = await apiFetch(API_PRODUCTS);
-      const products = Array.isArray(productsRes?.data) ? productsRes.data : [];
-      const productByName = {};
-      products.forEach((p) => { productByName[p.name.toLowerCase().trim()] = p; });
-
-      const deductMap = {};
-
-      freshOrders.forEach((order) => {
-        (order.meals || [])
-          .filter((m) => m.day === todayDay && m.is_on)
-          .forEach((meal) => {
-            (meal.selected_items || []).forEach((item) => {
-              parseTitles(item.title).forEach((title) => {
-                const product = productByName[title];
-                if (!product) return;
-                (product.ingredients || []).forEach((ing) => {
-                  const mat = typeof ing.material === "object" ? ing.material : null;
-                  if (!mat) return;
-                  const key = mat._id;
-                  deductMap[key] ??= { materialId: key, name: mat.name, unit: mat.unit, totalGramsToDeduct: 0 };
-                  deductMap[key].totalGramsToDeduct += ing.gramPerServing;
-                });
-              });
-            });
-          });
-      });
-
-      const items = Object.values(deductMap);
-      if (items.length === 0) {
-        setDeductLoading(false);
-        return;
-      }
-
-      const results = [];
-      for (const item of items) {
-        const mat = materials.find((m) => m._id === item.materialId);
-        if (!mat) { results.push({ name: item.name, status: "not_found" }); continue; }
-
-        const deductInUnit = ["kg", "liter"].includes(mat.unit)
-          ? item.totalGramsToDeduct / 1000
-          : item.totalGramsToDeduct;
-        const newQty = Math.max(0, mat.qty - deductInUnit);
-
-        try {
-          await apiFetch(API + `/${mat._id}`, {
-            method: "PUT",
-            body: JSON.stringify({ name: mat.name, qty: newQty, unit: mat.unit, pricePerUnit: mat.pricePerUnit }),
-          });
-          results.push({ name: mat.name, unit: mat.unit, before: mat.qty, deducted: deductInUnit, after: newQty, status: "ok" });
-        } catch (e) {
-          results.push({ name: item.name, status: "error", msg: e.message });
-        }
-      }
-
-      localStorage.setItem(DEDUCT_KEY, getTodayDate());
-      setTodayDeducted(true);
-      setDeductResult(results);
-      await loadMaterials();
-    } catch (e) {
-      setError("Auto deduction error: " + e.message);
-    } finally {
-      setDeductLoading(false);
-    }
-  }, [mealOrders, materials, deductLoading]);
-
-  useEffect(() => {
-    if (!autoRanRef.current && !mealOrdersLoading && mealOrders.length > 0 && materials.length > 0) {
-      autoRanRef.current = true;
-      runAutoDeduction(false);
-    }
-  }, [mealOrders, materials, mealOrdersLoading]);
 
   const addOrUpdateMaterial = async () => {
     const { name, qty, unit, pricePerUnit } = matForm;
@@ -272,37 +134,9 @@ export default function RawMaterialManager() {
   return (
     <div className="min-h-screen bg-gray-50 p-4 font-sans">
       <div className="max-w-5xl mx-auto">
-        <div className="mb-6 flex items-start justify-between gap-4">
-          <div>
-            <h1 className="text-2xl font-semibold text-gray-800">কাঁচামাল ও খরচ ব্যবস্থাপনা</h1>
-            <p className="text-sm text-gray-500 mt-1">Raw Material & Costing Manager</p>
-          </div>
-
-          <div className="flex flex-col items-end gap-2">
-            {todayDeducted ? (
-              <div className="flex items-center gap-2 bg-green-50 border border-green-200 text-green-700 text-sm font-medium rounded-xl px-4 py-2.5">
-                <span>✅</span>
-                <span>আজকের stock adjust হয়ে গেছে</span>
-                <span className="bg-green-100 text-xs px-2 py-0.5 rounded-full">{getTodayName()}</span>
-              </div>
-            ) : (
-              <button
-                onClick={() => runAutoDeduction(true)}
-                disabled={deductLoading}
-                className="flex items-center gap-2 bg-orange-600 hover:bg-orange-700 disabled:opacity-60 text-white text-sm font-semibold rounded-xl px-4 py-2.5 transition-colors shadow-sm"
-              >
-                {deductLoading ? (
-                  <span>⏳ চলছে...</span>
-                ) : (
-                  <>
-                    <span>📦</span>
-                    <span>আজকের Stock বাদ দিন</span>
-                    <span className="bg-white/20 text-xs px-2 py-0.5 rounded-full">{getTodayName()}</span>
-                  </>
-                )}
-              </button>
-            )}
-          </div>
+        <div className="mb-6">
+          <h1 className="text-2xl font-semibold text-gray-800">কাঁচামাল ও খরচ ব্যবস্থাপনা</h1>
+          <p className="text-sm text-gray-500 mt-1">Raw Material & Costing Manager</p>
         </div>
 
         {error && (
@@ -311,14 +145,6 @@ export default function RawMaterialManager() {
             <button onClick={() => setError(null)} className="ml-2 text-red-400 hover:text-red-600">✕</button>
           </div>
         )}
-
-        {deductLoading && (
-          <div className="mb-4 bg-blue-50 border border-blue-200 rounded-xl p-3 text-sm text-blue-700">
-            ⏳ আজকের অর্ডার অনুযায়ী stock calculate হচ্ছে...
-          </div>
-        )}
-
-        {deductResult && <DeductionResult results={deductResult} onClose={() => setDeductResult(null)} />}
 
         <div className="grid grid-cols-3 gap-4 mb-6">
           <StatCard label="মোট কাঁচামাল মূল্য" value={`৳${totalBase.toFixed(2)}`} color="text-gray-800" />
@@ -353,45 +179,6 @@ export default function RawMaterialManager() {
         )}
         {!loading && tab === "summary" && <SummaryTab summary={summary} />}
       </div>
-    </div>
-  );
-}
-
-// ========== DEDUCTION RESULT ==========
-function DeductionResult({ results, onClose }) {
-  const ok = results.filter((r) => r.status === "ok");
-  const errors = results.filter((r) => r.status !== "ok");
-
-  return (
-    <div className="mb-5 bg-white border border-gray-200 rounded-2xl p-5 shadow-sm">
-      <div className="flex items-center justify-between mb-3">
-        <h3 className="text-sm font-semibold text-gray-700">📋 Stock বাদের ফলাফল</h3>
-        <button onClick={onClose} className="text-gray-400 hover:text-gray-600 text-sm">✕ বন্ধ করুন</button>
-      </div>
-      {ok.length > 0 && (
-        <div className="space-y-1.5 mb-3">
-          {ok.map((r, i) => (
-            <div key={i} className="flex items-center gap-2 bg-green-50 border border-green-200 rounded-lg px-3 py-2 text-sm">
-              <span className="text-green-500">✓</span>
-              <span className="font-medium text-gray-800">{r.name}</span>
-              <span className="text-gray-500">
-                {r.before?.toFixed(3)} {r.unit} → <span className="text-red-500">−{r.deducted?.toFixed(3)}</span> → <span className="text-green-700 font-semibold">{r.after?.toFixed(3)} {r.unit}</span>
-              </span>
-            </div>
-          ))}
-        </div>
-      )}
-      {errors.length > 0 && (
-        <div className="space-y-1.5">
-          {errors.map((r, i) => (
-            <div key={i} className="flex items-center gap-2 bg-red-50 border border-red-200 rounded-lg px-3 py-2 text-sm text-red-700">
-              <span>✕</span>
-              <span className="font-medium">{r.name}</span>
-              <span>{r.status === "not_found" ? "Material not found in list" : r.msg}</span>
-            </div>
-          ))}
-        </div>
-      )}
     </div>
   );
 }
