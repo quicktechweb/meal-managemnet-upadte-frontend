@@ -17,7 +17,7 @@ const GoogleLoginButton = () => {
       const token = await result.user.getIdToken();
 
       // const res = await axios.post(
-      //   "https://meal-management-backend-update-3.onrender.com/api/firebaseAuth/google",
+      //   "https://alabadanbackendpart.alabadan.com/api/firebaseAuth/google",
       //   { token },
       // );
 

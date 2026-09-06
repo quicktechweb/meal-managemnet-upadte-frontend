@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from "react";
 
-const BASE = "https://meal-management-backend-update-3.onrender.com/api";
+const BASE = "https://alabadanbackendpart.alabadan.com/api";
 const API = `${BASE}/submaterial`;
 
 const NON_WEIGHT = ["piece", "dozen", "bag", "packet"];

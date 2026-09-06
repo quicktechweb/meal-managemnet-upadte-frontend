@@ -1,7 +1,7 @@
 import { useState, useEffect, useMemo } from "react";
 import { Link } from "react-router-dom";
 
-const API_BASE = "https://meal-management-backend-update-3.onrender.com/api";
+const API_BASE = "https://alabadanbackendpart.alabadan.com/api";
 
 const DAY_ORDER = ["Saturday", "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday"];
 

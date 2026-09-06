@@ -32,7 +32,7 @@ const SuperAdmin = () => {
 
   const fetchUsers = async () => {
     try {
-      const res = await fetch("https://meal-management-backend-update-3.onrender.com/api/auth/alluser");
+      const res = await fetch("https://alabadanbackendpart.alabadan.com/api/auth/alluser");
       const data = await res.json();
       if (data.success) {
         setUsers(data.users);
@@ -92,7 +92,7 @@ const toggleFeature = (featureKey) => {
   const saveUser = async () => {
     if (!selectedUser) return alert("Select a user first");
     try {
-      const res = await fetch(`https://meal-management-backend-update-3.onrender.com/api/auth/update-user/${selectedUser._id}`, {
+      const res = await fetch(`https://alabadanbackendpart.alabadan.com/api/auth/update-user/${selectedUser._id}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

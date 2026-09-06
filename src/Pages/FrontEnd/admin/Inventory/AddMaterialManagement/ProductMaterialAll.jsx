@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback } from "react";
 
-const API_PRODUCTS  = "https://meal-management-backend-update-3.onrender.com/api/allmetrialproductadd";
-const API_MATERIALS = "https://meal-management-backend-update-3.onrender.com/api/submaterial";
+const API_PRODUCTS  = "https://alabadanbackendpart.alabadan.com/api/allmetrialproductadd";
+const API_MATERIALS = "https://alabadanbackendpart.alabadan.com/api/submaterial";
 
 // Safe accessor
 const getIngredients = (p) => p?.ingredients ?? [];

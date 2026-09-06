@@ -1,6 +1,6 @@
 import { useState, useEffect, useMemo } from "react";
 
-const BASE = "https://meal-management-backend-update-3.onrender.com/api";
+const BASE = "https://alabadanbackendpart.alabadan.com/api";
 const API_PRODUCTS  = `${BASE}/allmetrialproductadd`;
 const API_MATERIALS = `${BASE}/submaterial`;
 const API_ALLDAYMEAL = `${BASE}/alldaymeal`;
