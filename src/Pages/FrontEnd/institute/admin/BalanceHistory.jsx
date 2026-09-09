@@ -2,7 +2,7 @@ import { useState, useMemo, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   ArrowDownCircle, ArrowUpCircle, Search,
-  TrendingUp, TrendingDown, Wallet, SlidersHorizontal
+  TrendingUp, TrendingDown, Wallet, SlidersHorizontal, Plus, X, Loader2
 } from "lucide-react";
 import useInstituteAuth from "../../../../Hooks/useInstituteAuth";
 
@@ -54,6 +54,59 @@ const BalanceHistory = () => {
   const [error, setError] = useState(null);
   const [filter, setFilter] = useState("all");
   const [search, setSearch] = useState("");
+
+
+  // ── Add Balance modal state ──
+  const [showAddBalance, setShowAddBalance] = useState(false);
+  const [topupAmount, setTopupAmount] = useState("");
+  const [topupLoading, setTopupLoading] = useState(false);
+  const [topupError, setTopupError] = useState(null);
+
+  // ── EPS দিয়ে balance top-up শুরু করা ──
+  const handleAddBalance = async () => {
+    const amount = Number(topupAmount);
+
+    if (!amount || amount <= 0) {
+      setTopupError("সঠিক পরিমাণ লিখুন");
+      return;
+    }
+
+    setTopupLoading(true);
+    setTopupError(null);
+
+    try {
+    // BalanceHistory.jsx
+const invoiceId = `BAL${Date.now().toString(36).toUpperCase()}${userId.slice(-6)}`;
+
+      const res = await fetch(`${BASE}/payment/eps/initiate`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          order: { invoice_id: invoiceId, amount },
+          shipping: {
+            name: user?.user?.information?.full_name || "User",
+            email: user?.user?.email || "",
+            phone: user?.user?.phone || "",
+            address: user?.user?.information?.location || "Dhaka",
+            area: user?.user?.information?.district || "Dhaka",
+          },
+          cartItems: [{ name: "Balance Top-up", qty: 1, price: amount }],
+          userId,
+        }),
+      });
+
+      const json = await res.json();
+
+      if (!json.success || !json.redirect_url) {
+        throw new Error(json.message || "Payment initiate failed");
+      }
+
+      window.location.href = json.redirect_url;
+    } catch (e) {
+      setTopupError(e.message);
+      setTopupLoading(false);
+    }
+  };
 
   // ── শুধু transaction list (history) API থেকে fetch করা হচ্ছে ──
   useEffect(() => {
@@ -146,9 +199,19 @@ const BalanceHistory = () => {
                   {Number(currentBalance).toLocaleString("en-BD")}
                 </span>
               </div>
-              <p className="text-slate-500 text-xs mt-2">
+                           <p className="text-slate-500 text-xs mt-2">
                 {user?.user?.information?.full_name ?? user?.user?.name ?? "User"} · UID {user?.user?.uid ?? "—"}
               </p>
+
+              <button
+                onClick={() => setShowAddBalance(true)}
+                className="mt-4 flex items-center gap-2 bg-orange-500 hover:bg-orange-600 text-white text-sm font-semibold px-4 py-2.5 rounded-xl transition-all"
+              >
+                <Plus size={16} /> Add Balance
+              </button>
+            </div>
+
+            <div className="flex gap-3">
             </div>
 
             <div className="flex gap-3">
@@ -289,12 +352,63 @@ const BalanceHistory = () => {
           </AnimatePresence>
         </div>
 
-        {transactions.length === 0 && (
+               {transactions.length === 0 && (
           <p className="text-center text-xs text-gray-300 pb-6">
             Transactions will appear here once your balance is updated.
           </p>
         )}
       </div>
+
+      {/* ══ Add Balance Modal ══ */}
+      {showAddBalance && (
+        <div className="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4">
+          <div className="bg-white w-full max-w-sm rounded-2xl shadow-xl p-6">
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-lg font-bold text-gray-800">Add Balance</h3>
+              <button
+                onClick={() => {
+                  setShowAddBalance(false);
+                  setTopupAmount("");
+                  setTopupError(null);
+                }}
+                className="p-1.5 rounded-full hover:bg-gray-100"
+              >
+                <X size={18} />
+              </button>
+            </div>
+
+            <label className="text-xs font-medium text-gray-500 mb-1 block">
+              Amount (৳)
+            </label>
+            <input
+              type="number"
+              min="1"
+              value={topupAmount}
+              onChange={(e) => setTopupAmount(e.target.value)}
+              placeholder="e.g. 500"
+              className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm mb-2 focus:outline-none focus:ring-2 focus:ring-slate-300"
+            />
+
+            {topupError && (
+              <p className="text-xs text-rose-500 mb-2">{topupError}</p>
+            )}
+
+            <button
+              onClick={handleAddBalance}
+              disabled={topupLoading}
+              className="w-full flex items-center justify-center gap-2 bg-slate-900 hover:bg-slate-800 text-white text-sm font-semibold py-2.5 rounded-xl transition-all disabled:opacity-60"
+            >
+              {topupLoading ? (
+                <>
+                  <Loader2 size={16} className="animate-spin" /> Redirecting...
+                </>
+              ) : (
+                "Proceed to Payment"
+              )}
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

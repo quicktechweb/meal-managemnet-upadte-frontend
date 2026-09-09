@@ -113,7 +113,7 @@ import InventoryStockManagement from "../Pages/dashboard/InventoryStockManagemen
 import InstiuteUserMealOnOff from "../Pages/dashboard/InstiuteUserMealOnOff";
 import InstituteUserBrowser from "../Components/admin/AllInstituteshowBalance/AllInstituteshowBalance";
 import MealOnOffSuperAdmin from "../Components/admin/MealOnoff/MealOnOffSuperAdmin";
-import Institutionalldatamealon from "../Pages/dashboard/institutionalldatamealon";
+import Institutionalldatamealon from "../Pages/dashboard/Institutionalldatamealon";
 import Superadminmealallonpart from "../Components/admin/MealOnoff/Superadminmealallonpart";
 import WhychooseusSkeleton from "../Components/skeleton/WhychooseusSkeleton";
 import WhyChooseUs from "../Components/home/WhyChooseUs/WhyChooseUs";

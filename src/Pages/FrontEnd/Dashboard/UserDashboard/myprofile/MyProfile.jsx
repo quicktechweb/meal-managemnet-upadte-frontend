@@ -13,32 +13,7 @@ import {
 } from "lucide-react";
 import { MdOutlineAddCircleOutline } from "react-icons/md";
 
-const me = {
-  id: 1,
-  name: "Naymur Rahman",
-  username: "naymur_rahman",
-  email: "naymur@gmail.com",
-  password: "Password@123",
-  phone: "01712345678",
-  fathersName: "Abdul Rahman",
-  mothersName: "Fatema Begum",
-  guardiansName: "Abdul Rahman",
-  dateOfBirth: "1998-06-15",
-  nationality: "Bangladeshi",
-  religion: "Islam",
-  education: "BSc in Computer Science",
-  maritalStatus: "Unmarried",
-  city: "Dhaka",
-  presentAddress: "House 12, Road 5, Dhanmondi, Dhaka",
-  permanentAddress: "Village: Mirpur, District: Dhaka",
-  institutionName: "Dhaka University",
-  hostelBranch: "Karjon Hall",
-  occupation: {
-    post_name: "Junior Developer",
-    company_name: "BJIT",
-  },
-  img: "https://api.dicebear.com/7.x/avataaars/svg?seed=Naymur",
-};
+
 
 const MyProfile = () => {
   const [showEditModal, setShowEditModal] = useState(false);
@@ -51,10 +26,10 @@ const MyProfile = () => {
       <div className="max-w-6xl mx-auto mb-4 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
           <h4 className="text-xl lg:text-3xl font-extrabold text-gray-900">
-            Account Profile
+            Account Profile555
           </h4>
           <p className="text-xs lg:text-base text-gray-500">
-            View and manage your personal identity and records.
+            View and manage your personal identity and records55555.
           </p>
         </div>
         <div className="flex items-center gap-2 lg:gap-3.5">

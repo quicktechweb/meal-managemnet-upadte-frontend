@@ -25,6 +25,13 @@ const InstituteAdminProfile = () => {
     (item) => item._id === me?.services?.kitchen_type,
   );
 
+    console.log("🟡 full user object from context:", user);
+  console.log("🟡 me:", me);
+  console.log("🟡 me.institute_id:", me?.institute_id);
+  console.log("🟡 me.information:", me?.information);
+  console.log("🟡 instituteType:", me?.information?.instituteType);
+  console.log("🟡 number_of_member:", me?.information?.number_of_member);
+
   if (!me) return null;
 
   return (
@@ -33,7 +40,7 @@ const InstituteAdminProfile = () => {
       <div className=" mx-auto mb-4 flex justify-between items-center">
         <div>
           <h4 className="text-xl lg:text-3xl font-extrabold text-gray-900">
-            Account Profile
+            Account Profile66
           </h4>
           <p className="text-xs lg:text-base text-gray-500">
             View and manage your personal identity and records.
