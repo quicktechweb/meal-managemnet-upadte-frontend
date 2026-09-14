@@ -10,6 +10,7 @@ import { Plus, X } from "lucide-react";
 
 import DayWiseUserMealSummary from "./DayWiseUserMealSummary";
 import ItemsSelector from "./ItemsSelector";
+import { useLayoutSwitch } from "../providers/LayoutSwitchProvider";
 
 const DayWiseMealActivity = ({ allWise }) => {
   const { user } = useInstituteAuth();
@@ -74,8 +75,14 @@ const DayWiseMealActivity = ({ allWise }) => {
     return days;
   };
 
-  const [selectedDays, setSelectedDays] = useState([getNext7Days()[0]]);
-  const [activeDayView, setActiveDayView] = useState(getNext7Days()[0]);
+ const { selectedDays, setSelectedDays, activeDayView, setActiveDayView } =
+  useLayoutSwitch();
+
+useEffect(() => {
+  if (!activeDayView) setActiveDayView(getNext7Days()[0]);
+  if (!selectedDays?.length) setSelectedDays([getNext7Days()[0]]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+}, []);
 
   const selectedMeals = sortedMeals?.filter(
     (item) => item?.day === activeDayView,

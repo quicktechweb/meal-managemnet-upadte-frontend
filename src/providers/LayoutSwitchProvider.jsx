@@ -5,19 +5,27 @@ const LayoutSwitchContext = createContext();
 const LayoutSwitchProvider = ({ children }) => {
   const [selectedMenu, setSelectedMenu] = useState("");
   const [hideSidebar, setHideSidebar] = useState(true);
-  const [daywiseSelect, setDaywiseSelect] = useState("show-all");
-  const [openPopup, setOpenPopup] = useState(false);
+ const [daywiseSelect, setDaywiseSelect] = useState("show-all");
+const [openPopup, setOpenPopup] = useState(false);
 
-  const value = {
-    selectedMenu,
-    setSelectedMenu,
-    setOpenPopup,
-    openPopup,
-    setDaywiseSelect,
-    daywiseSelect,
-    hideSidebar,
-    setHideSidebar,
-  };
+// ✅ নতুন — Day Wise আর All দুই ভিউ-তেই একই selectedDays শেয়ার হবে
+const [selectedDays, setSelectedDays] = useState([]);
+const [activeDayView, setActiveDayView] = useState(null);
+
+const value = {
+  selectedMenu,
+  setSelectedMenu,
+  setOpenPopup,
+  openPopup,
+  setDaywiseSelect,
+  daywiseSelect,
+  hideSidebar,
+  setHideSidebar,
+  selectedDays,
+  setSelectedDays,
+  activeDayView,
+  setActiveDayView,
+};
 
   return (
     <LayoutSwitchContext.Provider value={value}>

@@ -2,7 +2,7 @@ import React, { useEffect, useMemo, useState } from "react";
 import { Controller } from "react-hook-form";
 import CustomSelect from "../CustomSelect";
 import { FloatingInput } from "./StepOne";
-import { api } from "../../utils/countryApi";
+import { useAllLocation } from "../../api/cms/user.hook";
 
 import AdminDocumentUpload from "../AdminDocumentUpload";
 
@@ -28,52 +28,22 @@ const StepFour = ({
 
   const uploadedDocs = watch("documents_admin") || [];
 
-  const [divisions, setDivisions] = useState([]);
-  const [districts, setDistricts] = useState([]);
-  const [divisionLoading, setDivisionLoading] = useState(false);
-  const [districtLoading, setDistrictLoading] = useState(false);
+  const { data: location, isLoading: divisionLoading } = useAllLocation();
 
   const selectedCountry = watch("country_admin");
   const selectedState = watch("state_admin");
   const selectedDivision = watch("division_admin");
 
+  // Divisions come straight from the /api/all-location response
+  const divisions = location || [];
+
+  // Districts belong to the currently selected division
+  const districts =
+    location?.find((loc) => loc.name === selectedDivision)?.districts || [];
+
+  const districtLoading = false;
+
   const permission = watch("permissions");
-
-  useEffect(() => {
-    if (!selectedState) return;
-
-    const loadDivisions = async () => {
-      try {
-        setDivisionLoading(true);
-        const res = await api.get("/divisions");
-        setDivisions(res?.data?.data || []);
-      } catch (err) {
-        setDivisions([]);
-      } finally {
-        setDivisionLoading(false);
-      }
-    };
-
-    loadDivisions();
-  }, [selectedState]);
-
-  useEffect(() => {
-    if (!selectedDivision) return;
-
-    const loadDistricts = async () => {
-      try {
-        setDistrictLoading(true);
-        const res = await api.get(`/division/${selectedDivision}`);
-        setDistricts(res?.data?.data || []);
-      } catch (err) {
-        setDistricts([]);
-      } finally {
-        setDistrictLoading(false);
-      }
-    };
-
-    loadDistricts();
-  }, [selectedDivision]);
 
   const togglePermission = (item) => {
     setSelected((prev) =>
@@ -285,8 +255,8 @@ const StepFour = ({
                       </option>
 
                       {divisions?.map((item) => (
-                        <option key={item.division} value={item.division}>
-                          {item.division}
+                        <option key={item._id || item.name} value={item.name}>
+                          {item.name}
                         </option>
                       ))}
                     </select>
@@ -311,8 +281,8 @@ const StepFour = ({
                       </option>
 
                       {districts?.map((item) => (
-                        <option key={item.district} value={item.district}>
-                          {item.district}
+                        <option key={item._id || item.name} value={item.name}>
+                          {item.name}
                         </option>
                       ))}
                     </select>

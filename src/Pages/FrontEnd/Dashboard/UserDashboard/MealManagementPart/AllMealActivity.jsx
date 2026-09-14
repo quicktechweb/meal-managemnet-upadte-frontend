@@ -9,6 +9,7 @@ import { FaCalendarAlt, FaCheckCircle } from "react-icons/fa";
 import { ChevronDown, Plus, X } from "lucide-react";
 import UserMealSummary from "../../../../../Components/UserMealSummary";
 import ItemsSelector from "../../../../../Components/ItemsSelector";
+import { useLayoutSwitch } from "../../../../../providers/LayoutSwitchProvider";
 
 export const getKey = (meal) => `${meal?.day}-${meal?.meal_type}`;
 
@@ -54,8 +55,14 @@ export default function AllMealActivity({ allWise }) {
   const calcItemsPrice = (items = []) =>
     items.reduce((sum, item) => sum + (Number(item?.price) || 0), 0);
 
-  const [selectedDays, setSelectedDays] = useState([getNext7Days()[0]]);
-  const [activeDayView, setActiveDayView] = useState(getNext7Days()[0]);
+ const { selectedDays, setSelectedDays, activeDayView, setActiveDayView } =
+  useLayoutSwitch();
+
+useEffect(() => {
+  if (!activeDayView) setActiveDayView(getNext7Days()[0]);
+  if (!selectedDays?.length) setSelectedDays([getNext7Days()[0]]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+}, []);
 
   const selectedMeals = sortedMeals?.filter(
     (item) => item?.day === activeDayView,
