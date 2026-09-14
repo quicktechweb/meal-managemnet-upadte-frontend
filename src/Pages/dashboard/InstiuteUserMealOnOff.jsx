@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 
-const API_BASE = "http://localhost:5000/api";
+const API_BASE = "https://alabadanbackendpart.alabadan.com/api";
 
 const DAY_ORDER = ["Saturday", "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday"];
 
