@@ -82,7 +82,7 @@ const MealFeedbackForm = () => {
     setError("");
     setLoading(true);
     try {
-      await axios.post("https://alabadanbackendpart.alabadan.com/api/feedback", {
+      await axios.post("http://localhost:5000/api/feedback", {
         user_id:      user?.user?._id,
         institute_id: user?.user?.institute_id,
         ...form,

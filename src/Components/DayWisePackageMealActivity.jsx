@@ -86,6 +86,8 @@ const DayWisePackageMealActivity = ({ allWise }) => {
   const [useAlternativeMap, setUseAlternativeMap] = useState({});
   //  Default OFF (undefined/false = OFF)
   const [mealOnOffMap, setMealOnOffMap] = useState({});
+    // parent OFF করার আগে কোন meal গুলো ON ছিল
+  const [rememberMap, setRememberMap] = useState({});
 
   // is_attendance
   const [mealAttandence, setMealAttandence] = useState({});

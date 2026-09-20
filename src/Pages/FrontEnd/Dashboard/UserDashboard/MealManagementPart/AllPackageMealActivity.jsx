@@ -73,6 +73,8 @@ export default function AllPackageMealActivity({ allWise }) {
 
   // is_attendance
   const [mealAttandence, setMealAttandence] = useState({});
+    // parent OFF করার আগে কোন meal গুলো ON ছিল
+  const [rememberMap, setRememberMap] = useState({});
 
   const handleSelect = (key, groupIndex) => {
     setSelectedGroupMap((prev) => ({ ...prev, [key]: groupIndex }));
@@ -95,7 +97,50 @@ export default function AllPackageMealActivity({ allWise }) {
   };
 
   // const isMealOn = (key) => mealOnOffMap[key] !== false;
-  const isMealOn = (key) => mealOnOffMap[key] === true;
+  // Parent (master) switch — OFF হলে সব meal effectively OFF
+   const isMealOn = (key) => mealOnOffMap[key] === true;
+
+  // ── Parent switch (saved is_on থেকে বের হয়, তাই reload এ ঠিক থাকে) ──
+  const scopeMeals =
+    sortedMeals?.filter((m) => selectedDays.includes(m?.day)) ?? [];
+
+  const isParentOn = scopeMeals.some((m) => isMealOn(getKey(m)));
+
+    const handleParentToggle = async () => {
+    const prevOn = mealOnOffMap;
+    const prevRemember = rememberMap;
+
+    const nextOn = { ...prevOn };
+    const nextRemember = { ...prevRemember };
+
+    if (isParentOn) {
+      // OFF: এখন যেগুলো ON সেগুলো মনে রাখো, তারপর সব OFF
+      scopeMeals.forEach((m) => {
+        const k = getKey(m);
+        nextRemember[k] = prevOn[k] === true;
+        nextOn[k] = false;
+      });
+    } else {
+      // ON: মনে রাখা meal গুলো ON। কিছু মনে রাখা না থাকলে সব ON
+      const hasRemembered = scopeMeals.some(
+        (m) => prevRemember[getKey(m)] === true,
+      );
+      scopeMeals.forEach((m) => {
+        const k = getKey(m);
+        nextOn[k] = hasRemembered ? prevRemember[k] === true : true;
+      });
+    }
+
+    setMealOnOffMap(nextOn);
+    setRememberMap(nextRemember);
+
+    try {
+      await saveMeals(nextOn, nextRemember);
+    } catch (err) {
+      setMealOnOffMap(prevOn);
+      setRememberMap(prevRemember);
+    }
+  };
 
   const isMealAttendence = (key) => mealAttandence[key] === true;
 
@@ -163,6 +208,7 @@ export default function AllPackageMealActivity({ allWise }) {
       ...new Set(allWiseMealData.meals.map((meal) => meal.day)),
     ];
     const newMealOnOffMap = {};
+        const newRememberMap = {};
     const newUseAlternativeMap = {};
     const newGuestEnabledMap = {};
     const newGuestQuantityMap = {};
@@ -173,6 +219,7 @@ export default function AllPackageMealActivity({ allWise }) {
 
       // is_on state
       newMealOnOffMap[key] = meal.is_on;
+            newRememberMap[key] = meal.remember_on;
 
       // attendance state
       newMealAttendanceMap[key] = meal.is_attendance;
@@ -188,6 +235,7 @@ export default function AllPackageMealActivity({ allWise }) {
     });
 
     setMealOnOffMap(newMealOnOffMap);
+        setRememberMap(newRememberMap);
     setUseAlternativeMap(newUseAlternativeMap);
     setGuestEnabledMap(newGuestEnabledMap);
     setGuestQuantityMap(newGuestQuantityMap);
@@ -202,7 +250,7 @@ export default function AllPackageMealActivity({ allWise }) {
     }
   }, [allWiseMealData]);
 
-  const handleUpdate = async () => {
+  const saveMeals = async (onMap, remMap) => {
     const allSelectedMeals = sortedMeals?.filter((item) =>
       selectedDays.includes(item?.day),
     );
@@ -221,7 +269,8 @@ export default function AllPackageMealActivity({ allWise }) {
         day: meal.day,
         meal_type: meal.package_title,
         package_price: meal.package_price,
-        is_on: isMealOn(getKey(meal)) ? true : false,
+               is_on: onMap[getKey(meal)] === true,
+                       remember_on: remMap[getKey(meal)] === true,
         start_time: meal?.start_time,
         end_time: meal?.end_time,
         selected_items: isAlternative
@@ -245,6 +294,9 @@ export default function AllPackageMealActivity({ allWise }) {
 
     await mutateAsync(payload);
   };
+
+    // Update button এর জন্য (আগের মতোই কাজ করবে)
+   const handleUpdate = () => saveMeals(mealOnOffMap, rememberMap);
 
   return (
     <div className="space-y-4">
@@ -339,6 +391,25 @@ export default function AllPackageMealActivity({ allWise }) {
               </span>{" "}
               before the start time.
             </h6>
+
+                        <div className="mt-3 flex items-center gap-3">
+              <span className="text-sm font-semibold text-gray-700">
+                Meal Service ON / OFF
+              </span>
+              <button
+                type="button"
+                onClick={handleParentToggle}
+                className={`relative w-12 h-6 rounded-full transition-colors flex-shrink-0 ${
+                  isParentOn ? "bg-green-400" : "bg-gray-400"
+                }`}
+              >
+                <span
+                  className={`absolute top-0.5 w-5 h-5 bg-white rounded-full shadow transition-all duration-300 ${
+                    isParentOn ? "left-6" : "left-0.5"
+                  }`}
+                />
+              </button>
+            </div>
           </div>
 
           {/* Regular Meal Cards */}
@@ -370,18 +441,20 @@ export default function AllPackageMealActivity({ allWise }) {
                       </span>
 
                       {/* ON/OFF Toggle */}
-                      <button
-                        onClick={() => handleMealToggle(key)}
-                        className={`relative w-12 h-6 rounded-full transition-colors flex-shrink-0 ${
-                          isOn ? "bg-green-400" : "bg-gray-400"
-                        }`}
-                      >
-                        <span
-                          className={`absolute top-0.5 w-5 h-5 bg-white rounded-full shadow transition-all duration-300 ${
-                            isOn ? "left-6" : "left-0.5"
-                          }`}
-                        />
-                      </button>
+                    {/* ON/OFF Toggle */}
+<button
+  onClick={() => handleMealToggle(key)}
+  // disabled={!parentOn}
+  className={`relative w-12 h-6 rounded-full transition-colors flex-shrink-0 ${
+    isOn ? "bg-green-400" : "bg-gray-400"
+  }`}
+>
+  <span
+    className={`absolute top-0.5 w-5 h-5 bg-white rounded-full shadow transition-all duration-300 ${
+      isOn ? "left-6" : "left-0.5"
+    }`}
+  />
+</button>
                     </div>
 
                     <div className="flex font-semibold justify-center mt-1">
