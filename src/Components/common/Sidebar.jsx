@@ -242,6 +242,8 @@ const Sidebar = ({ isOpen, onClose }) => {
       </span>
       <span>Balance History</span>
     </Link>
+
+    
     <Link
       to="/dashboards/mealfeedbackform"
       className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium text-gray-500 hover:bg-green-50 hover:text-green-600 transition-all duration-150 group"

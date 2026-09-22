@@ -231,7 +231,8 @@ export const useIndividualUserPermission = () => {
 
 // user all wise create meal
 
-export const useAllwiseUserCreateMeal = () => {
+ export const useAllwiseUserCreateMeal = () => {
+  const query = useQueryClient();          // ← নতুন
   return useMutation({
     mutationKey: ["user-create-meal"],
     mutationFn: (payload) => userAllwiseCreateMealFunction(payload),
@@ -240,6 +241,8 @@ export const useAllwiseUserCreateMeal = () => {
 
       if (data?.success) {
         toast.success(data?.message);
+        query.invalidateQueries({ queryKey: ["all-wise-get-meal"] });   // ← নতুন
+        query.invalidateQueries({ queryKey: ["day-wise-get-meal"] });   // ← নতুন
       }
     },
     onError: (error) => {
@@ -275,9 +278,11 @@ export const useDaywiseUserCreateMeal = () => {
     onSuccess: (data) => {
       console.log(data);
 
-      if (data?.success) {
+          if (data?.success) {
         toast.success(data?.message);
         query.invalidateQueries(["institute-user-meal-lists"]);
+        query.invalidateQueries({ queryKey: ["all-wise-get-meal"] });   // ← নতুন
+        query.invalidateQueries({ queryKey: ["day-wise-get-meal"] });   // ← নতুন
       }
     },
     onError: (error) => {
@@ -326,7 +331,7 @@ export const useAllwiseRoutineGetMealList = () => {
   const { token } = useInstituteAuth();
 
   return useQuery({
-    queryKey: ["all-wise-get-meal"],
+    queryKey: ["all-wise-routine-get-meal-list"],   // ← শুধু এই লাইন বদলাবে
     queryFn: userAllWiseRoutineGetMealFunction,
     retry: false,
     enabled: !!token,

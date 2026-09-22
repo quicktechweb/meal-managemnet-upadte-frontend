@@ -17,7 +17,7 @@ const GoogleLoginButton = () => {
       const token = await result.user.getIdToken();
 
       // const res = await axios.post(
-      //   "http://localhost:5000/api/firebaseAuth/google",
+      //   "https://alabadanbackendpart.alabadan.com/api/firebaseAuth/google",
       //   { token },
       // );
 

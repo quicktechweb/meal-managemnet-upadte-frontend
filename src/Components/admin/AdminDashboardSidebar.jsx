@@ -104,8 +104,14 @@ const AdminDashboardSidebar = ({ setIsOpenSidebar }) => {
           icon: FaShoppingBag,
           path: "/admin/dashboard/allinstitutebalance",
         },
+        // {
+        //   title: "Meal Payments",
+        //   icon: FaShoppingBag,
+        //   path: "/admin/dashboard/meal-payments",
+        // },
       ],
     },
+  
     {
       key: "Inventory",
       title: "Inventory",

@@ -137,6 +137,8 @@ import MealFeedbackForm from "../Pages/FrontEnd/institute/admin/MealFeedbackForm
 import AddMaterialManagement from "../Pages/FrontEnd/admin/Inventory/AddMaterialManagement/AddMaterialManagement";
 import ProductMaterialAll from "../Pages/FrontEnd/admin/Inventory/AddMaterialManagement/ProductMaterialAll";
 import DayWiseProfitReport from "../Pages/FrontEnd/admin/Inventory/AddMaterialManagement/Daywisecalculation";
+import MealPaymentHistory from "../Pages/FrontEnd/institute/admin/MealPaymentHistory";
+import SuperAdminMealPayments from "../Components/admin/MealPayments/SuperAdminMealPayments";
 
 const router = createBrowserRouter([
   {
@@ -427,6 +429,10 @@ const router = createBrowserRouter([
         element: <AddSchedule />,
       },
       {
+  path: "meal-payments",
+  element: <SuperAdminMealPayments />,
+},
+      {
         path: "allinstitutebalance",
         element: <InstituteUserBrowser />,
       },
@@ -623,6 +629,10 @@ const router = createBrowserRouter([
         path: "/dashboards/role",
         element: <UserSettings />,
       },
+      {
+  path: "/dashboards/meal-payments",
+  element: <MealPaymentHistory />,
+},
       {
         path: "/dashboards/profile-update/:id",
         element: <InstituteAdminProfileUpdate />,

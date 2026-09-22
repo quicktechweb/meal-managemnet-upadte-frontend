@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import useInstituteAuth from "../Hooks/useInstituteAuth";
 import {
+  useAllwiseGetMealList,
   useDaywiseGetMealList,
   useDaywiseUserCreateMeal,
   useGetMealOnOffTime,
@@ -22,6 +23,9 @@ const DayWisePackageMealActivity = ({ allWise }) => {
   const { mutateAsync, isPending } = useDaywiseUserCreateMeal();
 
   const { data: daywiseMealData, isLoading } = useDaywiseGetMealList();
+
+  // All (প্রতি সপ্তাহে চলতে থাকা baseline)
+  const { data: allWiseMealData } = useAllwiseGetMealList();
 
   const weekDays = [
     "Sunday",
@@ -62,17 +66,25 @@ const DayWisePackageMealActivity = ({ allWise }) => {
     for (let i = 0; i < 7; i++) {
       const d = new Date(today);
       d.setDate(today.getDate() + i);
+      const mm = String(d.getMonth() + 1).padStart(2, "0");
+      const dd = String(d.getDate()).padStart(2, "0");
       days.push({
         day: weekDays[d.getDay()],
         date: d.getDate(),
         month: d.toLocaleString("default", { month: "short" }),
+        dateStr: `${d.getFullYear()}-${mm}-${dd}`, // "YYYY-MM-DD"
       });
     }
     return days;
   };
 
-  const [selectedDays, setSelectedDays] = useState([getNext7Days()[0]]);
   const [activeDayView, setActiveDayView] = useState(getNext7Days()[0]);
+
+  // weekday → তারিখ ("Monday" → "2026-09-21"). ৭ দিনে প্রতিটা weekday একবারই আসে।
+  const dateByDay = {};
+  getNext7DaysWithDates().forEach((d) => {
+    dateByDay[d.day] = d.dateStr;
+  });
 
   const selectedMeals = sortedMeals?.filter(
     (item) => item?.day === activeDayView,
@@ -86,8 +98,8 @@ const DayWisePackageMealActivity = ({ allWise }) => {
   const [useAlternativeMap, setUseAlternativeMap] = useState({});
   //  Default OFF (undefined/false = OFF)
   const [mealOnOffMap, setMealOnOffMap] = useState({});
-    // parent OFF করার আগে কোন meal গুলো ON ছিল
-  const [rememberMap, setRememberMap] = useState({});
+  // All এ যেগুলো ON (প্রতি সপ্তাহের baseline)
+  const [baseOnMap, setBaseOnMap] = useState({});
 
   // is_attendance
   const [mealAttandence, setMealAttandence] = useState({});
@@ -114,6 +126,42 @@ const DayWisePackageMealActivity = ({ allWise }) => {
   //  Default OFF — undefined/false
   const isMealOn = (key) => mealOnOffMap[key] === true;
   const isMealAttendence = (key) => mealAttandence[key] === true;
+
+  // এই তারিখে কোনো meal ON আছে কিনা (calendar এর ✓ এর জন্য — All এর মতোই)
+  const isDayOn = (day) =>
+    !!sortedMeals?.some((m) => m.day === day && isMealOn(getKey(m)));
+
+  // ── Parent switch (active date) ──
+  const isParentOn = !!selectedMeals?.some((m) => isMealOn(getKey(m)));
+
+  const handleParentToggle = async () => {
+    const prevOn = mealOnOffMap;
+    const nextOn = { ...prevOn };
+
+    if (isParentOn) {
+      // OFF: শুধু এই তারিখের সব meal OFF
+      selectedMeals?.forEach((m) => {
+        nextOn[getKey(m)] = false;
+      });
+    } else {
+      // ON: All এ যেগুলো ON ছিল সেগুলো ON। All এ কিছুই ON না থাকলে সব ON
+      const hasBase = selectedMeals?.some(
+        (m) => baseOnMap[getKey(m)] === true,
+      );
+      selectedMeals?.forEach((m) => {
+        const k = getKey(m);
+        nextOn[k] = hasBase ? baseOnMap[k] === true : true;
+      });
+    }
+
+    setMealOnOffMap(nextOn);
+
+    try {
+      await saveMeals(nextOn);
+    } catch (err) {
+      setMealOnOffMap(prevOn);
+    }
+  };
   // Guest Meal State
   const [guestOpenKey, setGuestOpenKey] = useState(null);
   const [guestSelectedGroupMap, setGuestSelectedGroupMap] = useState({});
@@ -164,87 +212,80 @@ const DayWisePackageMealActivity = ({ allWise }) => {
   };
 
   useEffect(() => {
-    if (!daywiseMealData?.meals?.length) return;
-
-    const savedDays = [
-      ...new Set(daywiseMealData?.meals.map((meal) => meal.day)),
-    ];
-
     const newMealOnOffMap = {};
+    const newBaseOnMap = {};
     const newUseAlternativeMap = {};
     const newGuestEnabledMap = {};
     const newGuestQuantityMap = {};
     const newMealAttendanceMap = {};
-    daywiseMealData.meals.forEach((meal) => {
+
+    const applyMeal = (meal) => {
       const key = `${meal.day}-${meal.meal_type}`;
-
-      // is_on state
-      newMealOnOffMap[key] = meal.is_on;
-
-      // alternative state
+      newMealOnOffMap[key] = meal.is_on === true;
+      newMealAttendanceMap[key] = meal.is_attendance;
       newUseAlternativeMap[key] = meal.is_alternative;
-
-      // guest state
       if (meal.guest_quantity > 0) {
         newGuestEnabledMap[key] = true;
         newGuestQuantityMap[key] = meal.guest_quantity;
+      } else {
+        newGuestEnabledMap[key] = false;
       }
+    };
+
+    // 1) প্রথমে All (baseline) — প্রতি সপ্তাহে যা চলে
+    allWiseMealData?.meals?.forEach((meal) => {
+      newBaseOnMap[`${meal.day}-${meal.meal_type}`] = meal.is_on === true;
+      applyMeal(meal);
+    });
+
+    // 2) তারপর Day Wise override — শুধু আগামী ৭ দিনের নির্দিষ্ট তারিখের জন্য
+    daywiseMealData?.meals?.forEach((meal) => {
+      if (!meal.date || dateByDay[meal.day] !== meal.date) return;
+      applyMeal(meal);
     });
 
     setMealOnOffMap(newMealOnOffMap);
+    setBaseOnMap(newBaseOnMap);
     setUseAlternativeMap(newUseAlternativeMap);
     setGuestEnabledMap(newGuestEnabledMap);
     setGuestQuantityMap(newGuestQuantityMap);
     setMealAttandence(newMealAttendanceMap);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [daywiseMealData, allWiseMealData]);
 
-    //  saved days set করো
-    setSelectedDays(savedDays);
+  // ৭ দিনের সব meal পাঠানো হয়। backend শুধু All থেকে আলাদা গুলো override হিসেবে রাখে।
+  const saveMeals = async (onMap) => {
+    const allMeals = sortedMeals?.filter((item) => !!dateByDay[item?.day]);
 
-    //  প্রথম saved day টা active করো
-    if (savedDays.length > 0) {
-      setActiveDayView(savedDays[0]);
-    }
-  }, [daywiseMealData]);
+    const finalSelections = allMeals?.map((meal) => {
+      const key = getKey(meal);
+      const isAlternative = !!useAlternativeMap[key];
+      const isGuestAlternative = !!guestUseAlternativeMap[key];
+      const altGuestGroupIndex = guestSelectedGroupMap[key];
+      const altGroupIndex = selectedGroupMap[key];
 
-  const handleUpdate = async () => {
-    const allSelectedMeals = sortedMeals?.filter((item) =>
-      selectedDays.includes(item?.day),
-    );
+      const isGuestEnabled = guestEnabledMap[key];
 
-    // Regular meals — OFF
-    const finalSelections = allSelectedMeals
-      ?.filter((meal) => isMealOn(getKey(meal)))
-      ?.map((meal) => {
-        console.log(meal);
-
-        const key = getKey(meal);
-        const isAlternative = !!useAlternativeMap[key];
-        const isGuestAlternative = !!guestUseAlternativeMap[key];
-        const altGuestGroupIndex = guestSelectedGroupMap[key];
-        const altGroupIndex = selectedGroupMap[key];
-
-        const isGuestEnabled = guestEnabledMap[getKey(meal)];
-
-        return {
-          day: meal.day,
-          meal_type: meal.package_title,
-          is_on: isMealOn(getKey(meal)),
-          package_price: meal.package_price,
-          start_time: meal.start_time,
-          end_time: meal.end_time,
-          selected_items: isAlternative
-            ? ([meal?.alternative_items?.[altGroupIndex]] ?? [])
-            : (meal?.package_item ?? []),
-          guest_items: isGuestEnabled
-            ? isGuestAlternative
-              ? ([meal?.alternative_items?.[altGuestGroupIndex]] ?? [])
-              : (meal?.package_item ?? [])
-            : [],
-          is_alternative: isAlternative,
-
-          guest_quantity: isGuestEnabled ? (guestQuantityMap[key] ?? 1) : 0,
-        };
-      });
+      return {
+        day: meal.day,
+        date: dateByDay[meal.day],
+        meal_type: meal.package_title,
+        is_on: onMap[key] === true,
+        package_price: meal.package_price,
+        start_time: meal.start_time,
+        end_time: meal.end_time,
+        selected_items: isAlternative
+          ? ([meal?.alternative_items?.[altGroupIndex]] ?? [])
+          : (meal?.package_item ?? []),
+        guest_items: isGuestEnabled
+          ? isGuestAlternative
+            ? ([meal?.alternative_items?.[altGuestGroupIndex]] ?? [])
+            : (meal?.package_item ?? [])
+          : [],
+        is_alternative: isAlternative,
+        guest_quantity: isGuestEnabled ? (guestQuantityMap[key] ?? 1) : 0,
+      };
+    });
 
     const payload = {
       type: allWise,
@@ -254,6 +295,9 @@ const DayWisePackageMealActivity = ({ allWise }) => {
 
     await mutateAsync(payload);
   };
+
+  // Update button এর জন্য
+  const handleUpdate = () => saveMeals(mealOnOffMap);
 
   return (
     <>
@@ -274,9 +318,8 @@ const DayWisePackageMealActivity = ({ allWise }) => {
             </div>
             <div className="flex flex-col justify-center">
               {getNext7DaysWithDates().map(({ day, date, month }, index) => {
-                const isSelected = selectedDays.includes(day);
-
-                console.log("isSelected", isSelected);
+                // ✓ = এই তারিখে অন্তত একটা meal ON আছে (All এর মতো)
+                const isSelected = isDayOn(day);
 
                 const isViewing = activeDayView === day;
                 const isToday = index === 0;
@@ -286,11 +329,6 @@ const DayWisePackageMealActivity = ({ allWise }) => {
                     key={index}
                     onClick={() => {
                       setActiveDayView(day);
-                      setSelectedDays((prev) =>
-                        prev.includes(day)
-                          ? prev.filter((d) => d !== day)
-                          : [...prev, day],
-                      );
                     }}
                     className={`
         flex items-center justify-between py-2 px-3 rounded-lg cursor-pointer
@@ -363,6 +401,27 @@ const DayWisePackageMealActivity = ({ allWise }) => {
                 </span>{" "}
                 before the start time.
               </h6>
+
+              {/* Parent switch — শুধু এই তারিখের জন্য */}
+              <div className="mt-3 flex items-center gap-3">
+                <span className="text-sm font-semibold text-gray-700">
+                  {activeDayView} Meal Service ON / OFF
+                </span>
+                <button
+                  type="button"
+                  onClick={handleParentToggle}
+                  disabled={!selectedMeals?.length}
+                  className={`relative w-12 h-6 rounded-full transition-colors flex-shrink-0 ${
+                    isParentOn ? "bg-green-400" : "bg-gray-400"
+                  }`}
+                >
+                  <span
+                    className={`absolute top-0.5 w-5 h-5 bg-white rounded-full shadow transition-all duration-300 ${
+                      isParentOn ? "left-6" : "left-0.5"
+                    }`}
+                  />
+                </button>
+              </div>
             </div>
 
             {/* Regular Meal Cards */}

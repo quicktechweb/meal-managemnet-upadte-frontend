@@ -49,6 +49,13 @@ export const SIDEBAR_ITEMS = [
     path: "/dashboards/balance",
     permission: "balance.view",
   },
+  {
+  label: "Meal Payments",
+  icon: "Wallet",
+  path: "/dashboards/meal-payments",
+  permission: "balance.view",
+  excludeRoles: ["user"],
+},
 
   {
     label: "Meal On Off",

@@ -6,7 +6,7 @@ import {
 } from "lucide-react";
 import useInstituteAuth from "../../../../Hooks/useInstituteAuth";
 
-const BASE = "http://localhost:5000/api";
+const BASE = "https://alabadanbackendpart.alabadan.com/api";
 
 const fmtAmount = (n) => "৳" + Number(n).toLocaleString("en-BD");
 const fmtDate = (d) =>
@@ -45,11 +45,12 @@ const TYPE_CONFIG = {
 const FILTERS = ["all", "credit", "debit"];
 
 const BalanceHistory = () => {
-  const { user } = useInstituteAuth();
+  const { user, token } = useInstituteAuth();
   const userId = user?.user?._id;
   const currentBalance = user?.user?.balance ?? 0; // ← এটা useInstituteAuth থেকেই থাকবে, API থেকে না
 
   const [rawData, setRawData] = useState([]);
+  const [deductions, setDeductions] = useState([]); // 🍽️ meal এর টাকা কাটা (debit)
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [filter, setFilter] = useState("all");
@@ -119,28 +120,61 @@ const invoiceId = `BAL${Date.now().toString(36).toUpperCase()}${userId.slice(-6)
         const json = await res.json();
         if (!json.success) throw new Error(json.message || "Fetch failed");
         setRawData(Array.isArray(json.data) ? json.data : []);
+
+        // 🍽️ meal এর ১ ঘণ্টা আগে যে টাকা কাটা হয়েছে সেই history (debit)
+        try {
+          let p = 1;
+          let pages = 1;
+          const all = [];
+          do {
+            const dRes = await fetch(`${BASE}/meal-deductions/my?page=${p}&limit=100`, {
+              headers: { Authorization: `Bearer ${token}` },
+            });
+            const dJson = await dRes.json();
+            if (!dJson.success) break;
+            all.push(...(dJson.data || []));
+            pages = dJson.pagination?.pages || 1;
+            p += 1;
+          } while (p <= pages && p <= 20);
+          setDeductions(all);
+        } catch (err) {
+          console.error("Meal deductions fetch failed:", err);
+        }
       } catch (e) {
         setError(e.message);
       } finally {
         setLoading(false);
       }
     })();
-  }, [userId]);
+  }, [userId, token]);
 
   // ── raw API ডেটাকে UI-friendly transaction এ map করা + sort (নতুন আগে) ──
   const transactions = useMemo(() => {
-    return [...rawData]
-      .map((t) => ({
-        _id: t._id,
-        type: getType(t.amount),
-        amount: Math.abs(Number(t.amount) || 0),
-        note: t.note || "",
-        ref: t._id?.slice(-6) || "",
-        createdAt: t.createdAt,
-        added_by: t.added_by?.email || t.added_by?.name || "-",
-      }))
-      .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
-  }, [rawData]);
+    const credits = [...rawData].map((t) => ({
+      _id: t._id,
+      type: getType(t.amount),
+      amount: Math.abs(Number(t.amount) || 0),
+      note: t.note || "",
+      ref: t._id?.slice(-6) || "",
+      createdAt: t.createdAt,
+      added_by: t.added_by?.email || t.added_by?.name || "-",
+    }));
+
+    // 🍽️ meal এর টাকা কাটা — সবসময় debit
+    const debits = deductions.map((d) => ({
+      _id: d._id,
+      type: "debit",
+      amount: Number(d.amount) || 0,
+      note: `${d.meal_type} meal • ${d.meal_date}${d.meal_time ? ` (${d.meal_time})` : ""}`,
+      ref: d._id?.slice(-6) || "",
+      createdAt: d.createdAt,
+      added_by: "Meal auto-deduct",
+    }));
+
+    return [...credits, ...debits].sort(
+      (a, b) => new Date(b.createdAt) - new Date(a.createdAt),
+    );
+  }, [rawData, deductions]);
 
   // ── বর্তমান ব্যালেন্স useInstituteAuth (user.user.balance) থেকেই আসছে, এখানে recompute করা হচ্ছে না ──
 
