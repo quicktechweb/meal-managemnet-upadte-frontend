@@ -3,6 +3,21 @@ import { useAllPackage } from "../../api/admin/admin.api";
 import { FaCheckCircle } from "react-icons/fa";
 import { ChevronDown, Clock } from "lucide-react";
 
+// শুধু খাবারের নাম দেখানোর জন্য: (২৯ চাউল), ২০০ গ্রাম, ৫৫-৬৫ গ্রাম ইত্যাদি বাদ
+// শুধু UI তে দেখানোর জন্য — payload এ আগের মতোই পুরো title যাবে
+const cleanItemName = (name = "") =>
+  name
+    .replace(/\([^)]*\)/g, "") // ( ... ) বাদ
+    .replace(/[0-9\u09E6-\u09EF].*$/, "") // প্রথম সংখ্যা (বাংলা/ইংরেজি) থেকে শেষ পর্যন্ত বাদ
+    .trim();
+
+const cleanItemTitle = (title = "") =>
+  (title || "")
+    .split(",")
+    .map(cleanItemName)
+    .filter(Boolean)
+    .join(", ");
+
 const PackageSchedule = ({
   setPackageMealRoutine,
   setPackageTypes,
@@ -255,7 +270,7 @@ const PackageSchedule = ({
                                   </p>
                                   {/* items[0].title is "ভাত,ডাল,ডিম" */}
                                   <p className="text-sm text-gray-600 text-start leading-snug">
-                                    {pkg?.items?.[0]?.title ?? "—"}
+                                    {cleanItemTitle(pkg?.items?.[0]?.title) || "—"}
                                   </p>
                                 </div>
                               </button>
@@ -301,9 +316,11 @@ const PackageSchedule = ({
                                   >
                                     <span className="text-sm font-medium text-gray-700 truncate">
                                       {selectedAlternative[key] !== undefined
-                                        ? (pkg?.alternative_items?.[
-                                            selectedAlternative[key]
-                                          ]?.title ?? "—")
+                                        ? (cleanItemTitle(
+                                            pkg?.alternative_items?.[
+                                              selectedAlternative[key]
+                                            ]?.title,
+                                          ) || "—")
                                         : "Select Alternative Items"}
                                     </span>
                                     <ChevronDown
@@ -350,7 +367,7 @@ const PackageSchedule = ({
                                             </p>
                                             {/* group = {title: "ভাত,ডাল,ডিম"} */}
                                             <p className="text-sm text-gray-700">
-                                              {group.title}
+                                              {cleanItemTitle(group.title)}
                                             </p>
                                           </div>
                                         ),
@@ -465,7 +482,7 @@ const PackageSchedule = ({
                                                 </p>
                                                 {/* group = {title: "ভাত,ডাল,ডিম"} */}
                                                 <p className="text-sm text-gray-700">
-                                                  {group.title}
+                                                  {cleanItemTitle(group.title)}
                                                 </p>
                                               </div>
                                             </div>
@@ -583,8 +600,9 @@ const PackageSchedule = ({
                                   Items
                                 </p>
                                 <div className="flex flex-wrap gap-1.5">
-                                  {pkg.package_item?.[0]?.title
-                                    ?.split(",")
+                                  {cleanItemTitle(pkg.package_item?.[0]?.title)
+                                    .split(", ")
+                                    .filter(Boolean)
                                     .map((t, i) => (
                                       <span
                                         key={i}
@@ -604,7 +622,7 @@ const PackageSchedule = ({
                                           Alt {i + 1}
                                         </p>
                                         <div className="flex flex-wrap gap-1.5">
-                                          {alt.title?.split(",").map((t, j) => (
+                                          {cleanItemTitle(alt.title).split(", ").filter(Boolean).map((t, j) => (
                                             <span
                                               key={j}
                                               className="text-[11px] font-medium bg-amber-50 text-amber-800 px-2.5 py-1 rounded-full"
