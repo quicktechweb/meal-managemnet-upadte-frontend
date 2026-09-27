@@ -585,9 +585,16 @@ export const useCreateSummaryAllWise = () => {
   });
 };
 
-export const useBalanceList = () => {
+// export const useBalanceList = () => {
+//   return useQuery({
+//     queryKey: ["balance-list"],
+//     queryFn: instituteWiseBalanceListFunction,
+//   });
+// };
+
+export const useBalanceList = ({ startDate, endDate } = {}) => {
   return useQuery({
-    queryKey: ["balance-list"],
-    queryFn: instituteWiseBalanceListFunction,
+    queryKey: ["balance-list", startDate, endDate],
+    queryFn: () => instituteWiseBalanceListFunction({ startDate, endDate }),
   });
 };

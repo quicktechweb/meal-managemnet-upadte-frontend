@@ -59,9 +59,16 @@ export default function AllPackageMealActivity({ allWise }) {
 
   const [activeDayView, setActiveDayView] = useState(getNext7Days()[0]);
 
-  const selectedMeals = sortedMeals?.filter(
-    (item) => item?.day === activeDayView,
-  );
+ const mealOrder = ["Breakfast", "Lunch", "Dinner"];
+
+const selectedMeals = sortedMeals
+  ?.filter((item) => item?.day === activeDayView)
+  ?.slice()
+  .sort((a, b) => {
+    const ai = mealOrder.indexOf(a.package_title);
+    const bi = mealOrder.indexOf(b.package_title);
+    return (ai === -1 ? mealOrder.length : ai) - (bi === -1 ? mealOrder.length : bi);
+  });
 
   // Regular Meal State
   const [openKey, setOpenKey] = useState(null);

@@ -9,6 +9,7 @@ import {
 import useInstituteAuth from "../Hooks/useInstituteAuth";
 import { useInstituteUserAdminData } from "../api/cms/user.hook";
 import { useLocation } from "react-router-dom";
+import { cleanItemsTitle } from "../utils/cleanItemsTitle";
 
 const columnHelper = createColumnHelper();
 
@@ -19,13 +20,20 @@ const PackageMenuRoutine = () => {
 
   const routine = data?.packages;
 
-  const { mealTypes, groupedSchedule } = React.useMemo(() => {
-    const types =
-      routine?.package_type_lists?.map((m) => ({
-        type: m.package_type,
-        start: m.start_time,
-        end: m.end_time,
-      })) || [];
+ const { mealTypes, groupedSchedule } = React.useMemo(() => {
+  const mealOrder = ["Breakfast", "Lunch", "Dinner"];
+  const types = (
+    routine?.package_type_lists?.map((m) => ({
+      type: m.package_type,
+      start: m.start_time,
+      end: m.end_time,
+    })) || []
+  ).sort((a, b) => {
+    const ai = mealOrder.indexOf(a.type);
+    const bi = mealOrder.indexOf(b.type);
+    return (ai === -1 ? mealOrder.length : ai) -
+      (bi === -1 ? mealOrder.length : bi);
+  });
 
     const weekDays = [
       "Sunday",
@@ -47,13 +55,15 @@ const PackageMenuRoutine = () => {
       const row = { day };
       types.forEach((meal) => {
         const found = meals.find((m) => m.package_title === meal.type);
-        row[meal.type] = {
-          items:
-            found?.package_item?.map((i) => `${i.title}`).join(", ") || "-",
-          package_price: found?.package_price,
-          alternative_items:
-            found?.alternative_items?.map((i) => `${i.title}`) ?? [],
-        };
+     row[meal.type] = {
+  items:
+    found?.package_item
+      ?.map((i) => cleanItemsTitle(i.title))
+      .join(", ") || "-",
+  package_price: found?.package_price,
+  alternative_items:
+    found?.alternative_items?.map((i) => cleanItemsTitle(i.title)) ?? [],
+};
       });
       return row;
     });

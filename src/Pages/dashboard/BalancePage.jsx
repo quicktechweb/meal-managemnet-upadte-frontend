@@ -1,5 +1,5 @@
 import { Plus } from "lucide-react";
-import React from "react";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { useBalanceList } from "../../api/cms/user.hook";
 
@@ -15,12 +15,19 @@ const formatDate = (dateStr) =>
 const formatAmount = (amount) => "৳" + Number(amount).toLocaleString("en-BD");
 
 const BalancePage = () => {
-  const { data, isLoading } = useBalanceList();
+  const [startDate, setStartDate] = useState("");
+  const [endDate, setEndDate] = useState("");
+
+  const { data, isLoading } = useBalanceList({ startDate, endDate });
 
   const list = data ?? [];
 
+  const handleClearFilter = () => {
+    setStartDate("");
+    setEndDate("");
+  };
+
   const totalAmount = list.reduce((sum, b) => sum + (b.amount ?? 0), 0);
-  const unassigned = list.filter((b) => !b.user).length;
 
   return (
     <div className=" mx-auto">
@@ -57,9 +64,43 @@ const BalancePage = () => {
         ))}
       </div>
 
+      {/* Date-wise Filter */}
+      <div className="flex flex-wrap items-end gap-3 mb-6">
+        <div className="flex flex-col gap-1">
+          <label className="text-xs text-gray-500">From</label>
+          <input
+            type="date"
+            value={startDate}
+            onChange={(e) => setStartDate(e.target.value)}
+            className="border border-gray-200 rounded-lg px-3 py-2 text-sm text-gray-700 focus:outline-none focus:ring-1 focus:ring-blue-500"
+          />
+        </div>
+        <div className="flex flex-col gap-1">
+          <label className="text-xs text-gray-500">To</label>
+          <input
+            type="date"
+            value={endDate}
+            onChange={(e) => setEndDate(e.target.value)}
+            className="border border-gray-200 rounded-lg px-3 py-2 text-sm text-gray-700 focus:outline-none focus:ring-1 focus:ring-blue-500"
+          />
+        </div>
+        {(startDate || endDate) && (
+          <button
+            onClick={handleClearFilter}
+            className="text-sm text-blue-600 hover:text-blue-700 px-3 py-2"
+          >
+            Clear filter
+          </button>
+        )}
+      </div>
+
       {/* List */}
       {isLoading ? (
         <p className="text-sm text-gray-400 text-center py-10">Loading...</p>
+      ) : list.length === 0 ? (
+        <p className="text-sm text-gray-400 text-center py-10">
+          No balance entries found for this range
+        </p>
       ) : (
         <div className="flex flex-col gap-2">
           {list.map((item) => (

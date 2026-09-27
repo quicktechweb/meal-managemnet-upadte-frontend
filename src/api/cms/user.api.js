@@ -270,7 +270,19 @@ export const summaryCreateAllWiseFunction = async (payload) => {
   return data;
 };
 
-export const instituteWiseBalanceListFunction = async () => {
-  const { data } = await axiosSecure.get("/api/balance-list");
+// export const instituteWiseBalanceListFunction = async () => {
+//   const { data } = await axiosSecure.get("/api/balance-list");
+//   return data?.data;
+// };
+
+export const instituteWiseBalanceListFunction = async ({
+  startDate,
+  endDate,
+} = {}) => {
+  const params = {};
+  if (startDate) params.startDate = startDate;
+  if (endDate) params.endDate = endDate;
+
+  const { data } = await axiosSecure.get("/api/balance-list", { params });
   return data?.data;
 };

@@ -139,6 +139,8 @@ import ProductMaterialAll from "../Pages/FrontEnd/admin/Inventory/AddMaterialMan
 import DayWiseProfitReport from "../Pages/FrontEnd/admin/Inventory/AddMaterialManagement/Daywisecalculation";
 import MealPaymentHistory from "../Pages/FrontEnd/institute/admin/MealPaymentHistory";
 import SuperAdminMealPayments from "../Components/admin/MealPayments/SuperAdminMealPayments";
+import EpsPayments from "../Pages/dashboard/EpsPayment";
+import MealOverview from "../Pages/dashboard/MealOverView";
 
 const router = createBrowserRouter([
   {
@@ -628,6 +630,14 @@ const router = createBrowserRouter([
       {
         path: "/dashboards/role",
         element: <UserSettings />,
+      },
+      {
+        path: "/dashboards/epspayment",
+        element: <EpsPayments />,
+      },
+      {
+        path: "/dashboards/mealoverview",
+        element: <MealOverview />,
       },
       {
   path: "/dashboards/meal-payments",

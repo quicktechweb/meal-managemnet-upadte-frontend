@@ -1,4 +1,5 @@
 import React from "react";
+import { cleanItemsTitle } from "../utils/cleanItemsTitle";
 
 const AllWiseUserPackageMealSummary = ({
   sortedMeals,
@@ -21,9 +22,15 @@ const AllWiseUserPackageMealSummary = ({
 
       <div className="overflow-x-auto">
         {(() => {
-          const mealTypes = [
-            ...new Set(sortedMeals?.map((m) => m.package_title) ?? []),
-          ];
+        const mealOrder = ["Breakfast", "Lunch", "Dinner"];
+const mealTypes = [
+  ...new Set(sortedMeals?.map((m) => m.package_title) ?? []),
+].sort((a, b) => {
+  const ai = mealOrder.indexOf(a);
+  const bi = mealOrder.indexOf(b);
+  return (ai === -1 ? mealOrder.length : ai) -
+    (bi === -1 ? mealOrder.length : bi);
+});
 
           const groupedByDay = {};
           sortedMeals?.forEach((meal) => {
@@ -147,12 +154,12 @@ const AllWiseUserPackageMealSummary = ({
                                       key={i}
                                       className=" text-xs   rounded-full"
                                     >
-                                      {item.title}
+                                     {cleanItemsTitle(item.title)}
                                     </span>
                                   ))
                                 ) : (
                                   <span className=" text-xs   rounded-full">
-                                    {cell?.selected_items?.title}
+                                   {cleanItemsTitle(cell?.selected_items?.title)}
                                   </span>
                                 )}
                               </div>
@@ -178,13 +185,13 @@ const AllWiseUserPackageMealSummary = ({
                                             key={i}
                                             className=" text-xs   rounded-full"
                                           >
-                                            {item.title}
+                                           {cleanItemsTitle(item.title)}
                                           </span>
                                         ),
                                       )
                                     ) : (
                                       <span className=" text-xs   rounded-full">
-                                        {cell?.guest?.selected_items?.title}
+                                      {cleanItemsTitle(cell?.guest?.selected_items?.title)}
                                       </span>
                                     )}
                                   </div>

@@ -1,6 +1,7 @@
 import { ChevronDown } from "lucide-react";
 import React from "react";
 import { FaCheckCircle } from "react-icons/fa";
+import { cleanItemsTitle } from "../utils/cleanItemsTitle";
 
 const PackageItemSelector = ({
   meal,
@@ -82,7 +83,7 @@ const PackageItemSelector = ({
         <div className="flex flex-wrap gap-1">
           {meal?.package_item?.map((foodItem, i) => (
             <span key={i} className="font-semibold text-xs">
-              {foodItem.title}
+            {cleanItemsTitle(foodItem.title)}
               {i !== meal.package_item.length - 1 && ","}
             </span>
           ))}
@@ -108,9 +109,9 @@ const PackageItemSelector = ({
             }`}
           >
             <span className="text-sm">
-              {selGroupMap?.[key] !== undefined
-                ? meal?.alternative_items?.[selGroupMap[key]]?.title
-                : "Select Alternative Item"}
+            {selGroupMap?.[key] !== undefined
+  ? cleanItemsTitle(meal?.alternative_items?.[selGroupMap[key]]?.title)
+  : "Select Alternative Item"}
             </span>
             <ChevronDown
               className={`transition-transform duration-300 flex-shrink-0 ${
@@ -136,7 +137,7 @@ const PackageItemSelector = ({
                   >
                     <div className="flex items-center gap-1">
                       <span className="font-semibold text-xs">
-                        {altGroup.title}
+                        {cleanItemsTitle(altGroup.title)}
                       </span>
                     </div>
                   </div>

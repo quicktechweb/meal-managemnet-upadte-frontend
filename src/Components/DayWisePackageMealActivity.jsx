@@ -86,9 +86,16 @@ const DayWisePackageMealActivity = ({ allWise }) => {
     dateByDay[d.day] = d.dateStr;
   });
 
-  const selectedMeals = sortedMeals?.filter(
-    (item) => item?.day === activeDayView,
-  );
+ const mealOrder = ["Breakfast", "Lunch", "Dinner"];
+
+const selectedMeals = sortedMeals
+  ?.filter((item) => item?.day === activeDayView)
+  ?.slice()
+  .sort((a, b) => {
+    const ai = mealOrder.indexOf(a.package_title);
+    const bi = mealOrder.indexOf(b.package_title);
+    return (ai === -1 ? mealOrder.length : ai) - (bi === -1 ? mealOrder.length : bi);
+  });
 
   const getKey = (meal) => `${meal.day}-${meal.package_title}`;
 

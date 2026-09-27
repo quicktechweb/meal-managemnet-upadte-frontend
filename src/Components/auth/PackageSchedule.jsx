@@ -3,6 +3,27 @@ import { useAllPackage } from "../../api/admin/admin.api";
 import { FaCheckCircle } from "react-icons/fa";
 import { ChevronDown, Clock } from "lucide-react";
 
+// "ভাত (২৯ চাউল) ২৫০ গ্রাম,মাছ রুই ৫৫-৬৫ গ্রাম,ডাল" -> "ভাত, মাছ রুই, ডাল"
+const cleanItemsTitle = (title) => {
+  if (!title) return "—";
+  return (
+    title
+      .split(",")
+      .map((item) => {
+        let t = item
+          .replace(/\([^)]*\)/g, "")
+          .replace(
+            /[\d০-৯]+\s*(-|–)?\s*[\d০-৯]*\s*(গ্রাম|গ্রা|কেজি|কেজী|লিটার|মিলি|মি\.?লি\.?)?\s*$/,
+            "",
+          )
+          .trim();
+        return t;
+      })
+      .filter(Boolean)
+      .join(", ") || "—"
+  );
+};
+
 const PackageSchedule = ({
   setPackageMealRoutine,
   setPackageTypes,
@@ -255,7 +276,7 @@ const PackageSchedule = ({
                                   </p>
                                   {/* items[0].title is "ভাত,ডাল,ডিম" */}
                                   <p className="text-sm text-gray-600 text-start leading-snug">
-                                    {pkg?.items?.[0]?.title ?? "—"}
+                                   {cleanItemsTitle(pkg?.items?.[0]?.title)}
                                   </p>
                                 </div>
                               </button>

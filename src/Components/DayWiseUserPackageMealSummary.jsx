@@ -1,4 +1,5 @@
 import React from "react";
+import { cleanItemsTitle } from "../utils/cleanItemsTitle";
 
 const DayWiseUserPackageMealSummary = ({
   sortedMeals,
@@ -21,9 +22,14 @@ const DayWiseUserPackageMealSummary = ({
 
       <div className="overflow-x-auto">
         {(() => {
-          const mealTypes = [
-            ...new Set(sortedMeals?.map((m) => m.package_title) ?? []),
-          ];
+        const mealOrder = ["Breakfast", "Lunch", "Dinner"];
+const mealTypes = [
+  ...new Set(sortedMeals?.map((m) => m.package_title) ?? []),
+].sort((a, b) => {
+  const ai = mealOrder.indexOf(a);
+  const bi = mealOrder.indexOf(b);
+  return (ai === -1 ? mealOrder.length : ai) - (bi === -1 ? mealOrder.length : bi);
+});
 
           const groupedByDay = {};
           sortedMeals?.forEach((meal) => {
@@ -134,20 +140,17 @@ const DayWiseUserPackageMealSummary = ({
                                 Items -{" "}
                               </h3>
                               <div className="flex flex-wrap gap-1">
-                                {Array.isArray(cell.selected_items) ? (
-                                  cell?.selected_items?.map((item, i) => (
-                                    <span
-                                      key={i}
-                                      className=" text-xs   rounded-full"
-                                    >
-                                      {item.title}
-                                    </span>
-                                  ))
-                                ) : (
-                                  <span className=" text-xs   rounded-full">
-                                    {cell?.selected_items?.title}
-                                  </span>
-                                )}
+                               {Array.isArray(cell.selected_items) ? (
+  cell?.selected_items?.map((item, i) => (
+    <span key={i} className=" text-xs   rounded-full">
+      {cleanItemsTitle(item.title)}
+    </span>
+  ))
+) : (
+  <span className=" text-xs   rounded-full">
+    {cleanItemsTitle(cell?.selected_items?.title)}
+  </span>
+)}
                               </div>
                             </div>
 
@@ -162,22 +165,17 @@ const DayWiseUserPackageMealSummary = ({
                                     Items -{" "}
                                   </h3>
                                   <div className="flex flex-wrap gap-1">
-                                    {Array.isArray(cell.guest?.selected_items) ? (
-                                      cell?.guest?.selected_items?.map(
-                                        (item, i) => (
-                                          <span
-                                            key={i}
-                                            className=" text-xs   rounded-full"
-                                          >
-                                            {item.title}
-                                          </span>
-                                        ),
-                                      )
-                                    ) : (
-                                      <span className=" text-xs   rounded-full">
-                                        {cell?.guest?.selected_items?.title}
-                                      </span>
-                                    )}
+                                   {Array.isArray(cell.guest?.selected_items) ? (
+  cell?.guest?.selected_items?.map((item, i) => (
+    <span key={i} className=" text-xs   rounded-full">
+      {cleanItemsTitle(item.title)}
+    </span>
+  ))
+) : (
+  <span className=" text-xs   rounded-full">
+    {cleanItemsTitle(cell?.guest?.selected_items?.title)}
+  </span>
+)}
                                   </div>
                                 </div>
                                 {/* {cell.guest.selected_items?.map((item, i) => (

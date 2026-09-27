@@ -50,6 +50,18 @@ export const SIDEBAR_ITEMS = [
     permission: "balance.view",
   },
   {
+    label: "Eps History",
+    icon: "Wallet",
+    path: "/dashboards/epspayment",
+    permission: "eps.view",
+  },
+  {
+    label: "Today MealOverview",
+    icon: "Wallet",
+    path: "/dashboards/mealoverview",
+    permission: "eps.view",
+  },
+  {
   label: "Meal Payments",
   icon: "Wallet",
   path: "/dashboards/meal-payments",
