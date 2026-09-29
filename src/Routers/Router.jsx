@@ -141,8 +141,8 @@ import MealPaymentHistory from "../Pages/FrontEnd/institute/admin/MealPaymentHis
 import SuperAdminMealPayments from "../Components/admin/MealPayments/SuperAdminMealPayments";
 import EpsPayments from "../Pages/dashboard/EpsPayment";
 import MealOverview from "../Pages/dashboard/MealOverView";
-import MealHistory from "../Components/dashboards/Mealhistory/Mealhistory";
 import MealReviews from "../Pages/FrontEnd/institute/admin/MealReviews";
+import MealHistory from "../Components/dashboards/MealHistory/MealHistory";
 
 const router = createBrowserRouter([
   {
