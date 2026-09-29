@@ -1,8 +1,8 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Send, CheckCircle, ChefHat, Droplets, Package } from "lucide-react";
-import axios from "axios";
-import useInstituteAuth from "../../../../Hooks/useInstituteAuth";
+import { useNavigate, useSearchParams } from "react-router-dom";
+import { submitReviewFunction } from "../../../../api/review/review.api";
 
 const MOODS = [
   { emoji: "😍", label: "Excellent" },
@@ -55,11 +55,13 @@ const StarRow = ({ value, onChange, size = 24 }) => (
    Main Component
 ══════════════════════════════════════════ */
 const MealFeedbackForm = () => {
-  const { user } = useInstituteAuth();
+  const [searchParams] = useSearchParams();
+  const navigate = useNavigate();
+  const preMeal = searchParams.get("meal");
   const today = new Date().toISOString().split("T")[0];
 
   const defaultForm = {
-    meal_type: "Lunch",
+    meal_type: MEAL_TYPES.includes(preMeal) ? preMeal : "Lunch",
     meal_date: today,
     rating_overall: 0,
     rating_taste: 0,
@@ -82,11 +84,8 @@ const MealFeedbackForm = () => {
     setError("");
     setLoading(true);
     try {
-      await axios.post("https://alabadanbackendpart.alabadan.com/api/feedback", {
-        user_id:      user?.user?._id,
-        institute_id: user?.user?.institute_id,
-        ...form,
-      });
+      // user_id / institute_id ekhon backend token theke ney
+      await submitReviewFunction(form);
       setSubmitted(true);
     } catch (err) {
       setError(err?.response?.data?.message || "Something went wrong.");
@@ -131,6 +130,12 @@ const MealFeedbackForm = () => {
             className="w-full py-3.5 rounded-2xl bg-gray-100 text-gray-700 text-sm font-semibold hover:bg-gray-200 transition-colors"
           >
             Submit Another
+          </button>
+          <button
+            onClick={() => navigate("/dashboards/reviews")}
+            className="w-full mt-2 py-3.5 rounded-2xl bg-gray-900 text-white text-sm font-semibold hover:bg-black transition-colors"
+          >
+            See Reviews
           </button>
         </motion.div>
       </div>

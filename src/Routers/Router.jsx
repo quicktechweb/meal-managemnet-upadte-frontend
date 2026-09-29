@@ -141,6 +141,8 @@ import MealPaymentHistory from "../Pages/FrontEnd/institute/admin/MealPaymentHis
 import SuperAdminMealPayments from "../Components/admin/MealPayments/SuperAdminMealPayments";
 import EpsPayments from "../Pages/dashboard/EpsPayment";
 import MealOverview from "../Pages/dashboard/MealOverView";
+import MealHistory from "../Components/dashboards/Mealhistory/Mealhistory";
+import MealReviews from "../Pages/FrontEnd/institute/admin/MealReviews";
 
 const router = createBrowserRouter([
   {
@@ -692,6 +694,14 @@ const router = createBrowserRouter([
        
       },
       {
+        path: "/dashboards/mealhistory",
+        element: 
+        // <ProtectedRoute>
+           <MealHistory />
+        // </ProtectedRoute>
+       
+      },
+      {
         path: "/dashboards/mealsummary",
         element: 
         // <ProtectedRoute>
@@ -738,6 +748,10 @@ const router = createBrowserRouter([
       {
         path: "/dashboards/add-balance",
         element: <AddBalance />,
+      },
+            {
+        path: "/dashboards/reviews",
+        element: <MealReviews />,
       },
       {
         path: "/dashboards/inventory-add-product",

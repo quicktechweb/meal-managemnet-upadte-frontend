@@ -68,6 +68,12 @@ export const SIDEBAR_ITEMS = [
   permission: "balance.view",
   excludeRoles: ["user"],
 },
+  {
+    label: "Review",
+    icon: "MessageSquare",
+    path: "/dashboards/reviews",
+    instituteOnly: true,
+  },
 
   {
     label: "Meal On Off",

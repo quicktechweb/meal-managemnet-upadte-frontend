@@ -13,8 +13,18 @@ import {
   Wallet,
   ChevronDown,
   LogOut,
+  MessageSquare,
 } from "lucide-react";
-import { MdOutlineInventory2 } from "react-icons/md";
+import {
+  MdOutlineInventory2,
+  MdOutlineKitchen,
+  MdOutlineRestaurantMenu,
+  MdOutlineFastfood,
+  MdOutlineHistory,
+  MdOutlineAccountBalanceWallet,
+  MdOutlineRateReview,
+  MdOutlineFeedback,
+} from "react-icons/md";
 import { IoIosSwitch } from "react-icons/io";
 
 import { usePermission } from "../../Hooks/usePermission";
@@ -38,6 +48,7 @@ const ICON_MAP = {
   Wallet,
   IoIosSwitch,
   MdOutlineInventory2,
+   MessageSquare,
 };
 
 const Sidebar = ({ isOpen, onClose }) => {
@@ -73,6 +84,7 @@ const Sidebar = ({ isOpen, onClose }) => {
   const visibleItems = isInstitute
     ? SIDEBAR_ITEMS
     : SIDEBAR_ITEMS.filter((item) => {
+       if (item.instituteOnly) return false;
         if (item.excludeRoles?.includes(user?.user?.role)) return false;
         return hasPermission(item.permission);
       });
@@ -201,60 +213,56 @@ const Sidebar = ({ isOpen, onClose }) => {
           })}
 
           {/* Quick Links */}
-          {!isInstitute && (
+         
+         {/* Quick Links */}
+{!isInstitute && (
   <div className="mt-4 px-1 flex flex-col gap-0.5">
     <p className="text-[10px] font-semibold text-gray-400 uppercase tracking-widest px-3 mb-1">
       Quick Links
     </p>
-    <Link
-      to="/dashboards/liveKitchen"
-      className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium text-gray-500 hover:bg-green-50 hover:text-green-600 transition-all duration-150 group"
-    >
-      <span className="flex items-center justify-center w-7 h-7 rounded-lg bg-green-50 text-green-400 group-hover:bg-green-100 shrink-0">
-        <FiCalendar size={16} />
-      </span>
-      <span>Live Kitchen</span>
-    </Link>
-    <Link
-      to="/dashboards/menu"
-      className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium text-gray-500 hover:bg-red-50 hover:text-red-500 transition-all duration-150 group"
-    >
-      <span className="flex items-center justify-center w-7 h-7 rounded-lg bg-red-50 text-red-400 group-hover:bg-red-100 shrink-0">
-        <FiVideo size={16} />
-      </span>
-      <span>Routine</span>
-    </Link>
-    <Link
-      to="/dashboards/mealonof"
-      className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium text-gray-500 hover:bg-red-50 hover:text-red-500 transition-all duration-150 group"
-    >
-      <span className="flex items-center justify-center w-7 h-7 rounded-lg bg-red-50 text-red-400 group-hover:bg-red-100 shrink-0">
-        <FiVideo size={16} />
-      </span>
-      <span>MealPart</span>
-    </Link>
-    <Link
-      to="/dashboards/balancehistory"
-      className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium text-gray-500 hover:bg-green-50 hover:text-green-600 transition-all duration-150 group"
-    >
-      <span className="flex items-center justify-center w-7 h-7 rounded-lg bg-green-50 text-green-400 group-hover:bg-green-100 shrink-0">
-        <FiCalendar size={16} />
-      </span>
-      <span>Balance History</span>
-    </Link>
 
-    
-    <Link
-      to="/dashboards/mealfeedbackform"
-      className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium text-gray-500 hover:bg-green-50 hover:text-green-600 transition-all duration-150 group"
-    >
-      <span className="flex items-center justify-center w-7 h-7 rounded-lg bg-green-50 text-green-400 group-hover:bg-green-100 shrink-0">
-        <FiCalendar size={16} />
-      </span>
-      <span>Feedback</span>
-    </Link>
+    {[
+      { to: "/dashboards/liveKitchen", label: "Live Kitchen", Icon: MdOutlineKitchen, color: "green" },
+      { to: "/dashboards/menu", label: "Routine", Icon: MdOutlineRestaurantMenu, color: "red" },
+      { to: "/dashboards/mealonof", label: "MealPart", Icon: MdOutlineFastfood, color: "red" },
+      { to: "/dashboards/mealhistory", label: "Meal History", Icon: MdOutlineHistory, color: "red" },
+      { to: "/dashboards/balancehistory", label: "Balance History", Icon: MdOutlineAccountBalanceWallet, color: "green" },
+      { to: "/dashboards/reviews", label: "Review", Icon: MdOutlineRateReview, color: "amber" },
+      { to: "/dashboards/mealfeedbackform", label: "Feedback", Icon: MdOutlineFeedback, color: "green" },
+    ].map(({ to, label, Icon, color }) => {
+      const styles = {
+        green: {
+          link: "hover:bg-green-50 hover:text-green-600",
+          icon: "bg-green-50 text-green-400 group-hover:bg-green-100",
+        },
+        red: {
+          link: "hover:bg-red-50 hover:text-red-500",
+          icon: "bg-red-50 text-red-400 group-hover:bg-red-100",
+        },
+        amber: {
+          link: "hover:bg-amber-50 hover:text-amber-600",
+          icon: "bg-amber-50 text-amber-400 group-hover:bg-amber-100",
+        },
+      }[color];
+
+      return (
+        <Link
+          key={to}
+          to={to}
+          onClick={onClose}
+          className={`flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium text-gray-500 transition-all duration-150 group ${styles.link}`}
+        >
+          <span className={`flex items-center justify-center w-7 h-7 rounded-lg shrink-0 ${styles.icon}`}>
+            <Icon size={16} />
+          </span>
+          <span>{label}</span>
+        </Link>
+      );
+    })}
   </div>
 )}
+
+
         </nav>
 
         {/* Bottom user area + Logout */}
