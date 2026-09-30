@@ -19,6 +19,8 @@ import {
   globarDayWiseUserMealFunction,
   individualUserPermissionFunction,
   instituteApprovedUsersFunction,
+  institutePanelUsersFunction,
+  changePasswordFunction,
   instituteCreateUserMealFunction,
   instituteUserAdminDataFunction,
   instituteUserDeleteFunction,
@@ -112,6 +114,24 @@ export const useApprovedInstituteUsers = () => {
     queryKey: ["approved-user"],
     queryFn: instituteApprovedUsersFunction,
     retry: false,
+  });
+};
+
+export const useInstitutePanelUsers = () => {
+  return useQuery({
+    queryKey: ["institute-panel-users"],
+    queryFn: institutePanelUsersFunction,
+    retry: false,
+  });
+};
+
+export const useChangePassword = () => {
+  return useMutation({
+    mutationKey: ["change-password"],
+    mutationFn: (payload) => changePasswordFunction(payload),
+    onSuccess: (data) => toast.success(data?.message || "Password changed"),
+    onError: (err) =>
+      toast.error(err?.response?.data?.message || "Password change failed"),
   });
 };
 

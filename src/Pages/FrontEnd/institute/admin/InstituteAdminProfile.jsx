@@ -7,8 +7,10 @@ import {
   User,
   MapPin,
   Calendar,
+  Lock,
   BookOpen,
 } from "lucide-react";
+import ChangePasswordModal from "./ChangePasswordModal"; 
 import useInstituteAuth from "../../../../Hooks/useInstituteAuth";
 
 import { useAllKitchen } from "../../../../api/admin/admin.api";
@@ -18,6 +20,7 @@ const InstituteAdminProfile = () => {
   const { data } = useAllKitchen();
 
   const { user } = useInstituteAuth();
+    const [showPasswordModal, setShowPasswordModal] = useState(false);
 
   const me = user?.user;
 
@@ -47,13 +50,23 @@ const InstituteAdminProfile = () => {
           </p>
         </div>
 
-        <Link
-          to={`/dashboards/profile-update/${me?._id}`}
-          className="flex items-center gap-2 bg-indigo-600 text-white px-4 py-2 rounded-xl hover:bg-indigo-700 cursor-pointer"
-        >
-          <Edit3 size={16} />
-          Edit Profile
-        </Link>
+               <div className="flex items-center gap-2">
+          <button
+            onClick={() => setShowPasswordModal(true)}
+            className="flex items-center gap-2 bg-gray-900 text-white px-4 py-2 rounded-xl hover:bg-black cursor-pointer"
+          >
+            <Lock size={16} />
+            Change Password
+          </button>
+
+          <Link
+            to={`/dashboards/profile-update/${me?._id}`}
+            className="flex items-center gap-2 bg-indigo-600 text-white px-4 py-2 rounded-xl hover:bg-indigo-700 cursor-pointer"
+          >
+            <Edit3 size={16} />
+            Edit Profile
+          </Link>
+        </div>
       </div>
 
       <div className=" mx-auto grid grid-cols-1 lg:grid-cols-3 gap-4">
@@ -294,6 +307,11 @@ const InstituteAdminProfile = () => {
           </div>
         </div>
       </div>
+
+      <ChangePasswordModal
+        open={showPasswordModal}
+        onClose={() => setShowPasswordModal(false)}
+      />
     </div>
   );
 };

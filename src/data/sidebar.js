@@ -62,6 +62,12 @@ export const SIDEBAR_ITEMS = [
     permission: "eps.view",
   },
   {
+    label: "UserBalance Check",
+    icon: "Users",
+    path: "/dashboards/institute-panel",
+    instituteOnly: true,
+  },
+  {
   label: "Meal Payments",
   icon: "Wallet",
   path: "/dashboards/meal-payments",

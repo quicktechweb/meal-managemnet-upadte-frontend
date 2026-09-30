@@ -36,6 +36,15 @@ export const instituteApprovedUsersFunction = async () => {
   return data?.users;
 };
 
+export const institutePanelUsersFunction = async () => {
+  const { data } = await axiosSecure.get("/api/institute-panel-users");
+  return data;
+};
+
+export const changePasswordFunction = async (payload) => {
+  const { data } = await axiosSecure.patch("/api/change-password", payload);
+  return data;
+};
 export const locationFunction = async () => {
   const { data } = await axiosPublic.get("/api/all-location");
   return data?.data;

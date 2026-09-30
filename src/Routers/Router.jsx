@@ -143,6 +143,7 @@ import EpsPayments from "../Pages/dashboard/EpsPayment";
 import MealOverview from "../Pages/dashboard/MealOverView";
 import MealReviews from "../Pages/FrontEnd/institute/admin/MealReviews";
 import MealHistory from "../Components/dashboards/MealHistory/MealHistory";
+import UserAllDataShow from "../Pages/FrontEnd/institute/admin/UserAllDataShow/UserAllDataShow";
 
 const router = createBrowserRouter([
   {
@@ -640,6 +641,10 @@ const router = createBrowserRouter([
       {
         path: "/dashboards/mealoverview",
         element: <MealOverview />,
+      },
+      {
+        path: "/dashboards/institute-panel",
+        element: <UserAllDataShow />,
       },
       {
   path: "/dashboards/meal-payments",
