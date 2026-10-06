@@ -7,6 +7,7 @@
 import { useState, useEffect, useMemo, useCallback } from "react";
 import { FaCalendarAlt } from "react-icons/fa";
 import { axiosSecure } from "../../Hooks/useAxiosSecure";
+import { cleanItemsTitle } from "../../utils/cleanItemsTitle";
 
 const GRADIENT = {
   breakfast: "bg-gradient-to-r from-yellow-400 to-orange-500",
@@ -87,6 +88,66 @@ function MealCard({ meal, busy, onToggle }) {
         <span className={`text-[11px] px-2 py-0.5 rounded-full ${meal.balance_deducted ? "bg-blue-100 text-blue-700" : "bg-gray-100 text-gray-500"}`}>
           {meal.balance_deducted ? "✓ Deducted" : "✗ Pending"}
         </span>
+      </div>
+    </div>
+  );
+}
+
+// Meal Summary (user panel er moto) — selected user er 7 diner Breakfast/Lunch/Dinner
+function MealSummaryTable({ days, mode }) {
+  const ORDER = ["Breakfast", "Lunch", "Dinner"];
+  const present = new Set(days.flatMap((d) => d.meals.map((m) => m.meal_type)));
+  const types = [...ORDER.filter((t) => present.has(t)), ...[...present].filter((t) => !ORDER.includes(t))];
+  if (!types.length) return null;
+
+  return (
+    <div className="bg-white/90 backdrop-blur-xl rounded-3xl shadow-lg p-6 mt-4 w-full">
+      <h1 className="text-xl xl:text-3xl font-extrabold text-gray-800 mb-4">Meal Summary</h1>
+      <div className="overflow-x-auto">
+        <table className="w-full text-sm border-collapse">
+          <thead>
+            <tr className="bg-orange-400 text-white">
+              <th className="px-4 py-3 text-left rounded-tl-xl font-semibold">Date</th>
+              {types.map((t, i) => (
+                <th key={t} className={`px-4 py-3 text-left font-semibold capitalize ${i === types.length - 1 ? "rounded-tr-xl" : ""}`}>{t}</th>
+              ))}
+            </tr>
+          </thead>
+          <tbody>
+            {days.map((d, row) => (
+              <tr key={d.day + row} className={`border-b border-gray-100 ${row % 2 === 0 ? "bg-white" : "bg-gray-50"}`}>
+                <td className="px-4 py-3 font-bold text-gray-700 align-top">
+                  <h5 className="text-xs">{d.day}</h5>
+                  {mode === "daywise" && d.date && <span className="text-[10px] font-normal text-gray-500">{monthShort(d.date)}</span>}
+                </td>
+                {types.map((t) => {
+                  const cell = d.meals.find((m) => m.meal_type === t);
+                  if (!cell) {
+                    return <td key={t} className="px-4 py-3 text-gray-400 text-xs">No Meal Added</td>;
+                  }
+                  return (
+                    <td key={t} className={`px-4 py-3 align-top ${!cell.is_on ? "opacity-80" : ""}`}>
+                      <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full mb-1 inline-block ${cell.is_on ? "bg-green-100 text-green-600" : "bg-red-100 text-red-500"}`}>
+                        {cell.is_on ? "ON" : "OFF"}
+                      </span>
+                      <div className="flex items-center gap-2">
+                        <h3 className="text-sm font-semibold">Package Price - </h3>
+                        <p className="text-green-700 font-semibold">৳{cell.price}</p>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <h3 className="text-sm font-semibold">Items - </h3>
+                        <span className="text-xs">{cell.items?.length ? cleanItemsTitle(cell.items.join(",")) : "—"}</span>
+                      </div>
+                      {cell.guest_quantity > 0 && (
+                        <span className="text-[12px] text-orange-500 font-semibold">Guest x {cell.guest_quantity}</span>
+                      )}
+                    </td>
+                  );
+                })}
+              </tr>
+            ))}
+          </tbody>
+        </table>
       </div>
     </div>
   );
@@ -197,19 +258,26 @@ function MealPanel({ mode, days, orderId, userId, onToggleMeal, onToggleService,
         ) : (
           <p className="text-center text-gray-500">No Meals Added on this day</p>
         )}
+
+        <MealSummaryTable days={days} mode={mode} />
       </div>
     </div>
   );
 }
 
+const PAGE_SIZE = 15;
+
 export default function Institutionalldatamealon() {
-  const [view, setView] = useState({ users: [], days: [], routine_type: "" });
+  const [view, setView] = useState({ users: [], rooms: [], pagination: { page: 1, totalPages: 1, total: 0 }, routine_type: "" });
   const [loading, setLoading] = useState(true);
+  const [listLoading, setListLoading] = useState(false);
   const [error, setError] = useState("");
   const [selectedUserId, setSelectedUserId] = useState(null);
   const [tab, setTab] = useState("allwise"); // "daywise" | "allwise"
   const [search, setSearch] = useState("");
+  const [debouncedSearch, setDebouncedSearch] = useState("");
   const [roomFilter, setRoomFilter] = useState("All Rooms");
+  const [page, setPage] = useState(1);
   const [toast, setToast] = useState(null);
   const [busyKey, setBusyKey] = useState(null);
 
@@ -218,50 +286,57 @@ export default function Institutionalldatamealon() {
     setTimeout(() => setToast(null), 3500);
   };
 
+  // search debounce
+  useEffect(() => {
+    const t = setTimeout(() => { setDebouncedSearch(search); setPage(1); }, 400);
+    return () => clearTimeout(t);
+  }, [search]);
+
   const fetchView = useCallback(async (silent = false) => {
-    if (!silent) setLoading(true);
+    if (!silent) setListLoading(true);
     setError("");
     try {
-      const { data } = await axiosSecure.get("/api/institute/meal-view");
-      if (data.success) setView(data);
-      else setError(data.message || "Failed to load");
+      const { data } = await axiosSecure.get("/api/institute/meal-view", {
+        params: {
+          page,
+          limit: PAGE_SIZE,
+          q: debouncedSearch,
+          room: roomFilter,
+          selected_id: silent ? selectedUserId || undefined : undefined,
+        },
+      });
+      if (data.success) {
+        setView(data);
+        // page 1 er por jodi server onno page dey (total kome gele), sync rakhi
+        if (data.pagination?.page && data.pagination.page !== page) setPage(data.pagination.page);
+      } else setError(data.message || "Failed to load");
     } catch (e) {
       setError(e?.response?.data?.message || "Network error");
     } finally {
       setLoading(false);
+      setListLoading(false);
     }
-  }, []);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [page, debouncedSearch, roomFilter, selectedUserId]);
 
-  useEffect(() => { fetchView(); }, [fetchView]);
+  // page / search / room change hole notun kore ane (selectedUserId change e refetch lagbe na)
+  useEffect(() => { fetchView(); /* eslint-disable-next-line */ }, [page, debouncedSearch, roomFilter]);
 
   const users = view.users || [];
+  const pagination = view.pagination || { page: 1, totalPages: 1, total: 0 };
 
+  // page e selected user na thakle prothom user select
   useEffect(() => {
-    if (users.length && !selectedUserId) setSelectedUserId(users[0].user._id);
-  }, [users, selectedUserId]);
+    if (!users.length) return;
+    const inPage = users.some((u) => u.user._id === selectedUserId);
+    if (!selectedUserId || (!inPage && !view.selected_extra)) setSelectedUserId(users[0].user._id);
+  }, [users, selectedUserId, view.selected_extra]);
 
-  const rooms = useMemo(() => {
-    const r = new Set(users.map((u) => u.user.information?.room_number).filter(Boolean));
-    return ["All Rooms", ...Array.from(r).sort()];
-  }, [users]);
+  const rooms = useMemo(() => ["All Rooms", ...(view.rooms || []).map(String)], [view.rooms]);
 
-  const filtered = useMemo(() => {
-    const q = search.toLowerCase();
-    return users.filter(({ user: u }) => {
-      const info = u.information || {};
-      const okRoom = roomFilter === "All Rooms" || String(info.room_number) === String(roomFilter);
-      const okSearch =
-        !q ||
-        (info.full_name || "").toLowerCase().includes(q) ||
-        (u.email || "").toLowerCase().includes(q) ||
-        (u.phone || "").toLowerCase().includes(q) ||
-        String(u.uid || "").includes(q) ||
-        String(info.room_number || "").includes(q);
-      return okRoom && okSearch;
-    });
-  }, [users, search, roomFilter]);
-
-  const selected = users.find((u) => u.user._id === selectedUserId);
+  const selected =
+    users.find((u) => u.user._id === selectedUserId) ||
+    (view.selected_extra?.user._id === selectedUserId ? view.selected_extra : null);
 
   const callToggle = async (url, body, key) => {
     setBusyKey(key);
@@ -319,7 +394,7 @@ export default function Institutionalldatamealon() {
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 py-5">
         <div className="bg-white rounded-2xl border border-gray-100 shadow-sm px-5 py-4 mb-4">
-          <select value={roomFilter} onChange={(e) => setRoomFilter(e.target.value)} className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm text-gray-700 bg-white">
+          <select value={roomFilter} onChange={(e) => { setRoomFilter(e.target.value); setPage(1); }} className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm text-gray-700 bg-white">
             {rooms.map((r) => <option key={r}>{r}</option>)}
           </select>
         </div>
@@ -345,10 +420,12 @@ export default function Institutionalldatamealon() {
                 />
               </div>
               <div className="overflow-y-auto" style={{ maxHeight: "calc(100vh - 340px)" }}>
-                {filtered.length === 0 ? (
+                {listLoading ? (
+                  <div className="p-8 text-center text-gray-400 text-sm">Loading…</div>
+                ) : users.length === 0 ? (
                   <div className="p-8 text-center text-gray-400 text-sm">No users found</div>
                 ) : (
-                  filtered.map(({ user: u, allWise, dayWise }) => {
+                  users.map(({ user: u, allWise, dayWise, has_meal_on }) => {
                     const i = u.information || {};
                     const n = i.full_name || u.email || "Unknown";
                     const sel = u._id === selectedUserId;
@@ -364,6 +441,7 @@ export default function Institutionalldatamealon() {
                           <p className="text-xs text-gray-500 truncate">{u.email}</p>
                           <p className="text-[11px] text-gray-400">Room {i.room_number}</p>
                           <div className="flex gap-1 mt-1">
+                            {has_meal_on && <span className="text-[10px] bg-green-100 text-green-700 px-1.5 py-0.5 rounded-full">Meal ON</span>}
                             {dayWise.order_id && <span className="text-[10px] bg-emerald-100 text-emerald-700 px-1.5 py-0.5 rounded-full">Day Wise</span>}
                             {allWise.order_id && <span className="text-[10px] bg-violet-100 text-violet-700 px-1.5 py-0.5 rounded-full">All Wise</span>}
                           </div>
@@ -372,6 +450,26 @@ export default function Institutionalldatamealon() {
                     );
                   })
                 )}
+              </div>
+              <div className="flex items-center justify-between gap-2 px-3 py-3 border-t border-gray-100 text-xs text-gray-600">
+                <button
+                  disabled={pagination.page <= 1 || listLoading}
+                  onClick={() => setPage((p) => Math.max(p - 1, 1))}
+                  className="px-3 py-1.5 rounded-lg border border-gray-200 disabled:opacity-40 hover:bg-gray-50"
+                >
+                  Prev
+                </button>
+                <span>
+                  {pagination.page} / {pagination.totalPages}
+                  <span className="text-gray-400"> · {pagination.total} users</span>
+                </span>
+                <button
+                  disabled={pagination.page >= pagination.totalPages || listLoading}
+                  onClick={() => setPage((p) => p + 1)}
+                  className="px-3 py-1.5 rounded-lg border border-gray-200 disabled:opacity-40 hover:bg-gray-50"
+                >
+                  Next
+                </button>
               </div>
             </div>
 
@@ -411,7 +509,7 @@ export default function Institutionalldatamealon() {
                   <MealPanel
                     mode={tab}
                     days={panel?.days || []}
-                    orderId={panel.order_id}
+                    orderId={panel?.order_id}
                     userId={selectedUserId}
                     onToggleMeal={onToggleMeal}
                     onToggleService={onToggleService}

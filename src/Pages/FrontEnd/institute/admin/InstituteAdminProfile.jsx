@@ -43,7 +43,7 @@ const InstituteAdminProfile = () => {
       <div className=" mx-auto mb-4 flex justify-between items-center">
         <div>
           <h4 className="text-xl lg:text-3xl font-extrabold text-gray-900">
-            Account Profile66
+            Account Profile
           </h4>
           <p className="text-xs lg:text-base text-gray-500">
             View and manage your personal identity and records.
@@ -59,13 +59,13 @@ const InstituteAdminProfile = () => {
             Change Password
           </button>
 
-          <Link
+          {/* <Link
             to={`/dashboards/profile-update/${me?._id}`}
             className="flex items-center gap-2 bg-indigo-600 text-white px-4 py-2 rounded-xl hover:bg-indigo-700 cursor-pointer"
           >
             <Edit3 size={16} />
             Edit Profile
-          </Link>
+          </Link> */}
         </div>
       </div>
 
