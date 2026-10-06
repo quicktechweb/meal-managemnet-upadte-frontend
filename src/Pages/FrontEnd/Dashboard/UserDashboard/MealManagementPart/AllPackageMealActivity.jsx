@@ -289,7 +289,7 @@ const selectedMeals = sortedMeals
             : (meal?.package_item ?? [])
           : [],
         is_alternative: isAlternative,
-        guest_quantity: guestQuantityMap[key] ? guestEnabledMap[key] : 0,
+        guest_quantity: isGuestEnabled ? (guestQuantityMap[key] ?? 1) : 0,
       };
     });
 

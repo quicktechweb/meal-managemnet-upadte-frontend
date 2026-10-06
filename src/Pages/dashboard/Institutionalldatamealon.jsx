@@ -41,8 +41,18 @@ function Switch({ on, onClick, disabled, size = "md" }) {
   );
 }
 
-function MealCard({ meal, busy, onToggle }) {
+function MealCard({ meal, busy, onToggle, onGuest, canGuest }) {
   const isOn = meal.is_on === true;
+  const savedQty = Number(meal.guest_quantity || 0);
+  const [guestOpen, setGuestOpen] = useState(false);
+  const [qty, setQty] = useState(savedQty || 1);
+  useEffect(() => {
+    setQty(savedQty || 1);
+    if (savedQty > 0) setGuestOpen(false);
+  }, [savedQty]);
+  const showGuest = savedQty > 0 || guestOpen;
+  const unitPrice = Number(meal.price || 0);
+  const guestItems = Array.isArray(meal.guest_items) ? meal.guest_items : [];
   // backend purono hole `items` na-o thakte pare, tai duita field-i check kori
   const items = Array.isArray(meal.items)
     ? meal.items
@@ -78,9 +88,56 @@ function MealCard({ meal, busy, onToggle }) {
         <p className="text-center text-xs text-gray-400 mt-1">This meal is turned OFF — won't be sent</p>
       )}
 
-      {meal.guest_quantity > 0 && (
-        <div className="mt-3 border-t border-gray-100 pt-2 text-xs font-semibold text-orange-600">
-          Guest Meal × {meal.guest_quantity}
+      {canGuest && !showGuest && (
+        <button
+          type="button"
+          disabled={busy}
+          onClick={() => { setQty(1); setGuestOpen(true); }}
+          className="mt-3 border-t border-gray-100 pt-2 w-full text-left text-xs font-semibold text-orange-600 hover:text-orange-700 disabled:opacity-50"
+        >
+          + Add Guest Meal
+        </button>
+      )}
+
+      {canGuest && showGuest && (
+        <div className="mt-3 rounded-xl bg-orange-50 border border-orange-100 p-2.5">
+          <div className="flex items-center justify-between">
+            <span className="text-xs font-bold text-orange-600">Guest Meal</span>
+            <button
+              type="button"
+              disabled={busy}
+              onClick={() => (savedQty > 0 ? onGuest(meal, 0) : setGuestOpen(false))}
+              className="text-gray-400 hover:text-red-500 text-sm leading-none disabled:opacity-50"
+              title="Remove guest meal"
+            >
+              ✕
+            </button>
+          </div>
+          {guestItems.length > 0 && (
+            <p className="text-[11px] text-gray-600 mt-1 truncate">{guestItems.join(", ")}</p>
+          )}
+          <div className="flex items-center gap-2 mt-2">
+            <span className="text-xs text-gray-600">Quantity:</span>
+            <div className="flex items-center border border-gray-200 rounded-lg bg-white overflow-hidden">
+              <button type="button" disabled={busy || qty <= 1} onClick={() => setQty((q) => Math.max(1, q - 1))} className="px-2.5 py-1 text-sm hover:bg-gray-50 disabled:opacity-40">-</button>
+              <span className="px-3 py-1 text-sm font-semibold min-w-[2rem] text-center">{qty}</span>
+              <button type="button" disabled={busy} onClick={() => setQty((q) => Math.min(50, q + 1))} className="px-2.5 py-1 text-sm hover:bg-gray-50 disabled:opacity-40">+</button>
+            </div>
+            {qty !== savedQty && (
+              <button
+                type="button"
+                disabled={busy}
+                onClick={() => onGuest(meal, qty)}
+                className="ml-auto text-xs font-semibold bg-orange-500 text-white px-3 py-1.5 rounded-lg hover:bg-orange-600 disabled:opacity-50"
+              >
+                {savedQty > 0 ? "Update" : "Add"}
+              </button>
+            )}
+          </div>
+          <p className="text-[11px] text-gray-600 mt-2">
+            Total: ৳{unitPrice} × {1 + (savedQty > 0 ? savedQty : qty)} = <span className="font-bold text-orange-600">৳{unitPrice * (1 + (savedQty > 0 ? savedQty : qty))}</span>
+            {isOn ? "" : " (meal OFF — taka kata hobe na)"}
+          </p>
         </div>
       )}
 
@@ -139,7 +196,7 @@ function MealSummaryTable({ days, mode }) {
                         <span className="text-xs">{cell.items?.length ? cleanItemsTitle(cell.items.join(",")) : "—"}</span>
                       </div>
                       {cell.guest_quantity > 0 && (
-                        <span className="text-[12px] text-orange-500 font-semibold">Guest x {cell.guest_quantity}</span>
+                        <span className="text-[12px] text-orange-500 font-semibold">Guest x {cell.guest_quantity} (Total ৳{cell.price * (1 + cell.guest_quantity)})</span>
                       )}
                     </td>
                   );
@@ -154,7 +211,7 @@ function MealSummaryTable({ days, mode }) {
 }
 
 // Calendar + Choose Your Meals (user panel er layout)
-function MealPanel({ mode, days, orderId, userId, onToggleMeal, onToggleService, busyKey, hoursNote }) {
+function MealPanel({ mode, days, orderId, userId, onToggleMeal, onToggleService, onGuest, canGuest, busyKey, hoursNote }) {
   const [activeIdx, setActiveIdx] = useState(0);
   useEffect(() => setActiveIdx(0), [userId, mode]);
 
@@ -252,6 +309,8 @@ function MealPanel({ mode, days, orderId, userId, onToggleMeal, onToggleService,
                 meal={m}
                 busy={busyKey === `${m.day}-${m.meal_type}-${m.date || ""}` || parentBusy}
                 onToggle={onToggleMeal}
+                onGuest={onGuest}
+                canGuest={canGuest}
               />
             ))}
           </div>
@@ -355,6 +414,13 @@ export default function Institutionalldatamealon() {
     callToggle(
       "/api/institute/meal-toggle",
       { user_id: selectedUserId, mode: tab, day: meal.day, date: meal.date, meal_type: meal.meal_type, is_on },
+      `${meal.day}-${meal.meal_type}-${meal.date || ""}`,
+    );
+
+  const onGuest = (meal, guest_quantity) =>
+    callToggle(
+      "/api/institute/meal-guest",
+      { user_id: selectedUserId, mode: tab, day: meal.day, date: meal.date, meal_type: meal.meal_type, guest_quantity },
       `${meal.day}-${meal.meal_type}-${meal.date || ""}`,
     );
 
@@ -513,6 +579,8 @@ export default function Institutionalldatamealon() {
                     userId={selectedUserId}
                     onToggleMeal={onToggleMeal}
                     onToggleService={onToggleService}
+                    onGuest={onGuest}
+                    canGuest={view.routine_type !== "Routine"}
                     busyKey={busyKey}
                   />
                 </>

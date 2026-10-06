@@ -10,11 +10,12 @@ import {
   Lock,
   BookOpen,
 } from "lucide-react";
-import ChangePasswordModal from "./ChangePasswordModal"; 
+import ChangePasswordModal from "./ChangePasswordModal";
 import useInstituteAuth from "../../../../Hooks/useInstituteAuth";
 
 import { useAllKitchen } from "../../../../api/admin/admin.api";
 import { Link } from "react-router-dom";
+import UserOwnProfile from "../../admin/Userownprofile";
 
 const InstituteAdminProfile = () => {
   const { data } = useAllKitchen();
@@ -36,6 +37,19 @@ const InstituteAdminProfile = () => {
   console.log("🟡 number_of_member:", me?.information?.number_of_member);
 
   if (!me) return null;
+
+  // Institute er member (role: "user") hole tar nijer personal profile dekhabe
+  if (me.role === "user") {
+    return (
+      <>
+        <UserOwnProfile me={me} onChangePassword={() => setShowPasswordModal(true)} />
+        <ChangePasswordModal
+          open={showPasswordModal}
+          onClose={() => setShowPasswordModal(false)}
+        />
+      </>
+    );
+  }
 
   return (
     <div className=" min-h-screen antialiased text-gray-800">
@@ -174,7 +188,7 @@ const InstituteAdminProfile = () => {
             <div className="bg-white p-4 rounded-xl shadow-sm border border-gray-200">
               <p className="font-bold mb-2">Institute Document</p>
               <img
-                src={me?.information.documents[0].document_files}
+                src={me?.information?.documents?.[0]?.document_files}
                 alt="NID"
                 className="w-full h-48 object-cover rounded-lg border border-gray-300"
               />
