@@ -1,8 +1,18 @@
 import { useState, useEffect, useCallback } from "react";
 
-// 🔹 তোমার project এ axios/base url যেভাবে সেট করা আছে সেভাবে বসাও
-const API_BASE = "https://alabadanbackendpart.alabadan.com/api";
-const TOKEN_KEY = "token"; // 🔹 তোমার auth এ token যেই key তে রাখা হয় সেটা বসাও
+// Baki shob page er moto project er axiosSecure (baseURL = VITE_SITE_URL, token auto) use hocche
+import { axiosSecure } from "../../Hooks/useAxiosSecure";
+
+// Bangladesh (UTC+6) er aajker tarikh YYYY-MM-DD
+const todayBD = () => {
+  const d = new Date(Date.now() + 6 * 60 * 60 * 1000);
+  return d.toISOString().slice(0, 10);
+};
+
+const apiErrorText = (err) =>
+  err?.response?.data?.error
+    ? `${err?.response?.data?.message || "Error"}: ${err.response.data.error}`
+    : err?.response?.data?.message || err?.message || "Failed to load";
 
 const MEAL_COLORS = {
   Breakfast: { bg: "bg-amber-50", border: "border-amber-200", badge: "bg-amber-100 text-amber-700", dot: "bg-amber-400" },
@@ -10,11 +20,6 @@ const MEAL_COLORS = {
   Dinner: { bg: "bg-indigo-50", border: "border-indigo-200", badge: "bg-indigo-100 text-indigo-700", dot: "bg-indigo-400" },
 };
 const colorFor = (type) => MEAL_COLORS[type] || { bg: "bg-slate-50", border: "border-slate-200", badge: "bg-slate-100 text-slate-700", dot: "bg-slate-400" };
-
-function authHeaders() {
-  const token = localStorage.getItem(TOKEN_KEY);
-  return { Authorization: `Bearer ${token}` };
-}
 
 export default function MealOverview() {
   const [tab, setTab] = useState("today"); // "today" | "history"
@@ -55,7 +60,7 @@ export default function MealOverview() {
    TODAY TAB — GET /api/institute/meals/today?date=YYYY-MM-DD
    ============================================================ */
 function TodayMeals() {
-  const [date, setDate] = useState(() => new Date().toISOString().slice(0, 10));
+  const [date, setDate] = useState(todayBD);
   const [data, setData] = useState(null);
   const [openType, setOpenType] = useState(null); // কোন meal-type card expand করা আছে
   const [loading, setLoading] = useState(true);
@@ -65,14 +70,11 @@ function TodayMeals() {
     setLoading(true);
     setError("");
     try {
-      const res = await fetch(`${API_BASE}/institute/meals/today?date=${date}`, {
-        headers: authHeaders(),
-      });
-      const json = await res.json();
-      if (!res.ok || !json.success) throw new Error(json.message || "Failed to load");
+      const { data: json } = await axiosSecure.get("/api/institute/meals/today", { params: { date } });
+      if (!json.success) throw new Error(json.message || "Failed to load");
       setData(json);
     } catch (err) {
-      setError(err.message);
+      setError(apiErrorText(err));
     } finally {
       setLoading(false);
     }
@@ -211,17 +213,14 @@ function MealHistory() {
       if (from) params.set("from", from);
       if (to) params.set("to", to);
 
-      const res = await fetch(`${API_BASE}/meal-deductions/institute?${params.toString()}`, {
-        headers: authHeaders(),
-      });
-      const json = await res.json();
-      if (!res.ok || !json.success) throw new Error(json.message || "Failed to load");
+      const { data: json } = await axiosSecure.get(`/api/meal-deductions/institute?${params.toString()}`);
+      if (!json.success) throw new Error(json.message || "Failed to load");
 
       setRows(json.data || []);
       setSummary(json.summary);
       setPagination({ page: json.pagination.page, pages: json.pagination.pages });
     } catch (err) {
-      setError(err.message);
+      setError(apiErrorText(err));
     } finally {
       setLoading(false);
     }
