@@ -281,11 +281,11 @@ const selectedMeals = sortedMeals
         start_time: meal?.start_time,
         end_time: meal?.end_time,
         selected_items: isAlternative
-          ? ([meal?.alternative_items?.[altGroupIndex]] ?? [])
+          ? ([meal?.alternative_items?.[altGroupIndex]].filter(Boolean))
           : (meal?.package_item ?? []),
         guest_items: isGuestEnabled
           ? isGuestAlternative
-            ? ([meal?.alternative_items?.[altGuestGroupIndex]] ?? [])
+            ? ([meal?.alternative_items?.[altGuestGroupIndex]].filter(Boolean))
             : (meal?.package_item ?? [])
           : [],
         is_alternative: isAlternative,

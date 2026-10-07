@@ -11,6 +11,7 @@ import {
   getInstituteMealOnOffFunction,
   getInstituteRoleFunction,
   getInstituteUserMealOrderListsFunction,
+  getInstituteUserMealOrderPagedFunction,
   getInventoryGlobalAmountFunction,
   getInventoryStockFunction,
   getMealOnOffFunction,
@@ -428,6 +429,17 @@ export const useInstituteMealOnOffTime = () => {
     onError: (error) => {
       toast.error(error?.response?.data?.message || "Something went wrong");
     },
+  });
+};
+
+export const useAllwiseInstituteUserOrderListsPaged = (page = 1, limit = 10) => {
+  const { token } = useInstituteAuth();
+  return useQuery({
+    queryKey: ["institute-user-meal-lists-paged", page, limit],
+    queryFn: () => getInstituteUserMealOrderPagedFunction({ page, limit }),
+    retry: false,
+    keepPreviousData: true,
+    enabled: !!token,
   });
 };
 

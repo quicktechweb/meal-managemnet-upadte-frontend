@@ -186,6 +186,14 @@ export const createInstituteMealOnOffTimeFunction = async (payload) => {
   return data;
 };
 
+// Pagination version: { data, pagination, stats }
+export const getInstituteUserMealOrderPagedFunction = async ({ page = 1, limit = 10 }) => {
+  const { data } = await axiosSecure.get("/api/allwise-institute-user-meal-order", {
+    params: { page, limit },
+  });
+  return data;
+};
+
 export const getInstituteUserMealOrderListsFunction = async () => {
   const { data } = await axiosSecure.get(
     "/api/allwise-institute-user-meal-order",

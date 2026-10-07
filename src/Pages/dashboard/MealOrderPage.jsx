@@ -1,5 +1,7 @@
-import React, { useState } from "react";
-import { useAllwiseInstituteUserOrderLists } from "../../api/cms/user.hook";
+import React, { useEffect, useState } from "react";
+import { useAllwiseInstituteUserOrderListsPaged } from "../../api/cms/user.hook";
+
+const PAGE_SIZE = 10;
 
 const KNOWN_MEAL_CONFIG = {
   breakfast: { emoji: "🍳", bg: "bg-orange-100", text: "text-orange-600" },
@@ -126,7 +128,7 @@ const MealCard = ({ meal }) => {
         )}
 
         <p className="text-sm font-medium text-gray-600">
-          🍴 {meal.selected_items?.map((i) => i.title).join(", ")}
+          🍴 {meal.selected_items?.map((i) => i?.title).filter(Boolean).join(", ")}
         </p>
 
         {hasGuests && (
@@ -171,7 +173,10 @@ const UserCard = ({ user, filter }) => {
 
   const activeMeals = filteredMeals.filter((m) => m.is_on);
   const attendedMeals = filteredMeals.filter((m) => m.is_on && m.is_attendance);
-  const totalBill = activeMeals.reduce((s, m) => s + m.package_price, 0);
+  const totalBill = activeMeals.reduce(
+    (s, m) => s + m.package_price * (1 + (m.guest_quantity || 0)),
+    0,
+  );
   const attendanceRate =
     activeMeals.length > 0
       ? Math.round((attendedMeals.length / activeMeals.length) * 100)
@@ -270,15 +275,90 @@ const UserCard = ({ user, filter }) => {
 };
 
 /* ── Main Page ── */
+/* ── Pagination bar ── */
+const pageList = (page, total) => {
+  if (total <= 7) return Array.from({ length: total }, (_, i) => i + 1);
+  const set = new Set([1, total, page - 1, page, page + 1]);
+  const nums = [...set].filter((n) => n >= 1 && n <= total).sort((x, y) => x - y);
+  const out = [];
+  nums.forEach((n, i) => {
+    if (i > 0 && n - nums[i - 1] > 1) out.push("…");
+    out.push(n);
+  });
+  return out;
+};
+
+const Pagination = ({ page, totalPages, total, limit, onChange, disabled }) => {
+  if (totalPages <= 1) return null;
+  const from = (page - 1) * limit + 1;
+  const to = Math.min(page * limit, total);
+  return (
+    <div className="flex flex-col sm:flex-row items-center justify-between gap-3 pb-16 -mt-6">
+      <p className="text-xs font-semibold text-gray-500">
+        Showing {from}–{to} of {total} members
+      </p>
+      <div className="flex items-center gap-1.5 flex-wrap justify-center">
+        <button
+          disabled={disabled || page <= 1}
+          onClick={() => onChange(page - 1)}
+          className="px-3 py-1.5 rounded-lg text-xs font-bold border border-gray-200 bg-white text-gray-600 hover:border-orange-400 hover:text-orange-500 disabled:opacity-40 disabled:hover:border-gray-200 disabled:hover:text-gray-600"
+        >
+          Prev
+        </button>
+        {pageList(page, totalPages).map((n, i) =>
+          n === "…" ? (
+            <span key={`dots-${i}`} className="px-1 text-gray-400 text-xs">…</span>
+          ) : (
+            <button
+              key={n}
+              disabled={disabled}
+              onClick={() => onChange(n)}
+              className={`min-w-[2rem] px-2.5 py-1.5 rounded-lg text-xs font-bold border transition-all ${
+                n === page
+                  ? "bg-gray-900 text-white border-gray-900"
+                  : "bg-white text-gray-600 border-gray-200 hover:border-orange-400 hover:text-orange-500"
+              }`}
+            >
+              {n}
+            </button>
+          ),
+        )}
+        <button
+          disabled={disabled || page >= totalPages}
+          onClick={() => onChange(page + 1)}
+          className="px-3 py-1.5 rounded-lg text-xs font-bold border border-gray-200 bg-white text-gray-600 hover:border-orange-400 hover:text-orange-500 disabled:opacity-40 disabled:hover:border-gray-200 disabled:hover:text-gray-600"
+        >
+          Next
+        </button>
+      </div>
+    </div>
+  );
+};
+
+/* ── Main Page ── */
 export default function MealOrderPage() {
+  const [page, setPage] = useState(1);
   const {
-    data: rawData,
+    data: res,
     isLoading,
     isError,
-  } = useAllwiseInstituteUserOrderLists();
+    isFetching,
+  } = useAllwiseInstituteUserOrderListsPaged(page, PAGE_SIZE);
   const [filter, setFilter] = useState("All");
 
-  const data = rawData ?? [];
+  const data = res?.data ?? [];
+  const pagination = res?.pagination ?? { page: 1, totalPages: 1, total: 0, limit: PAGE_SIZE };
+  const stats = res?.stats ?? {};
+
+  const goToPage = (n) => {
+    setPage(n);
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
+  // data kome gele (page ber hoye gele) last page e niye jai
+  useEffect(() => {
+    if (res && page > pagination.totalPages) setPage(pagination.totalPages);
+  }, [res, page, pagination.totalPages]);
 
   const allDays = [
     "All",
@@ -291,21 +371,11 @@ export default function MealOrderPage() {
     "Friday",
   ];
 
-  const totalUsers = data.length;
-  const totalActiveMeals = data.reduce(
-    (s, u) => s + u.meals.filter((m) => m.is_on).length,
-    0,
-  );
-  const totalAttended = data.reduce(
-    (s, u) => s + u.meals.filter((m) => m.is_on && m.is_attendance).length,
-    0,
-  );
-  const grandTotal = data.reduce(
-    (s, u) =>
-      s +
-      u.meals.filter((m) => m.is_on).reduce((ss, m) => ss + m.package_price, 0),
-    0,
-  );
+  // stats shob user er (shudhu ei page er na)
+  const totalUsers = stats.total_users ?? 0;
+  const totalActiveMeals = stats.active_meals ?? 0;
+  const totalAttended = stats.present ?? 0;
+  const grandTotal = stats.total_bill ?? 0;
 
   return (
     <div className="min-h-screen bg-gray-100">
@@ -418,11 +488,24 @@ export default function MealOrderPage() {
 
         {/* ── User Cards ── */}
         {!isLoading && !isError && (
-          <div className="flex flex-col gap-4 sm:gap-5 pb-16">
+          <div
+            className={`flex flex-col gap-4 sm:gap-5 pb-16 transition-opacity ${isFetching ? "opacity-60" : ""}`}
+          >
             {data.map((user) => (
               <UserCard key={user._id} user={user} filter={filter} />
             ))}
           </div>
+        )}
+
+        {!isLoading && !isError && (
+          <Pagination
+            page={pagination.page}
+            totalPages={pagination.totalPages}
+            total={pagination.total}
+            limit={pagination.limit}
+            onChange={goToPage}
+            disabled={isFetching}
+          />
         )}
       </div>
     </div>
