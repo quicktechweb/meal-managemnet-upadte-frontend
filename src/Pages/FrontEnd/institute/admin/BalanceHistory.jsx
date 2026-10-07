@@ -6,7 +6,7 @@ import {
 } from "lucide-react";
 import useInstituteAuth from "../../../../Hooks/useInstituteAuth";
 
-const BASE = "https://alabadanbackendpart.alabadan.com/api";
+const BASE = "http://localhost:5000/api";
 
 const fmtAmount = (n) => "৳" + Number(n).toLocaleString("en-BD");
 const fmtDate = (d) =>

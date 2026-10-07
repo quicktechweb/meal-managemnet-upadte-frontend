@@ -168,6 +168,9 @@ function TodayMeals() {
                               </div>
                             )}
                             <div className="flex gap-2 mt-1">
+                              <span className={`text-[11px] px-2 py-0.5 rounded-full ${e.source === "all_wise_baseline" ? "bg-purple-100 text-purple-700" : "bg-amber-100 text-amber-700"}`}>
+                                {e.source === "all_wise_baseline" ? "All Wise" : "Day Wise"}
+                              </span>
                               <span className={`text-[11px] px-2 py-0.5 rounded-full ${e.is_attendance ? "bg-emerald-100 text-emerald-700" : "bg-slate-100 text-slate-500"}`}>
                                 {e.is_attendance ? "Attended" : "No Attendance"}
                               </span>

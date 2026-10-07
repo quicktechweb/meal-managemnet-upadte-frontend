@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback } from "react";
 
 // 🔹 তোমার project এ axios instance / API base url যেভাবে সেট করা আছে, সেভাবে বসিয়ে নাও
-const API_BASE = "https://alabadanbackendpart.alabadan.com/api"; // যেমন তোমার balance-list, meal payments এ যেটা ব্যবহার হচ্ছে সেটাই
+const API_BASE = "http://localhost:5000/api"; // যেমন তোমার balance-list, meal payments এ যেটা ব্যবহার হচ্ছে সেটাই
 
 export default function EpsPayments() {
   const [summary, setSummary] = useState({ totalAmount: 0, totalTransactions: 0, totalStudents: 0 });
