@@ -14,6 +14,7 @@ import {
   ChevronDown,
   LogOut,
   MessageSquare,
+  ClipboardList,
 } from "lucide-react";
 import {
   MdOutlineInventory2,
@@ -225,6 +226,7 @@ const Sidebar = ({ isOpen, onClose }) => {
       { to: "/dashboards/liveKitchen", label: "Live Kitchen", Icon: MdOutlineKitchen, color: "green" },
       { to: "/dashboards/menu", label: "Routine", Icon: MdOutlineRestaurantMenu, color: "red" },
       { to: "/dashboards/mealonof", label: "MealPart", Icon: MdOutlineFastfood, color: "red" },
+      { to: "/dashboards/user-meal-summary", label: "Meal Summary", Icon: ClipboardList, color: "amber" },
       { to: "/dashboards/mealhistory", label: "Meal History", Icon: MdOutlineHistory, color: "red" },
       { to: "/dashboards/balancehistory", label: "Balance History", Icon: MdOutlineAccountBalanceWallet, color: "green" },
       { to: "/dashboards/reviews", label: "Review", Icon: MdOutlineRateReview, color: "amber" },

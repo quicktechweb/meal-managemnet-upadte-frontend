@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from "react";
 
-const BASE = "https://alabadanbackendpart.alabadan.com/api";
+const BASE = "http://localhost:5000/api";
 const API = `${BASE}/submaterial`;
 
 const NON_WEIGHT = ["piece", "dozen", "bag", "packet"];

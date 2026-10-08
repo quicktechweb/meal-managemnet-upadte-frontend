@@ -96,6 +96,11 @@ function TodayMeals() {
           className="border border-slate-200 rounded-lg px-3 py-2 text-sm"
         />
         {data && <span className="text-sm text-slate-500">{data.day}</span>}
+        {data?.basis === "ledger" && (
+          <span className="text-xs bg-slate-100 text-slate-600 px-2 py-1 rounded-full">
+            আগের তারিখ — যাদের আসলে টাকা কাটা হয়েছিল তাদের record
+          </span>
+        )}
       </div>
 
       {loading && <div className="text-center text-slate-400 py-10 text-sm">লোড হচ্ছে...</div>}
@@ -154,7 +159,7 @@ function TodayMeals() {
                               </div>
                               <div className="text-right">
                                 <div className="text-sm font-semibold text-slate-900">৳{e.package_price}</div>
-                                <div className="text-xs text-slate-400">{e.start_time}–{e.end_time}</div>
+                                <div className="text-xs text-slate-400">{e.start_time}{e.end_time ? `–${e.end_time}` : ""}</div>
                               </div>
                             </div>
                             {e.items?.length > 0 && (
@@ -171,9 +176,11 @@ function TodayMeals() {
                               <span className={`text-[11px] px-2 py-0.5 rounded-full ${e.source === "all_wise_baseline" ? "bg-purple-100 text-purple-700" : "bg-amber-100 text-amber-700"}`}>
                                 {e.source === "all_wise_baseline" ? "All Wise" : "Day Wise"}
                               </span>
-                              <span className={`text-[11px] px-2 py-0.5 rounded-full ${e.is_attendance ? "bg-emerald-100 text-emerald-700" : "bg-slate-100 text-slate-500"}`}>
-                                {e.is_attendance ? "Attended" : "No Attendance"}
-                              </span>
+                              {e.is_attendance !== null && e.is_attendance !== undefined && (
+                                <span className={`text-[11px] px-2 py-0.5 rounded-full ${e.is_attendance ? "bg-emerald-100 text-emerald-700" : "bg-slate-100 text-slate-500"}`}>
+                                  {e.is_attendance ? "Attended" : "No Attendance"}
+                                </span>
+                              )}
                               <span className={`text-[11px] px-2 py-0.5 rounded-full ${e.balance_deducted ? "bg-blue-100 text-blue-700" : "bg-slate-100 text-slate-500"}`}>
                                 {e.balance_deducted ? "Deducted" : "Pending"}
                               </span>

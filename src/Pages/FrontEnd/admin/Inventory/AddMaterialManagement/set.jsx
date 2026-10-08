@@ -2,8 +2,8 @@ import { useState, useEffect, useCallback } from "react";
 // import { useAllwiseInstituteUserOrderLists } from "../../api/cms/user.hook";
 import { useAllwiseInstituteUserOrderLists } from "../../../../../api/cms/user.hook";
 
-const API = "https://alabadanbackendpart.alabadan.com/api/submaterial";
-const API_PRODUCTS = "https://alabadanbackendpart.alabadan.com/api/allmetrialproductadd";
+const API = "http://localhost:5000/api/submaterial";
+const API_PRODUCTS = "http://localhost:5000/api/allmetrialproductadd";
 
 async function apiFetch(url, options = {}) {
   const res = await fetch(url, {

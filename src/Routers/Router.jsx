@@ -144,6 +144,7 @@ import MealOverview from "../Pages/dashboard/MealOverView";
 import MealReviews from "../Pages/FrontEnd/institute/admin/MealReviews";
 import MealHistory from "../Components/dashboards/MealHistory/MealHistory";
 import UserAllDataShow from "../Pages/FrontEnd/institute/admin/UserAllDataShow/UserAllDataShow";
+import UserWeeklyMealSummary from "../Pages/FrontEnd/Dashboard/UserDashboard/MealManagementPart/UserWeekMealSummary";
 
 const router = createBrowserRouter([
   {
@@ -705,6 +706,10 @@ const router = createBrowserRouter([
            <MealHistory />
         // </ProtectedRoute>
        
+      },
+        {
+        path: "/dashboards/user-meal-summary",      // ← notun
+        element: <UserWeeklyMealSummary />,          // ← notun
       },
       {
         path: "/dashboards/mealsummary",

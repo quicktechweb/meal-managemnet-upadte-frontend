@@ -72,7 +72,7 @@ const MealPaymentsView = ({ endpoint, title, subtitle, isSuperAdmin = false }) =
         if (v && v !== "all") params[k] = v;
       });
 
-          const { data } = await axiosSecure.get(`https://alabadanbackendpart.alabadan.com${endpoint}`, { params });
+          const { data } = await axiosSecure.get(`http://localhost:5000${endpoint}`, { params });
       setRes(data);
     } catch (e) {
       setError(e?.response?.data?.message || e?.response?.data?.error || e.message);
