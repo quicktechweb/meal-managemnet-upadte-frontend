@@ -210,6 +210,114 @@ function MealSummaryTable({ days, mode }) {
   );
 }
 
+// ── Date wise meal count summary ──
+// GET /api/institute/meals/today?date=YYYY-MM-DD  (All Wise + Day Wise + Guest mile count)
+const todayBD = () => new Date(Date.now() + 6 * 60 * 60 * 1000).toISOString().slice(0, 10);
+const SUMMARY_ORDER = ["Breakfast", "Lunch", "Dinner"];
+const SUMMARY_STYLE = {
+  Breakfast: { box: "bg-amber-50 border-amber-200", badge: "bg-amber-100 text-amber-700" },
+  Lunch: { box: "bg-emerald-50 border-emerald-200", badge: "bg-emerald-100 text-emerald-700" },
+  Dinner: { box: "bg-indigo-50 border-indigo-200", badge: "bg-indigo-100 text-indigo-700" },
+};
+
+function DateMealSummary() {
+  const [date, setDate] = useState(todayBD);
+  const [data, setData] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
+
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      setLoading(true);
+      setError("");
+      try {
+        const { data: json } = await axiosSecure.get("/api/institute/meals/today", { params: { date } });
+        if (!json.success) throw new Error(json.message || "Failed to load");
+        if (!cancelled) setData(json);
+      } catch (err) {
+        if (!cancelled) setError(err?.response?.data?.message || err?.message || "Failed to load");
+      } finally {
+        if (!cancelled) setLoading(false);
+      }
+    })();
+    return () => { cancelled = true; };
+  }, [date]);
+
+  const groups = data?.groups || {};
+  const types = [
+    ...SUMMARY_ORDER.filter((t) => groups[t]),
+    ...Object.keys(groups).filter((t) => !SUMMARY_ORDER.includes(t)),
+  ];
+
+  const statsOf = (g) => {
+    const entries = g.entries || [];
+    const guests = entries.reduce((sum, e) => sum + Number(e.guest_quantity || 0), 0);
+    const allWise = entries.filter((e) => e.source === "all_wise_baseline").length;
+    return { users: entries.length, guests, allWise, dayWise: entries.length - allWise };
+  };
+
+  return (
+    <div className="bg-white rounded-2xl border border-gray-100 shadow-sm px-5 py-4 mb-4">
+      <div className="flex flex-wrap items-center gap-3 mb-3">
+        <h2 className="font-bold text-gray-900">Date wise meal count</h2>
+        <input
+          type="date"
+          value={date}
+          onChange={(e) => e.target.value && setDate(e.target.value)}
+          className="border border-gray-200 rounded-lg px-3 py-1.5 text-sm text-gray-700"
+        />
+        {data && <span className="text-sm text-gray-500">{data.day}</span>}
+        {data && (
+          <span className="ml-auto text-sm text-gray-600">
+            Total <b className="text-gray-900">{data.summary?.totalActiveMeals ?? 0}</b> meals ·{" "}
+            <b className="text-gray-900">{data.summary?.totalStudents ?? 0}</b> students
+          </span>
+        )}
+      </div>
+
+      {loading ? (
+        <p className="text-sm text-gray-400 py-4 text-center">Loading…</p>
+      ) : error ? (
+        <p className="text-sm text-red-500 py-4 text-center">{error}</p>
+      ) : types.length === 0 ? (
+        <p className="text-sm text-gray-400 py-4 text-center border border-dashed border-gray-200 rounded-xl">
+          Ei date e kono meal active nei
+        </p>
+      ) : (
+        <>
+          <div className="grid sm:grid-cols-3 gap-3">
+            {types.map((t) => {
+              const g = groups[t];
+              const st = statsOf(g);
+              const style = SUMMARY_STYLE[t] || { box: "bg-slate-50 border-slate-200", badge: "bg-slate-100 text-slate-700" };
+              return (
+                <div key={t} className={`rounded-xl border p-4 ${style.box}`}>
+                  <span className={`inline-block text-xs font-semibold px-2.5 py-1 rounded-full ${style.badge}`}>{t}</span>
+                  <div className="text-3xl font-bold text-gray-900 mt-2">{g.count}</div>
+                  <div className="text-xs text-gray-500">total meals</div>
+                  <div className="flex flex-wrap gap-1.5 mt-3 text-[11px]">
+                    <span className="px-2 py-0.5 rounded-full bg-white text-gray-700 border border-gray-200">{st.users} users</span>
+                    <span className="px-2 py-0.5 rounded-full bg-orange-100 text-orange-700">Guest × {st.guests}</span>
+                    <span className="px-2 py-0.5 rounded-full bg-purple-100 text-purple-700">All Wise {st.allWise}</span>
+                    <span className="px-2 py-0.5 rounded-full bg-amber-100 text-amber-700">Day Wise {st.dayWise}</span>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+          <p className="text-[11px] text-gray-400 mt-2">
+            {data?.basis === "ledger"
+              ? "Aager tarikh: ja ashole taka kata hoyechilo (deduction record) thekei dekhano hocche."
+              : "Current on/off (All Wise + Day Wise + Guest) onujayi hishab."}{" "}
+            Total meals e guest meal o gona hoyeche.
+          </p>
+        </>
+      )}
+    </div>
+  );
+}
+
 // Calendar + Choose Your Meals (user panel er layout)
 function MealPanel({ mode, days, orderId, userId, onToggleMeal, onToggleService, onGuest, canGuest, busyKey, hoursNote }) {
   const [activeIdx, setActiveIdx] = useState(0);
@@ -459,6 +567,8 @@ export default function Institutionalldatamealon() {
       </div>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 py-5">
+        <DateMealSummary />
+
         <div className="bg-white rounded-2xl border border-gray-100 shadow-sm px-5 py-4 mb-4">
           <select value={roomFilter} onChange={(e) => { setRoomFilter(e.target.value); setPage(1); }} className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm text-gray-700 bg-white">
             {rooms.map((r) => <option key={r}>{r}</option>)}

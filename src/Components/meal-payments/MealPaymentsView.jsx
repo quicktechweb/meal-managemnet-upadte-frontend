@@ -53,6 +53,7 @@ const MealPaymentsView = ({ endpoint, title, subtitle, isSuperAdmin = false }) =
   const [res, setRes] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+   const [guestByType, setGuestByType] = useState({});
 
   // search box debounce
   useEffect(() => {
@@ -84,6 +85,49 @@ const MealPaymentsView = ({ endpoint, title, subtitle, isSuperAdmin = false }) =
   useEffect(() => {
     load();
   }, [load]);
+
+    // সব page থেকে guest গুনে meal type অনুযায়ী যোগ করা
+  useEffect(() => {
+    let cancelled = false;
+
+    (async () => {
+      try {
+        const base = {};
+        Object.entries(filters).forEach(([k, v]) => {
+          if (v && v !== "all") base[k] = v;
+        });
+
+        const map = {};
+        let p = 1;
+        let pages = 1;
+
+        do {
+          const { data } = await axiosSecure.get(`https://alabadanbackendpart.alabadan.com${endpoint}`, {
+            params: { ...base, page: p, limit: 100 },
+          });
+
+          (data?.data || []).forEach((r) => {
+            const g = Number(r.guest_quantity) || 0;
+            if (g > 0) {
+              const k = String(r.meal_type || "").toLowerCase();
+              map[k] = (map[k] || 0) + g;
+            }
+          });
+
+          pages = data?.pagination?.pages || 1;
+          p += 1;
+        } while (p <= pages && !cancelled);
+
+        if (!cancelled) setGuestByType(map);
+      } catch {
+        if (!cancelled) setGuestByType({});
+      }
+    })();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [axiosSecure, endpoint, filters]);
 
   const setFilter = (key, value) => {
     setFilters((f) => ({ ...f, [key]: value }));
@@ -179,7 +223,12 @@ const MealPaymentsView = ({ endpoint, title, subtitle, isSuperAdmin = false }) =
                   {cap(m.meal_type)}
                 </span>
                 <p className="text-lg font-bold text-slate-800 mt-2">{fmtAmount(m.total)}</p>
-                <p className="text-[11px] text-gray-400">{m.count} meals</p>
+               <p className="text-[11px] text-gray-900">
+  {m.count + (guestByType[m.meal_type] || 0)} meals
+  {guestByType[m.meal_type] > 0 && (
+    <span className="text-black"> (incl. {guestByType[m.meal_type]} guest)</span>
+  )}
+</p>
               </button>
             ))}
           </div>

@@ -65,6 +65,7 @@ function TodayMeals() {
   const [openType, setOpenType] = useState(null); // কোন meal-type card expand করা আছে
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+    const [q, setQ] = useState(""); // search text
 
   const fetchToday = useCallback(async () => {
     setLoading(true);
@@ -86,6 +87,21 @@ function TodayMeals() {
 
   const mealTypes = data ? Object.keys(data.groups || {}) : [];
 
+    const query = q.trim().toLowerCase();
+  const matchEntry = (e) => {
+    if (!query) return true;
+    const u = e.user || {};
+    return [u.full_name, u.uid, u.phone, u.room_number, u.email].some(
+      (v) => v !== null && v !== undefined && String(v).toLowerCase().includes(query),
+    );
+  };
+  const totalMatched = data
+    ? mealTypes.reduce(
+        (sum, t) => sum + (data.groups[t]?.entries || []).filter(matchEntry).length,
+        0,
+      )
+    : 0;
+
   return (
     <div>
       <div className="flex items-center gap-3 mb-5">
@@ -103,6 +119,26 @@ function TodayMeals() {
         )}
       </div>
 
+
+         <div className="relative mb-5">
+        <input
+          type="text"
+          value={q}
+          onChange={(e) => setQ(e.target.value)}
+          placeholder="Name / UID / phone / room number দিয়ে খুঁজুন"
+          className="w-full border border-slate-200 rounded-lg px-3 py-2.5 text-sm pr-9 focus:outline-none focus:ring-2 focus:ring-slate-200"
+        />
+        {q && (
+          <button
+            onClick={() => setQ("")}
+            className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 text-sm"
+          >
+            ✕
+          </button>
+        )}
+      </div>
+
+
       {loading && <div className="text-center text-slate-400 py-10 text-sm">লোড হচ্ছে...</div>}
       {error && <div className="text-center text-red-500 py-10 text-sm">{error}</div>}
 
@@ -118,6 +154,12 @@ function TodayMeals() {
           </div>
 
           {/* Meal-type count cards */}
+
+                    {query && totalMatched === 0 && (
+            <div className="text-center text-slate-400 py-10 text-sm">
+              {q} নামে কাউকে পাওয়া যায়নি
+            </div>
+          )}
           {mealTypes.length === 0 ? (
             <div className="text-center text-slate-400 py-16 border border-dashed border-slate-200 rounded-2xl">
               আজকে কোনো meal active নেই
@@ -127,7 +169,8 @@ function TodayMeals() {
               {mealTypes.map((type) => {
                 const c = colorFor(type);
                 const group = data.groups[type];
-                const isOpen = openType === type;
+                                const filtered = group.entries.filter(matchEntry);
+                const isOpen = query ? filtered.length > 0 : openType === type;
                 return (
                   <div key={type} className={`rounded-2xl border ${c.border} ${c.bg} overflow-hidden`}>
                     <button
@@ -137,15 +180,21 @@ function TodayMeals() {
                       <span className={`inline-block text-xs font-semibold px-2.5 py-1 rounded-full ${c.badge}`}>
                         {type}
                       </span>
-                      <div className="text-3xl font-bold text-slate-900 mt-2">{group.count}</div>
+                     <div className="text-3xl font-bold text-slate-900 mt-2">
+                        {query ? filtered.length : group.count}
+                      </div>
                       <div className="text-xs text-slate-500 mt-1">
-                        {isOpen ? "▲ hide students" : "▼ show students"}
+                                               {query
+                          ? `${filtered.length} matched`
+                          : isOpen
+                            ? "▲ hide students"
+                            : "▼ show students"}
                       </div>
                     </button>
 
                     {isOpen && (
                       <div className="bg-white border-t border-slate-100 max-h-72 overflow-y-auto">
-                        {group.entries.map((e, i) => (
+                                                {filtered.map((e, i) => (
                           <div key={i} className="px-5 py-3 border-b border-slate-50 last:border-0">
                             <div className="flex items-center justify-between">
                               <div>
